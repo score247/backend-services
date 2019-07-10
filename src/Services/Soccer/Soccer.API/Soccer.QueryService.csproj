@@ -18,8 +18,4 @@
     <Folder Include="Middlewares\" />
     <Folder Include="Repositories\" />
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Soccer.Domain\Soccer.Domain.csproj" />
-  </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Soccer.League.Infrastructure
+namespace Soccer.Infrastructure
 {
     public class Class1
     {

@@ -6,10 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Soccer.Domain\Soccer.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Folder Include="SportRadar\Dtos\" />
     <Folder Include="SportRadar\Jobs\Odds\" />
   </ItemGroup>
