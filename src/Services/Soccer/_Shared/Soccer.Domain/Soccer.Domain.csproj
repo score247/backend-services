@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <Folder Include="Models\Leagues\" />
-    <Folder Include="Models\Matches\TimelineEvents\" />
+    <Folder Include="Models\Matches\" />
     <Folder Include="Models\Odds\" />
   </ItemGroup>
 
