@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Matches\Models\" />
+    <Folder Include="Models\Matches\DataMappers\" />
+    <Folder Include="Models\" />
+    <Folder Include="Models\Odds\Dto\" />
+    <Folder Include="Configurations\" />
+  </ItemGroup>
+
+</Project>
