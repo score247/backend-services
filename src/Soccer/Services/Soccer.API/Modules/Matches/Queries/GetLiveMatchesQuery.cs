@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
     using MediatR;
-    using Soccer.Core.Domain.Matches;
+    using Soccer.Core.Domain.Matches.Models;
 
     public class GetLiveMatchesQuery : IRequest<IEnumerable<Match>>
     {

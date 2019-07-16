@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
-using Soccer.Core.Infrastructure.Entities;
-
-namespace Soccer.Core.Infrastructure
+﻿namespace Soccer.Core.Domain
 {
-    internal class SoccerContext : DbContext
+    using Microsoft.EntityFrameworkCore;
+    using Soccer.Core.Domain.Matches.Entities;
+
+    public class SoccerContext : DbContext
     {
         public SoccerContext(DbContextOptions<SoccerContext> options)
             : base(options)

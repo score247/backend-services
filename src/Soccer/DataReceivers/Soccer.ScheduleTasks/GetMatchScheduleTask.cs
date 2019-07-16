@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Soccer.DataReceivers.ScheduleTasks
 {
-    class GetMatchScheduleTask
+    public class GetMatchScheduleTask
     {
     }
 }

@@ -35,7 +35,12 @@ namespace Soccer.EventProcessors
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Default}/{action=Index}");
+            });
         }
     }
 }

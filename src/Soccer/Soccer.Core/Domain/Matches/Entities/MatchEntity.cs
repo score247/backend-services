@@ -1,11 +1,13 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
-namespace Soccer.Core.Infrastructure.Entities
+﻿namespace Soccer.Core.Domain.Matches.Entities
 {
+    using System;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Metadata.Builders;
+    using Newtonsoft.Json;
+    using Soccer.Core.Base;
+    using Soccer.Core.Domain.Matches.Models;
+
     public class MatchEntity : BaseEntity
     {
         [Column(TypeName = "jsonb")]
@@ -15,12 +17,18 @@ namespace Soccer.Core.Infrastructure.Entities
 
         public string LeagueId { get; set; }
 
-        [Key]
         public string Language { get; set; }
 
         public int SportId { get; set; }
 
         public string Region { get; set; }
+
+        [NotMapped]
+        public Match Match
+        {
+            get => JsonConvert.DeserializeObject<Match>(Value);
+            set => Value = JsonConvert.SerializeObject(value);
+        }
     }
 
     public class MatchEntityConfiguration : IEntityTypeConfiguration<MatchEntity>

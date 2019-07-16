@@ -1,10 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Soccer.Core.Modules.Matches
+﻿namespace Soccer.Core.Domain.Matches
 {
-    class MatchRepository
+    using Soccer.Core.Domain.Matches.Entities;
+
+    public interface IMatchRepository : IBaseRepository<MatchEntity>
     {
+    }
+
+    public class MatchRepository : BaseRepository<MatchEntity>, IMatchRepository
+    {
+        public MatchRepository(SoccerContext soccerContext) : base(soccerContext)
+        {
+        }
     }
 }

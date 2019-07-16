@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-
-namespace Soccer.Services.Commands
+﻿namespace Soccer.Services.Commands
 {
+    using Microsoft.AspNetCore;
+    using Microsoft.AspNetCore.Hosting;
+
+#pragma warning disable S1118 // Utility classes should not have public constructors
+
     public class Program
     {
         public static void Main(string[] args)
@@ -21,4 +16,6 @@ namespace Soccer.Services.Commands
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>();
     }
+
+#pragma warning restore S1118 // Utility classes shold not have public constructors
 }

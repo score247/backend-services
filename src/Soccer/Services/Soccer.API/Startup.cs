@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
-namespace Soccer.Services.Commands
+﻿namespace Soccer.Services.Commands
 {
+    using System;
+    using System.Reflection;
+    using Fanex.Logging;
+    using MediatR;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Newtonsoft.Json;
+    using Soccer.API.Middlewares;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -24,18 +24,46 @@ namespace Soccer.Services.Commands
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            try
+            {
+                services.AddLogging(Configuration);
+                services.AddSettings(Configuration);
+                services.AddMediatR(Assembly.GetExecutingAssembly());
+                services.AddDatabase(Configuration);
+                services.AddServices();
+                services.AddHealthCheck();
+                services.AddSwagger();
+                services.AddMvc()
+                    .AddJsonOptions(options =>
+                    {
+                        options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Unspecified;
+                    })
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            }
+            catch (Exception ex)
+            {
+                LogService.Error(ex.ToString());
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
+            try
             {
-                app.UseDeveloperExceptionPage();
+                app.ConfigureExceptionHandler();
+                app.UseHealthCheck();
+                app.UseDatabase();
+                app.ConfigureSwagger();
+
+                app.UseMvc();
+            }
+            catch (Exception ex)
+            {
+                LogService.Error(ex.ToString());
             }
 
-            app.UseMvc();
+            LogService.Info("LiveScore API has been started.");
         }
     }
 }

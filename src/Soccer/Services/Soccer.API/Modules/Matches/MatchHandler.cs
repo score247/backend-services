@@ -6,16 +6,21 @@
     using System.Threading.Tasks;
     using MediatR;
     using Soccer.API.Modules.Matches.Queries;
-    using Soccer.Core.Domain.Matches;
+    using Soccer.Core.Domain.Matches.Models;
 
     public class MatchHandler
         : IRequestHandler<GetMatchesByDateQuery, IEnumerable<Match>>,
           IRequestHandler<GetLiveMatchesQuery, IEnumerable<Match>>
     {
-        public Task<IEnumerable<Match>> Handle(GetMatchesByDateQuery request, CancellationToken cancellationToken)
+        private readonly IMatchQueryService matchQueryService;
+
+        public MatchHandler(IMatchQueryService matchQueryService)
         {
-            throw new NotImplementedException();
+            this.matchQueryService = matchQueryService;
         }
+
+        public async Task<IEnumerable<Match>> Handle(GetMatchesByDateQuery request, CancellationToken cancellationToken)
+            => await matchQueryService.GetByDateRange(request.SportId, request.From, request.To, request.ClientTimeZone, request.Language);
 
         public Task<IEnumerable<Match>> Handle(GetLiveMatchesQuery request, CancellationToken cancellationToken)
         {
