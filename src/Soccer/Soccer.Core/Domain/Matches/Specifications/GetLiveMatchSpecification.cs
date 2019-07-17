@@ -11,8 +11,8 @@
             : base(
                 m => m.SportId == sportId
                 && m.Language.Equals(language, StringComparison.OrdinalIgnoreCase)
-                && m.EventDate >= DateTime.Today.ConvertFromLocalToTimeZone(clientTimeOffset)
-                && m.EventDate <= DateTime.Today.AddDays(1).AddSeconds(-1).ConvertFromLocalToTimeZone(clientTimeOffset))
+                && m.EventDate >= DateTime.Today.ConvertFromLocalToOffset(clientTimeOffset)
+                && m.EventDate <= DateTime.Today.EndDay().ConvertFromLocalToOffset(clientTimeOffset))
         {
             ApplyOrderBy(m => m.EventDate);
         }

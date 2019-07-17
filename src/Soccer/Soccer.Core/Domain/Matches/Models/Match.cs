@@ -31,9 +31,9 @@
 
         public string Region { get; set; }
 
-        public Match ChangeEventDateByTimeZone(TimeSpan timeZone)
+        public Match ChangeEventDateByTimeZone(TimeSpan offset)
         {
-            EventDate = EventDate.ConvertFromUtcToTimeZone(timeZone);
+            EventDate = EventDate.ConvertFromUtcToOffset(offset);
 
             return this;
         }

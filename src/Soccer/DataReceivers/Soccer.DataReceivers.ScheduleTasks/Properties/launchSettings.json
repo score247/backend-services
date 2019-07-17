@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Soccer.DataReceivers.ScheduleTasks": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
