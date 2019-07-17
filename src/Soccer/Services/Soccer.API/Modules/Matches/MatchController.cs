@@ -5,10 +5,11 @@
     using System.Threading.Tasks;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
+    using Score247.Shared.Enumerations;
     using Soccer.API.Modules.Matches.Queries;
     using Soccer.Core.Domain.Matches.Models;
 
-    [Route("api/{language}/matches")]
+    [Route("api/soccer/{language}/matches")]
     [ApiController]
     public class MatchController : ControllerBase
     {
@@ -20,18 +21,21 @@
         /// <summary>
         /// Get Matches By Date Range
         /// </summary>
-        /// <param name="sportId">Soccer (1)</param>
         /// <param name="fd">2019-07-15T00:00:00+07:00</param>
         /// <param name="td">2019-07-16T23:59:59+07:00</param>
         /// <param name="tz">07:00</param>
         /// <param name="language"></param>
         [HttpGet]
         public async Task<IEnumerable<Match>> Get(
-                int sportId,
                 DateTime fd,
                 DateTime td,
                 TimeSpan tz,
                 string language = "en-US")
-            => await mediator.Send(new GetMatchesByDateQuery(sportId, fd, td, language, tz));
+            => await mediator.Send(new GetMatchesByDateQuery(int.Parse(Sport.Soccer.Value), fd, td, language, tz));
+
+        [HttpGet]
+        [Route("{id}")]
+        public async Task<Match> Get(string id, TimeSpan tz)
+            => await mediator.Send(new GetMatchByIdQuery(id, tz));
     }
 }

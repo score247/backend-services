@@ -16,4 +16,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Score247.Shared\Score247.Shared.csproj" />
+  </ItemGroup>
 </Project>

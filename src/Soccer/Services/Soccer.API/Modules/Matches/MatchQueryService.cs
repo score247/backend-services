@@ -32,12 +32,11 @@
         public async Task<IEnumerable<Match>> GetByDateRange(int sportId, DateTime from, DateTime to, TimeSpan clientTimeZone, string language)
         {
             var matchByDateSpec = new MatchByDateSpecification(sportId, from, to, language);
-            var matchEntities = await matchRepository.ListAsync(matchByDateSpec);
-            var matches = matchEntities
+            var matches = await matchRepository.ListAsync(matchByDateSpec);
+
+            return matches
                     .Select(m => m.Match)
                     .Select(m => m.ChangeEventDateByTimeZone(clientTimeZone));
-
-            return matches;
         }
     }
 }

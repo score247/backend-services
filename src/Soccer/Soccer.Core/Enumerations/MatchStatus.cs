@@ -1,6 +1,6 @@
 ﻿namespace Soccer.Core.Enumerations
 {
-    using Soccer.Core.Base;
+    using Score247.Shared.Enumerations;
 
     public class MatchStatus : Enumeration
     {

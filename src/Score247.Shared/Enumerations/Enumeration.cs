@@ -1,4 +1,4 @@
-﻿namespace Soccer.Core.Base
+﻿namespace Score247.Shared.Enumerations
 {
     using System;
     using System.Collections;
@@ -150,4 +150,3 @@
         }
     }
 }
-
