@@ -7,28 +7,11 @@
     using Microsoft.EntityFrameworkCore;
     using Score247.Shared.Base;
 
-    public interface IBaseRepository<T> where T : BaseEntity
-    {
-        Task<T> GetByIdAsync(string id);
-
-        Task<IReadOnlyList<T>> ListAllAsync();
-
-        Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec);
-
-        Task<int> CountAsync(ISpecification<T> spec);
-
-        Task<T> AddAsync(T entity);
-
-        Task UpdateAsync(T entity);
-
-        Task DeleteAsync(params object[] ids);
-    }
-
-    public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
+    public class SoccerBaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
         protected readonly SoccerContext soccerContext;
 
-        public BaseRepository(SoccerContext soccerContext)
+        public SoccerBaseRepository(SoccerContext soccerContext)
         {
             this.soccerContext = soccerContext;
         }
