@@ -6,14 +6,17 @@
 
     public class GetMatchByIdQuery : IRequest<Match>
     {
-        public GetMatchByIdQuery(string id, TimeSpan clientTimeOffset)
+        public GetMatchByIdQuery(string id, TimeSpan clientTimeOffset, string language)
         {
             Id = id;
             ClientTimeOffset = clientTimeOffset;
+            Language = language;
         }
 
         public string Id { get; }
 
         public TimeSpan ClientTimeOffset { get; }
+
+        public string Language { get; }
     }
 }

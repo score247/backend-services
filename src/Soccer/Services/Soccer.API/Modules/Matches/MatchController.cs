@@ -34,7 +34,12 @@
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<Match> Get(string id, TimeSpan tz)
-            => await mediator.Send(new GetMatchByIdQuery(id, tz));
+        public async Task<Match> Get(string id, TimeSpan tz, string language = "en-US")
+            => await mediator.Send(new GetMatchByIdQuery(id, tz, language));
+
+        [HttpGet]
+        [Route("live")]
+        public async Task<IEnumerable<Match>> Get(TimeSpan tz, string language = "en-US")
+          => await mediator.Send(new GetLiveMatchesQuery(tz, language));
     }
 }
