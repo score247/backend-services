@@ -13,9 +13,9 @@
 
     public interface IMatchQueryService
     {
-        Task<IEnumerable<Match>> GetByDateRange(DateTime from, DateTime to, TimeSpan clientTimeZone, string language);
+        Task<IEnumerable<Match>> GetByDateRange(DateTime from, DateTime to, TimeSpan clientTimeOffset, string language);
 
-        Task<IEnumerable<Match>> GetLive(TimeSpan clientTimeZone, string language);
+        Task<IEnumerable<Match>> GetLive(TimeSpan clientTimeOffset, string language);
     }
 
     public class MatchQueryService : IMatchQueryService
@@ -34,15 +34,15 @@
             this.appSettings = appSettings;
         }
 
-        public async Task<IEnumerable<Match>> GetLive(TimeSpan clientTimeZone, string language)
+        public async Task<IEnumerable<Match>> GetLive(TimeSpan clientTimeOffset, string language)
         {
-            var liveMatchSpec = new GetLiveMatchSpecification(int.Parse(Sport.Soccer.Value), clientTimeZone, language);
+            var liveMatchSpec = new GetLiveMatchSpecification(int.Parse(Sport.Soccer.Value), clientTimeOffset, language);
             var matches = await liveMatchRepository.ListAsync(liveMatchSpec);
 
             return matches.Select(m => m.Match);
         }
 
-        public async Task<IEnumerable<Match>> GetByDateRange(DateTime from, DateTime to, TimeSpan clientTimeZone, string language)
+        public async Task<IEnumerable<Match>> GetByDateRange(DateTime from, DateTime to, TimeSpan clientTimeOffset, string language)
         {
             Guard.Against.OutOfSQLDateRange(to, nameof(to));
             Guard.Against.OutOfSQLDateRange(from, nameof(from));
@@ -53,11 +53,11 @@
             var matches = (await matchRepository.ListAsync(matchByDateSpec))
                     .Select(m => m.Match);
 
-            var liveMatches = await GetLive(clientTimeZone, language);
+            var liveMatches = await GetLive(clientTimeOffset, language);
 
             return liveMatches
                     .Union(matches, new MatchComparer())
-                    .Select(m => m.ChangeEventDateByTimeZone(clientTimeZone));
+                    .Select(m => m.ChangeEventDateByTimeZone(clientTimeOffset));
         }
     }
 }

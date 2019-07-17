@@ -20,7 +20,7 @@
         }
 
         public async Task<IEnumerable<Match>> Handle(GetMatchesByDateQuery request, CancellationToken cancellationToken)
-            => await matchQueryService.GetByDateRange(request.From, request.To, request.ClientTimeZone, request.Language);
+            => await matchQueryService.GetByDateRange(request.From, request.To, request.ClientTimeOffset, request.Language);
 
         public Task<IEnumerable<Match>> Handle(GetLiveMatchesQuery request, CancellationToken cancellationToken)
         {

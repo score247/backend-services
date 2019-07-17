@@ -7,12 +7,12 @@
 
     public class GetMatchesByDateQuery : IRequest<IEnumerable<Match>>
     {
-        public GetMatchesByDateQuery(DateTime from, DateTime to, string language, TimeSpan clientTimeZone)
+        public GetMatchesByDateQuery(DateTime from, DateTime to, string language, TimeSpan clientTimeOffset)
         {
             From = from;
             To = to;
             Language = language;
-            ClientTimeZone = clientTimeZone;
+            ClientTimeOffset = clientTimeOffset;
         }
 
         public DateTime From { get; }
@@ -21,6 +21,6 @@
 
         public string Language { get; }
 
-        public TimeSpan ClientTimeZone { get; }
+        public TimeSpan ClientTimeOffset { get; }
     }
 }

@@ -5,7 +5,6 @@
     using System.Threading.Tasks;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
-    using Score247.Shared.Enumerations;
     using Soccer.API.Modules.Matches.Queries;
     using Soccer.Core.Domain.Matches.Models;
 

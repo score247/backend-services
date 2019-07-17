@@ -4,13 +4,16 @@
 
     public static class DateTimeExtensions
     {
-        public static DateTime ConvertToUtc(this DateTime dt, TimeSpan timeZone)
-            => dt - timeZone;
+        public static DateTime ConvertToUtc(this DateTime dt, TimeSpan offset)
+            => dt - offset;
 
-        public static DateTime ConvertFromUtcToTimeZone(this DateTime dt, TimeSpan timeZone)
-            => dt.ToUniversalTime() + timeZone;
+        public static DateTime ConvertFromUtcToTimeZone(this DateTime dt, TimeSpan offset)
+            => dt.ToUniversalTime() + offset;
 
-        public static DateTime ConvertFromLocalToTimeZone(this DateTime dt, TimeSpan timeZone)
-           => dt + (DateTimeOffset.Now.Offset - timeZone);
+        public static DateTime ConvertFromLocalToTimeZone(this DateTime dt, TimeSpan offset)
+           => dt + (DateTimeOffset.Now.Offset - offset);
+
+        public static DateTime EndDay(this DateTime dt)
+           => dt.AddDays(1).AddSeconds(-1);
     }
 }
