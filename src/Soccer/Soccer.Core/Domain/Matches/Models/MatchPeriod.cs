@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Soccer.Core.Domain.Matches.Models
+﻿namespace Soccer.Core.Domain.Matches.Models
 {
     using Soccer.Core.Enumerations;
 

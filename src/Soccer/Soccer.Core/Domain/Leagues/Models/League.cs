@@ -1,6 +1,6 @@
 ﻿namespace Soccer.Core.Domain.Leagues.Models
 {
-    using Soccer.Core.Base;
+    using Score247.Shared.Base;
 
     public class League : BaseEntity
     {

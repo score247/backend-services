@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Soccer.Core.Domain.Matches.Models
+﻿namespace Soccer.Core.Domain.Matches.Models
 {
-    using Soccer.Core.Base;
+    using Score247.Shared.Base;
 
     public class Venue : BaseEntity
     {

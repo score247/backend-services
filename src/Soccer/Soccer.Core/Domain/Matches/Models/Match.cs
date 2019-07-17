@@ -2,7 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
-    using Soccer.Core.Base;
+    using Score247.Shared.Base;
     using Soccer.Core.Domain.Leagues.Models;
     using Soccer.Core.Domain.Teams.Models;
 

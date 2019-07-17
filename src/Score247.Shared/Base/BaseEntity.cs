@@ -1,4 +1,4 @@
-﻿namespace Soccer.Core.Base
+﻿namespace Score247.Shared.Base
 {
     using System;
     using System.ComponentModel.DataAnnotations.Schema;
@@ -13,9 +13,9 @@
         [NotMapped]
         public string Name { get; set; }
 
-        public DateTimeOffset CreatedTime { get; internal set; }
+        public DateTimeOffset CreatedTime { get; set; }
 
-        public DateTimeOffset ModifiedTime { get; internal set; }
+        public DateTimeOffset ModifiedTime { get; set; }
 
         protected virtual object Actual => this;
 

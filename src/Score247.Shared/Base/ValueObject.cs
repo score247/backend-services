@@ -1,4 +1,4 @@
-﻿namespace Soccer.Core.Base
+﻿namespace Score247.Shared.Base
 {
     using System.Collections.Generic;
     using System.Linq;

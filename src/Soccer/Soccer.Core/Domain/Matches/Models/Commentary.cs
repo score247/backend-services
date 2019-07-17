@@ -1,6 +1,6 @@
 ﻿namespace Soccer.Core.Domain.Matches.Models
 {
-    using Soccer.Core.Base;
+    using Score247.Shared.Base;
 
     public class Commentary : BaseEntity
     {

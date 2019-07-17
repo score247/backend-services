@@ -1,7 +1,7 @@
 ﻿namespace Soccer.Core.Domain.Matches.Specifications
 {
     using System;
-    using Soccer.Core.Base;
+    using Score247.Shared.Base;
     using Soccer.Core.Domain.Matches.Entities;
 
     public class MatchByDateSpecification : Specification<MatchEntity>

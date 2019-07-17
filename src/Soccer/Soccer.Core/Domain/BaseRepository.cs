@@ -5,7 +5,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Microsoft.EntityFrameworkCore;
-    using Soccer.Core.Base;
+    using Score247.Shared.Base;
 
     public interface IBaseRepository<T> where T : BaseEntity
     {

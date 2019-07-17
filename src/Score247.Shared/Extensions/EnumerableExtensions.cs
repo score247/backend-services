@@ -1,4 +1,4 @@
-﻿namespace Soccer.Core.Extensions
+﻿namespace Score247.Shared.Extensions
 {
     using System;
     using System.Collections.Generic;

@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Newtonsoft.Json;
-    using Soccer.Core.Base;
+    using Score247.Shared.Base;
     using Soccer.Core.Domain.Teams.Models;
 
     public class Timeline : BaseEntity
