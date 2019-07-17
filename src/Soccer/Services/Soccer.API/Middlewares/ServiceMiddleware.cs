@@ -12,6 +12,7 @@
             services.AddSingleton<ICacheService, CacheService>();
 
             services.AddScoped<IMatchRepository, MatchRepository>();
+            services.AddScoped<ILiveMatchRepository, LiveMatchRepository>();
             services.AddScoped<IMatchQueryService, MatchQueryService>();
         }
     }

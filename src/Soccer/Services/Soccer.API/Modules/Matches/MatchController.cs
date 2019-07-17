@@ -31,7 +31,7 @@
                 DateTime td,
                 TimeSpan tz,
                 string language = "en-US")
-            => await mediator.Send(new GetMatchesByDateQuery(int.Parse(Sport.Soccer.Value), fd, td, language, tz));
+            => await mediator.Send(new GetMatchesByDateQuery(fd, td, language, tz));
 
         [HttpGet]
         [Route("{id}")]

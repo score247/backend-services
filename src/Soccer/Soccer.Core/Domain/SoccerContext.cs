@@ -12,9 +12,12 @@
 
         public DbSet<MatchEntity> Match { get; set; }
 
+        public DbSet<LiveMatchEntity> LiveMatch { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new MatchEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new LiveMatchEntityConfiguration());
         }
     }
 }

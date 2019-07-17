@@ -4,38 +4,59 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Ardalis.GuardClauses;
+    using Score247.Shared.Enumerations;
+    using Soccer.API.Configurations;
     using Soccer.Core.Domain.Matches;
     using Soccer.Core.Domain.Matches.Models;
     using Soccer.Core.Domain.Matches.Specifications;
 
     public interface IMatchQueryService
     {
-        Task<IEnumerable<Match>> GetByDateRange(int sportId, DateTime from, DateTime to, TimeSpan clientTimeZone, string language);
+        Task<IEnumerable<Match>> GetByDateRange(DateTime from, DateTime to, TimeSpan clientTimeZone, string language);
 
-        Task<IEnumerable<Match>> GetLive(int sportId, string language);
+        Task<IEnumerable<Match>> GetLive(TimeSpan clientTimeZone, string language);
     }
 
     public class MatchQueryService : IMatchQueryService
     {
         private readonly IMatchRepository matchRepository;
+        private readonly ILiveMatchRepository liveMatchRepository;
+        private readonly IAppSettings appSettings;
 
-        public MatchQueryService(IMatchRepository matchRepository)
+        public MatchQueryService(
+            IAppSettings appSettings,
+            IMatchRepository matchRepository,
+            ILiveMatchRepository liveMatchRepository)
         {
             this.matchRepository = matchRepository;
+            this.liveMatchRepository = liveMatchRepository;
+            this.appSettings = appSettings;
         }
 
-        public Task<IEnumerable<Match>> GetLive(int sportId, string language)
+        public async Task<IEnumerable<Match>> GetLive(TimeSpan clientTimeZone, string language)
         {
-            throw new NotImplementedException();
+            var liveMatchSpec = new GetLiveMatchSpecification(int.Parse(Sport.Soccer.Value), clientTimeZone, language);
+            var matches = await liveMatchRepository.ListAsync(liveMatchSpec);
+
+            return matches.Select(m => m.Match);
         }
 
-        public async Task<IEnumerable<Match>> GetByDateRange(int sportId, DateTime from, DateTime to, TimeSpan clientTimeZone, string language)
+        public async Task<IEnumerable<Match>> GetByDateRange(DateTime from, DateTime to, TimeSpan clientTimeZone, string language)
         {
-            var matchByDateSpec = new MatchByDateSpecification(sportId, from, to, language);
-            var matches = await matchRepository.ListAsync(matchByDateSpec);
+            Guard.Against.OutOfSQLDateRange(to, nameof(to));
+            Guard.Against.OutOfSQLDateRange(from, nameof(from));
 
-            return matches
-                    .Select(m => m.Match)
+            var matchByDateSpec = new GetMatchByDateSpecification(
+                    int.Parse(Sport.Soccer.Value), from, to, language, appSettings.NumberOfTopMatches);
+
+            var matches = (await matchRepository.ListAsync(matchByDateSpec))
+                    .Select(m => m.Match);
+
+            var liveMatches = await GetLive(clientTimeZone, language);
+
+            return liveMatches
+                    .Union(matches, new MatchComparer())
                     .Select(m => m.ChangeEventDateByTimeZone(clientTimeZone));
         }
     }

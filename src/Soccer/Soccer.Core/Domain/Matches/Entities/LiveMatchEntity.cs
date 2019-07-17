@@ -2,6 +2,8 @@
 {
     using System;
     using System.ComponentModel.DataAnnotations.Schema;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Metadata.Builders;
     using Newtonsoft.Json;
     using Score247.Shared.Base;
     using Soccer.Core.Domain.Matches.Models;
@@ -19,11 +21,21 @@
 
         public int SportId { get; set; }
 
+        public string Region { get; set; }
+
         [NotMapped]
         public Match Match
         {
             get => JsonConvert.DeserializeObject<Match>(Value);
             set => Value = JsonConvert.SerializeObject(value);
+        }
+    }
+
+    public class LiveMatchEntityConfiguration : IEntityTypeConfiguration<LiveMatchEntity>
+    {
+        public void Configure(EntityTypeBuilder<LiveMatchEntity> builder)
+        {
+            builder.HasKey(m => new { m.Id, m.Language });
         }
     }
 }

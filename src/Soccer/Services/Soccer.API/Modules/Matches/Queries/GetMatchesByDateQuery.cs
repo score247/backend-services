@@ -7,16 +7,13 @@
 
     public class GetMatchesByDateQuery : IRequest<IEnumerable<Match>>
     {
-        public GetMatchesByDateQuery(int sportId, DateTime from, DateTime to, string language, TimeSpan clientTimeZone)
+        public GetMatchesByDateQuery(DateTime from, DateTime to, string language, TimeSpan clientTimeZone)
         {
-            SportId = sportId;
             From = from;
             To = to;
             Language = language;
             ClientTimeZone = clientTimeZone;
         }
-
-        public int SportId { get; }
 
         public DateTime From { get; }
 

@@ -10,9 +10,6 @@
     {
         public string Id { get; set; }
 
-        [NotMapped]
-        public string Name { get; set; }
-
         public DateTimeOffset CreatedTime { get; set; }
 
         public DateTimeOffset ModifiedTime { get; set; }

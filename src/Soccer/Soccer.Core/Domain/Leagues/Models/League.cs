@@ -2,7 +2,7 @@
 {
     using Score247.Shared.Base;
 
-    public class League : BaseEntity
+    public class League : BaseModel
     {
         public int Order { get; set; }
 

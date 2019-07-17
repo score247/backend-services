@@ -22,6 +22,7 @@ namespace Score247.Shared.Base
 
         Expression<Func<T, object>> GroupBy { get; }
 
+
         int Take { get; }
 
         int Skip { get; }
@@ -47,6 +48,7 @@ namespace Score247.Shared.Base
         public Expression<Func<T, object>> OrderByDescending { get; private set; }
 
         public Expression<Func<T, object>> GroupBy { get; private set; }
+
 
         public int Take { get; private set; }
 

@@ -3,10 +3,11 @@
     using System;
     using System.Collections.Generic;
     using Score247.Shared.Base;
+    using Score247.Shared.Extensions;
     using Soccer.Core.Domain.Leagues.Models;
     using Soccer.Core.Domain.Teams.Models;
 
-    public class Match : BaseEntity
+    public class Match : BaseModel
     {
         public DateTime EventDate { get; set; }
 
@@ -32,9 +33,22 @@
 
         public Match ChangeEventDateByTimeZone(TimeSpan timeZone)
         {
-            EventDate = EventDate.ToUniversalTime() + timeZone;
+            EventDate = EventDate.ConvertFromUtcToTimeZone(timeZone);
 
             return this;
+        }
+    }
+
+    public class MatchComparer : IEqualityComparer<Match>
+    {
+        public bool Equals(Match x, Match y)
+        {
+            return x.Id == y.Id;
+        }
+
+        public int GetHashCode(Match obj)
+        {
+            return obj == null ? 0 : obj.Id.GetHashCode();
         }
     }
 }

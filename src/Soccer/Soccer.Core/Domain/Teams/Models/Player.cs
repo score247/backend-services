@@ -2,7 +2,7 @@
 {
     using Score247.Shared.Base;
 
-    public class Player : BaseEntity
+    public class Player : BaseModel
     {
         public string Type { get; set; }
 
@@ -13,7 +13,7 @@
         public int Order { get; set; }
     }
 
-    public class GoalScorer : BaseEntity
+    public class GoalScorer : BaseModel
     {
         public string Method { get; set; }
     }

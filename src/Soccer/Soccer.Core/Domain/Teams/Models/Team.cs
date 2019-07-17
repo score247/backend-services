@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using Score247.Shared.Base;
 
-    public class Team : BaseEntity
+    public class Team : BaseModel
     {
         public string Country { get; set; }
 

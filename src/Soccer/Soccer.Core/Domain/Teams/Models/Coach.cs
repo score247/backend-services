@@ -2,7 +2,7 @@
 {
     using Score247.Shared.Base;
 
-    public class Coach : BaseEntity
+    public class Coach : BaseModel
     {
         public string Nationality { get; set; }
 

@@ -2,7 +2,7 @@
 {
     using Score247.Shared.Base;
 
-    public class LeagueCategory : BaseEntity
+    public class LeagueCategory : BaseModel
     {
         public string CountryCode { get; set; }
     }

@@ -7,6 +7,8 @@
     public interface IAppSettings
     {
         bool EnabledDatabaseMigration { get; }
+
+        int NumberOfTopMatches { get; }
     }
 
     public class AppSettings : IAppSettings
@@ -19,9 +21,17 @@
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
             EnabledDatabaseMigration = GetValue<bool>(nameof(EnabledDatabaseMigration));
+            NumberOfTopMatches = GetValue<int>(nameof(NumberOfTopMatches));
+
+            if (NumberOfTopMatches <= 0)
+            {
+                NumberOfTopMatches = int.MaxValue;
+            }
         }
 
         public bool EnabledDatabaseMigration { get; }
+
+        public int NumberOfTopMatches { get; }
 
         public T GetValue<T>(string key)
         {

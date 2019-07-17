@@ -2,7 +2,7 @@
 {
     using Score247.Shared.Base;
 
-    public class Venue : BaseEntity
+    public class Venue : BaseModel
     {
         public int Capacity { get; set; }
 

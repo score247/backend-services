@@ -6,7 +6,7 @@
     using Score247.Shared.Base;
     using Soccer.Core.Domain.Teams.Models;
 
-    public class Timeline : BaseEntity
+    public class Timeline : BaseModel
     {
         public string Type { get; set; }
 
