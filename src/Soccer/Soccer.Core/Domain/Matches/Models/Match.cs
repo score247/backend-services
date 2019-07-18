@@ -7,7 +7,7 @@
     using Soccer.Core.Domain.Leagues.Models;
     using Soccer.Core.Domain.Teams.Models;
 
-    public class Match : BaseModel
+    public sealed class Match : BaseModel, IEquatable<Match>
     {
         public DateTime EventDate { get; set; }
 
@@ -37,18 +37,7 @@
 
             return this;
         }
-    }
 
-    public class MatchComparer : IEqualityComparer<Match>
-    {
-        public bool Equals(Match x, Match y)
-        {
-            return x.Id == y.Id;
-        }
-
-        public int GetHashCode(Match obj)
-        {
-            return obj == null ? 0 : obj.Id.GetHashCode();
-        }
+        public bool Equals(Match other) => Id == other.Id;
     }
 }

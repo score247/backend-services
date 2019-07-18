@@ -5,11 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Matches\Models\" />
-    <Folder Include="Models\Matches\DataMappers\" />
-    <Folder Include="Models\" />
-    <Folder Include="Models\Odds\Dto\" />
-    <Folder Include="Configurations\" />
+    <Folder Include="Odds\Dto\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -17,6 +13,11 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Soccer.Core\Soccer.Core.csproj" />
+    <ProjectReference Include="..\Soccer.DataProviders\Soccer.DataProviders.csproj" />
   </ItemGroup>
 
 </Project>

@@ -9,9 +9,7 @@
     using Microsoft.AspNetCore.Hosting.WindowsServices;
     using Microsoft.Extensions.Configuration;
 
-#pragma warning disable S1118 // Utility classes should not have public constructors
-
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {
@@ -52,6 +50,4 @@
                 })
                 .UseStartup<Startup>();
     }
-
-#pragma warning restore S1118 // Utility classes should not have public constructors
 }

@@ -56,7 +56,7 @@
             var liveMatches = await GetLive(clientTimeOffset, language);
 
             return liveMatches
-                    .Union(matches, new MatchComparer())
+                    .Union(matches)
                     .Select(m => m.ChangeEventDateByTimeZone(clientTimeOffset));
         }
     }

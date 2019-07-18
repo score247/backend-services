@@ -1,10 +1,10 @@
-﻿namespace Soccer.Core.Enumerations
+﻿namespace Soccer.DataProviders.SportRadar._Shared.Enumerations
 {
     using Score247.Shared.Enumerations;
 
-    public class Language : Enumeration
+    internal class Language : Enumeration
     {
-        public static readonly Language en_US = new Language("en-US", "En");
+        public static readonly Language English = new Language("en-US", "en");
 
         public Language()
         {
