@@ -5,6 +5,7 @@
     using Hangfire;
     using Hangfire.Dashboard;
     using Hangfire.PostgreSql;
+    using MassTransit;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
@@ -15,7 +16,7 @@
     using Soccer.DataProviders.SportRadar._Shared.Configurations;
     using Soccer.DataProviders.SportRadar.Matches.Services;
     using Soccer.DataReceivers.ScheduleTasks._Shared.Configurations;
-    using Soccer.DataReceivers.ScheduleTasks.Match;
+    using Soccer.DataReceivers.ScheduleTasks.Matches;
 
     public class Startup
     {
@@ -32,6 +33,19 @@
         {
             var appSettings = new AppSettings(Configuration);
             services.AddSingleton<IAppSettings>(appSettings);
+
+            var bus = Bus.Factory.CreateUsingRabbitMq(
+                  cfg =>
+                  {
+                      cfg.Host("localhost", "/", h =>
+                      {
+                          h.Username("root");
+                          h.Password("1234aa");
+                      });
+                  });
+            services.AddSingleton<IBus>(bus);
+            services.AddSingleton<ISendEndpointProvider>(bus);
+            services.AddSingleton<IPublishEndpoint>(bus);
 
             RegisterSportRadarDataProvider(services);
             RegisterHangfireJobs(services);
