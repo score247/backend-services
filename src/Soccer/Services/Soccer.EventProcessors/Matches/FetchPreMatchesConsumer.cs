@@ -7,11 +7,11 @@
     using Soccer.Core.Domain.Matches.Entities;
     using Soccer.Core.Domain.Matches.Events;
 
-    public class FetchPreMatchConsumer : IConsumer<PreMatchesFetchedEvent>
+    public class FetchPreMatchesConsumer : IConsumer<PreMatchesFetchedEvent>
     {
         private readonly IMatchRepository matchRepository;
 
-        public FetchPreMatchConsumer(IMatchRepository matchRepository)
+        public FetchPreMatchesConsumer(IMatchRepository matchRepository)
         {
             this.matchRepository = matchRepository;
         }

@@ -8,5 +8,7 @@
     public interface IMatchService
     {
         Task<IReadOnlyList<Match>> GetPreMatches(DateTime utcFrom, DateTime utcTo, string language);
+
+        Task<IReadOnlyList<Match>> GetPostMatches(DateTime utcFrom, DateTime utcTo, string language);
     }
 }

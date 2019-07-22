@@ -48,7 +48,6 @@
             }
 
             await soccerContext.Set<T>().AddRangeAsync(entities);
-            soccerContext.ChangeTracker.DetectChanges();
             await soccerContext.SaveChangesAsync();
 
             return entities;

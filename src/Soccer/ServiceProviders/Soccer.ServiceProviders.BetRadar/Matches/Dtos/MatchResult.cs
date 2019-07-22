@@ -1,8 +1,18 @@
 ﻿namespace Soccer.DataProviders.SportRadar.Matches.Dtos
 {
+    using System;
     using System.Collections.Generic;
 
     public class MatchResult
+    {
+        public DateTime generated_at { get; set; }
+
+        public string schema { get; set; }
+
+        public IEnumerable<Result> results { get; set; }
+    }
+
+    public class Result
     {
         public SportEvent sport_event { get; set; }
 

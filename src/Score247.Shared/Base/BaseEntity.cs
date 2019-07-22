@@ -1,7 +1,6 @@
 ﻿namespace Score247.Shared.Base
 {
     using System;
-    using System.ComponentModel.DataAnnotations.Schema;
 
     /// <summary>
     /// <![CDATA[https://enterprisecraftsmanship.com/2014/11/08/domain-object-base-class/]]>

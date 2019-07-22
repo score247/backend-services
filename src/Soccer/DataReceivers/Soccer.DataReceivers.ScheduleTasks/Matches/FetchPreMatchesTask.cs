@@ -1,12 +1,10 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     using System;
-    using System.Collections.Generic;
     using System.Threading.Tasks;
     using MassTransit;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Domain.Matches.Events;
-    using Soccer.Core.Domain.Matches.Models;
     using Soccer.Core.Enumerations;
     using Soccer.DataProviders.Matches.Services;
 
@@ -28,29 +26,23 @@
 
         public async Task FetchPreMatches(int dateSpan)
         {
-            var from = DateTime.Now;
-            var to = DateTime.Now.AddDays(dateSpan);
+            var from = DateTime.UtcNow;
+            var to = DateTime.UtcNow.AddDays(dateSpan);
 
             foreach (var language in Enumeration.GetAll<Language>())
             {
-                await FetchDailySchedule(from, to, language);
+                await FetchPreMatches(from, to, language);
             }
         }
 
-        private async Task FetchDailySchedule(DateTime from, DateTime to, Language language)
+        private async Task FetchPreMatches(DateTime from, DateTime to, Language language)
         {
-            try
-            {
-                var matches = await matchService.GetPreMatches(
-                    from.ToUniversalTime(),
-                    to.ToUniversalTime(),
-                    language.Value);
+            var matches = await matchService.GetPreMatches(
+                from.ToUniversalTime(),
+                to.ToUniversalTime(),
+                language.Value);
 
-                await messageBus.Publish<PreMatchesFetchedEvent>(new { Matches = matches, Language = language.Value });
-            }
-            catch (Exception ex)
-            {
-            }
+            await messageBus.Publish<PreMatchesFetchedEvent>(new { Matches = matches, Language = language.Value });
         }
     }
 }

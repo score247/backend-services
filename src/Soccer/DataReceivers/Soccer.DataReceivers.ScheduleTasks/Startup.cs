@@ -2,6 +2,8 @@
 {
     using System;
     using System.Linq;
+    using Fanex.Logging;
+    using Fanex.Logging.Sentry;
     using Hangfire;
     using Hangfire.Dashboard;
     using Hangfire.PostgreSql;
@@ -13,6 +15,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using Refit;
+    using Sentry;
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataProviders.SportRadar._Shared.Configurations;
     using Soccer.DataProviders.SportRadar.Matches.Services;
@@ -39,7 +42,7 @@
 
             var appSettings = new AppSettings(Configuration);
             services.AddSingleton<IAppSettings>(appSettings);
-
+            RegisterLogging(services);
             RegisterRabbitMq(services);
             RegisterSportRadarDataProvider(services);
             RegisterHangfire(services);
@@ -72,6 +75,18 @@
 
             app.UseStaticFiles();
             app.UseMvc();
+        }
+
+        public void RegisterLogging(IServiceCollection services)
+        {
+            LogManager
+                   .SetDefaultLogCategory(Configuration["Fanex.Logging:DefaultCategory"])
+                   .Use(new SentryLogging(new SentryEngineOptions
+                   {
+                       Dsn = new Dsn(Configuration["Fanex.Logging:SentryUrl"])
+                   }));
+
+            services.AddSingleton(Logger.Log);
         }
 
         private void RegisterRabbitMq(IServiceCollection services)

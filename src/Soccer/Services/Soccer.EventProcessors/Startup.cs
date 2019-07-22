@@ -27,7 +27,6 @@
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IMatchRepository, MatchRepository>();
-            services.AddScoped<FetchPreMatchConsumer>();
 
             RegisterDatabase(services);
             RegisterRabbitMq(services);
@@ -66,6 +65,9 @@
 
         private void RegisterRabbitMq(IServiceCollection services)
         {
+            services.AddScoped<FetchPreMatchesConsumer>();
+            services.AddScoped<UpdatePostMatchesConsumer>();
+
             var bus = Bus.Factory.CreateUsingRabbitMq(
                    cfg =>
                    {
@@ -79,7 +81,8 @@
                        {
                            e.PrefetchCount = 16;
                            e.UseMessageRetry(x => x.Interval(2, 100));
-                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<FetchPreMatchConsumer>());
+                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<FetchPreMatchesConsumer>());
+                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<UpdatePostMatchesConsumer>());
                        });
                    });
 
@@ -87,7 +90,6 @@
 
             services.AddMassTransit(s =>
             {
-                s.AddConsumer<FetchPreMatchConsumer>();
                 s.AddBus(_ => bus);
             });
         }
