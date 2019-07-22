@@ -7,7 +7,7 @@
     using Soccer.Core.Domain.Matches.Entities;
     using Soccer.Core.Domain.Matches.Events;
 
-    public class UpdatePostMatchesConsumer : IConsumer<PreMatchesFetchedEvent>
+    public class UpdatePostMatchesConsumer : IConsumer<PostMatchUpdatedEvent>
     {
         private readonly IMatchRepository matchRepository;
 
@@ -16,7 +16,7 @@
             this.matchRepository = matchRepository;
         }
 
-        public async Task Consume(ConsumeContext<PreMatchesFetchedEvent> context)
+        public async Task Consume(ConsumeContext<PostMatchUpdatedEvent> context)
         {
             var message = context.Message;
 

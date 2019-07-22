@@ -46,9 +46,13 @@
                 entity.CreatedTime = DateTime.UtcNow;
                 entity.ModifiedTime = DateTime.UtcNow;
             }
-
-            await soccerContext.Set<T>().AddRangeAsync(entities);
-            await soccerContext.SaveChangesAsync();
+            try
+            {
+                await soccerContext.Set<T>().AddRangeAsync(entities);
+            }
+            catch (Exception ex)
+            {
+            }
 
             return entities;
         }
