@@ -124,12 +124,16 @@
                               }));
 
             services.AddScoped<IFetchPreMatchesTask, FetchPreMatchesTask>();
+            services.AddScoped<IFetchPostMatchesTask, FetchPostMatchesTask>();
         }
 
         private static void RunHangfireJobs(IAppSettings appSettings)
         {
             RecurringJob.AddOrUpdate<IFetchPreMatchesTask>(
-                "FetchMatchSchedule", job => job.FetchPreMatches(appSettings.ScheduleTasksSettings.FetchMatchScheduleDateSpan), " 0 0/6 * * *");
+                "FetchPreMatch", job => job.FetchPreMatches(appSettings.ScheduleTasksSettings.FetchMatchScheduleDateSpan), " 0 0/6 * * *");
+
+            RecurringJob.AddOrUpdate<IFetchPostMatchesTask>(
+                "FetchPostMatch", job => job.FetchPostMatches(appSettings.ScheduleTasksSettings.FetchMatchScheduleDateSpan), " 0 0/6 * * *");
         }
     }
 }
