@@ -7,6 +7,6 @@
 
     public interface IMatchService
     {
-        Task<IEnumerable<Match>> GetSchedule(DateTime utcFrom, DateTime utcTo, string language);
+        Task<IReadOnlyList<Match>> GetPreMatches(DateTime utcFrom, DateTime utcTo, string language);
     }
 }

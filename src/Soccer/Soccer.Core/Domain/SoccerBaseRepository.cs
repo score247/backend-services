@@ -16,30 +16,45 @@
             this.soccerContext = soccerContext;
         }
 
-        public virtual async Task<T> GetByIdAsync(string id)
+        public virtual async Task<T> GetById(string id)
             => await soccerContext.Set<T>().FindAsync(id);
 
-        public async Task<IReadOnlyList<T>> ListAllAsync()
+        public async Task<IReadOnlyList<T>> ListAll()
             => await soccerContext.Set<T>().ToListAsync();
 
-        public async Task<IReadOnlyList<T>> ListAsync(ISpecification<T> spec)
+        public async Task<IReadOnlyList<T>> List(ISpecification<T> spec)
             => await ApplySpecification(spec).ToListAsync();
 
-        public async Task<int> CountAsync(ISpecification<T> spec)
+        public async Task<int> Count(ISpecification<T> spec)
              => await ApplySpecification(spec).CountAsync();
 
-        public async Task<T> AddAsync(T entity)
+        public async Task<T> Add(T entity)
         {
             entity.CreatedTime = DateTime.UtcNow;
             entity.ModifiedTime = DateTime.UtcNow;
 
-            soccerContext.Set<T>().Add(entity);
+            await soccerContext.Set<T>().AddAsync(entity);
             await soccerContext.SaveChangesAsync();
 
             return entity;
         }
 
-        public async Task UpdateAsync(T entity)
+        public async Task<IEnumerable<T>> AddRange(IEnumerable<T> entities)
+        {
+            foreach (var entity in entities)
+            {
+                entity.CreatedTime = DateTime.UtcNow;
+                entity.ModifiedTime = DateTime.UtcNow;
+            }
+
+            await soccerContext.Set<T>().AddRangeAsync(entities);
+            soccerContext.ChangeTracker.DetectChanges();
+            await soccerContext.SaveChangesAsync();
+
+            return entities;
+        }
+
+        public async Task Update(T entity)
         {
             entity.ModifiedTime = DateTime.UtcNow;
 
@@ -48,7 +63,18 @@
             await soccerContext.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(params object[] ids)
+        public async Task UpdateRange(IEnumerable<T> entities)
+        {
+            foreach (var entity in entities)
+            {
+                entity.ModifiedTime = DateTime.UtcNow;
+            }
+
+            soccerContext.UpdateRange(entities);
+            await soccerContext.SaveChangesAsync();
+        }
+
+        public async Task Delete(params object[] ids)
         {
             var table = soccerContext.Set<T>();
             T existing = await table.FindAsync(ids);

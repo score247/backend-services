@@ -6,6 +6,7 @@
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
     using Newtonsoft.Json;
     using Score247.Shared.Base;
+    using Score247.Shared.Enumerations;
     using Soccer.Core.Domain.Matches.Models;
 
     public class MatchEntity : BaseEntity
@@ -27,7 +28,15 @@
         public Match Match
         {
             get => JsonConvert.DeserializeObject<Match>(Value);
-            set => Value = JsonConvert.SerializeObject(value);
+            set
+            {
+                Id = value.Id;
+                LeagueId = value.League.Id;
+                Region = value.Region;
+                SportId = int.Parse(Sport.Soccer.Value);
+                EventDate = value.EventDate.ToUniversalTime();
+                Value = JsonConvert.SerializeObject(value);
+            }
         }
     }
 

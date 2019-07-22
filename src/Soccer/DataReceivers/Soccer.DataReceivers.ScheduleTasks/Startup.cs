@@ -11,6 +11,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Newtonsoft.Json;
     using Refit;
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataProviders.SportRadar._Shared.Configurations;
@@ -31,30 +32,17 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings()
+            {
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc
+            };
+
             var appSettings = new AppSettings(Configuration);
             services.AddSingleton<IAppSettings>(appSettings);
 
-            var bus = Bus.Factory.CreateUsingRabbitMq(
-                  cfg =>
-                  {
-                      cfg.Host("localhost", "/", h =>
-                      {
-                          h.Username("root");
-                          h.Password("1234aa");
-                      });
-                  });
-            services.AddSingleton<IBus>(bus);
-            services.AddSingleton<ISendEndpointProvider>(bus);
-            services.AddSingleton<IPublishEndpoint>(bus);
-
+            RegisterRabbitMq(services);
             RegisterSportRadarDataProvider(services);
-            RegisterHangfireJobs(services);
-
-            services.AddHangfire(x => x.UsePostgreSqlStorage(Configuration.GetConnectionString("HangfireConnection"),
-                   new PostgreSqlStorageOptions
-                   {
-                       InvisibilityTimeout = TimeSpan.FromDays(OneYearDays)
-                   }));
+            RegisterHangfire(services);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -86,6 +74,22 @@
             app.UseMvc();
         }
 
+        private void RegisterRabbitMq(IServiceCollection services)
+        {
+            services.AddMassTransit(x =>
+            {
+                x.AddBus(_ => Bus.Factory.CreateUsingRabbitMq(
+                  cfg =>
+                  {
+                      cfg.Host(Configuration.GetSection("MessageQueue:RabbitMQ:Host").Value, "/", h =>
+                      {
+                          h.Username(Configuration.GetSection("MessageQueue:RabbitMQ:UserName").Value);
+                          h.Password(Configuration.GetSection("MessageQueue:RabbitMQ:Password").Value);
+                      });
+                  }));
+            });
+        }
+
         private void RegisterSportRadarDataProvider(IServiceCollection services)
         {
             var sportRadarDataProviderSettings = new SportRadarSettings();
@@ -96,15 +100,21 @@
             services.AddSingleton<IMatchService, MatchService>();
         }
 
-        private void RegisterHangfireJobs(IServiceCollection services)
+        private void RegisterHangfire(IServiceCollection services)
         {
-            services.AddScoped<IFetchMatchScheduleTask, FetchMatchScheduleTask>();
+            services.AddHangfire(x => x.UsePostgreSqlStorage(Configuration.GetConnectionString("HangfireConnection"),
+                              new PostgreSqlStorageOptions
+                              {
+                                  InvisibilityTimeout = TimeSpan.FromDays(OneYearDays)
+                              }));
+
+            services.AddScoped<IFetchPreMatchesTask, FetchPreMatchesTask>();
         }
 
         private static void RunHangfireJobs(IAppSettings appSettings)
         {
-            RecurringJob.AddOrUpdate<IFetchMatchScheduleTask>(
-                "FetchMatchSchedule", job => job.FetchSchedule(appSettings.ScheduleTasksSettings.FetchMatchScheduleDateSpan), " 0 0/6 * * *");
+            RecurringJob.AddOrUpdate<IFetchPreMatchesTask>(
+                "FetchMatchSchedule", job => job.FetchPreMatches(appSettings.ScheduleTasksSettings.FetchMatchScheduleDateSpan), " 0 0/6 * * *");
         }
     }
 }

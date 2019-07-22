@@ -37,7 +37,7 @@
         public async Task<IEnumerable<Match>> GetLive(TimeSpan clientTimeOffset, string language)
         {
             var liveMatchSpec = new GetLiveMatchSpecification(int.Parse(Sport.Soccer.Value), clientTimeOffset, language);
-            var matches = await liveMatchRepository.ListAsync(liveMatchSpec);
+            var matches = await liveMatchRepository.List(liveMatchSpec);
 
             return matches.Select(m => m.Match);
         }
@@ -50,7 +50,7 @@
             var matchByDateSpec = new GetMatchByDateSpecification(
                     int.Parse(Sport.Soccer.Value), from, to, language, appSettings.NumberOfTopMatches);
 
-            var matches = (await matchRepository.ListAsync(matchByDateSpec))
+            var matches = (await matchRepository.List(matchByDateSpec))
                     .Select(m => m.Match);
 
             var liveMatches = await GetLive(clientTimeOffset, language);

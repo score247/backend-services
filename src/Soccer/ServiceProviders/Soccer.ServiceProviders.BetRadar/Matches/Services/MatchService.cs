@@ -31,7 +31,7 @@
             this.matchApi = matchApi;
         }
 
-        public async Task<IEnumerable<Match>> GetSchedule(DateTime utcFrom, DateTime utcTo, string language)
+        public async Task<IReadOnlyList<Match>> GetPreMatches(DateTime utcFrom, DateTime utcTo, string language)
         {
             var matches = new List<Match>();
             var soccerSettings = sportRadarSettings.Sports.FirstOrDefault(s => s.Id.ToString() == Sport.Soccer.Value);

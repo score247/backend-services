@@ -5,27 +5,28 @@
     using System.Threading.Tasks;
     using MassTransit;
     using Score247.Shared.Enumerations;
+    using Soccer.Core.Domain.Matches.Events;
     using Soccer.Core.Domain.Matches.Models;
     using Soccer.Core.Enumerations;
     using Soccer.DataProviders.Matches.Services;
 
-    public interface IFetchMatchScheduleTask
+    public interface IFetchPreMatchesTask
     {
-        Task FetchSchedule(int dateSpan);
+        Task FetchPreMatches(int dateSpan);
     }
 
-    public class FetchMatchScheduleTask : IFetchMatchScheduleTask
+    public class FetchPreMatchesTask : IFetchPreMatchesTask
     {
         private readonly IMatchService matchService;
         private readonly IBus messageBus;
 
-        public FetchMatchScheduleTask(IBus messageBus, IMatchService matchService)
+        public FetchPreMatchesTask(IBus messageBus, IMatchService matchService)
         {
             this.messageBus = messageBus;
             this.matchService = matchService;
         }
 
-        public async Task FetchSchedule(int dateSpan)
+        public async Task FetchPreMatches(int dateSpan)
         {
             var from = DateTime.Now;
             var to = DateTime.Now.AddDays(dateSpan);
@@ -40,24 +41,16 @@
         {
             try
             {
-                var matches = await matchService.GetSchedule(
-                from.ToUniversalTime(),
-                to.ToUniversalTime(),
-                language.Value);
+                var matches = await matchService.GetPreMatches(
+                    from.ToUniversalTime(),
+                    to.ToUniversalTime(),
+                    language.Value);
 
-                var request = messageBus.CreateRequestClient<FetchScheduleEvent>();
-
-                request.Create(matches);
-                var response = await request.GetResponse<string>(new FetchScheduleEvent { Matches = matches });
+                await messageBus.Publish<PreMatchesFetchedEvent>(new { Matches = matches, Language = language.Value });
             }
             catch (Exception ex)
             {
             }
         }
-    }
-
-    public class FetchScheduleEvent
-    {
-        public IEnumerable<Match> Matches { get; set; }
     }
 }
