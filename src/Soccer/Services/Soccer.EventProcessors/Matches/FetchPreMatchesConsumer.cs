@@ -1,11 +1,10 @@
 ﻿namespace Soccer.EventProcessors.Matches
 {
-    using System.Linq;
+    using System;
     using System.Threading.Tasks;
     using MassTransit;
-    using Soccer.Core.Domain.Matches;
-    using Soccer.Core.Domain.Matches.Entities;
     using Soccer.Core.Domain.Matches.Events;
+    using Soccer.Core.Domain.Matches.Repositories;
 
     public class FetchPreMatchesConsumer : IConsumer<PreMatchesFetchedEvent>
     {
@@ -20,9 +19,7 @@
         {
             var message = context.Message;
 
-            var matchEntities = message.Matches.Select(m => new MatchEntity { Match = m, Language = message.Language });
-
-            await matchRepository.AddRange(matchEntities);
+            await matchRepository.InsertOrUpdatePreMatches(message.Matches, message.Language);
         }
     }
 }

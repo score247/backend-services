@@ -3,9 +3,8 @@
     using System.Linq;
     using System.Threading.Tasks;
     using MassTransit;
-    using Soccer.Core.Domain.Matches;
-    using Soccer.Core.Domain.Matches.Entities;
     using Soccer.Core.Domain.Matches.Events;
+    using Soccer.Core.Domain.Matches.Repositories;
 
     public class UpdatePostMatchesConsumer : IConsumer<PostMatchUpdatedEvent>
     {
@@ -20,9 +19,7 @@
         {
             var message = context.Message;
 
-            var matchEntities = message.Matches.Select(m => new MatchEntity { Match = m, Language = message.Language });
-
-            await matchRepository.UpdateRange(matchEntities);
+            //await matchRepository.UpdateRange(matchEntities);
         }
     }
 }

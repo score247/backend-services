@@ -29,7 +29,6 @@
                 services.AddLogging(Configuration);
                 services.AddSettings(Configuration);
                 services.AddMediatR(Assembly.GetExecutingAssembly());
-                services.AddDatabase(Configuration);
                 services.AddServices();
                 services.AddHealthCheck();
                 services.AddSwagger();
@@ -53,7 +52,7 @@
             {
                 app.ConfigureExceptionHandler();
                 app.UseHealthCheck();
-                app.UseDatabase();
+                app.UseDatabase(Configuration);
                 app.ConfigureSwagger();
 
                 app.UseMvc();

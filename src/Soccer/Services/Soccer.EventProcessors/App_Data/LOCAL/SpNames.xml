@@ -1,0 +1,8 @@
+﻿<Functions>
+  <Function Name="AddPreMatches">
+    <Setting Key="Score247_InsertOrUpdatePreMatches" SpName="Score247_InsertOrUpdatePreMatches" DbName="DefaultConnection" />
+  </Function>
+  <Function Name="GetMatchesByDateRange">
+    <Setting Key="Score247_GetMatchesByDateRange" SpName="Score247_GetMatchesByDateRange" DbName="DefaultConnection" />
+  </Function>
+</Functions>

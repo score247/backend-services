@@ -1,5 +1,10 @@
 ﻿namespace Soccer.EventProcessors
 {
+    using System.Collections.Generic;
+    using System.Linq;
+    using Fanex.Data;
+    using Fanex.Data.MySql;
+    using Fanex.Data.Repository;
     using GreenPipes;
     using MassTransit;
     using Microsoft.AspNetCore.Builder;
@@ -10,8 +15,9 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
+    using Newtonsoft.Json;
     using Soccer.Core.Domain;
-    using Soccer.Core.Domain.Matches;
+    using Soccer.Core.Domain.Matches.Repositories;
     using Soccer.EventProcessors.Matches;
 
     public class Startup
@@ -48,19 +54,23 @@
                     name: "default",
                     template: "{controller=Home}/{action=Index}");
             });
+
+            Dictionary<string, ConnectionConfiguration> connections = Configuration
+                .GetSection("ConnectionStrings")
+                .GetChildren()
+                .ToDictionary(connection => connection.Key,
+                              connection => new ConnectionConfiguration(connection.Key, connection.Value));
+
+            DbSettingProviderManager
+                .StartNewSession()
+                .Use(connections)
+                .WithMySql(resourcePath: Configuration["AppDataPath"]) // It comes with a default connection string provider, which works well with MySql connections, as well as a default DbSetting provider
+                .Run();
         }
 
         private void RegisterDatabase(IServiceCollection services)
         {
-            var loggerFactory = services.BuildServiceProvider().GetService<ILoggerFactory>();
-
-            services.AddEntityFrameworkNpgsql()
-                   .AddDbContext<SoccerContext>(options
-                        => options
-                            .UseNpgsql(Configuration.GetConnectionString("DefaultConnection"))
-                            .EnableSensitiveDataLogging()
-                            .UseLoggerFactory(loggerFactory))
-                   .BuildServiceProvider();
+            services.AddSingleton<IDynamicRepository, DynamicRepository>();
         }
 
         private void RegisterRabbitMq(IServiceCollection services)

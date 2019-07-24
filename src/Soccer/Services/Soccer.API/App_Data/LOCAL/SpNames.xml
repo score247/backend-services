@@ -1,0 +1,5 @@
+﻿<Functions>
+  <Function Name="GetMatchesByDateRange">
+    <Setting Key="Score247_GetMatchesByDateRange" SpName="Score247_GetMatchesByDateRange" DbName="DefaultConnection" />
+  </Function>
+</Functions>

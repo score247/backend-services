@@ -6,6 +6,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="App_Data\LOCAL\SpNames.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="App_Data\LOCAL\SpNames.xml">
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fanex.Data.MySql" Version="4.0.1" />
+    <PackageReference Include="Fanex.Data.Repository" Version="4.0.1" />
     <PackageReference Include="MassTransit.AspNetCore" Version="5.5.3" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="5.5.3" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
