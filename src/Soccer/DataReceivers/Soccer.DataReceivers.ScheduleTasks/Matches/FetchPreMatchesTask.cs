@@ -42,7 +42,7 @@
                 to.ToUniversalTime(),
                 language);
 
-            await messageBus.Publish<PreMatchesFetchedEvent>(new { Matches = matches, Language = language.Value });
+            await messageBus.Publish<PreMatchesFetchedEvent>(new { Matches = matches, Language = language.DisplayName });
         }
     }
 }

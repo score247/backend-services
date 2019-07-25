@@ -30,7 +30,7 @@
 
         private static readonly Dictionary<string, string> sportRadarLanguageNames = new Dictionary<string, string>
         {
-            { "en-US", "En" }
+            { "en-US", "en" }
         };
 
         public MatchService(ISportRadarSettings sportRadarSettings, IMatchApi matchApi)

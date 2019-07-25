@@ -2,11 +2,11 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
     using Ardalis.GuardClauses;
+    using Fanex.Data.Repository;
     using Soccer.Core.Domain.Matches.Models;
-    using Soccer.Core.Domain.Matches.Repositories;
+    using Soccer.Core.Domain.Matches.Queries;
 
     public interface IMatchQueryService
     {
@@ -17,18 +17,20 @@
 
     public class MatchQueryService : IMatchQueryService
     {
-        private readonly IMatchRepository matchRepository;
+        private readonly IDynamicRepository dynamicRepository;
 
-        public MatchQueryService(IMatchRepository matchRepository)
+        public MatchQueryService(IDynamicRepository dynamicRepository)
         {
-            this.matchRepository = matchRepository;
+            this.dynamicRepository = dynamicRepository;
         }
 
         public async Task<IEnumerable<Match>> GetLive(TimeSpan clientTimeOffset, string language)
         {
-            var matches = await matchRepository.GetLive(language);
+            var query = new GetLiveMatchesQuery(language);
+            var matches = await dynamicRepository.FetchAsync<Match>(query);
 
-            return matches.Select(m => m.ChangeEventDateByTimeZone(clientTimeOffset));
+            // Remove convert to client timezone, remember to move this business to front-end
+            return matches;
         }
 
         public async Task<IEnumerable<Match>> GetByDateRange(DateTime from, DateTime to, TimeSpan clientTimeOffset, string language)
@@ -36,9 +38,11 @@
             Guard.Against.OutOfSQLDateRange(to, nameof(to));
             Guard.Against.OutOfSQLDateRange(from, nameof(from));
 
-            var matches = await matchRepository.GetByDateRange(from.ToUniversalTime(), to.ToUniversalTime(), language);
+            var query = new GetMatchesByDateRangeQuery(from, to, language);
+            var matches = await dynamicRepository.FetchAsync<Match>(query);
 
-            return matches.Select(m => m.ChangeEventDateByTimeZone(clientTimeOffset));
+            // Remove convert to client timezone, remember to move this business to front-end
+            return matches;
         }
     }
 }

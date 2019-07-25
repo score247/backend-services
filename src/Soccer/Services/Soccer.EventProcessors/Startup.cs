@@ -14,10 +14,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Microsoft.Extensions.Logging;
-    using Newtonsoft.Json;
-    using Soccer.Core.Domain;
-    using Soccer.Core.Domain.Matches.Repositories;
+    using Soccer.Core;
     using Soccer.EventProcessors.Matches;
 
     public class Startup
@@ -32,8 +29,6 @@
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IMatchRepository, MatchRepository>();
-
             RegisterDatabase(services);
             RegisterRabbitMq(services);
 
@@ -66,6 +61,8 @@
                 .Use(connections)
                 .WithMySql(resourcePath: Configuration["AppDataPath"]) // It comes with a default connection string provider, which works well with MySql connections, as well as a default DbSetting provider
                 .Run();
+
+            SqlMappers.RegisterJsonTypeHandlers();
         }
 
         private void RegisterDatabase(IServiceCollection services)

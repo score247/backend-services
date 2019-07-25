@@ -42,7 +42,7 @@
                 to,
                 language);
 
-            await messageBus.Publish<PostMatchUpdatedEvent>(new { Matches = matches, Language = language.Value });
+            await messageBus.Publish<PostMatchUpdatedEvent>(new { Matches = matches, Language = language.DisplayName });
         }
     }
 }

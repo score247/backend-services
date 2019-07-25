@@ -1,4 +1,4 @@
-﻿namespace Soccer.Core.Domain.Matches.Repositories.Queries
+﻿namespace Soccer.Core.Domain.Matches.Queries
 {
     using Fanex.Data.Repository;
     using Score247.Shared.Enumerations;

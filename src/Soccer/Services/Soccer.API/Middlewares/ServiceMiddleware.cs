@@ -4,16 +4,14 @@
     using Fanex.Data.Repository;
     using Microsoft.Extensions.DependencyInjection;
     using Soccer.API.Modules.Matches;
-    using Soccer.Core.Domain.Matches.Repositories;
 
     public static class ServiceMiddleware
     {
         public static void AddServices(this IServiceCollection services)
         {
-            services.AddSingleton<ICacheService, CacheService>();
             services.AddSingleton<IDynamicRepository, DynamicRepository>();
 
-            services.AddScoped<IMatchRepository, MatchRepository>();
+            services.AddSingleton<ICacheService, CacheService>();
             services.AddScoped<IMatchQueryService, MatchQueryService>();
         }
     }

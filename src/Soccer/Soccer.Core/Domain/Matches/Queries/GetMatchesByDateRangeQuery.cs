@@ -1,4 +1,4 @@
-﻿namespace Soccer.Core.Domain.Matches.Repositories.Queries
+﻿namespace Soccer.Core.Domain.Matches.Queries
 {
     using System;
     using Fanex.Data.Repository;
@@ -9,8 +9,8 @@
         public GetMatchesByDateRangeQuery(DateTime from, DateTime to, string language)
         {
             SportId = Sport.Soccer.Value;
-            FromDate = from;
-            ToDate = to;
+            FromDate = from.ToUniversalTime();
+            ToDate = to.ToUniversalTime();
             Language = language;
         }
 
@@ -24,8 +24,6 @@
 
         public override string GetSettingKey() => "Score247_GetMatchesByDateRange";
 
-        public override bool IsValid() 
-            => SportId > 0 
-            && !string.IsNullOrEmpty(Language);
+        public override bool IsValid() => SportId > 0 && !string.IsNullOrEmpty(Language);
     }
 }

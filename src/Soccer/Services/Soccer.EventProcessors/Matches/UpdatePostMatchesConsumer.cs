@@ -1,24 +1,26 @@
 ﻿namespace Soccer.EventProcessors.Matches
 {
     using System.Threading.Tasks;
+    using Fanex.Data.Repository;
     using MassTransit;
+    using Soccer.Core.Domain.Matches.Commands;
     using Soccer.Core.Domain.Matches.Events;
-    using Soccer.Core.Domain.Matches.Repositories;
 
     public class UpdatePostMatchesConsumer : IConsumer<PostMatchUpdatedEvent>
     {
-        private readonly IMatchRepository matchRepository;
+        private readonly IDynamicRepository dynamicRepository;
 
-        public UpdatePostMatchesConsumer(IMatchRepository matchRepository)
+        public UpdatePostMatchesConsumer(IDynamicRepository dynamicRepository)
         {
-            this.matchRepository = matchRepository;
+            this.dynamicRepository = dynamicRepository;
         }
 
         public async Task Consume(ConsumeContext<PostMatchUpdatedEvent> context)
         {
             var message = context.Message;
+            var command = new InsertOrUpdateMatchesCommand(message.Matches, message.Language);
 
-            await matchRepository.InsertOrUpdateMatches(message.Matches, message.Language);
+            await dynamicRepository.ExecuteAsync(command);
         }
     }
 }

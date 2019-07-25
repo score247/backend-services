@@ -11,6 +11,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using Soccer.API.Middlewares;
+    using Soccer.Core;
 
     public class Startup
     {
@@ -56,6 +57,8 @@
                 app.ConfigureSwagger();
 
                 app.UseMvc();
+
+                SqlMappers.RegisterJsonTypeHandlers();
             }
             catch (Exception ex)
             {
