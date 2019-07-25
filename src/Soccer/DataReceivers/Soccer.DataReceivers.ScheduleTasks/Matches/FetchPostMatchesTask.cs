@@ -37,10 +37,7 @@
 
         private async Task FetchPostMatches(DateTime from, DateTime to, Language language)
         {
-            var matches = await matchService.GetPostMatches(
-                from,
-                to,
-                language);
+            var matches = await matchService.GetPostMatches(from, to, language);
 
             await messageBus.Publish<PostMatchUpdatedEvent>(new { Matches = matches, Language = language.DisplayName });
         }

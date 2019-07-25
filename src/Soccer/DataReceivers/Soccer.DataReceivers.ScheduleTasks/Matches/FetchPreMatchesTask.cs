@@ -37,10 +37,7 @@
 
         private async Task FetchPreMatches(DateTime from, DateTime to, Language language)
         {
-            var matches = await matchService.GetPreMatches(
-                from.ToUniversalTime(),
-                to.ToUniversalTime(),
-                language);
+            var matches = await matchService.GetPreMatches(from, to, language);
 
             await messageBus.Publish<PreMatchesFetchedEvent>(new { Matches = matches, Language = language.DisplayName });
         }
