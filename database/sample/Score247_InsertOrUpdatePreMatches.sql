@@ -1,4 +1,4 @@
-CREATE DEFINER=`user`@`%` PROCEDURE `Score247_InsertOrUpdatePreMatches`(IN matches TEXT)
+CREATE DEFINER=`user`@`%` PROCEDURE `Score247_InsertOrUpdateMatches`(IN sportId INT, IN matches TEXT, IN language TEXT)
 BEGIN
 	DECLARE i INT DEFAULT 0;                                                                                                                                                    
     DECLARE e INT DEFAULT JSON_LENGTH(matches);
@@ -6,16 +6,16 @@ BEGIN
     WHILE i < e DO                                                                                                              
         INSERT INTO score247_db2.`Match` VALUES (
 			JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].Id'))),
-			JSON_EXTRACT(matches, CONCAT('$[', i, '].Value')), 
-            JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].Language'))), 
-            JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].SportId'))), 
-            JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].LeagueId'))), 
+			JSON_EXTRACT(matches, CONCAT('$[', i, ']')),
+            language, 
+            sportId, 
+            JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].League.Id'))), 
             STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].EventDate'))),'%Y-%m-%dT%H:%i:%s+00:00'),
             JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].Region'))),
             now(),
             now())
             ON DUPLICATE KEY UPDATE
-            Value = JSON_EXTRACT(matches, CONCAT('$[', i, '].Value')),
+            Value = JSON_EXTRACT(matches, CONCAT('$[', i, ']')),
             EventDate = STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].EventDate'))),'%Y-%m-%dT%H:%i:%s+00:00'),
             ModifiedTime = now();
         -- Increment the loop variable                                                                                                                                                        

@@ -3,24 +3,32 @@
     using System.Collections.Generic;
     using Fanex.Data.Repository;
     using Newtonsoft.Json;
-    using Soccer.Core.Domain.Matches.Repositories.DbModels;
+    using Score247.Shared.Enumerations;
+    using Soccer.Core.Domain.Matches.Models;
 
     public class InsertOrUpdateMatchesCommand : NonQueryCommand
     {
-        public InsertOrUpdateMatchesCommand(IEnumerable<MatchEntity> matches)
+        public InsertOrUpdateMatchesCommand(IEnumerable<Match> matches, string language)
         {
+            SportId = int.Parse(Sport.Soccer.Value);
             Matches = JsonConvert.SerializeObject(
                 matches,
                 new JsonSerializerSettings()
                 {
                     DateTimeZoneHandling = DateTimeZoneHandling.Utc
                 });
+
+            Language = language;
         }
 
-        public string Matches { get; set; }
+        public int SportId { get; }
+
+        public string Matches { get; }
+
+        public string Language { get; }
 
         public override string GetSettingKey() => "Score247_InsertOrUpdateMatches";
 
-        public override bool IsValid() => !string.IsNullOrEmpty(Matches);
+        public override bool IsValid() => !string.IsNullOrEmpty(Matches) && !string.IsNullOrEmpty(Language);
     }
 }

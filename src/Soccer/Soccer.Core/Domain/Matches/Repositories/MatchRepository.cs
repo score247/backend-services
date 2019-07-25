@@ -8,7 +8,6 @@
     using Newtonsoft.Json;
     using Soccer.Core.Domain.Matches.Models;
     using Soccer.Core.Domain.Matches.Repositories.Commands;
-    using Soccer.Core.Domain.Matches.Repositories.DbModels;
     using Soccer.Core.Domain.Matches.Repositories.Queries;
 
     public interface IMatchRepository
@@ -47,8 +46,7 @@
 
         public async Task InsertOrUpdateMatches(IReadOnlyList<Match> matches, string language)
         {
-            var matchEntities = matches.Select(m => new MatchEntity(m, language));
-            var command = new InsertOrUpdateMatchesCommand(matchEntities);
+            var command = new InsertOrUpdateMatchesCommand(matches, language);
 
             await dynamicRepository.ExecuteAsync(command);
         }

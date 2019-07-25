@@ -9,7 +9,7 @@
 
     public sealed class Match : BaseModel, IEquatable<Match>
     {
-        public DateTime EventDate { get; set; }
+        public DateTimeOffset EventDate { get; set; }
 
         public IEnumerable<Team> Teams { get; set; }
 
@@ -33,7 +33,7 @@
 
         public Match ChangeEventDateByTimeZone(TimeSpan offset)
         {
-            EventDate = EventDate.ConvertFromUtcToOffset(offset);
+            EventDate = EventDate.Date.ConvertFromUtcToOffset(offset);
 
             return this;
         }
