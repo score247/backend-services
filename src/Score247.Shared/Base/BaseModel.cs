@@ -1,6 +1,6 @@
 ﻿namespace Score247.Shared.Base
 {
-    public class BaseModel
+    public abstract class BaseModel
     {
         public string Id { get; set; }
 

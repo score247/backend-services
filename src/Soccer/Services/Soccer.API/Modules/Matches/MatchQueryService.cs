@@ -26,7 +26,9 @@
 
         public async Task<IEnumerable<Match>> GetLive(TimeSpan clientTimeOffset, string language)
         {
-            return null;
+            var matches = await matchRepository.GetLive(language);
+
+            return matches.Select(m => m.ChangeEventDateByTimeZone(clientTimeOffset));
         }
 
         public async Task<IEnumerable<Match>> GetByDateRange(DateTime from, DateTime to, TimeSpan clientTimeOffset, string language)
