@@ -39,7 +39,7 @@
         {
             var matches = await matchService.GetPreMatches(from, to, language);
 
-            await messageBus.Publish<PreMatchesFetchedEvent>(new { Matches = matches, Language = language.DisplayName });
+            await messageBus.Publish<IPreMatchesFetchedEvent>(new { Matches = matches, Language = language.DisplayName });
         }
     }
 }

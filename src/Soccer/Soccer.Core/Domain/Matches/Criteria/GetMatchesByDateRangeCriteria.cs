@@ -1,17 +1,18 @@
-﻿namespace Soccer.Core.Domain.Matches.Queries
+﻿namespace Soccer.Core.Domain.Matches.Criteria
 {
     using System;
     using Fanex.Data.Repository;
     using Score247.Shared.Enumerations;
+    using Soccer.Core.Enumerations;
 
-    public class GetMatchesByDateRangeQuery : CriteriaBase
+    public class GetMatchesByDateRangeCriteria : CriteriaBase
     {
-        public GetMatchesByDateRangeQuery(DateTime from, DateTime to, string language)
+        public GetMatchesByDateRangeCriteria(DateTime from, DateTime to, Language language)
         {
             SportId = Sport.Soccer.Value;
             FromDate = from.ToUniversalTime();
             ToDate = to.ToUniversalTime();
-            Language = language;
+            Language = language.DisplayName;
         }
 
         public int SportId { get; }
@@ -24,6 +25,6 @@
 
         public override string GetSettingKey() => "Score247_GetMatchesByDateRange";
 
-        public override bool IsValid() => SportId > 0 && !string.IsNullOrEmpty(Language);
+        public override bool IsValid() => SportId > 0 && FromDate <= ToDate;
     }
 }

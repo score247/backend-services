@@ -1,14 +1,15 @@
-﻿namespace Soccer.Core.Domain.Matches.Queries
+﻿namespace Soccer.Core.Domain.Matches.Criteria
 {
     using Fanex.Data.Repository;
     using Score247.Shared.Enumerations;
+    using Soccer.Core.Enumerations;
 
-    public class GetLiveMatchesQuery : CriteriaBase
+    public class GetLiveMatchesCriteria : CriteriaBase
     {
-        public GetLiveMatchesQuery(string language)
+        public GetLiveMatchesCriteria(Language language)
         {
             SportId = Sport.Soccer.Value;
-            Language = language;
+            Language = language.DisplayName;
         }
 
         public byte SportId { get; }
@@ -17,6 +18,6 @@
 
         public override string GetSettingKey() => "Score247_GetLiveMatches";
 
-        public override bool IsValid() => SportId > 0 && !string.IsNullOrEmpty(Language);
+        public override bool IsValid() => SportId > 0;
     }
 }

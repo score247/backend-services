@@ -5,7 +5,7 @@
     using System.Threading.Tasks;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
-    using Soccer.API.Modules.Matches.Queries;
+    using Soccer.API.Modules.Matches.Requests;
     using Soccer.Core.Domain.Matches.Models;
 
     [Route("api/soccer/{language}/matches")]
@@ -30,16 +30,16 @@
                 DateTime td,
                 TimeSpan tz,
                 string language = "en-US")
-            => await mediator.Send(new GetMatchesByDateQuery(fd, td, language, tz));
+            => await mediator.Send(new MatchesByDateRequest(fd, td, language, tz));
 
         [HttpGet]
         [Route("{id}")]
         public async Task<Match> Get(string id, TimeSpan tz, string language = "en-US")
-            => await mediator.Send(new GetMatchByIdQuery(id, tz, language));
+            => await mediator.Send(new MatchByIdRequest(id, tz, language));
 
         [HttpGet]
         [Route("live")]
         public async Task<IEnumerable<Match>> Get(TimeSpan tz, string language = "en-US")
-          => await mediator.Send(new GetLiveMatchesQuery(tz, language));
+          => await mediator.Send(new LiveMatchesRequest(tz, language));
     }
 }

@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using Soccer.Core.Domain.Matches.Models;
 
-    public interface PreMatchesFetchedEvent
+    public interface IPostMatchUpdatedEvent
     {
         IReadOnlyList<Match> Matches { get; }
 

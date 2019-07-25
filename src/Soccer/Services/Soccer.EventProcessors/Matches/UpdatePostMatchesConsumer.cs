@@ -6,7 +6,7 @@
     using Soccer.Core.Domain.Matches.Commands;
     using Soccer.Core.Domain.Matches.Events;
 
-    public class UpdatePostMatchesConsumer : IConsumer<PostMatchUpdatedEvent>
+    public class UpdatePostMatchesConsumer : IConsumer<IPostMatchUpdatedEvent>
     {
         private readonly IDynamicRepository dynamicRepository;
 
@@ -15,7 +15,7 @@
             this.dynamicRepository = dynamicRepository;
         }
 
-        public async Task Consume(ConsumeContext<PostMatchUpdatedEvent> context)
+        public async Task Consume(ConsumeContext<IPostMatchUpdatedEvent> context)
         {
             var message = context.Message;
             var command = new InsertOrUpdateMatchesCommand(message.Matches, message.Language);
