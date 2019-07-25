@@ -4,21 +4,21 @@
 
     public class PeriodType : Enumeration
     {
-        public static readonly PeriodType RegularPeriod = new PeriodType("regular_period", nameof(RegularPeriod));
-        public static readonly PeriodType Overtime = new PeriodType("overtime", nameof(Overtime));
-        public static readonly PeriodType Penalties = new PeriodType("penalties", nameof(Penalties));
+        public static readonly PeriodType RegularPeriod = new PeriodType(1, "regular_period");
+        public static readonly PeriodType Overtime = new PeriodType(2, "overtime");
+        public static readonly PeriodType Penalties = new PeriodType(3, "penalties");
 
         public PeriodType()
         {
         }
 
-        public PeriodType(string value, string displayName)
+        public PeriodType(byte value, string displayName)
             : base(value, displayName)
         {
         }
 
-        public PeriodType(string value)
-            : base(value, value)
+        public PeriodType(byte value)
+            : base(value, value.ToString())
         {
         }
     }

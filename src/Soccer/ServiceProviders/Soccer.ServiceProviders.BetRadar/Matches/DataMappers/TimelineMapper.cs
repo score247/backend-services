@@ -59,7 +59,7 @@
 
         private static void SetPenaltyInfo(Dtos.Timeline timelineDto, Timeline timeline)
         {
-            if (timelineDto.period_type == PeriodType.Penalties.Value)
+            if (timelineDto.period_type == PeriodType.Penalties.DisplayName)
             {
                 var isScored = timelineDto.status == "scored";
                 var player = timelineDto.player == null

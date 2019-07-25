@@ -40,7 +40,7 @@
             var matches = await matchService.GetPreMatches(
                 from.ToUniversalTime(),
                 to.ToUniversalTime(),
-                language.Value);
+                language);
 
             await messageBus.Publish<PreMatchesFetchedEvent>(new { Matches = matches, Language = language.Value });
         }

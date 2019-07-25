@@ -7,23 +7,27 @@
     using System.Reflection;
 
     [Serializable]
-#pragma warning disable S1210 // "Equals" and the comparison operators should be overridden when implementing "IComparable"
-    public abstract class Enumeration : IComparable
-#pragma warning restore S1210 // "Equals" and the comparison operators should be overridden when implementing "IComparable"
+    public class Enumeration : IComparable
     {
         protected Enumeration()
         {
         }
 
-        protected Enumeration(string value, string displayName)
+        protected Enumeration(byte value, string displayName)
         {
             Value = value;
             DisplayName = displayName;
         }
 
-        public string DisplayName { get; set; }
+        public string DisplayName { get; }
 
-        public string Value { get; set; }
+        public byte Value { get; }
+
+        public static byte AbsoluteDifference(Enumeration firstValue, Enumeration secondValue)
+        {
+            var absoluteDifference = (byte)Math.Abs(firstValue.Value - secondValue.Value);
+            return absoluteDifference;
+        }
 
         public static T FromDisplayName<T>(string displayName) where T : Enumeration, new()
         {
@@ -31,9 +35,9 @@
             return matchingItem;
         }
 
-        public static T FromValue<T>(string value) where T : Enumeration, new()
+        public static T FromValue<T>(byte value) where T : Enumeration, new()
         {
-            var matchingItem = Parse<T, string>(value, "value", item => item.Value == value);
+            var matchingItem = Parse<T, byte>(value, "value", item => item.Value == value);
             return matchingItem;
         }
 
@@ -66,34 +70,37 @@
         }
 
         public static bool operator ==(Enumeration left, Enumeration right)
-        {
-            if (left is null)
-            {
-                if (right is null)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                if (right is null)
-                {
-                    return false;
-                }
-                else
-                {
-                    return left.Value == right.Value;
-                }
-            }
-        }
+            => ReferenceEquals(left, null) ?
+            ReferenceEquals(right, null) :
+            !ReferenceEquals(right, null) && left.Value == right.Value;
 
         public static bool operator !=(Enumeration left, Enumeration right)
         {
             return !(left == right);
+        }
+
+        public static bool operator >(Enumeration left, Enumeration right)
+        {
+            ValidateInputArguments(left, right);
+            return left.Value > right.Value;
+        }
+
+        public static bool operator >=(Enumeration left, Enumeration right)
+        {
+            ValidateInputArguments(left, right);
+            return left.Value >= right.Value;
+        }
+
+        public static bool operator <(Enumeration left, Enumeration right)
+        {
+            ValidateInputArguments(left, right);
+            return left.Value < right.Value;
+        }
+
+        public static bool operator <=(Enumeration left, Enumeration right)
+        {
+            ValidateInputArguments(left, right);
+            return left.Value <= right.Value;
         }
 
         public override bool Equals(object obj)
@@ -134,6 +141,19 @@
             }
 
             return Value.CompareTo(((Enumeration)obj).Value);
+        }
+
+        private static void ValidateInputArguments(Enumeration left, Enumeration right)
+        {
+            if (ReferenceEquals(left, null))
+            {
+                throw new ArgumentNullException(nameof(left));
+            }
+
+            if (ReferenceEquals(right, null))
+            {
+                throw new ArgumentNullException(nameof(right));
+            }
         }
 
         private static T Parse<T, K>(K value, string description, Func<T, bool> predicate) where T : Enumeration, new()

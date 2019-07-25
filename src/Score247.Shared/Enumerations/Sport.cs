@@ -2,13 +2,13 @@
 {
     public class Sport : Enumeration
     {
-        public static readonly Sport Soccer = new Sport("1", "soccer");
+        public static readonly Sport Soccer = new Sport(1, "soccer");
 
         public Sport()
         {
         }
 
-        private Sport(string value, string displayName)
+        private Sport(byte value, string displayName)
             : base(value, displayName)
         {
         }

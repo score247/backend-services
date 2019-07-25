@@ -7,11 +7,11 @@
     {
         public GetLiveMatchesQuery(string language)
         {
-            SportId = int.Parse(Sport.Soccer.Value);
+            SportId = Sport.Soccer.Value;
             Language = language;
         }
 
-        public int SportId { get; }
+        public byte SportId { get; }
 
         public string Language { get; }
 

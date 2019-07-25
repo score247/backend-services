@@ -10,7 +10,7 @@
     {
         public InsertOrUpdateMatchesCommand(IEnumerable<Match> matches, string language)
         {
-            SportId = int.Parse(Sport.Soccer.Value);
+            SportId = Sport.Soccer.Value;
             Matches = JsonConvert.SerializeObject(
                 matches,
                 new JsonSerializerSettings()
@@ -21,7 +21,7 @@
             Language = language;
         }
 
-        public int SportId { get; }
+        public byte SportId { get; }
 
         public string Matches { get; }
 

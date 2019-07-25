@@ -41,7 +41,7 @@
             {
                 matchResult = new MatchResult
                 {
-                    EventStatus = Enumeration.FromValue<MatchStatus>(sportEventStatus.status),
+                    EventStatus = Enumeration.FromDisplayName<MatchStatus>(sportEventStatus.status),
                     HomeScore = sportEventStatus.home_score,
                     AwayScore = sportEventStatus.away_score,
                     WinnerId = sportEventStatus.winner_id
@@ -56,7 +56,7 @@
 
                 if (!string.IsNullOrWhiteSpace(sportEventStatus.match_status))
                 {
-                    matchResult.MatchStatus = Enumeration.FromValue<MatchStatus>(sportEventStatus.match_status);
+                    matchResult.MatchStatus = Enumeration.FromDisplayName<MatchStatus>(sportEventStatus.match_status);
                 }
 
                 matchResult.Period = sportEventStatus.period;
@@ -70,7 +70,7 @@
                         {
                             HomeScore = periodScore.home_score,
                             AwayScore = periodScore.away_score,
-                            PeriodType = Enumeration.FromValue<PeriodType>(periodScore.type),
+                            PeriodType = Enumeration.FromDisplayName<PeriodType>(periodScore.type),
                             Number = periodScore.number
                         });
 

@@ -7,9 +7,9 @@
     using Refit;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Domain.Matches.Models;
+    using Soccer.Core.Enumerations;
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataProviders.SportRadar._Shared.Configurations;
-    using Soccer.DataProviders.SportRadar._Shared.Enumerations;
     using Soccer.DataProviders.SportRadar._Shared.Extensions;
     using Soccer.DataProviders.SportRadar.Matches.DataMappers;
     using Soccer.DataProviders.SportRadar.Matches.Dtos;
@@ -28,16 +28,21 @@
         private readonly IMatchApi matchApi;
         private readonly SportSettings soccerSettings;
 
+        private static readonly Dictionary<string, string> sportRadarLanguageNames = new Dictionary<string, string>
+        {
+            { "en-US", "En" }
+        };
+
         public MatchService(ISportRadarSettings sportRadarSettings, IMatchApi matchApi)
         {
             this.matchApi = matchApi;
-            soccerSettings = sportRadarSettings.Sports.FirstOrDefault(s => s.Id.ToString() == Sport.Soccer.Value);
+            soccerSettings = sportRadarSettings.Sports.FirstOrDefault(s => s.Id == Sport.Soccer.Value);
         }
 
-        public async Task<IReadOnlyList<Match>> GetPostMatches(DateTime utcFrom, DateTime utcTo, string language)
+        public async Task<IReadOnlyList<Match>> GetPostMatches(DateTime utcFrom, DateTime utcTo, Language language)
         {
             var matches = new List<Match>();
-            var sportRadarLanguage = Enumeration.FromValue<Language>(language).DisplayName;
+            var sportRadarLanguage = sportRadarLanguageNames[language.DisplayName];
 
             foreach (var region in soccerSettings.Regions)
             {
@@ -62,10 +67,10 @@
             return matches;
         }
 
-        public async Task<IReadOnlyList<Match>> GetPreMatches(DateTime utcFrom, DateTime utcTo, string language)
+        public async Task<IReadOnlyList<Match>> GetPreMatches(DateTime utcFrom, DateTime utcTo, Language language)
         {
             var matches = new List<Match>();
-            var sportRadarLanguage = Enumeration.FromValue<Language>(language).DisplayName;
+            var sportRadarLanguage = sportRadarLanguageNames[language.DisplayName];
 
             foreach (var region in soccerSettings.Regions)
             {

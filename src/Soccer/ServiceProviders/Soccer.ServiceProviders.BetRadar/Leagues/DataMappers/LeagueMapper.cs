@@ -26,7 +26,7 @@
 
             if (tournamentRound != null)
             {
-                leagueRound.Type = Enumeration.FromValue<LeagueRoundType>(tournamentRound.type);
+                leagueRound.Type = Enumeration.FromDisplayName<LeagueRoundType>(tournamentRound.type);
                 leagueRound.Name = tournamentRound.name;
                 leagueRound.Number = tournamentRound.number;
                 leagueRound.Phase = tournamentRound.phase;

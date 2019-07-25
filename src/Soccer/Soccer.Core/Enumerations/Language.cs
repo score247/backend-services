@@ -4,13 +4,13 @@
 
     public class Language : Enumeration
     {
-        public static readonly Language en_US = new Language("en-US", "En");
+        public static readonly Language en_US = new Language(1, "en-US");
 
         public Language()
         {
         }
 
-        private Language(string value, string displayName)
+        private Language(byte value, string displayName)
             : base(value, displayName)
         {
         }

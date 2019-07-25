@@ -40,7 +40,7 @@
             var matches = await matchService.GetPostMatches(
                 from,
                 to,
-                language.Value);
+                language);
 
             await messageBus.Publish<PostMatchUpdatedEvent>(new { Matches = matches, Language = language.Value });
         }

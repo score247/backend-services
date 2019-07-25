@@ -8,7 +8,7 @@
     {
         public GetMatchesByDateRangeQuery(DateTime from, DateTime to, string language)
         {
-            SportId = int.Parse(Sport.Soccer.Value);
+            SportId = Sport.Soccer.Value;
             FromDate = from;
             ToDate = to;
             Language = language;
@@ -24,6 +24,8 @@
 
         public override string GetSettingKey() => "Score247_GetMatchesByDateRange";
 
-        public override bool IsValid() => SportId > 0 && !string.IsNullOrEmpty(Language);
+        public override bool IsValid() 
+            => SportId > 0 
+            && !string.IsNullOrEmpty(Language);
     }
 }
