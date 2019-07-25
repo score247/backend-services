@@ -12,8 +12,6 @@
     <PackageReference Include="Ardalis.GuardClauses" Version="1.2.9" />
     <PackageReference Include="Fanex.Data.MySql" Version="4.0.1" />
     <PackageReference Include="Fanex.Data.Repository" Version="4.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.2.6" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.15.0.8572">
       <PrivateAssets>all</PrivateAssets>
