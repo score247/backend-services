@@ -1,6 +1,5 @@
 ﻿namespace Soccer.EventProcessors.Matches
 {
-    using System.Linq;
     using System.Threading.Tasks;
     using MassTransit;
     using Soccer.Core.Domain.Matches.Events;
@@ -19,7 +18,7 @@
         {
             var message = context.Message;
 
-            //await matchRepository.UpdateRange(matchEntities);
+            await matchRepository.InsertOrUpdateMatches(message.Matches, message.Language);
         }
     }
 }

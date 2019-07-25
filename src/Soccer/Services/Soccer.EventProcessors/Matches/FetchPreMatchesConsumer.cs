@@ -19,7 +19,7 @@
         {
             var message = context.Message;
 
-            await matchRepository.InsertOrUpdatePreMatches(message.Matches, message.Language);
+            await matchRepository.InsertOrUpdateMatches(message.Matches, message.Language);
         }
     }
 }

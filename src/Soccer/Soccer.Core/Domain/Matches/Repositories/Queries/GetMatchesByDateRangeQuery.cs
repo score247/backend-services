@@ -4,9 +4,9 @@
     using Fanex.Data.Repository;
     using Score247.Shared.Enumerations;
 
-    public class GetMatchesByDateRangeCriteria : CriteriaBase
+    public class GetMatchesByDateRangeQuery : CriteriaBase
     {
-        public GetMatchesByDateRangeCriteria(DateTime from, DateTime to, string language)
+        public GetMatchesByDateRangeQuery(DateTime from, DateTime to, string language)
         {
             SportId = int.Parse(Sport.Soccer.Value);
             FromDate = from;
@@ -24,6 +24,6 @@
 
         public override string GetSettingKey() => "Score247_GetMatchesByDateRange";
 
-        public override bool IsValid() => true;
+        public override bool IsValid() => SportId > 0 && !string.IsNullOrEmpty(Language);
     }
 }

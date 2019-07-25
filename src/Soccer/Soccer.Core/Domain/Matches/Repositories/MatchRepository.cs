@@ -15,7 +15,9 @@
     {
         Task<IEnumerable<Match>> GetByDateRange(DateTime from, DateTime to, string language);
 
-        Task InsertOrUpdatePreMatches(IReadOnlyList<Match> matches, string language);
+        Task<IEnumerable<Match>> GetLive(string language);
+
+        Task InsertOrUpdateMatches(IReadOnlyList<Match> matches, string language);
     }
 
     public class MatchRepository : IMatchRepository
@@ -29,16 +31,24 @@
 
         public async Task<IEnumerable<Match>> GetByDateRange(DateTime from, DateTime to, string language)
         {
-            var criteria = new GetMatchesByDateRangeCriteria(from, to, language);
-            var responseData = await dynamicRepository.FetchAsync<string>(criteria);
+            var query = new GetMatchesByDateRangeQuery(from, to, language);
+            var responseData = await dynamicRepository.FetchAsync<string>(query);
 
             return responseData.Select(JsonConvert.DeserializeObject<Match>);
         }
 
-        public async Task InsertOrUpdatePreMatches(IReadOnlyList<Match> matches, string language)
+        public async Task<IEnumerable<Match>> GetLive(string language)
+        {
+            var query = new GetLiveMatchesQuery(language);
+            var responseData = await dynamicRepository.FetchAsync<string>(query);
+
+            return responseData.Select(JsonConvert.DeserializeObject<Match>);
+        }
+
+        public async Task InsertOrUpdateMatches(IReadOnlyList<Match> matches, string language)
         {
             var matchEntities = matches.Select(m => new MatchEntity(m, language));
-            var command = new InsertOrUpdatePreMatchesCommand(matchEntities);
+            var command = new InsertOrUpdateMatchesCommand(matchEntities);
 
             await dynamicRepository.ExecuteAsync(command);
         }

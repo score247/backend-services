@@ -2,4 +2,7 @@
   <Function Name="GetMatchesByDateRange">
     <Setting Key="Score247_GetMatchesByDateRange" SpName="Score247_GetMatchesByDateRange" DbName="DefaultConnection" />
   </Function>
+  <Function Name="GetLiveMatches">
+    <Setting Key="Score247_GetLiveMatches" SpName="Score247_GetLiveMatches" DbName="DefaultConnection" />
+  </Function>
 </Functions>

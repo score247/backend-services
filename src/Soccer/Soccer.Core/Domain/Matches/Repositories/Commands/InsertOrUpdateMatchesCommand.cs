@@ -5,9 +5,9 @@
     using Newtonsoft.Json;
     using Soccer.Core.Domain.Matches.Repositories.DbModels;
 
-    public class InsertOrUpdatePreMatchesCommand : NonQueryCommand
+    public class InsertOrUpdateMatchesCommand : NonQueryCommand
     {
-        public InsertOrUpdatePreMatchesCommand(IEnumerable<MatchEntity> matches)
+        public InsertOrUpdateMatchesCommand(IEnumerable<MatchEntity> matches)
         {
             Matches = JsonConvert.SerializeObject(
                 matches,
@@ -19,7 +19,7 @@
 
         public string Matches { get; set; }
 
-        public override string GetSettingKey() => "Score247_InsertOrUpdatePreMatches";
+        public override string GetSettingKey() => "Score247_InsertOrUpdateMatches";
 
         public override bool IsValid() => !string.IsNullOrEmpty(Matches);
     }
