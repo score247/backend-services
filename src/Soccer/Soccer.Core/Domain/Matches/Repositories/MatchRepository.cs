@@ -8,8 +8,8 @@
     using Newtonsoft.Json;
     using Soccer.Core.Domain.Matches.Models;
     using Soccer.Core.Domain.Matches.Repositories.Commands;
-    using Soccer.Core.Domain.Matches.Repositories.Criterias;
     using Soccer.Core.Domain.Matches.Repositories.DbModels;
+    using Soccer.Core.Domain.Matches.Repositories.Queries;
 
     public interface IMatchRepository
     {
