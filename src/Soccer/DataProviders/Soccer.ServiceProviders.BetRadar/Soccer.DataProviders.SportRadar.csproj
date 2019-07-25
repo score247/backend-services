@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\_Shared\Score247.Shared.csproj" />
     <ProjectReference Include="..\..\Soccer.Core\Soccer.Core.csproj" />
     <ProjectReference Include="..\Soccer.DataProviders\Soccer.DataProviders.csproj" />
   </ItemGroup>

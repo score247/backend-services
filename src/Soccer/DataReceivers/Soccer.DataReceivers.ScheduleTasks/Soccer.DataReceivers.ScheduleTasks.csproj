@@ -34,8 +34,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Score247.Shared\Score247.Shared.csproj" />
-    <ProjectReference Include="..\..\ServiceProviders\Soccer.ServiceProviders.BetRadar\Soccer.DataProviders.SportRadar.csproj" />
+    <ProjectReference Include="..\..\..\_Shared\Score247.Shared.csproj" />
+    <ProjectReference Include="..\..\DataProviders\Soccer.DataProviders\Soccer.DataProviders.csproj" />
+    <ProjectReference Include="..\..\DataProviders\Soccer.ServiceProviders.BetRadar\Soccer.DataProviders.SportRadar.csproj" />
     <ProjectReference Include="..\..\Soccer.Core\Soccer.Core.csproj" />
   </ItemGroup>
 </Project>

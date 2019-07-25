@@ -20,6 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Score247.Shared\Score247.Shared.csproj" />
+    <ProjectReference Include="..\..\_Shared\Score247.Shared.csproj" />
   </ItemGroup>
 </Project>
