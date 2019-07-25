@@ -1,4 +1,4 @@
-﻿namespace Soccer.Core
+﻿namespace Soccer.Database
 {
     using Dapper;
     using Score247.Shared.Extensions;

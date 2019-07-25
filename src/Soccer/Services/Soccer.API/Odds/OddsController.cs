@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Soccer.API.Modules.Odd
+namespace Soccer.API.Modules.Odds
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OddController : ControllerBase
+    public class OddsController : ControllerBase
     {
     }
 }

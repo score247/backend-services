@@ -1,4 +1,4 @@
-﻿namespace Soccer.Core.Domain.Matches.Criteria
+﻿namespace Soccer.Database.Matches.Criteria
 {
     using System;
     using Fanex.Data.Repository;

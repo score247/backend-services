@@ -11,7 +11,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using Soccer.API.Middlewares;
-    using Soccer.Core;
+    using Soccer.Database;
 
     public class Startup
     {

@@ -1,4 +1,4 @@
-﻿namespace Soccer.Core.Domain.Matches.Commands
+﻿namespace Soccer.Database.Matches.Commands
 {
     using System.Collections.Generic;
     using Fanex.Data.Repository;

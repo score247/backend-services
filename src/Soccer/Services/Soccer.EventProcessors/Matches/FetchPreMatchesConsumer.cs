@@ -3,8 +3,8 @@
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using MassTransit;
-    using Soccer.Core.Domain.Matches.Commands;
     using Soccer.Core.Domain.Matches.Events;
+    using Soccer.Database.Matches.Commands;
 
     public class FetchPreMatchesConsumer : IConsumer<IPreMatchesFetchedEvent>
     {

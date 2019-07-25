@@ -32,5 +32,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Soccer.Core\Soccer.Core.csproj" />
+    <ProjectReference Include="..\..\Soccer.Database\Soccer.Database.csproj" />
   </ItemGroup>
 </Project>

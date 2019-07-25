@@ -14,7 +14,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
-    using Soccer.Core;
+    using Soccer.Database;
     using Soccer.EventProcessors.Matches;
 
     public class Startup

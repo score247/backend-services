@@ -1,4 +1,4 @@
-﻿namespace Soccer.Core.Domain.Matches.Criteria
+﻿namespace Soccer.Database.Matches.Criteria
 {
     using Fanex.Data.Repository;
     using Score247.Shared.Enumerations;

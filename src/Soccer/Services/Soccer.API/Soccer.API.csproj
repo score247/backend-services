@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="App_Data\LOCAL\SpNames.xml" />
+    <None Remove="_Shared\App_Data\LOCAL\SpNames.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="App_Data\LOCAL\SpNames.xml">
+    <EmbeddedResource Include="_Shared\App_Data\LOCAL\SpNames.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Generator>MSBuild:Compile</Generator>
     </EmbeddedResource>
@@ -35,10 +35,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Modules\TVSchedule\" />
+    <Folder Include="TVSchedule\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Soccer.Core\Soccer.Core.csproj" />
+    <ProjectReference Include="..\..\Soccer.Database\Soccer.Database.csproj" />
   </ItemGroup>
 </Project>
