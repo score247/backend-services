@@ -6,11 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="App_Data\LOCAL\SpNames.xml" />
+    <None Remove="_Shared\App_Data\LOCAL\SpNames.xml" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="App_Data\LOCAL\SpNames.xml">
+    <EmbeddedResource Include="_Shared\App_Data\LOCAL\SpNames.xml">
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
