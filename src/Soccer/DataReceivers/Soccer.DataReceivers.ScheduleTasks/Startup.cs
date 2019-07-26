@@ -6,6 +6,7 @@
     using Fanex.Logging.Sentry;
     using Hangfire;
     using Hangfire.Dashboard;
+    using Hangfire.MySql.Core;
     using Hangfire.PostgreSql;
     using MassTransit;
     using Microsoft.AspNetCore.Builder;
@@ -117,11 +118,7 @@
 
         private void RegisterHangfire(IServiceCollection services)
         {
-            services.AddHangfire(x => x.UsePostgreSqlStorage(Configuration.GetConnectionString("HangfireConnection"),
-                              new PostgreSqlStorageOptions
-                              {
-                                  InvisibilityTimeout = TimeSpan.FromDays(OneYearDays)
-                              }));
+            services.AddHangfire(x => x.UseStorage(new MySqlStorage(Configuration.GetConnectionString("Hangfire"))));
 
             services.AddScoped<IFetchPreMatchesTask, FetchPreMatchesTask>();
             services.AddScoped<IFetchPostMatchesTask, FetchPostMatchesTask>();
