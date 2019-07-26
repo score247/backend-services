@@ -89,7 +89,7 @@
         public int penalty_goals_scored { get; set; }
     }
 
-    public class GoalScorer
+    public class GoalScorerDto
     {
         public string id { get; set; }
 
@@ -98,7 +98,7 @@
         public string method { get; set; }
     }
 
-    public class Assist
+    public class AssistDto
     {
         public string id { get; set; }
 

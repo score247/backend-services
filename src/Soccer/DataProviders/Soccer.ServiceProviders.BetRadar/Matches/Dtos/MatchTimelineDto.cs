@@ -4,27 +4,27 @@
     using System.Collections.Generic;
     using Soccer.DataProviders.SportRadar.Teams.Dtos;
 
-    public class MatchTimeline
+    public class MatchTimelineDto
     {
         public DateTime generated_at { get; set; }
 
         public string schema { get; set; }
 
-        public SportEvent sport_event { get; set; }
+        public SportEventDto sport_event { get; set; }
 
-        public SportEventStatus sport_event_status { get; set; }
+        public SportEventStatusDto sport_event_status { get; set; }
 
-        public IEnumerable<Timeline> timeline { get; set; }
+        public IEnumerable<TimelineDto> timeline { get; set; }
 
-        public Statistics statistics { get; set; }
+        public StatisticsDto statistics { get; set; }
     }
 
-    public class Statistics
+    public class StatisticsDto
     {
         public IEnumerable<Team> teams { get; set; }
     }
 
-    public class Timeline
+    public class TimelineDto
     {
         public long id { get; set; }
 
@@ -32,7 +32,7 @@
 
         public DateTime time { get; set; }
 
-        public IEnumerable<Commentary> commentaries { get; set; }
+        public IEnumerable<CommentaryDto> commentaries { get; set; }
 
         public int period { get; set; }
 
@@ -54,17 +54,17 @@
 
         public int away_score { get; set; }
 
-        public GoalScorer goal_scorer { get; set; }
+        public GoalScorerDto goal_scorer { get; set; }
 
-        public Assist assist { get; set; }
+        public AssistDto assist { get; set; }
 
-        public Player player { get; set; }
+        public PlayerDto player { get; set; }
 
         public string outcome { get; set; }
 
-        public Player player_out { get; set; }
+        public PlayerDto player_out { get; set; }
 
-        public Player player_in { get; set; }
+        public PlayerDto player_in { get; set; }
 
         public string stoppage_time { get; set; }
 
@@ -79,14 +79,14 @@
         public string status { get; set; }
     }
 
-    public class Player
+    public class PlayerDto
     {
         public string id { get; set; }
 
         public string name { get; set; }
     }
 
-    public class Commentary
+    public class CommentaryDto
     {
         public string text { get; set; }
     }

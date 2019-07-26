@@ -12,6 +12,8 @@
     {
         Task<IEnumerable<Match>> GetByDateRange(DateTime from, DateTime to, TimeSpan clientTimeOffset, Language language);
 
+        Task<Match> GetMatch(string id, Language language);
+
         Task<IEnumerable<Match>> GetLive(TimeSpan clientTimeOffset, Language language);
     }
 
@@ -31,5 +33,9 @@
         // TODO: Remove convert to client timezone, remember to move this business to front-end
         public async Task<IEnumerable<Match>> GetByDateRange(DateTime from, DateTime to, TimeSpan clientTimeOffset, Language language)
             => await dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(from, to, language));
+
+        // TODO: Remove convert to client timezone, remember to move this business to front-end
+        public async Task<Match> GetMatch(string id, Language language)
+            => await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language));
     }
 }

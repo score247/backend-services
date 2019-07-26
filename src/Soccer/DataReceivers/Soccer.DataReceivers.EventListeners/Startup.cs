@@ -1,4 +1,4 @@
-﻿namespace Soccer.DataReceivers.ScheduleTasks
+﻿namespace Soccer.DataReceivers.EventListeners
 {
     using System.Linq;
     using Fanex.Logging;
@@ -18,13 +18,10 @@
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataProviders.SportRadar._Shared.Configurations;
     using Soccer.DataProviders.SportRadar.Matches.Services;
-    using Soccer.DataReceivers.ScheduleTasks._Shared.Configurations;
-    using Soccer.DataReceivers.ScheduleTasks.Matches;
+    using Soccer.DataReceivers.EventListeners._Shared.Configurations;
 
     public class Startup
     {
-        private const int OneYearDays = 365;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -117,18 +114,10 @@
         private void RegisterHangfire(IServiceCollection services)
         {
             services.AddHangfire(x => x.UseStorage(new MySqlStorage(Configuration.GetConnectionString("Hangfire"))));
-
-            services.AddScoped<IFetchPreMatchesTask, FetchPreMatchesTask>();
-            services.AddScoped<IFetchPostMatchesTask, FetchPostMatchesTask>();
         }
 
         private static void RunHangfireJobs(IAppSettings appSettings)
         {
-            RecurringJob.AddOrUpdate<IFetchPreMatchesTask>(
-                "FetchPreMatch", job => job.FetchPreMatches(appSettings.ScheduleTasksSettings.FetchMatchScheduleDateSpan), " 0 0/6 * * *");
-
-            RecurringJob.AddOrUpdate<IFetchPostMatchesTask>(
-                "FetchPostMatch", job => job.FetchPostMatches(appSettings.ScheduleTasksSettings.FetchMatchScheduleDateSpan), " 0 0/6 * * *");
         }
     }
 }

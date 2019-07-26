@@ -1,15 +1,17 @@
 ﻿namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 {
+    using System.Collections.Generic;
     using System.Linq;
     using Score247.Shared.Enumerations;
     using Soccer.Core._Shared.Enumerations;
     using Soccer.Core.Matches.Models;
     using Soccer.DataProviders.SportRadar.Leagues.DataMappers;
+    using Soccer.DataProviders.SportRadar.Matches.Dtos;
     using Soccer.DataProviders.SportRadar.Teams.DataMappers;
 
     public static class MatchMapper
     {
-        public static Match MapMatch(Dtos.SportEvent sportEvent, Dtos.SportEventStatus sportEventStatus, string region)
+        public static Match MapMatch(SportEventDto sportEvent, SportEventStatusDto sportEventStatus, string region)
         {
             var match = new Match
             {
@@ -26,7 +28,7 @@
             return match;
         }
 
-        public static MatchResult MapMatchResult(Dtos.SportEventStatus sportEventStatus = null)
+        public static MatchResult MapMatchResult(SportEventStatusDto sportEventStatus = null)
         {
             var matchResult = new MatchResult
             {
@@ -83,7 +85,7 @@
             return matchResult;
         }
 
-        public static Venue MapVenue(Dtos.Venue venueDto)
+        public static Venue MapVenue(Dtos.VenueDto venueDto)
         {
             var venue = new Venue();
 
@@ -97,6 +99,21 @@
             }
 
             return venue;
+        }
+
+        public static Dictionary<string, MatchEvent> MapMatchEvent(MatchEventDto pushEventDto)
+        {
+            var matchId = pushEventDto.metadata.sport_event_id;
+            var pushEvent = new MatchEvent
+            {
+                MatchResult = MapMatchResult(pushEventDto.payload.sport_event_status),
+                TimeLines = new List<Timeline> { TimelineMapper.MapTimeline(pushEventDto.payload.timeline) }
+            };
+
+            return new Dictionary<string, MatchEvent>
+            {
+                { matchId, pushEvent }
+            };
         }
     }
 }

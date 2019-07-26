@@ -2,7 +2,7 @@
 {
     using Soccer.DataProviders.SportRadar.Matches.Dtos;
 
-    public class Tournament
+    public class TournamentDto
     {
         public string id { get; set; }
 
@@ -26,7 +26,7 @@
         public string country_code { get; set; }
     }
 
-    public class Season
+    public class SeasonDto
     {
         public string id { get; set; }
 

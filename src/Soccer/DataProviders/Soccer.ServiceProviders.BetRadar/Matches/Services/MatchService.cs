@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.Logging;
     using Refit;
     using Score247.Shared.Enumerations;
     using Soccer.Core._Shared.Enumerations;
@@ -17,26 +18,28 @@
     public interface IMatchApi
     {
         [Get("/soccer-t3/{region}/{language}/schedules/{date}/schedule.json?api_key={apiKey}")]
-        Task<MatchSchedule> GetSchedule(string region, string language, string date, string apiKey);
+        Task<MatchScheduleDto> GetSchedule(string region, string language, string date, string apiKey);
 
         [Get("/soccer-t3/{region}/{language}/schedules/{date}/results.json?api_key={apiKey}")]
-        Task<Dtos.MatchResult> GetResult(string region, string language, string date, string apiKey);
+        Task<Dtos.MatchResultDto> GetResult(string region, string language, string date, string apiKey);
     }
 
     public class MatchService : IMatchService
     {
         private readonly IMatchApi matchApi;
         private readonly SportSettings soccerSettings;
+        private readonly ILogger logger;
 
         private static readonly Dictionary<string, string> sportRadarLanguageNames = new Dictionary<string, string>
         {
             { "en-US", "en" }
         };
 
-        public MatchService(ISportRadarSettings sportRadarSettings, IMatchApi matchApi)
+        public MatchService(ISportRadarSettings sportRadarSettings, IMatchApi matchApi, ILogger logger)
         {
             this.matchApi = matchApi;
             soccerSettings = sportRadarSettings.Sports.FirstOrDefault(s => s.Id == Sport.Soccer.Value);
+            this.logger = logger;
         }
 
         public async Task<IReadOnlyList<Match>> GetPostMatches(DateTime utcFrom, DateTime utcTo, Language language)
@@ -59,7 +62,7 @@
                     }
                     catch (Exception ex)
                     {
-                        // Refit will throw exception when 404 Not Found, so add try/catch here
+                        await logger.InfoAsync(ex.Message);
                     }
                 }
             }
@@ -87,7 +90,7 @@
                     }
                     catch (Exception ex)
                     {
-                        // Refit will throw exception when 404 Not Found, so add try/catch here
+                        await logger.InfoAsync(ex.Message);
                     }
                 }
             }

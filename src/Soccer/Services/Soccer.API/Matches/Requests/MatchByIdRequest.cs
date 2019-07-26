@@ -8,16 +8,13 @@
 
     public class MatchByIdRequest : IRequest<Match>
     {
-        public MatchByIdRequest(string id, TimeSpan clientTimeOffset, string language)
+        public MatchByIdRequest(string id, string language)
         {
             Id = id;
-            ClientTimeOffset = clientTimeOffset;
             Language = Enumeration.FromDisplayName<Language>(language);
         }
 
         public string Id { get; }
-
-        public TimeSpan ClientTimeOffset { get; }
 
         public Language Language { get; }
     }

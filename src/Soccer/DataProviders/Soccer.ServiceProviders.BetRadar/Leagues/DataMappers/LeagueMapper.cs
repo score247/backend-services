@@ -7,7 +7,7 @@
 
     public static class LeagueMapper
     {
-        public static League MapLeague(Tournament tournament)
+        public static League MapLeague(TournamentDto tournament)
             => new League
             {
                 Id = tournament?.id,
@@ -20,7 +20,7 @@
                 }
             };
 
-        public static LeagueRound MapLeagueRound(TournamentRound tournamentRound)
+        public static LeagueRound MapLeagueRound(TournamentRoundDto tournamentRound)
         {
             var leagueRound = new LeagueRound();
 

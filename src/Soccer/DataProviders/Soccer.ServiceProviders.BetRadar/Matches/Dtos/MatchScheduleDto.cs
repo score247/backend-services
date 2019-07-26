@@ -4,16 +4,16 @@
     using System.Collections.Generic;
     using Soccer.DataProviders.SportRadar.Leagues.Dtos;
 
-    public class MatchSchedule
+    public class MatchScheduleDto
     {
         public DateTime generated_at { get; set; }
 
         public string schema { get; set; }
 
-        public IEnumerable<SportEvent> sport_events { get; set; }
+        public IEnumerable<SportEventDto> sport_events { get; set; }
     }
 
-    public class SportEvent
+    public class SportEventDto
     {
         public string id { get; set; }
 
@@ -21,18 +21,18 @@
 
         public bool start_time_tbd { get; set; }
 
-        public TournamentRound tournament_round { get; set; }
+        public TournamentRoundDto tournament_round { get; set; }
 
-        public Season season { get; set; }
+        public SeasonDto season { get; set; }
 
-        public Tournament tournament { get; set; }
+        public TournamentDto tournament { get; set; }
 
-        public IEnumerable<Competitor> competitors { get; set; }
+        public IEnumerable<CompetitorDto> competitors { get; set; }
 
-        public Venue venue { get; set; }
+        public VenueDto venue { get; set; }
     }
 
-    public class Competitor
+    public class CompetitorDto
     {
         public string id { get; set; }
 

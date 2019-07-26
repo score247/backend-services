@@ -1,6 +1,6 @@
 ﻿namespace Soccer.DataProviders.SportRadar.Leagues.Dtos
 {
-    public class TournamentRound
+    public class TournamentRoundDto
     {
         public string type { get; set; }
 

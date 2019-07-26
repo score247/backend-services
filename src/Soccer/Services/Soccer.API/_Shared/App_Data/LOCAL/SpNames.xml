@@ -5,4 +5,7 @@
   <Function Name="GetLiveMatches">
     <Setting Key="Score247_GetLiveMatches" SpName="Score247_GetLiveMatches" DbName="DefaultConnection" />
   </Function>
+  <Function Name="GetLiveMatches">
+    <Setting Key="Score247_GetMatchById" SpName="Score247_GetMatchById" DbName="DefaultConnection" />
+  </Function>
 </Functions>

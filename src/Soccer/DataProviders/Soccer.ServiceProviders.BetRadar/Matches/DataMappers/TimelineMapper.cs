@@ -1,13 +1,15 @@
 ﻿namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 {
+    using System.Collections.Generic;
     using System.Linq;
     using Soccer.Core._Shared.Enumerations;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Teams.Models;
+    using Soccer.DataProviders.SportRadar.Matches.Dtos;
 
     public static class TimelineMapper
     {
-        public static Timeline BuildTimeLine(Dtos.Timeline timelineDto)
+        public static Timeline MapTimeline(Dtos.TimelineDto timelineDto)
         {
             var timeline = new Timeline();
 
@@ -57,7 +59,7 @@
                              ? 0
                              : int.Parse(matchClock.Split(':')[0]);
 
-        private static void SetPenaltyInfo(Dtos.Timeline timelineDto, Timeline timeline)
+        private static void SetPenaltyInfo(Dtos.TimelineDto timelineDto, Timeline timeline)
         {
             if (timelineDto.period_type == PeriodType.Penalties.DisplayName)
             {

@@ -10,7 +10,7 @@
     {
         private const string Home = "home";
 
-        public static List<Team> MapTeams(SportEvent sportEventDto)
+        public static List<Team> MapTeams(SportEventDto sportEventDto)
         {
             var teams = new List<Team>();
 

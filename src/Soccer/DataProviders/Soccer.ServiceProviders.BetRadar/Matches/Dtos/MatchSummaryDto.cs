@@ -9,13 +9,13 @@
 
         public string schema { get; set; }
 
-        public SportEvent sport_event { get; set; }
+        public SportEventDto sport_event { get; set; }
 
         public SportEventConditions sport_event_conditions { get; set; }
 
-        public SportEventStatus sport_event_status { get; set; }
+        public SportEventStatusDto sport_event_status { get; set; }
 
-        public Statistics statistics { get; set; }
+        public StatisticsDto statistics { get; set; }
     }
 
     public class SportEventConditions
@@ -24,7 +24,7 @@
 
         public IEnumerable<RefereeAssistants> referee_assistants { get; set; }
 
-        public Venue venue { get; set; }
+        public VenueDto venue { get; set; }
 
         public int attendance { get; set; }
 
@@ -62,7 +62,7 @@
         public string country_code { get; set; }
     }
 
-    public class Venue
+    public class VenueDto
     {
         public string id { get; set; }
 
