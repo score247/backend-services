@@ -1,4 +1,4 @@
-﻿namespace Soccer.Core.Domain.Matches.Models
+﻿namespace Soccer.Core.Matches.Models
 {
     using Score247.Shared.Base;
 

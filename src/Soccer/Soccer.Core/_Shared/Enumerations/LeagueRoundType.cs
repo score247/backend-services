@@ -1,4 +1,4 @@
-﻿namespace Soccer.Core.Enumerations
+﻿namespace Soccer.Core._Shared.Enumerations
 {
     using Score247.Shared.Enumerations;
 

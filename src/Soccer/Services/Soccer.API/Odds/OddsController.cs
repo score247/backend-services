@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Soccer.API.Modules.Odds
+namespace Soccer.API.Odds
 {
     [Route("api/[controller]")]
     [ApiController]

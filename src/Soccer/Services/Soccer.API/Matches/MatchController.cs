@@ -5,8 +5,8 @@
     using System.Threading.Tasks;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
-    using Soccer.API.Modules.Matches.Requests;
-    using Soccer.Core.Domain.Matches.Models;
+    using Soccer.API.Matches.Requests;
+    using Soccer.Core.Matches.Models;
 
     [Route("api/soccer/{language}/matches")]
     [ApiController]

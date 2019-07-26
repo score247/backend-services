@@ -1,11 +1,11 @@
-﻿namespace Soccer.API.Modules.Matches
+﻿namespace Soccer.API.Matches
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
-    using Soccer.Core.Domain.Matches.Models;
-    using Soccer.Core.Enumerations;
+    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Matches.Models;
     using Soccer.Database.Matches.Criteria;
 
     public interface IMatchQueryService

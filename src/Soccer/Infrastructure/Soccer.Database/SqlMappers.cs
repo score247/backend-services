@@ -2,8 +2,8 @@
 {
     using Dapper;
     using Score247.Shared.Extensions;
-    using Soccer.Core.Domain.Leagues.Models;
-    using Soccer.Core.Domain.Matches.Models;
+    using Soccer.Core.Leagues.Models;
+    using Soccer.Core.Matches.Models;
 
     public static class SqlMappers
     {

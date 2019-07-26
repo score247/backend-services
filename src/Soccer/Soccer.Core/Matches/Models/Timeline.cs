@@ -1,10 +1,10 @@
-﻿namespace Soccer.Core.Domain.Matches.Models
+﻿namespace Soccer.Core.Matches.Models
 {
     using System;
     using System.Collections.Generic;
     using Newtonsoft.Json;
     using Score247.Shared.Base;
-    using Soccer.Core.Domain.Teams.Models;
+    using Soccer.Core.Teams.Models;
 
     public class Timeline : BaseModel
     {

@@ -1,4 +1,4 @@
-﻿namespace Soccer.API.Configurations
+﻿namespace Soccer.API._Shared.Configurations
 {
     using System;
     using System.ComponentModel;

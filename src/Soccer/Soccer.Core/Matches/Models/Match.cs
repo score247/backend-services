@@ -1,11 +1,11 @@
-﻿namespace Soccer.Core.Domain.Matches.Models
+﻿namespace Soccer.Core.Matches.Models
 {
     using System;
     using System.Collections.Generic;
     using Score247.Shared.Base;
     using Score247.Shared.Extensions;
-    using Soccer.Core.Domain.Leagues.Models;
-    using Soccer.Core.Domain.Teams.Models;
+    using Soccer.Core.Leagues.Models;
+    using Soccer.Core.Teams.Models;
 
     public sealed class Match : BaseModel, IEquatable<Match>
     {

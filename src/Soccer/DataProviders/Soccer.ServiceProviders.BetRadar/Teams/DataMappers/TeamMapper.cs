@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Globalization;
     using System.Linq;
-    using Soccer.Core.Domain.Teams.Models;
+    using Soccer.Core.Teams.Models;
     using Soccer.DataProviders.SportRadar.Matches.Dtos;
 
     public static class TeamMapper

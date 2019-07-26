@@ -1,7 +1,7 @@
-﻿namespace Soccer.Core.Domain.Matches.Models
+﻿namespace Soccer.Core.Matches.Models
 {
     using System.Collections.Generic;
-    using Soccer.Core.Enumerations;
+    using Soccer.Core._Shared.Enumerations;
 
     public class MatchResult
     {

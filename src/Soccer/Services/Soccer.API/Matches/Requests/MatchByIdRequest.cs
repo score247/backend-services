@@ -1,10 +1,10 @@
-﻿namespace Soccer.API.Modules.Matches.Requests
+﻿namespace Soccer.API.Matches.Requests
 {
     using System;
     using MediatR;
     using Score247.Shared.Enumerations;
-    using Soccer.Core.Domain.Matches.Models;
-    using Soccer.Core.Enumerations;
+    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Matches.Models;
 
     public class MatchByIdRequest : IRequest<Match>
     {

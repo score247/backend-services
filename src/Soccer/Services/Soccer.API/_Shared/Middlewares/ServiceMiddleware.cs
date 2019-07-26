@@ -1,9 +1,9 @@
-﻿namespace Soccer.API.Middlewares
+﻿namespace Soccer.API._Shared.Middlewares
 {
     using Fanex.Caching;
     using Fanex.Data.Repository;
     using Microsoft.Extensions.DependencyInjection;
-    using Soccer.API.Modules.Matches;
+    using Soccer.API.Matches;
 
     public static class ServiceMiddleware
     {

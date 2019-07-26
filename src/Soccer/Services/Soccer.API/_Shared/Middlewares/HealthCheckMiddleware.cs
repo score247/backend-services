@@ -1,4 +1,4 @@
-﻿namespace Soccer.API.Middlewares
+﻿namespace Soccer.API._Shared.Middlewares
 {
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;

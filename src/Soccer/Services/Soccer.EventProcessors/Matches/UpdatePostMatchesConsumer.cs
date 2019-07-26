@@ -3,7 +3,7 @@
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using MassTransit;
-    using Soccer.Core.Domain.Matches.Events;
+    using Soccer.Core.Matches.Events;
     using Soccer.Database.Matches.Commands;
 
     public class UpdatePostMatchesConsumer : IConsumer<IPostMatchUpdatedEvent>

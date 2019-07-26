@@ -1,11 +1,11 @@
-﻿namespace Soccer.API.Modules.Matches
+﻿namespace Soccer.API.Matches
 {
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
-    using Soccer.API.Modules.Matches.Requests;
-    using Soccer.Core.Domain.Matches.Models;
+    using Soccer.API.Matches.Requests;
+    using Soccer.Core.Matches.Models;
 
     public class MatchHandler
         : IRequestHandler<MatchesByDateRequest, IEnumerable<Match>>,

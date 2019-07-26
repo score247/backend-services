@@ -3,7 +3,7 @@
     using System;
     using Fanex.Data.Repository;
     using Score247.Shared.Enumerations;
-    using Soccer.Core.Enumerations;
+    using Soccer.Core._Shared.Enumerations;
 
     public class GetMatchesByDateRangeCriteria : CriteriaBase
     {

@@ -1,4 +1,4 @@
-﻿namespace Soccer.Core.Domain.Teams.Models
+﻿namespace Soccer.Core.Teams.Models
 {
     public class TeamStatistics
     {

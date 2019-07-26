@@ -10,7 +10,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
-    using Soccer.API.Middlewares;
+    using Soccer.API._Shared.Middlewares;
     using Soccer.Database;
 
     public class Startup

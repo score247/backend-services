@@ -4,8 +4,8 @@
     using System.Threading.Tasks;
     using MassTransit;
     using Score247.Shared.Enumerations;
-    using Soccer.Core.Domain.Matches.Events;
-    using Soccer.Core.Enumerations;
+    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Matches.Events;
     using Soccer.DataProviders.Matches.Services;
 
     public interface IFetchPostMatchesTask

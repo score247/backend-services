@@ -1,4 +1,4 @@
-﻿namespace Soccer.API.Modules.Odds
+﻿namespace Soccer.API.Odds
 {
     public class OddsHandler
     {

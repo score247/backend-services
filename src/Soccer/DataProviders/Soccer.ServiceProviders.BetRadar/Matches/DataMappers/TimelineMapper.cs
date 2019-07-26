@@ -1,9 +1,9 @@
 ﻿namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 {
     using System.Linq;
-    using Soccer.Core.Domain.Matches.Models;
-    using Soccer.Core.Domain.Teams.Models;
-    using Soccer.Core.Enumerations;
+    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Matches.Models;
+    using Soccer.Core.Teams.Models;
 
     public static class TimelineMapper
     {

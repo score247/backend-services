@@ -4,7 +4,7 @@
     using Fanex.Data.Repository;
     using Newtonsoft.Json;
     using Score247.Shared.Enumerations;
-    using Soccer.Core.Domain.Matches.Models;
+    using Soccer.Core.Matches.Models;
 
     public class InsertOrUpdateMatchesCommand : NonQueryCommand
     {

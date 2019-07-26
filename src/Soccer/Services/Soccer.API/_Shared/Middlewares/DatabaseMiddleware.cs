@@ -1,4 +1,4 @@
-﻿namespace Soccer.API.Middlewares
+﻿namespace Soccer.API._Shared.Middlewares
 {
     using System.Collections.Generic;
     using System.Linq;
