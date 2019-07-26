@@ -39,7 +39,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Infrastructure\Soccer.Database\Soccer.Database.csproj" />
     <ProjectReference Include="..\..\Soccer.Core\Soccer.Core.csproj" />
-    <ProjectReference Include="..\..\Soccer.Database\Soccer.Database.csproj" />
   </ItemGroup>
 </Project>
