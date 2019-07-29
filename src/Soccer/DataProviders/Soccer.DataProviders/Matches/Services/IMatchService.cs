@@ -11,5 +11,7 @@
         Task<IReadOnlyList<Match>> GetPreMatches(DateTime utcFrom, DateTime utcTo, Language language);
 
         Task<IReadOnlyList<Match>> GetPostMatches(DateTime utcFrom, DateTime utcTo, Language language);
+
+        Task<IReadOnlyList<Match>> GetLiveMatches(Language language);
     }
 }

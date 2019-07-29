@@ -22,6 +22,9 @@
 
         [Get("/soccer-t3/{region}/{language}/schedules/{date}/results.json?api_key={apiKey}")]
         Task<Dtos.MatchResultDto> GetResult(string region, string language, string date, string apiKey);
+
+        [Get("/soccer-t3/{region}/{language}/schedules/live/results.json?api_key={apiKey}")]
+        Task<Dtos.MatchResultDto> GetLiveResult(string region, string language, string apiKey);
     }
 
     public class MatchService : IMatchService
@@ -29,11 +32,6 @@
         private readonly IMatchApi matchApi;
         private readonly SportSettings soccerSettings;
         private readonly ILogger logger;
-
-        private static readonly Dictionary<string, string> sportRadarLanguageNames = new Dictionary<string, string>
-        {
-            { "en-US", "en" }
-        };
 
         public MatchService(ISportRadarSettings sportRadarSettings, IMatchApi matchApi, ILogger logger)
         {
@@ -45,7 +43,7 @@
         public async Task<IReadOnlyList<Match>> GetPostMatches(DateTime utcFrom, DateTime utcTo, Language language)
         {
             var matches = new List<Match>();
-            var sportRadarLanguage = sportRadarLanguageNames[language.DisplayName];
+            var sportRadarLanguage = language.ToSportRadarFormat();
 
             foreach (var region in soccerSettings.Regions)
             {
@@ -73,7 +71,7 @@
         public async Task<IReadOnlyList<Match>> GetPreMatches(DateTime utcFrom, DateTime utcTo, Language language)
         {
             var matches = new List<Match>();
-            var sportRadarLanguage = sportRadarLanguageNames[language.DisplayName];
+            var sportRadarLanguage = language.ToSportRadarFormat();
 
             foreach (var region in soccerSettings.Regions)
             {
@@ -92,6 +90,31 @@
                     {
                         await logger.InfoAsync(ex.Message);
                     }
+                }
+            }
+
+            return matches;
+        }
+
+        public async Task<IReadOnlyList<Match>> GetLiveMatches(Language language)
+        {
+            var matches = new List<Match>();
+            var sportRadarLanguage = language.ToSportRadarFormat();
+
+            foreach (var region in soccerSettings.Regions)
+            {
+                try
+                {
+                    var liveResult = await matchApi.GetLiveResult(region.Name, sportRadarLanguage, region.Key);
+
+                    if (liveResult?.results?.Any() == true)
+                    {
+                        matches.AddRange(liveResult.results.Select(mr => MatchMapper.MapMatch(mr.sport_event, mr.sport_event_status, region.Name)));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await logger.InfoAsync(ex.Message);
                 }
             }
 
