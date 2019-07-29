@@ -4,11 +4,12 @@
     using System.Collections.Generic;
     using Newtonsoft.Json;
     using Score247.Shared.Base;
+    using Soccer.Core._Shared.Enumerations;
     using Soccer.Core.Teams.Models;
 
     public class Timeline : BaseModel
     {
-        public string Type { get; set; }
+        public EventType Type { get; set; }
 
         public DateTime Time { get; set; }
 
@@ -22,7 +23,7 @@
 
         public int Period { get; set; }
 
-        public string PeriodType { get; set; }
+        public PeriodType PeriodType { get; set; }
 
         public int HomeScore { get; set; }
 

@@ -1,11 +1,10 @@
 ﻿namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 {
-    using System.Collections.Generic;
     using System.Linq;
+    using Score247.Shared.Enumerations;
     using Soccer.Core._Shared.Enumerations;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Teams.Models;
-    using Soccer.DataProviders.SportRadar.Matches.Dtos;
 
     public static class TimelineMapper
     {
@@ -16,14 +15,13 @@
             if (timelineDto != null)
             {
                 timeline.Id = timelineDto.id.ToString();
-                timeline.Type = timelineDto.type;
+                timeline.Type = Enumeration.FromDisplayName<EventType>(timelineDto.type);
                 timeline.Team = timelineDto.team;
                 timeline.InjuryTimeAnnounced = timelineDto.injury_time_announced;
-                timeline.PeriodType = timelineDto.period_type;
-                if (string.IsNullOrWhiteSpace(timeline.PeriodType)
-                    && !string.IsNullOrWhiteSpace(timelineDto.period_name))
+                timeline.PeriodType = Enumeration.FromDisplayName<PeriodType>(timelineDto.period_type);
+                if (string.IsNullOrWhiteSpace(timeline.PeriodType.DisplayName) && !string.IsNullOrWhiteSpace(timelineDto.period_name))
                 {
-                    timeline.PeriodType = timelineDto.period_name.ToLowerInvariant().Replace(" ", "_").Trim();
+                    timeline.PeriodType = Enumeration.FromDisplayName<PeriodType>(timelineDto.period_name.ToLowerInvariant().Replace(" ", "_").Trim());
                 }
                 timeline.Period = timelineDto.period;
                 timeline.Time = timelineDto.time;

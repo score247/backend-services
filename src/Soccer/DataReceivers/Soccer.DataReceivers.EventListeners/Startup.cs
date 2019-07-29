@@ -1,6 +1,7 @@
 ﻿namespace Soccer.DataReceivers.EventListeners
 {
     using System.Linq;
+    using Fanex.Caching;
     using Fanex.Logging;
     using Fanex.Logging.Sentry;
     using Hangfire;
@@ -19,6 +20,8 @@
     using Soccer.DataProviders.SportRadar._Shared.Configurations;
     using Soccer.DataProviders.SportRadar.Matches.Services;
     using Soccer.DataReceivers.EventListeners._Shared.Configurations;
+    using Soccer.DataReceivers.EventListeners.Matches;
+    using Soccer.DataReceivers.EventListeners.Matches.MatchEventHandlers;
 
     public class Startup
     {
@@ -36,8 +39,19 @@
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc
             };
 
+            LogManager
+                 .SetDefaultLogCategory(Configuration["Fanex.Logging:DefaultCategory"])
+                 .Use(new SentryLogging(new SentryEngineOptions
+                 {
+                     Dsn = new Dsn(Configuration["Fanex.Logging:SentryUrl"])
+                 }));
+
+            services.AddSingleton(Logger.Log);
+
             var appSettings = new AppSettings(Configuration);
             services.AddSingleton<IAppSettings>(appSettings);
+            services.AddSingleton<ICacheService, CacheService>();
+
             RegisterLogging(services);
             RegisterRabbitMq(services);
             RegisterSportRadarDataProvider(services);
@@ -48,8 +62,6 @@
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            var appSettings = app.ApplicationServices.GetService<IAppSettings>();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -67,7 +79,7 @@
                 WorkerCount = 2
             });
 
-            RunHangfireJobs(appSettings);
+            RunHangfireJobs();
 
             app.UseStaticFiles();
             app.UseMvc();
@@ -109,6 +121,11 @@
             services.AddSingleton<ISportRadarSettings>(sportRadarDataProviderSettings);
             services.AddSingleton(RestService.For<IMatchApi>(sportRadarDataProviderSettings.ServiceUrl));
             services.AddSingleton<IMatchService, MatchService>();
+            services.AddSingleton<IMatchEventListenerService, MatchEventListenerService>();
+
+            services.AddScoped<IPenaltyEventHandler, PenaltyEventHandler>();
+            services.AddScoped<IMatchTimeHandler, MatchTimeHandler>();
+            services.AddScoped<IMatchEventListener, MatchEventListener>();
         }
 
         private void RegisterHangfire(IServiceCollection services)
@@ -116,8 +133,10 @@
             services.AddHangfire(x => x.UseStorage(new MySqlStorage(Configuration.GetConnectionString("Hangfire"))));
         }
 
-        private static void RunHangfireJobs(IAppSettings appSettings)
+        private static void RunHangfireJobs()
         {
+            RecurringJob.AddOrUpdate<IMatchEventListener>(
+                "ListenMatchEvent", job => job.ListenMatchEvents(), " 0 0/6 * * *");
         }
     }
 }

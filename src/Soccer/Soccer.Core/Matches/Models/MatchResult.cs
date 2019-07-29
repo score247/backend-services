@@ -5,8 +5,10 @@
 
     public class MatchResult
     {
+        // TODO: Move out
         public MatchStatus MatchStatus { get; set; }
 
+        // TODO: Move out
         public MatchStatus EventStatus { get; set; }
 
         public int Period { get; set; }

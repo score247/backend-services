@@ -10,12 +10,13 @@
     using Newtonsoft.Json;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
+    using Soccer.DataProviders.Matches.Services;
     using Soccer.DataProviders.SportRadar._Shared.Configurations;
     using Soccer.DataProviders.SportRadar._Shared.Extensions;
     using Soccer.DataProviders.SportRadar.Matches.DataMappers;
     using Soccer.DataProviders.SportRadar.Matches.Dtos;
 
-    public class MatchEventListenerService
+    public class MatchEventListenerService : IMatchEventListenerService
     {
         private const int MillisecondsTimeout = 10 * 1000;
         private const string Endpoint = "soccer-xt3/{0}/stream/events/subscribe?format=json&api_key={1}";
@@ -30,7 +31,7 @@
             soccerSettings = sportRadarSettings.Sports.FirstOrDefault(s => s.Id == Sport.Soccer.Value);
         }
 
-        public async Task ListenEvents(Action<Dictionary<string, MatchEvent>> handler)
+        public async Task ListenEvents(Action<MatchEvent> handler)
         {
             if (soccerSettings.Regions?.Any() == false)
             {
@@ -64,13 +65,12 @@
             return regionStreams;
         }
 
-        private async Task ListenRegions(Dictionary<string, StreamReader> regionStreams, Action<Dictionary<string, MatchEvent>> handler)
+        private async Task ListenRegions(Dictionary<string, StreamReader> regionStreams, Action<MatchEvent> handler)
         {
             while (true)
             {
                 var tasks = regionStreams.Select(stream =>
-                        Task.Factory.StartNew(async () =>
-                            await ListenRegion(stream.Value, stream.Key, handler)));
+                        Task.Factory.StartNew(async () => await ListenRegion(stream.Value, stream.Key, handler)));
                 try
                 {
                     await Task.WhenAll(tasks);
@@ -85,24 +85,27 @@
                     return;
                 }
 
+                // TODO: check again
                 await Task.Delay(MillisecondsTimeout);
             }
         }
 
-        private async Task ListenRegion(StreamReader reader, string region, Action<Dictionary<string, MatchEvent>> handler)
+        private async Task ListenRegion(StreamReader reader, string region, Action<MatchEvent> handler)
         {
-            string line;
+            string matchEventPayload;
 
+            // TODO :  change do-while to while
             do
             {
-                line = reader.ReadLine();
-                await logger.InfoAsync($"{DateTime.Now} - region {region} Receiving: {line}");
+                matchEventPayload = reader.ReadLine();
+                await logger.InfoAsync($"{DateTime.Now} - region {region} Receiving: {matchEventPayload}");
 
-                var matchEventDto = JsonConvert.DeserializeObject<MatchEventDto>(line);
+                var matchEventDto = JsonConvert.DeserializeObject<MatchEventDto>(matchEventPayload);
+                // TODO move json data to mapper
                 var matchEvent = MatchMapper.MapMatchEvent(matchEventDto);
 
                 handler.Invoke(matchEvent);
-            } while (!string.IsNullOrWhiteSpace(line));
+            } while (!string.IsNullOrWhiteSpace(matchEventPayload));
         }
     }
 }

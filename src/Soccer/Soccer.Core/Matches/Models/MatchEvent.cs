@@ -1,11 +1,11 @@
 ﻿namespace Soccer.Core.Matches.Models
 {
-    using System.Collections.Generic;
-
     public class MatchEvent
     {
+        public string MatchId { get; set; }
+
         public MatchResult MatchResult { get; set; }
 
-        public IEnumerable<Timeline> TimeLines { get; set; }
+        public Timeline Timeline { get; set; }
     }
 }

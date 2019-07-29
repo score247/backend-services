@@ -85,7 +85,7 @@
             return matchResult;
         }
 
-        public static Venue MapVenue(Dtos.VenueDto venueDto)
+        public static Venue MapVenue(VenueDto venueDto)
         {
             var venue = new Venue();
 
@@ -101,19 +101,16 @@
             return venue;
         }
 
-        public static Dictionary<string, MatchEvent> MapMatchEvent(MatchEventDto pushEventDto)
+        public static MatchEvent MapMatchEvent(MatchEventDto pushEventDto)
         {
-            var matchId = pushEventDto.metadata.sport_event_id;
-            var pushEvent = new MatchEvent
+            var matchEvent = new MatchEvent
             {
+                MatchId = pushEventDto.metadata.sport_event_id,
                 MatchResult = MapMatchResult(pushEventDto.payload.sport_event_status),
-                TimeLines = new List<Timeline> { TimelineMapper.MapTimeline(pushEventDto.payload.timeline) }
+                Timeline = TimelineMapper.MapTimeline(pushEventDto.payload.timeline)
             };
 
-            return new Dictionary<string, MatchEvent>
-            {
-                { matchId, pushEvent }
-            };
+            return matchEvent;
         }
     }
 }
