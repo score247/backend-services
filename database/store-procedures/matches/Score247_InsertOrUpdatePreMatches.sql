@@ -4,7 +4,7 @@ BEGIN
     DECLARE e INT DEFAULT JSON_LENGTH(matches);
 
     WHILE i < e DO                                                                                                              
-        INSERT INTO score247_db2.`Match` VALUES (
+        INSERT INTO `Match` VALUES (
 			JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].Id'))),
 			JSON_EXTRACT(matches, CONCAT('$[', i, ']')),
             language, 
@@ -14,7 +14,7 @@ BEGIN
             JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].Region'))),
             now(),
             now())
-            ON DUPLICATE KEY UPDATE
+		ON DUPLICATE KEY UPDATE
             Value = JSON_EXTRACT(matches, CONCAT('$[', i, ']')),
             EventDate = STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].EventDate'))),'%Y-%m-%dT%H:%i:%s+00:00'),
             ModifiedTime = now();
