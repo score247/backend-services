@@ -38,6 +38,7 @@
 
         private async Task FetchPostMatches(DateTime from, DateTime to, Language language)
         {
+            // TODO : move to config the batch size
             int batchSize = 10;
 
             var matches = await matchService.GetPostMatches(from, to, language);

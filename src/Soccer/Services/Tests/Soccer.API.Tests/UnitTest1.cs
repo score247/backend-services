@@ -1,3 +1,5 @@
+using Score247.Shared.Enumerations;
+using Soccer.Core._Shared.Enumerations;
 using Xunit;
 
 namespace Soccer.API.Tests
@@ -7,7 +9,11 @@ namespace Soccer.API.Tests
         [Fact]
         public void Test1()
         {
+            var status = "live";
 
+            var test = Enumeration.FromDisplayName<MatchStatus>(status);
+
+            Assert.Equal("live", test.DisplayName);
         }
     }
 }

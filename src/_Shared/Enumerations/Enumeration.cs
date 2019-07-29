@@ -19,9 +19,9 @@
             DisplayName = displayName;
         }
 
-        public string DisplayName { get; }
+        public string DisplayName { get; set; }
 
-        public byte Value { get; }
+        public byte Value { get; set; }
 
         public static byte AbsoluteDifference(Enumeration firstValue, Enumeration secondValue)
         {
