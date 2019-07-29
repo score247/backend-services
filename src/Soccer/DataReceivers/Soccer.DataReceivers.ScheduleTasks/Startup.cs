@@ -120,6 +120,7 @@
 
             services.AddScoped<IFetchPreMatchesTask, FetchPreMatchesTask>();
             services.AddScoped<IFetchPostMatchesTask, FetchPostMatchesTask>();
+            services.AddScoped<IFetchLiveMatchesTask, FetchLiveMatchesTask>();
         }
 
         private static void RunHangfireJobs(IAppSettings appSettings)
@@ -129,6 +130,9 @@
 
             RecurringJob.AddOrUpdate<IFetchPostMatchesTask>(
                 "FetchPostMatch", job => job.FetchPostMatches(appSettings.ScheduleTasksSettings.FetchMatchScheduleDateSpan), " 0 0/6 * * *");
+
+            RecurringJob.AddOrUpdate<IFetchLiveMatchesTask>(
+                "FetchLiveMatch", job => job.FetchLiveMatches(), "*/45 * * * *");
         }
     }
 }

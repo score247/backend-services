@@ -12,7 +12,7 @@
 
     public interface IFetchLiveMatchesTask
     {
-        Task FetchPostMatches(int dateSpan);
+        Task FetchLiveMatches();
     }
 
     public class FetchLiveMatchesTask : IFetchLiveMatchesTask
@@ -26,7 +26,7 @@
             this.matchService = matchService;
         }
 
-        public async Task FetchPostMatches(int dateSpan)
+        public async Task FetchLiveMatches()
         {
             foreach (var language in Enumeration.GetAll<Language>())
             {
@@ -41,8 +41,8 @@
                 }
 
                 if (liveMatches.Any())
-                {                    
-                    await messageBus.Publish<ILiveMatchUpdatedEvent>(new { Matches = matches, Language = language.DisplayName });
+                {
+                    await PublishLiveMatchEvents(liveMatches, language);
                 }
             }
         }
@@ -56,6 +56,18 @@
                     MatchId = match.Id,
                     match.MatchResult.MatchStatus,
                     match.MatchResult.EventStatus,
+                    Language = language.DisplayName
+                });
+            }
+        }
+
+        private async Task PublishLiveMatchEvents(IEnumerable<Match> matches, Language language)
+        {
+            foreach (var match in matches)
+            {
+                await messageBus.Publish<ILiveMatchUpdatedEvent>(new
+                {
+                    MatchId = match.Id,
                     Language = language.DisplayName
                 });
             }

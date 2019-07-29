@@ -1,12 +1,12 @@
 ﻿namespace Soccer.Core.Matches.Events
 {
+    using Soccer.Core.Matches.Models;
+
     public interface ILiveMatchUpdatedToClosedEvent
     {
         string MatchId { get; }
 
-        string MatchStatus { get; }
-
-        string EventStatus { get; }
+        MatchResult Result { get; }
 
         string Language { get; }
     }

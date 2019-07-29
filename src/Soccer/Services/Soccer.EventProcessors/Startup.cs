@@ -10,7 +10,6 @@
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -90,6 +89,7 @@
                            e.UseMessageRetry(x => x.Interval(2, 100));
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<FetchPreMatchesConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<UpdatePostMatchesConsumer>());
+                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<UpdateLiveMatchesConsumer>());
                        });
                    });
 
