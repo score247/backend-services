@@ -1,6 +1,7 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     using System;
+    using System.Linq;
     using System.Threading.Tasks;
     using MassTransit;
     using Score247.Shared.Enumerations;
@@ -37,9 +38,15 @@
 
         private async Task FetchPostMatches(DateTime from, DateTime to, Language language)
         {
+            int batchSize = 10;
+
             var matches = await matchService.GetPostMatches(from, to, language);
 
-            await messageBus.Publish<IPostMatchUpdatedEvent>(new { Matches = matches, Language = language.DisplayName });
+            for (var i = 0; i * batchSize < matches.Count; i++)
+            {
+                var updatedMatches = matches.Skip(i * batchSize).Take(batchSize);
+                await messageBus.Publish<IPostMatchUpdatedEvent>(new { Matches = updatedMatches, Language = language.DisplayName });
+            }
         }
     }
 }

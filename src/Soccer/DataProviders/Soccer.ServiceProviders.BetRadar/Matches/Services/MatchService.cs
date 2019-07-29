@@ -40,7 +40,7 @@
             this.logger = logger;
         }
 
-        public async Task<IReadOnlyList<Match>> GetPostMatches(DateTime utcFrom, DateTime utcTo, Language language)
+        public async Task<IList<Match>> GetPostMatches(DateTime utcFrom, DateTime utcTo, Language language)
         {
             var matches = new List<Match>();
             var sportRadarLanguage = language.ToSportRadarFormat();

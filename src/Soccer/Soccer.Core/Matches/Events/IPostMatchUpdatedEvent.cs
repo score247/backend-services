@@ -5,7 +5,7 @@
 
     public interface IPostMatchUpdatedEvent
     {
-        IReadOnlyList<Match> Matches { get; }
+        IList<Match> Matches { get; }
 
         string Language { get; }
     }

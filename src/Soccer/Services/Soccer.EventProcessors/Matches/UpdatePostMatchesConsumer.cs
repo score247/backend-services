@@ -1,5 +1,6 @@
 ﻿namespace Soccer.EventProcessors.Matches
 {
+    using System;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using MassTransit;
@@ -17,10 +18,18 @@
 
         public async Task Consume(ConsumeContext<IPostMatchUpdatedEvent> context)
         {
-            var message = context.Message;
-            var command = new InsertOrUpdateMatchesCommand(message.Matches, message.Language);
+            try
+            {
+                var message = context.Message;
+                var command = new InsertOrUpdateMatchesCommand(message.Matches, message.Language);
 
-            await dynamicRepository.ExecuteAsync(command);
+                await dynamicRepository.ExecuteAsync(command);
+            }
+            catch (Exception ex)
+            {
+
+            }
+            
         }
     }
 }
