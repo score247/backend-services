@@ -23,8 +23,6 @@
 
     public class Startup
     {
-        private const int OneYearDays = 365;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -41,6 +39,7 @@
 
             var appSettings = new AppSettings(Configuration);
             services.AddSingleton<IAppSettings>(appSettings);
+
             RegisterLogging(services);
             RegisterRabbitMq(services);
             RegisterSportRadarDataProvider(services);
@@ -116,7 +115,8 @@
 
         private void RegisterHangfire(IServiceCollection services)
         {
-            services.AddHangfire(x => x.UseStorage(new MySqlStorage(Configuration.GetConnectionString("Hangfire"))));
+            services.AddHangfire(x
+                => x.UseStorage(new MySqlStorage(Configuration.GetConnectionString("Hangfire"))));
 
             services.AddScoped<IFetchPreMatchesTask, FetchPreMatchesTask>();
             services.AddScoped<IFetchPostMatchesTask, FetchPostMatchesTask>();

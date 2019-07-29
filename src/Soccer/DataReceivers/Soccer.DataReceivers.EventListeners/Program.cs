@@ -43,10 +43,7 @@
                 })
                 .ConfigureAppConfiguration((hostingContext, config) =>
                 {
-                    IHostingEnvironment env = hostingContext.HostingEnvironment;
-
-                    config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                        .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                    config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
                 })
                 .UseStartup<Startup>()
                 .UseUrls("http://0.0.0.0:5001");

@@ -8,6 +8,7 @@
     using Soccer.Core._Shared.Enumerations;
     using Soccer.Core.Matches.Events;
     using Soccer.DataProviders.Matches.Services;
+    using Soccer.DataReceivers.ScheduleTasks._Shared.Configurations;
 
     public interface IFetchPostMatchesTask
     {
@@ -18,9 +19,11 @@
     {
         private readonly IMatchService matchService;
         private readonly IBus messageBus;
+        private readonly IAppSettings appSettings;
 
-        public FetchPostMatchesTask(IBus messageBus, IMatchService matchService)
+        public FetchPostMatchesTask(IBus messageBus, IAppSettings appSettings, IMatchService matchService)
         {
+            this.appSettings = appSettings;
             this.messageBus = messageBus;
             this.matchService = matchService;
         }
@@ -38,14 +41,13 @@
 
         private async Task FetchPostMatches(DateTime from, DateTime to, Language language)
         {
-            // TODO : move to config the batch size
-            int batchSize = 10;
-
+            int batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
             var matches = await matchService.GetPostMatches(from, to, language);
 
             for (var i = 0; i * batchSize < matches.Count; i++)
             {
                 var updatedMatches = matches.Skip(i * batchSize).Take(batchSize);
+
                 await messageBus.Publish<IPostMatchUpdatedEvent>(new { Matches = updatedMatches, Language = language.DisplayName });
             }
         }

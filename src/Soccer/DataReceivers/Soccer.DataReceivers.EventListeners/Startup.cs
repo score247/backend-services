@@ -39,15 +39,6 @@
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc
             };
 
-            LogManager
-                 .SetDefaultLogCategory(Configuration["Fanex.Logging:DefaultCategory"])
-                 .Use(new SentryLogging(new SentryEngineOptions
-                 {
-                     Dsn = new Dsn(Configuration["Fanex.Logging:SentryUrl"])
-                 }));
-
-            services.AddSingleton(Logger.Log);
-
             var appSettings = new AppSettings(Configuration);
             services.AddSingleton<IAppSettings>(appSettings);
             services.AddSingleton<ICacheService, CacheService>();

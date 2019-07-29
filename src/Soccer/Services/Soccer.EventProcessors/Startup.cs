@@ -1,10 +1,13 @@
 ﻿namespace Soccer.EventProcessors
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Data.Repository;
+    using Fanex.Logging;
+    using Fanex.Logging.Sentry;
     using GreenPipes;
     using MassTransit;
     using Microsoft.AspNetCore.Builder;
@@ -13,6 +16,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
+    using Sentry;
     using Soccer.Database;
     using Soccer.EventProcessors.Matches;
 
@@ -28,6 +32,7 @@
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            RegisterLogging(services);
             RegisterDatabase(services);
             RegisterRabbitMq(services);
 
@@ -64,6 +69,18 @@
             SqlMappers.RegisterJsonTypeHandlers();
         }
 
+        private void RegisterLogging(IServiceCollection services)
+        {
+            LogManager
+                 .SetDefaultLogCategory(Configuration["Fanex.Logging:DefaultCategory"])
+                 .Use(new SentryLogging(new SentryEngineOptions
+                 {
+                     Dsn = new Dsn(Configuration["Fanex.Logging:SentryUrl"])
+                 }));
+
+            services.AddSingleton(Logger.Log);
+        }
+
         private void RegisterDatabase(IServiceCollection services)
         {
             services.AddSingleton<IDynamicRepository, DynamicRepository>();
@@ -86,7 +103,17 @@
                        cfg.ReceiveEndpoint(host, "score247", e =>
                        {
                            e.PrefetchCount = 16;
-                           e.UseMessageRetry(x => x.Interval(2, 100));
+                           e.UseMessageRetry(x =>
+                           {
+                               x.Interval(2, 100);
+                               x.Handle<Exception>((ex) =>
+                               {
+                                   var logger = services.BuildServiceProvider().GetRequiredService<ILogger>();
+                                   logger.Error(ex.Message, ex);
+
+                                   return true;
+                               });
+                           });
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<FetchPreMatchesConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<UpdatePostMatchesConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<UpdateLiveMatchesConsumer>());
