@@ -2,9 +2,9 @@
 {
     using System.Threading.Tasks;
     using MassTransit;
-    using Soccer.Core.Matches.Events;
+    using Soccer.Core.Matches.Extensions;
+    using Soccer.Core.Matches.QueueMessages.MatchEvents;
     using Soccer.DataProviders.Matches.Services;
-    using Soccer.DataReceivers.EventListeners.Matches.MatchEventHandlers;
 
     public interface IMatchEventListener
     {
@@ -15,29 +15,27 @@
     {
         private readonly IBus messageBus;
         private readonly IMatchEventListenerService eventListenerService;
-        private readonly IMatchTimeHandler matchTimeHandler;
-        private readonly IPenaltyEventHandler penaltyHandler;
 
         public MatchEventListener(
             IBus messageBus,
-            IMatchEventListenerService eventListenerService,
-            IMatchTimeHandler matchTimeHandler,
-            IPenaltyEventHandler penaltyHandler)
+            IMatchEventListenerService eventListenerService)
         {
             this.messageBus = messageBus;
             this.eventListenerService = eventListenerService;
-            this.matchTimeHandler = matchTimeHandler;
-            this.penaltyHandler = penaltyHandler;
         }
 
         public async Task ListenMatchEvents()
         {
             await eventListenerService.ListenEvents(async (matchEvent) =>
             {
-                matchTimeHandler.Handle(matchEvent);
-                await penaltyHandler.Handle(matchEvent);
-
-                await messageBus.Publish<IMatchEventsReceivedEvent>(new { MatchEvent = matchEvent });
+                if (matchEvent.Timeline.IsScoreChangeInPenalty() && matchEvent.Timeline.IsShootOutInPenalty())
+                {
+                    await messageBus.Publish<IPenaltyEventReceived>(new PenaltyEventReceived(matchEvent));
+                }
+                else
+                {
+                    await messageBus.Publish<INormalEventReceived>(new NormalEventReceived(matchEvent));
+                }
             });
         }
     }

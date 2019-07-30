@@ -21,7 +21,6 @@
     using Soccer.DataProviders.SportRadar.Matches.Services;
     using Soccer.DataReceivers.EventListeners._Shared.Configurations;
     using Soccer.DataReceivers.EventListeners.Matches;
-    using Soccer.DataReceivers.EventListeners.Matches.MatchEventHandlers;
 
     public class Startup
     {
@@ -114,8 +113,6 @@
             services.AddSingleton<IMatchService, MatchService>();
             services.AddSingleton<IMatchEventListenerService, MatchEventListenerService>();
 
-            services.AddScoped<IPenaltyEventHandler, PenaltyEventHandler>();
-            services.AddScoped<IMatchTimeHandler, MatchTimeHandler>();
             services.AddScoped<IMatchEventListener, MatchEventListener>();
         }
 

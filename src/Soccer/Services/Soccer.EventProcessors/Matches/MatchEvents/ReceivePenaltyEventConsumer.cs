@@ -1,47 +1,56 @@
-﻿namespace Soccer.DataReceivers.EventListeners.Matches.MatchEventHandlers
+﻿namespace Soccer.EventProcessors.Matches.MatchEvents
 {
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Caching;
-    using Soccer.Core.Matches.Extensions;
+    using Fanex.Data.Repository;
+    using MassTransit;
     using Soccer.Core.Matches.Models;
+    using Soccer.Core.Matches.QueueMessages;
+    using Soccer.Core.Matches.QueueMessages.MatchEvents;
 
-    public interface IPenaltyEventHandler
+    public class ReceivePenaltyEventConsumer : BaseMatchEventConsumer, IConsumer<IPenaltyEventReceived>
     {
-        Task Handle(MatchEvent matchEvent);
-    }
-
-    public class PenaltyEventHandler : IPenaltyEventHandler
-    {
-        private readonly ICacheService cacheService;
-
         private static readonly CacheItemOptions MatchPenaltyCacheOptions = new CacheItemOptions
         {
             SlidingExpiration = TimeSpan.FromMinutes(10),
         };
 
-        public PenaltyEventHandler(ICacheService cacheService)
+        private readonly ICacheService cacheService;
+        private readonly IBus messageBus;
+
+        public ReceivePenaltyEventConsumer(IBus messageBus, ICacheService cacheService, IDynamicRepository dynamicRepository)
+            : base(cacheService, dynamicRepository)
         {
+            this.messageBus = messageBus;
             this.cacheService = cacheService;
         }
 
-        public async Task Handle(MatchEvent matchEvent)
+        public async Task Consume(ConsumeContext<IPenaltyEventReceived> context)
         {
-            if (matchEvent.Timeline.IsScoreChangeInPenalty() && matchEvent.Timeline.IsShootOutInPenalty())
+            var matchEvent = context?.Message?.MatchEvent;
+
+            if (await EventNotProcessed(matchEvent))
             {
-                var matchEventsCacheKey = $"Penalty_Match_{matchEvent.MatchId}";
-                var cachedPenaltyEvents = (await cacheService.GetAsync<IList<Timeline>>(matchEventsCacheKey))
-                    ?? new List<Timeline>();
+                await HandlePenalty(matchEvent);
 
-                cachedPenaltyEvents.Add(matchEvent.Timeline);
-
-                await HandleLastShootAndCombineInfoWithCurrentShoot(matchEvent.Timeline, matchEvent.MatchId);
-
-                SetTotalScore(cachedPenaltyEvents, matchEvent.Timeline);
-
-                await CachePenaltyEvents(matchEventsCacheKey, cachedPenaltyEvents);
+                await messageBus.Publish<IMatchEventProcessed>(new MatchEventProcessed(matchEvent));
             }
+        }
+
+        public async Task HandlePenalty(MatchEvent matchEvent)
+        {
+            var matchEventsCacheKey = $"Penalty_Match_{matchEvent.MatchId}";
+            var cachedPenaltyEvents = (await cacheService.GetAsync<IList<Timeline>>(matchEventsCacheKey)) ?? new List<Timeline>();
+
+            cachedPenaltyEvents.Add(matchEvent.Timeline);
+
+            await HandleLastShootAndCombineInfoWithCurrentShoot(matchEvent.Timeline, matchEvent.MatchId);
+
+            SetTotalScore(cachedPenaltyEvents, matchEvent.Timeline);
+
+            await CachePenaltyEvents(matchEventsCacheKey, cachedPenaltyEvents);
         }
 
         private async Task HandleLastShootAndCombineInfoWithCurrentShoot(Timeline shootoutEvent, string matchId)
@@ -87,9 +96,9 @@
         }
 
         private async Task HandleLatestPenaltyEvent(
-           string latestEventCacheKey,
-           Timeline shootoutEvent,
-           Timeline latestPenalty)
+            string latestEventCacheKey,
+            Timeline shootoutEvent,
+            Timeline latestPenalty)
         {
             if (latestPenalty != null)
             {

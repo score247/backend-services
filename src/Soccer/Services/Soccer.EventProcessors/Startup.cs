@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Fanex.Caching.Memory;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Data.Repository;
@@ -32,6 +33,7 @@
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            RegisterCache(services);
             RegisterLogging(services);
             RegisterDatabase(services);
             RegisterRabbitMq(services);
@@ -67,6 +69,11 @@
                 .Run();
 
             SqlMappers.RegisterJsonTypeHandlers();
+        }
+
+        private void RegisterCache(IServiceCollection services)
+        {
+            services.AddMemoryCache(Configuration.GetSection("fanex.caching"));
         }
 
         private void RegisterLogging(IServiceCollection services)
