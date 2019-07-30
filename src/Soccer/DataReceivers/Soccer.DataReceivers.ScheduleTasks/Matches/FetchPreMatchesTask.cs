@@ -3,6 +3,7 @@
     using System;
     using System.Linq;
     using System.Threading.Tasks;
+    using Hangfire;
     using MassTransit;
     using Score247.Shared.Enumerations;
     using Soccer.Core._Shared.Enumerations;
@@ -12,7 +13,9 @@
 
     public interface IFetchPreMatchesTask
     {
-        Task FetchPreMatches(int dateSpan);
+        void FetchPreMatches(int dateSpan);
+
+        Task FetchPreMatchesForDate(DateTime date, Language language);
     }
 
     public class FetchPreMatchesTask : IFetchPreMatchesTask
@@ -28,21 +31,24 @@
             this.matchService = matchService;
         }
 
-        public async Task FetchPreMatches(int dateSpan)
+        public void FetchPreMatches(int dateSpan)
         {
             var from = DateTime.UtcNow;
             var to = DateTime.UtcNow.AddDays(dateSpan);
 
             foreach (var language in Enumeration.GetAll<Language>())
             {
-                await FetchPreMatches(from, to, language);
+                for (var date = from; date.Date <= to; date = date.AddDays(1))
+                {
+                    BackgroundJob.Enqueue(() => FetchPreMatchesForDate(date, language));
+                }
             }
         }
 
-        private async Task FetchPreMatches(DateTime from, DateTime to, Language language)
+        public async Task FetchPreMatchesForDate(DateTime date, Language language)
         {
             int batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
-            var matches = await matchService.GetPreMatches(from, to, language);
+            var matches = await matchService.GetPreMatches(date, language);
 
             for (var i = 0; i * batchSize < matches.Count; i++)
             {

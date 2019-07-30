@@ -6,7 +6,7 @@
     {
         string MatchId { get; }
 
-        MatchResult Result { get; }
+        MatchResult MatchResult { get; }
 
         string Language { get; }
     }

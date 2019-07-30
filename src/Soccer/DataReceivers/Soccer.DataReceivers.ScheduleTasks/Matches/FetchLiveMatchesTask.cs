@@ -1,5 +1,6 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
+    using Hangfire;
     using MassTransit;
     using Score247.Shared.Enumerations;
     using Soccer.Core._Shared.Enumerations;
@@ -12,7 +13,9 @@
 
     public interface IFetchLiveMatchesTask
     {
-        Task FetchLiveMatches();
+        void FetchLiveMatches();
+
+        Task FetchLiveMatches(Language language);
     }
 
     public class FetchLiveMatchesTask : IFetchLiveMatchesTask
@@ -20,30 +23,37 @@
         private readonly IMatchService matchService;
         private readonly IBus messageBus;
 
-        public FetchLiveMatchesTask(IBus messageBus, IMatchService matchService)
+        public FetchLiveMatchesTask(
+            IBus messageBus, 
+            IMatchService matchService)
         {
             this.messageBus = messageBus;
             this.matchService = matchService;
         }
 
-        public async Task FetchLiveMatches()
+        public void FetchLiveMatches()
         {
             foreach (var language in Enumeration.GetAll<Language>())
             {
-                var matches = await matchService.GetLiveMatches(language);
+                BackgroundJob.Enqueue(() => FetchLiveMatches(language));
+            }
+        }
 
-                var liveMatches = matches.Where(x => x.MatchResult.EventStatus == MatchStatus.Live);
-                var closedMatches = matches.Where(x => x.MatchResult.EventStatus == MatchStatus.Closed);
+        public async Task FetchLiveMatches(Language language)
+        {
+            var matches = await matchService.GetLiveMatches(language);
 
-                if (closedMatches.Any())
-                {
-                    await PublishClosedMatchEvents(closedMatches, language);
-                }
+            var liveMatches = matches.Where(x => x.MatchResult.EventStatus == MatchStatus.Live);
+            var closedMatches = matches.Where(x => x.MatchResult.EventStatus == MatchStatus.Closed);
 
-                if (liveMatches.Any())
-                {
-                    await PublishLiveMatchEvents(liveMatches, language);
-                }
+            if (closedMatches.Any())
+            {
+                await PublishClosedMatchEvents(closedMatches, language);
+            }
+
+            if (liveMatches.Any())
+            {
+                await PublishLiveMatchEvents(liveMatches, language);
             }
         }
 

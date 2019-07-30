@@ -40,56 +40,50 @@
             this.logger = logger;
         }
 
-        public async Task<IList<Match>> GetPostMatches(DateTime utcFrom, DateTime utcTo, Language language)
+        public async Task<IReadOnlyList<Match>> GetPostMatches(DateTime date, Language language)
         {
             var matches = new List<Match>();
             var sportRadarLanguage = language.ToSportRadarFormat();
 
             foreach (var region in soccerSettings.Regions)
             {
-                for (var date = utcFrom.Date; date.Date <= utcTo.Date; date = date.AddDays(1))
+                try
                 {
-                    try
-                    {
-                        var matchResult = await matchApi.GetResult(region.Name, sportRadarLanguage, date.ToSportRadarFormat(), region.Key);
+                    var matchResult = await matchApi.GetResult(region.Name, sportRadarLanguage, date.ToSportRadarFormat(), region.Key);
 
-                        if (matchResult?.results?.Any() == true)
-                        {
-                            matches.AddRange(matchResult.results.Select(mr => MatchMapper.MapMatch(mr.sport_event, mr.sport_event_status, region.Name)));
-                        }
-                    }
-                    catch (Exception ex)
+                    if (matchResult?.results?.Any() == true)
                     {
-                        await logger.InfoAsync(ex.Message);
+                        matches.AddRange(matchResult.results.Select(mr => MatchMapper.MapMatch(mr.sport_event, mr.sport_event_status, region.Name)));
                     }
+                }
+                catch (Exception ex)
+                {
+                    await logger.InfoAsync(ex.Message);
                 }
             }
 
             return matches;
         }
 
-        public async Task<IReadOnlyList<Match>> GetPreMatches(DateTime utcFrom, DateTime utcTo, Language language)
+        public async Task<IReadOnlyList<Match>> GetPreMatches(DateTime date, Language language)
         {
             var matches = new List<Match>();
             var sportRadarLanguage = language.ToSportRadarFormat();
 
             foreach (var region in soccerSettings.Regions)
             {
-                for (var date = utcFrom.Date; date.Date <= utcTo.Date; date = date.AddDays(1))
+                try
                 {
-                    try
-                    {
-                        var matchSchedule = await matchApi.GetSchedule(region.Name, sportRadarLanguage, date.ToSportRadarFormat(), region.Key);
+                    var matchSchedule = await matchApi.GetSchedule(region.Name, sportRadarLanguage, date.ToSportRadarFormat(), region.Key);
 
-                        if (matchSchedule?.sport_events?.Any() == true)
-                        {
-                            matches.AddRange(matchSchedule.sport_events.Select(ms => MatchMapper.MapMatch(ms, null, region.Name)));
-                        }
-                    }
-                    catch (Exception ex)
+                    if (matchSchedule?.sport_events?.Any() == true)
                     {
-                        await logger.InfoAsync(ex.Message);
+                        matches.AddRange(matchSchedule.sport_events.Select(ms => MatchMapper.MapMatch(ms, null, region.Name)));
                     }
+                }
+                catch (Exception ex)
+                {
+                    await logger.InfoAsync(ex.Message);
                 }
             }
 

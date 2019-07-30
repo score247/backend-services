@@ -8,9 +8,9 @@
 
     public interface IMatchService
     {
-        Task<IReadOnlyList<Match>> GetPreMatches(DateTime utcFrom, DateTime utcTo, Language language);
+        Task<IReadOnlyList<Match>> GetPreMatches(DateTime date, Language language);
 
-        Task<IList<Match>> GetPostMatches(DateTime utcFrom, DateTime utcTo, Language language);
+        Task<IReadOnlyList<Match>> GetPostMatches(DateTime date, Language language);
 
         Task<IReadOnlyList<Match>> GetLiveMatches(Language language);
     }

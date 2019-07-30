@@ -19,7 +19,7 @@
         {
             var message = context.Message;
 
-            var command = new UpdateMatchResultCommand(message.MatchId, message.Result, message.Language);
+            var command = new UpdateMatchResultCommand(message.MatchId, message.MatchResult, message.Language);
 
             await dynamicRepository.ExecuteAsync(command);
         }
