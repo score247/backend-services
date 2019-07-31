@@ -7,6 +7,9 @@
     /// </summary>
     public abstract class BaseEntity
     {
+        protected BaseEntity()
+        { }
+
         public string Id { get; set; }
 
         public DateTimeOffset CreatedTime { get; set; }
@@ -20,29 +23,31 @@
             var other = obj as BaseEntity;
 
             if (other is null)
+            {
                 return false;
+            }
 
             if (ReferenceEquals(this, other))
+            {
                 return true;
+            }
 
             if (Actual.GetType() != other.Actual.GetType())
+            {
                 return false;
+            }
 
-            if (Id?.Length == 0 || other.Id?.Length == 0)
-                return false;
-
-            return Id == other.Id;
+            return !(Id?.Length == 0 || other.Id?.Length == 0) && Id == other.Id;
         }
 
         public static bool operator ==(BaseEntity a, BaseEntity b)
         {
             if (a is null && b is null)
+            {
                 return true;
+            }
 
-            if (a is null || b is null)
-                return false;
-
-            return a.Equals(b);
+            return !(a is null || b is null) && a.Equals(b);
         }
 
         public static bool operator !=(BaseEntity a, BaseEntity b)
@@ -52,7 +57,7 @@
 
         public override int GetHashCode()
         {
-            return (Actual.GetType().ToString() + Id).GetHashCode();
+            return (Actual.GetType() + Id).GetHashCode();
         }
     }
 }

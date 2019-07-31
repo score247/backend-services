@@ -1,10 +1,9 @@
 ﻿namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 {
-    using System.Collections.Generic;
     using System.Linq;
     using Score247.Shared.Enumerations;
-    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.DataProviders.SportRadar.Leagues.DataMappers;
     using Soccer.DataProviders.SportRadar.Matches.Dtos;
     using Soccer.DataProviders.SportRadar.Teams.DataMappers;
@@ -86,31 +85,21 @@
         }
 
         public static Venue MapVenue(VenueDto venueDto)
-        {
-            var venue = new Venue();
-
-            if (venueDto != null)
-            {
-                venue.Name = venueDto.name;
-                venue.Capacity = venueDto.capacity;
-                venue.CityName = venueDto.city_name;
-                venue.CountryName = venueDto.country_name;
-                venue.CountryCode = venueDto.country_code;
-            }
-
-            return venue;
-        }
+            => (venueDto == null)
+                ? new Venue()
+                : new Venue
+                {
+                    Name = venueDto.name,
+                    Capacity = venueDto.capacity,
+                    CityName = venueDto.city_name,
+                    CountryName = venueDto.country_name,
+                    CountryCode = venueDto.country_code
+                };
 
         public static MatchEvent MapMatchEvent(MatchEventDto pushEventDto)
-        {
-            var matchEvent = new MatchEvent
-            {
-                MatchId = pushEventDto.metadata.sport_event_id,
-                MatchResult = MapMatchResult(pushEventDto.payload.sport_event_status),
-                Timeline = TimelineMapper.MapTimeline(pushEventDto.payload.timeline)
-            };
-
-            return matchEvent;
-        }
+            => new MatchEvent(
+                    pushEventDto.metadata.sport_event_id,
+                    MapMatchResult(pushEventDto.payload.sport_event_status),
+                    TimelineMapper.MapTimeline(pushEventDto.payload.timeline));
     }
 }

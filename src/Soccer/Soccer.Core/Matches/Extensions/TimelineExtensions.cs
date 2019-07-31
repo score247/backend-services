@@ -6,10 +6,10 @@
     {
         private const string NotTakenYetStatus = "not_taken_yet";
 
-        public static bool IsScoreChangeInPenalty(this Timeline timeline)
+        public static bool IsScoreChangeInPenalty(this TimelineEventEntity timeline)
             => timeline.PeriodType.IsPenalties && timeline.Type.IsScoreChange;
 
-        public static bool IsShootOutInPenalty(this Timeline timeline)
+        public static bool IsShootOutInPenalty(this TimelineEventEntity timeline)
             => timeline.PeriodType.IsPenalties && timeline.Type.IsPenaltyShootout && timeline.PenaltyStatus != NotTakenYetStatus;
     }
 }

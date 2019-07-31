@@ -65,7 +65,9 @@
             DbSettingProviderManager
                 .StartNewSession()
                 .Use(connections)
-                .WithMySql(resourcePath: Configuration["AppDataPath"]) // It comes with a default connection string provider, which works well with MySql connections, as well as a default DbSetting provider
+                // It comes with a default connection string provider, which works well with MySql connections,
+                // as well as a default DbSetting provider
+                .WithMySql(resourcePath: Configuration["AppDataPath"])
                 .Run();
 
             SqlMappers.RegisterJsonTypeHandlers();

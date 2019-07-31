@@ -1,20 +1,18 @@
 ﻿namespace Soccer.Database.Matches.Commands
 {
-    using System;
     using Fanex.Data.Repository;
-    using Score247.Shared.Extensions;
+    using Newtonsoft.Json;
 
     public abstract class BaseCommand : NonQueryCommand
     {
-        protected BaseCommand(Func<object, string> jsonConvert)
-        {
-            ToJsonString = jsonConvert ?? JsonTypeHandler.SerializeObjectWithUtcSetting;
-        }
-
-        protected BaseCommand() : this(null)
-        {
-        }
-
-        protected Func<object, string> ToJsonString { get; }
+        protected string ToJsonString(object obj)
+          => obj == null
+          ? "null"
+          : JsonConvert.SerializeObject(
+              obj,
+              new JsonSerializerSettings
+              {
+                  DateTimeZoneHandling = DateTimeZoneHandling.Utc
+              });
     }
 }

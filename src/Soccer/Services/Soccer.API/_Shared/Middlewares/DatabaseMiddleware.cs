@@ -20,7 +20,9 @@
             DbSettingProviderManager
                 .StartNewSession()
                 .Use(connections)
-                .WithMySql(resourcePath: configuration["AppDataPath"]) // It comes with a default connection string provider, which works well with MySql connections, as well as a default DbSetting provider
+                // It comes with a default connection string provider, which works well with MySql connections,
+                // as well as a default DbSetting provider
+                .WithMySql(resourcePath: configuration["AppDataPath"])
                 .Run();
         }
     }

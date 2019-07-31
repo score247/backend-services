@@ -2,10 +2,17 @@
 {
     public class MatchEvent
     {
-        public string MatchId { get; set; }
+        public MatchEvent(string matchId, MatchResult matchResult, TimelineEventEntity timeline)
+        {
+            MatchId = matchId;
+            MatchResult = matchResult;
+            Timeline = timeline;
+        }
 
-        public MatchResult MatchResult { get; set; }
+        public string MatchId { get; }
 
-        public Timeline Timeline { get; set; }
+        public MatchResult MatchResult { get; }
+
+        public TimelineEventEntity Timeline { get; }
     }
 }

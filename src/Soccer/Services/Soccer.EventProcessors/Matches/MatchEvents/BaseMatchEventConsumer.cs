@@ -26,30 +26,33 @@
             this.cacheService = cacheService;
         }
 
-        public async Task<bool> EventNotProcessed(MatchEvent matchEvent)
+        public async Task<bool> IsTimelineProcessed(MatchEvent matchEvent)
         {
             if (matchEvent == null)
             {
-                return false;
+                return true;
             }
 
             var cacheKey = $"MatchPushEvent_Match_{matchEvent.MatchId}";
-            var matchTimelines = cacheService.Get<IList<Timeline>>(cacheKey);
 
-            if (matchTimelines == null)
+
+            var timeLineList = cacheService.Get<IList<TimelineEventEntity>>(cacheKey);
+
+            if (timeLineList == null || timeLineList.Count == 0)
             {
-                matchTimelines = (await dynamicRepository.FetchAsync<Timeline>(new GetTimelineCriteria(matchEvent.MatchId))).ToList();
+                timeLineList = (await dynamicRepository.FetchAsync<TimelineEventEntity>(new GetTimelineCriteria(matchEvent.MatchId))).ToList();
             }
 
-            if (matchTimelines.Any(e => matchEvent.Timeline.Id == e.Id))
+            if (timeLineList.Contains(matchEvent.Timeline))
             {
-                return false;
+                return true;
             }
 
-            matchTimelines.Add(matchEvent.Timeline);
-            await cacheService.SetAsync(cacheKey, matchTimelines, EventCacheOptions);
+            timeLineList.Add(matchEvent.Timeline);
 
-            return true;
+            await cacheService.SetAsync(cacheKey, timeLineList, EventCacheOptions);
+
+            return false;
         }
     }
 }

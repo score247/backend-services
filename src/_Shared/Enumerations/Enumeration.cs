@@ -70,9 +70,9 @@
         }
 
         public static bool operator ==(Enumeration left, Enumeration right)
-            => ReferenceEquals(left, null) ?
-            ReferenceEquals(right, null) :
-            !ReferenceEquals(right, null) && left.Value == right.Value;
+            => left is null
+            ? right is null
+            : !(right is null) && left.Value == right.Value;
 
         public static bool operator !=(Enumeration left, Enumeration right)
         {
@@ -145,12 +145,12 @@
 
         private static void ValidateInputArguments(Enumeration left, Enumeration right)
         {
-            if (ReferenceEquals(left, null))
+            if (left is null)
             {
                 throw new ArgumentNullException(nameof(left));
             }
 
-            if (ReferenceEquals(right, null))
+            if (right is null)
             {
                 throw new ArgumentNullException(nameof(right));
             }
