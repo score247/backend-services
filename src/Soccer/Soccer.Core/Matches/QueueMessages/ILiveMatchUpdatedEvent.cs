@@ -13,7 +13,5 @@
         }
 
         public string MatchId { get; }
-
-        public string Language { get; }
     }
 }
