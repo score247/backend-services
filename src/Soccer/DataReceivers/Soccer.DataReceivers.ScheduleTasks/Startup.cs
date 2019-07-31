@@ -16,13 +16,14 @@
     using Refit;
     using Sentry;
     using Soccer.DataProviders.Matches.Services;
-    using Soccer.DataProviders.SportRadar._Shared.Configurations;
+    using Soccer.DataProviders.SportRadar.Shared.Configurations;
     using Soccer.DataProviders.SportRadar.Matches.Services;
-    using Soccer.DataReceivers.ScheduleTasks._Shared.Configurations;
+    using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
     using Soccer.DataReceivers.ScheduleTasks.Matches;
 
     public class Startup
     {
+        private const int MaxWorker = 2;
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,9 +33,12 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            JsonConvert.DefaultSettings = () => new JsonSerializerSettings()
+            JsonConvert.DefaultSettings = () =>
             {
-                DateTimeZoneHandling = DateTimeZoneHandling.Utc
+                return new JsonSerializerSettings
+                {
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
+                };
             };
 
             var appSettings = new AppSettings(Configuration);
@@ -66,7 +70,7 @@
                 Authorization = Enumerable.Empty<IDashboardAuthorizationFilter>()
             }).UseHangfireServer(options: new BackgroundJobServerOptions
             {
-                WorkerCount = 2
+                WorkerCount = MaxWorker
             });
 
             RunHangfireJobs(appSettings);

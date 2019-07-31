@@ -1,4 +1,4 @@
-﻿namespace Soccer.DataReceivers.ScheduleTasks._Shared.Configurations
+﻿namespace Soccer.DataReceivers.ScheduleTasks.Shared.Configurations
 {
     using System;
     using System.ComponentModel;

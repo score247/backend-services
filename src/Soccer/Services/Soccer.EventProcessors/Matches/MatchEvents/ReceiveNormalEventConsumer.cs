@@ -5,7 +5,7 @@
     using Fanex.Caching;
     using Fanex.Data.Repository;
     using MassTransit;
-    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;

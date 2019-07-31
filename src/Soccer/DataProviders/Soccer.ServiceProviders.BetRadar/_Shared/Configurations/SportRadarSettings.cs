@@ -1,4 +1,4 @@
-﻿namespace Soccer.DataProviders.SportRadar._Shared.Configurations
+﻿namespace Soccer.DataProviders.SportRadar.Shared.Configurations
 {
     using System.Collections.Generic;
 
@@ -11,26 +11,26 @@
 
     public class SportRadarSettings : ISportRadarSettings
     {
-        public string ServiceUrl { get; set; }
+        public string ServiceUrl { get; }
 
-        public IEnumerable<SportSettings> Sports { get; set; }
+        public IEnumerable<SportSettings> Sports { get; }
     }
 
     public class SportSettings
     {
-        public int Id { get; set; }
+        public int Id { get; }
 
-        public string Name { get; set; }
+        public string Name { get; }
 
-        public IEnumerable<Region> Regions { get; set; }
+        public IEnumerable<Region> Regions { get;  }
     }
 
     public class Region
     {
-        public string Name { get; set; }
+        public string Name { get; }
 
-        public string Key { get; set; }
+        public string Key { get;  }
 
-        public string PushKey { get; set; }
+        public string PushKey { get; }
     }
 }

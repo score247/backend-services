@@ -3,7 +3,7 @@
     using System;
     using MediatR;
     using Score247.Shared.Enumerations;
-    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
 
     public class MatchByIdRequest : IRequest<Match>

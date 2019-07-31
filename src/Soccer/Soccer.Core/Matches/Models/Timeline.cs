@@ -4,7 +4,7 @@
     using System.Collections.Generic;
     using Newtonsoft.Json;
     using Score247.Shared.Base;
-    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.Models;
 
     public class Timeline : BaseModel

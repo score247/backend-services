@@ -17,9 +17,9 @@
     using Refit;
     using Sentry;
     using Soccer.DataProviders.Matches.Services;
-    using Soccer.DataProviders.SportRadar._Shared.Configurations;
+    using Soccer.DataProviders.SportRadar.Shared.Configurations;
     using Soccer.DataProviders.SportRadar.Matches.Services;
-    using Soccer.DataReceivers.EventListeners._Shared.Configurations;
+    using Soccer.DataReceivers.EventListeners.Shared.Configurations;
     using Soccer.DataReceivers.EventListeners.Matches;
 
     public class Startup
@@ -33,9 +33,12 @@
 
         public void ConfigureServices(IServiceCollection services)
         {
-            JsonConvert.DefaultSettings = () => new JsonSerializerSettings()
+            JsonConvert.DefaultSettings = () =>
             {
-                DateTimeZoneHandling = DateTimeZoneHandling.Utc
+                return new JsonSerializerSettings
+                {
+                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
+                };
             };
 
             var appSettings = new AppSettings(Configuration);

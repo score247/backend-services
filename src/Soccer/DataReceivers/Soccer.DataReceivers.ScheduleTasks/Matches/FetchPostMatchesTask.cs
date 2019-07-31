@@ -6,10 +6,10 @@
     using Hangfire;
     using MassTransit;
     using Score247.Shared.Enumerations;
-    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Events;
     using Soccer.DataProviders.Matches.Services;
-    using Soccer.DataReceivers.ScheduleTasks._Shared.Configurations;
+    using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
 
     public interface IFetchPostMatchesTask
     {

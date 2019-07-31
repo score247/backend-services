@@ -4,7 +4,7 @@
     using Fanex.Data.Repository;
     using MassTransit;
     using Score247.Shared.Enumerations;
-    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Database.Matches.Commands;
 

@@ -1,6 +1,6 @@
 ﻿namespace Soccer.Core.Matches.Events
 {
-    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
 
     public interface ILiveMatchUpdatedToClosedEvent

@@ -1,4 +1,4 @@
-﻿namespace Soccer.API._Shared.Middlewares
+﻿namespace Soccer.API.Shared.Middlewares
 {
     using System.Collections.Generic;
     using Fanex.Logging;
@@ -14,6 +14,8 @@
 
     public static class ErrorHandlingMiddleware
     {
+        private const int InternalErrorServerCode = 500;
+
         public static void AddLogging(this IServiceCollection services, IConfiguration configuration)
         {
             LogManager
@@ -48,7 +50,7 @@
 
                     await ExceptionHandler.HandleAsync(exception, context, customInfo);
 
-                    context.Response.StatusCode = 500;
+                    context.Response.StatusCode = InternalErrorServerCode;
                     context.Response.ContentType = "application/json";
                     await context.Response.WriteAsync(exception?.Message);
                 });

@@ -1,4 +1,4 @@
-﻿namespace Soccer.DataReceivers.EventListeners._Shared.Configurations
+﻿namespace Soccer.DataReceivers.EventListeners.Shared.Configurations
 {
     using System;
     using System.ComponentModel;

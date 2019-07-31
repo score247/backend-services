@@ -7,11 +7,11 @@
     using Fanex.Logging;
     using Refit;
     using Score247.Shared.Enumerations;
-    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
     using Soccer.DataProviders.Matches.Services;
-    using Soccer.DataProviders.SportRadar._Shared.Configurations;
-    using Soccer.DataProviders.SportRadar._Shared.Extensions;
+    using Soccer.DataProviders.SportRadar.Shared.Configurations;
+    using Soccer.DataProviders.SportRadar.Shared.Extensions;
     using Soccer.DataProviders.SportRadar.Matches.DataMappers;
     using Soccer.DataProviders.SportRadar.Matches.Dtos;
 

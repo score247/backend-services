@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text;
 
-namespace Soccer.DataProviders.SportRadar._Shared.Extensions
+namespace Soccer.DataProviders.SportRadar.Shared.Extensions
 {
     public static class StreamRequestExtension
     {

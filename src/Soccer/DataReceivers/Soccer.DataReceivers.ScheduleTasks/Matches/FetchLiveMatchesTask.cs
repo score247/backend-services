@@ -4,7 +4,7 @@
     using Hangfire;
     using MassTransit;
     using Score247.Shared.Enumerations;
-    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Events;
     using Soccer.Core.Matches.Models;
     using Soccer.DataProviders.Matches.Services;
@@ -47,9 +47,12 @@
                 {
                     await PublishClosedMatchMessage(match, language);
                 }
-                else if (match.MatchResult.EventStatus.IsLive())
+                else
                 {
-                    await PublishLiveMatchMessage(match, language);
+                    if (match.MatchResult.EventStatus.IsLive())
+                    {
+                        await PublishLiveMatchMessage(match, language);
+                    }
                 }
             }
         }

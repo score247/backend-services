@@ -1,5 +1,5 @@
 using Score247.Shared.Enumerations;
-using Soccer.Core._Shared.Enumerations;
+using Soccer.Core.Shared.Enumerations;
 using Xunit;
 
 namespace Soccer.API.Tests

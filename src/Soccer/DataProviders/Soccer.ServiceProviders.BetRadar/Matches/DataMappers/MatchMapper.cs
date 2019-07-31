@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using Score247.Shared.Enumerations;
-    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
     using Soccer.DataProviders.SportRadar.Leagues.DataMappers;
     using Soccer.DataProviders.SportRadar.Matches.Dtos;

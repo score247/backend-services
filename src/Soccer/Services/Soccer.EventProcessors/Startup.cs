@@ -88,10 +88,8 @@
             services.AddSingleton(Logger.Log);
         }
 
-        private void RegisterDatabase(IServiceCollection services)
-        {
-            services.AddSingleton<IDynamicRepository, DynamicRepository>();
-        }
+        private static void RegisterDatabase(IServiceCollection services)
+            => services.AddSingleton<IDynamicRepository, DynamicRepository>();
 
         private void RegisterRabbitMq(IServiceCollection services)
         {

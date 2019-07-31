@@ -1,6 +1,6 @@
-﻿namespace Soccer.DataProviders.SportRadar._Shared.Extensions
+﻿namespace Soccer.DataProviders.SportRadar.Shared.Extensions
 {
-    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Shared.Enumerations;
     using System.Collections.Generic;
 
     public static class LanguageExtension

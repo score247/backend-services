@@ -1,4 +1,4 @@
-﻿namespace Soccer.DataProviders.SportRadar._Shared.Extensions
+﻿namespace Soccer.DataProviders.SportRadar.Shared.Extensions
 {
     using System;
 

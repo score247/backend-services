@@ -1,6 +1,6 @@
 ﻿namespace Soccer.Core.Matches.Models
 {
-    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Shared.Enumerations;
 
     public class MatchPeriod
     {

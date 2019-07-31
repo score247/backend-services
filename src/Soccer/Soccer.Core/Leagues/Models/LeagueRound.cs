@@ -1,6 +1,6 @@
 ﻿namespace Soccer.Core.Leagues.Models
 {
-    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Shared.Enumerations;
 
     public class LeagueRound
     {

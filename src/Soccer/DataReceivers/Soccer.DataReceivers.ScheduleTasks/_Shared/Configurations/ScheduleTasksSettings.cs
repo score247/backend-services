@@ -1,11 +1,21 @@
-﻿namespace Soccer.DataReceivers.ScheduleTasks._Shared.Configurations
+﻿namespace Soccer.DataReceivers.ScheduleTasks.Shared.Configurations
 {
     public class ScheduleTasksSettings
     {
-        public int QueueBatchSize { get; set; }
+        public ScheduleTasksSettings(
+            int queueBatchSize = 0,
+            int fetchMatchResultDateSpan = 0,
+            int fetchMatchScheduleDateSpan = 0)
+        {
+            QueueBatchSize = queueBatchSize;
+            FetchMatchResultDateSpan = fetchMatchResultDateSpan;
+            FetchMatchScheduleDateSpan = fetchMatchScheduleDateSpan;
+        }
 
-        public int FetchMatchResultDateSpan { get; set; }
+        public int QueueBatchSize { get; }
 
-        public int FetchMatchScheduleDateSpan { get; set; }
+        public int FetchMatchResultDateSpan { get; }
+
+        public int FetchMatchScheduleDateSpan { get; }
     }
 }

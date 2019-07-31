@@ -1,4 +1,4 @@
-﻿namespace Soccer.API._Shared.Middlewares
+﻿namespace Soccer.API.Shared.Middlewares
 {
     using Fanex.Caching;
     using Fanex.Data.Repository;

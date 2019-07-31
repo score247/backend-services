@@ -1,8 +1,8 @@
-﻿namespace Soccer.API._Shared.Middlewares
+﻿namespace Soccer.API.Shared.Middlewares
 {
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Soccer.API._Shared.Configurations;
+    using Soccer.API.Shared.Configurations;
 
     public static class AppSettingsMiddleware
     {

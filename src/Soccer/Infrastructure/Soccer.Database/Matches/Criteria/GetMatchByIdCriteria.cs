@@ -1,7 +1,7 @@
 ﻿namespace Soccer.Database.Matches.Criteria
 {
     using Fanex.Data.Repository;
-    using Soccer.Core._Shared.Enumerations;
+    using Soccer.Core.Shared.Enumerations;
 
     public class GetMatchByIdCriteria : CriteriaBase
     {
