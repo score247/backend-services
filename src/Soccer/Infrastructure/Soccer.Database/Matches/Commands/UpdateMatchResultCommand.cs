@@ -31,8 +31,8 @@
         public override string GetSettingKey() => "Score247_UpdateMatchResult";
 
         public override bool IsValid() =>
-            !string.IsNullOrEmpty(MatchId) &&
-            !string.IsNullOrEmpty(Language) &&
-            !string.IsNullOrEmpty(MatchResult);
+            !string.IsNullOrWhiteSpace(MatchId) &&
+            !string.IsNullOrWhiteSpace(Language) &&
+            !string.IsNullOrWhiteSpace(MatchResult);
     }
 }
