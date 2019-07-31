@@ -6,7 +6,7 @@
 
     public interface IAppSettings
     {
-        ScheduleTasksSettings ScheduleTasksSettings { get; }
+        ScheduleTasksSettings ScheduleTasksSettings { get; set; }
     }
 
     public class AppSettings : IAppSettings
@@ -22,7 +22,7 @@
             ScheduleTasksSettings = scheduleTaskSetting;
         }
 
-        public ScheduleTasksSettings ScheduleTasksSettings { get; }
+        public ScheduleTasksSettings ScheduleTasksSettings { get; set; }
 
         public T GetValue<T>(string key)
         {

@@ -1,23 +1,19 @@
 ﻿namespace Soccer.Database.Matches.Commands
 {
+    using System;
     using System.Collections.Generic;
-    using Fanex.Data.Repository;
-    using Newtonsoft.Json;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
 
-    public class InsertOrUpdateMatchesCommand : NonQueryCommand
+    public class InsertOrUpdateMatchesCommand : BaseCommand
     {
-        public InsertOrUpdateMatchesCommand(IEnumerable<Match> matches, string language)
+        public InsertOrUpdateMatchesCommand(
+            IEnumerable<Match> matches,
+            string language)
+
         {
             SportId = Sport.Soccer.Value;
-            Matches = JsonConvert.SerializeObject(
-                matches,
-                new JsonSerializerSettings()
-                {
-                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
-                });
-
+            Matches = ToJsonString(matches);
             Language = language;
         }
 
@@ -29,6 +25,6 @@
 
         public override string GetSettingKey() => "Score247_InsertOrUpdateMatches";
 
-        public override bool IsValid() => !string.IsNullOrEmpty(Matches) && !string.IsNullOrEmpty(Language);
+        public override bool IsValid() => !string.IsNullOrWhiteSpace(Matches) && !string.IsNullOrWhiteSpace(Language);
     }
 }

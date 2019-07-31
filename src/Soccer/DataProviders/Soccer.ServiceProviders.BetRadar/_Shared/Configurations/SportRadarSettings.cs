@@ -1,36 +1,39 @@
 ﻿namespace Soccer.DataProviders.SportRadar.Shared.Configurations
 {
+    using System;
     using System.Collections.Generic;
 
     public interface ISportRadarSettings
     {
-        string ServiceUrl { get; }
+        string ServiceUrl { get; set; }
 
-        IEnumerable<SportSettings> Sports { get; }
+        IEnumerable<SportSettings> Sports { get; set; }
     }
 
     public class SportRadarSettings : ISportRadarSettings
     {
-        public string ServiceUrl { get; }
+        public string ServiceUrl { get; set; }
 
-        public IEnumerable<SportSettings> Sports { get; }
+
+
+        public IEnumerable<SportSettings> Sports { get; set; }
     }
 
     public class SportSettings
     {
-        public int Id { get; }
+        public int Id { get; set; }
 
-        public string Name { get; }
+        public string Name { get; set; }
 
-        public IEnumerable<Region> Regions { get;  }
+        public IEnumerable<Region> Regions { get; set; }
     }
 
     public class Region
     {
-        public string Name { get; }
+        public string Name { get; set; }
 
-        public string Key { get;  }
+        public string Key { get; set; }
 
-        public string PushKey { get; }
+        public string PushKey { get; set; }
     }
 }

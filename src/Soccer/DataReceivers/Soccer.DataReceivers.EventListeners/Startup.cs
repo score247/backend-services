@@ -109,7 +109,9 @@
         private void RegisterSportRadarDataProvider(IServiceCollection services)
         {
             var sportRadarDataProviderSettings = new SportRadarSettings();
-            Configuration.GetSection("DataProviders:SportRadar").Bind(sportRadarDataProviderSettings);
+            Configuration
+                .GetSection("DataProviders:SportRadar")
+                .Bind(sportRadarDataProviderSettings);
 
             services.AddSingleton<ISportRadarSettings>(sportRadarDataProviderSettings);
             services.AddSingleton(RestService.For<IMatchApi>(sportRadarDataProviderSettings.ServiceUrl));

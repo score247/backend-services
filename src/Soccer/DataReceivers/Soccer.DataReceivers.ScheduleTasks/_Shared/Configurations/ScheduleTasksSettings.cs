@@ -12,10 +12,10 @@
             FetchMatchScheduleDateSpan = fetchMatchScheduleDateSpan;
         }
 
-        public int QueueBatchSize { get; }
+        public int QueueBatchSize { get; set; }
 
-        public int FetchMatchResultDateSpan { get; }
+        public int FetchMatchResultDateSpan { get; set; }
 
-        public int FetchMatchScheduleDateSpan { get; }
+        public int FetchMatchScheduleDateSpan { get; set; }
     }
 }
