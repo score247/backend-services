@@ -68,6 +68,8 @@
         {
         }
 
+        public bool IsMatchEnd => this == MatchEnded;
+
         public bool IsPeriodStart => this == PeriodStart;
 
         public bool IsScoreChange => this == ScoreChange;

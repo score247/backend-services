@@ -3,7 +3,7 @@
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
 
-    public interface ILiveMatchUpdatedToClosedEvent
+    public interface ILiveMatchClosedMessage
     {
         string MatchId { get; }
 
@@ -12,9 +12,9 @@
         MatchResult MatchResult { get; }
     }
 
-    public class LiveMatchUpdatedToClosedEvent : ILiveMatchUpdatedToClosedEvent
+    public class LiveMatchClosedMessage : ILiveMatchClosedMessage
     {
-        public LiveMatchUpdatedToClosedEvent(string matchId, Language language, MatchResult matchResult)
+        public LiveMatchClosedMessage(string matchId, Language language, MatchResult matchResult)
         {
             MatchId = matchId;
             Language = language.DisplayName;

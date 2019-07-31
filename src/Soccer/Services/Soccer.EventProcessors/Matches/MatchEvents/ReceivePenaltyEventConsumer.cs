@@ -10,7 +10,7 @@
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
 
-    public class ReceivePenaltyEventConsumer : BaseMatchEventConsumer, IConsumer<IPenaltyEventReceived>
+    public class ReceivePenaltyEventConsumer : BaseMatchEventConsumer, IConsumer<IPenaltyEventReceivedMessage>
     {
         private static readonly CacheItemOptions MatchPenaltyCacheOptions = new CacheItemOptions
         {
@@ -27,7 +27,7 @@
             this.cacheService = cacheService;
         }
 
-        public async Task Consume(ConsumeContext<IPenaltyEventReceived> context)
+        public async Task Consume(ConsumeContext<IPenaltyEventReceivedMessage> context)
         {
             var matchEvent = context?.Message?.MatchEvent;
 
@@ -35,7 +35,7 @@
             {
                 await HandlePenalty(matchEvent);
 
-                await messageBus.Publish<IMatchEventProcessed>(new MatchEventProcessed(matchEvent));
+                await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
             }
         }
 

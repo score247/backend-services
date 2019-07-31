@@ -58,8 +58,8 @@
         }
 
         private async Task PublishClosedMatchMessage(Match match, Language language)
-            => await messageBus.Publish<ILiveMatchUpdatedToClosedEvent>(
-                new LiveMatchUpdatedToClosedEvent(match.Id, language, match.MatchResult));
+            => await messageBus.Publish<ILiveMatchClosedMessage>(
+                new LiveMatchClosedMessage(match.Id, language, match.MatchResult));
 
         private async Task PublishLiveMatchMessage(Match match, Language language)
             => await messageBus.Publish<ILiveMatchUpdatedEvent>(

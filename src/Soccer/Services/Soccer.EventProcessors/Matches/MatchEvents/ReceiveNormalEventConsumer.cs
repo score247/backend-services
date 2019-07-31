@@ -10,7 +10,7 @@
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
 
-    public class ReceiveNormalEventConsumer : BaseMatchEventConsumer, IConsumer<INormalEventReceived>
+    public class ReceiveNormalEventConsumer : BaseMatchEventConsumer, IConsumer<INormalEventReceivedMessage>
     {
         private static readonly IDictionary<int, int> PeriodStartTimeMapper =
              new Dictionary<int, int>
@@ -29,7 +29,7 @@
             this.messageBus = messageBus;
         }
 
-        public async Task Consume(ConsumeContext<INormalEventReceived> context)
+        public async Task Consume(ConsumeContext<INormalEventReceivedMessage> context)
         {
             var matchEvent = context?.Message?.MatchEvent;
 
@@ -37,7 +37,7 @@
             {
                 GenerateMatchTime(matchEvent);
 
-                await messageBus.Publish<IMatchEventProcessed>(new MatchEventProcessed(matchEvent));
+                await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
             }
         }
 
@@ -61,8 +61,7 @@
 
                 if (matchTime > 0)
                 {
-                    // TODO : Change to store match time in latest timeline property
-                    matchEvent.Timeline.MatchTime = matchTime;
+                    matchEvent.MatchResult.MatchTime = matchTime;
                 }
             }
         }

@@ -121,7 +121,7 @@
                            });
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<FetchPreMatchesConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<UpdatePostMatchesConsumer>());
-                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<UpdateLiveMatchesConsumer>());
+                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<CloseLiveMatchConsumer>());
                        });
                    });
 

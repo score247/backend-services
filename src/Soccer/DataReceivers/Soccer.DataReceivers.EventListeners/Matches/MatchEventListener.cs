@@ -30,11 +30,15 @@
             {
                 if (matchEvent.Timeline.IsScoreChangeInPenalty() && matchEvent.Timeline.IsShootOutInPenalty())
                 {
-                    await messageBus.Publish<IPenaltyEventReceived>(new PenaltyEventReceived(matchEvent));
+                    await messageBus.Publish<IPenaltyEventReceivedMessage>(new PenaltyEventReceivedMessage(matchEvent));
+                }
+                else if (matchEvent.Timeline.Type.IsMatchEnd)
+                {
+                    await messageBus.Publish<IMatchEndEventReceivedMessage>(new MatchEndEventReceivedMessage(matchEvent));
                 }
                 else
                 {
-                    await messageBus.Publish<INormalEventReceived>(new NormalEventReceived(matchEvent));
+                    await messageBus.Publish<INormalEventReceivedMessage>(new NormalEventReceivedMessage(matchEvent));
                 }
             });
         }
