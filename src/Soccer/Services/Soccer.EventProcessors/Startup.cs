@@ -20,6 +20,7 @@
     using Sentry;
     using Soccer.Database;
     using Soccer.EventProcessors.Matches;
+    using Soccer.EventProcessors.Matches.MatchEvents;
 
     public class Startup
     {
@@ -62,10 +63,11 @@
                 .ToDictionary(connection => connection.Key,
                               connection => new ConnectionConfiguration(connection.Key, connection.Value));
 
+            // It comes with a default connection string provider, which works well with MySql connections, as well as a default DbSetting provider
             DbSettingProviderManager
                 .StartNewSession()
                 .Use(connections)
-                .WithMySql(resourcePath: Configuration["AppDataPath"]) // It comes with a default connection string provider, which works well with MySql connections, as well as a default DbSetting provider
+                .WithMySql(resourcePath: Configuration["AppDataPath"])
                 .Run();
 
             SqlMappers.RegisterJsonTypeHandlers();
@@ -119,9 +121,14 @@
                                    return true;
                                });
                            });
+
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<FetchPreMatchesConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<UpdatePostMatchesConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<CloseLiveMatchConsumer>());
+                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ReceiveMatchEndEventConsumer>());
+                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ReceiveNormalEventConsumer>());
+                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ReceivePenaltyEventConsumer>());
+                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ProcessMatchEventConsumer>());
                        });
                    });
 

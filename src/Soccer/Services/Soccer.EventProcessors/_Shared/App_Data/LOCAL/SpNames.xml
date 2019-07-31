@@ -8,8 +8,8 @@
   <Function Name="Score247_RemoveLiveMatch">
     <Setting Key="Score247_RemoveLiveMatch" SpName="Score247_RemoveLiveMatch" DbName="DefaultConnection" />
   </Function>
-  <Function Name="Score247_UpdateLiveMatchEvent">
-    <Setting Key="Score247_UpdateLiveMatchEvent" SpName="Score247_UpdateLiveMatchEvent" DbName="DefaultConnection" />
+  <Function Name="Score247_UpdateLiveMatchResult">
+    <Setting Key="Score247_UpdateLiveMatchResult" SpName="Score247_UpdateLiveMatchResult" DbName="DefaultConnection" />
   </Function>
   <Function Name="Score247_UpdateMatchResult">
     <Setting Key="Score247_UpdateMatchResult" SpName="Score247_UpdateMatchResult" DbName="DefaultConnection" />
