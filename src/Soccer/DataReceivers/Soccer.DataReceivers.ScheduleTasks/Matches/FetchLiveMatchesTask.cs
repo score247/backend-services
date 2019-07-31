@@ -45,6 +45,8 @@
                         await PublishLiveMatchMessage(match);
                     }
                 }
+
+                //TODO trigger job to fetch timeline
             }
         }
 
@@ -53,7 +55,7 @@
                 new LiveMatchClosedMessage(match.Id, match.MatchResult));
 
         private async Task PublishLiveMatchMessage(Match match)
-            => await messageBus.Publish<ILiveMatchUpdatedEvent>(
-                                new LiveMatchUpdatedEvent(match.Id));
+            => await messageBus.Publish<ILiveMatchUpdatedMessage>(
+                                new LiveMatchUpdatedMessage(match.Id, match.MatchResult));
     }
 }
