@@ -3,15 +3,13 @@
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
 
-    public class UpdateMatchResultCommand : BaseCommand
+    public class UpdateLiveMatchResultCommand : BaseCommand
     {
-        public UpdateMatchResultCommand(
-            string matchId,
-            MatchResult result)
+        public UpdateLiveMatchResultCommand(string matchId, MatchResult matchResult)
         {
             SportId = Sport.Soccer.Value;
             MatchId = matchId;
-            MatchResult = ToJsonString(result);
+            MatchResult = ToJsonString(matchResult);
         }
 
         public byte SportId { get; }
@@ -20,7 +18,7 @@
 
         public string MatchResult { get; }
 
-        public override string GetSettingKey() => "Score247_UpdateMatchResult";
+        public override string GetSettingKey() => "Score247_UpdateLiveMatchResult";
 
         public override bool IsValid() =>
             !string.IsNullOrWhiteSpace(MatchId)

@@ -11,10 +11,10 @@
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
     using Soccer.DataProviders.Matches.Services;
-    using Soccer.DataProviders.SportRadar.Shared.Configurations;
-    using Soccer.DataProviders.SportRadar.Shared.Extensions;
     using Soccer.DataProviders.SportRadar.Matches.DataMappers;
     using Soccer.DataProviders.SportRadar.Matches.Dtos;
+    using Soccer.DataProviders.SportRadar.Shared.Configurations;
+    using Soccer.DataProviders.SportRadar.Shared.Extensions;
 
     public class MatchEventListenerService : IMatchEventListenerService
     {

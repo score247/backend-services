@@ -26,7 +26,7 @@
             this.cacheService = cacheService;
         }
 
-        public async Task<bool> IsTimelineProcessed(MatchEvent matchEvent)
+        protected async Task<bool> IsTimelineEventProcessed(MatchEvent matchEvent)
         {
             if (matchEvent == null)
             {
@@ -35,24 +35,30 @@
 
             var cacheKey = $"MatchPushEvent_Match_{matchEvent.MatchId}";
 
-
             var timeLineList = cacheService.Get<IList<TimelineEventEntity>>(cacheKey);
 
             if (timeLineList == null || timeLineList.Count == 0)
             {
-                timeLineList = (await dynamicRepository.FetchAsync<TimelineEventEntity>(new GetTimelineCriteria(matchEvent.MatchId))).ToList();
+                timeLineList = (await dynamicRepository.FetchAsync<TimelineEventEntity>
+                    (new GetTimelineCriteria(matchEvent.MatchId))).ToList();
             }
 
-            if (timeLineList.Contains(matchEvent.Timeline))
+            if (timeLineList != null && timeLineList.Count > 0)
             {
-                return true;
+                await cacheService.SetAsync(cacheKey, timeLineList, EventCacheOptions);
+
+                if (timeLineList.Contains(matchEvent.Timeline))
+                {
+                    return true;
+                }
+
+                timeLineList.Add(matchEvent.Timeline);
             }
-
-            timeLineList.Add(matchEvent.Timeline);
-
-            await cacheService.SetAsync(cacheKey, timeLineList, EventCacheOptions);
 
             return false;
         }
+
+        public async Task<bool> IsTimelineEventNotProcessed(MatchEvent matchEvent)
+            => !await IsTimelineEventProcessed(matchEvent);
     }
 }

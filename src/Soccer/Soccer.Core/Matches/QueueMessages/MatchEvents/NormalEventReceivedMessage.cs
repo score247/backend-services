@@ -2,14 +2,14 @@
 {
     using Soccer.Core.Matches.Models;
 
-    public interface INormalEventReceived
+    public interface INormalEventReceivedMessage
     {
         MatchEvent MatchEvent { get; }
     }
 
-    public class NormalEventReceived : INormalEventReceived
+    public class NormalEventReceivedMessage : INormalEventReceivedMessage
     {
-        public NormalEventReceived(MatchEvent matchEvent)
+        public NormalEventReceivedMessage(MatchEvent matchEvent)
         {
             MatchEvent = matchEvent;
         }

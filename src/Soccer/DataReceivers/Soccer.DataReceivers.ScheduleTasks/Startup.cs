@@ -16,10 +16,10 @@
     using Refit;
     using Sentry;
     using Soccer.DataProviders.Matches.Services;
-    using Soccer.DataProviders.SportRadar.Shared.Configurations;
     using Soccer.DataProviders.SportRadar.Matches.Services;
-    using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
+    using Soccer.DataProviders.SportRadar.Shared.Configurations;
     using Soccer.DataReceivers.ScheduleTasks.Matches;
+    using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
 
     public class Startup
     {

@@ -1,19 +1,15 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     using System.Threading.Tasks;
-    using Hangfire;
     using MassTransit;
-    using Score247.Shared.Enumerations;
-    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Events;
     using Soccer.Core.Matches.Models;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.DataProviders.Matches.Services;
 
     public interface IFetchLiveMatchesTask
     {
-        void FetchLiveMatches();
-
-        Task FetchLiveMatches(Language language);
+        Task FetchLiveMatches();
     }
 
     public class FetchLiveMatchesTask : IFetchLiveMatchesTask
@@ -29,40 +25,35 @@
             this.matchService = matchService;
         }
 
-        public void FetchLiveMatches()
+        /// <summary>
+        ///  Only update match result so dont care about language to limit requests to sportradar
+        /// </summary>
+        public async Task FetchLiveMatches()
         {
-            foreach (var language in Enumeration.GetAll<Language>())
-            {
-                BackgroundJob.Enqueue(() => FetchLiveMatches(language));
-            }
-        }
-
-        public async Task FetchLiveMatches(Language language)
-        {
-            var matches = await matchService.GetLiveMatches(language);
+            var matches = await matchService.GetLiveMatches(Language.en_US);
 
             foreach (var match in matches)
             {
                 if (match.MatchResult.EventStatus.IsClosed())
                 {
-                    await PublishClosedMatchMessage(match, language);
+                    await PublishClosedMatchMessage(match);
                 }
                 else
                 {
                     if (match.MatchResult.EventStatus.IsLive())
                     {
-                        await PublishLiveMatchMessage(match, language);
+                        await PublishLiveMatchMessage(match);
                     }
                 }
             }
         }
 
-        private async Task PublishClosedMatchMessage(Match match, Language language)
-            => await messageBus.Publish<ILiveMatchUpdatedToClosedEvent>(
-                new LiveMatchUpdatedToClosedEvent(match.Id, language, match.MatchResult));
+        private async Task PublishClosedMatchMessage(Match match)
+            => await messageBus.Publish<ILiveMatchClosedMessage>(
+                new LiveMatchClosedMessage(match.Id, match.MatchResult));
 
-        private async Task PublishLiveMatchMessage(Match match, Language language)
+        private async Task PublishLiveMatchMessage(Match match)
             => await messageBus.Publish<ILiveMatchUpdatedEvent>(
-                                new LiveMatchUpdatedEvent(match.Id, language));
+                                new LiveMatchUpdatedEvent(match.Id));
     }
 }

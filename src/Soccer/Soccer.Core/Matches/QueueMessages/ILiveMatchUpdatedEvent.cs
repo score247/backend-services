@@ -1,24 +1,17 @@
 ﻿namespace Soccer.Core.Matches.Events
 {
-    using Soccer.Core.Shared.Enumerations;
-
     public interface ILiveMatchUpdatedEvent
     {
         string MatchId { get; }
-
-        string Language { get; }
     }
 
     public class LiveMatchUpdatedEvent : ILiveMatchUpdatedEvent
     {
-        public LiveMatchUpdatedEvent(string matchId, Language language)
+        public LiveMatchUpdatedEvent(string matchId)
         {
             MatchId = matchId;
-            Language = language.DisplayName;
         }
 
         public string MatchId { get; }
-
-        public string Language { get; }
     }
 }

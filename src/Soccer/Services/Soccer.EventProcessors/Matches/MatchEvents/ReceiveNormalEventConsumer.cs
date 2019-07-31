@@ -5,12 +5,12 @@
     using Fanex.Caching;
     using Fanex.Data.Repository;
     using MassTransit;
-    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
+    using Soccer.Core.Shared.Enumerations;
 
-    public class ReceiveNormalEventConsumer : BaseMatchEventConsumer, IConsumer<INormalEventReceived>
+    public class ReceiveNormalEventConsumer : BaseMatchEventConsumer, IConsumer<INormalEventReceivedMessage>
     {
         private static readonly IDictionary<int, int> PeriodStartTimeMapper =
              new Dictionary<int, int>
@@ -29,15 +29,15 @@
             this.messageBus = messageBus;
         }
 
-        public async Task Consume(ConsumeContext<INormalEventReceived> context)
+        public async Task Consume(ConsumeContext<INormalEventReceivedMessage> context)
         {
             var matchEvent = context?.Message?.MatchEvent;
 
-            if (await IsTimelineProcessed(matchEvent))
+            if (await IsTimelineEventNotProcessed(matchEvent))
             {
                 GenerateMatchTime(matchEvent);
 
-                await messageBus.Publish<IMatchEventProcessed>(new MatchEventProcessed(matchEvent));
+                await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
             }
         }
 
@@ -61,8 +61,7 @@
 
                 if (matchTime > 0)
                 {
-                    // TODO : Change to store match time in latest timeline property
-                    matchEvent.Timeline.MatchTime = matchTime;
+                    matchEvent.MatchResult.MatchTime = matchTime;
                 }
             }
         }

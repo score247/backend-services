@@ -2,14 +2,14 @@
 {
     using Soccer.Core.Matches.Models;
 
-    public interface IMatchEventProcessed
+    public interface IMatchEventProcessedMessage
     {
         MatchEvent MatchEvent { get; }
     }
 
-    public class MatchEventProcessed : IMatchEventProcessed
+    public class MatchEventProcessedMessage : IMatchEventProcessedMessage
     {
-        public MatchEventProcessed(MatchEvent matchEvent)
+        public MatchEventProcessedMessage(MatchEvent matchEvent)
         {
             MatchEvent = matchEvent;
         }
