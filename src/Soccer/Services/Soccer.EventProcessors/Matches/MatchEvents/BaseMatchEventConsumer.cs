@@ -33,26 +33,29 @@
                 return true;
             }
 
-            var cacheKey = $"MatchPushEvent_Match_{matchEvent.MatchId}";
+            var timelineEventsCacheKey = $"MatchPushEvent_Match_{matchEvent.MatchId}";
 
-            var timeLineList = cacheService.Get<IList<TimelineEventEntity>>(cacheKey);
+            var timeLineEvents = cacheService.Get<IList<TimelineEventEntity>>(timelineEventsCacheKey);
 
-            if (timeLineList == null || timeLineList.Count == 0)
+            if (timeLineEvents == null || timeLineEvents.Count == 0)
             {
-                timeLineList = (await dynamicRepository.FetchAsync<TimelineEventEntity>
+                timeLineEvents = (await dynamicRepository.FetchAsync<TimelineEventEntity>
                     (new GetTimelineCriteria(matchEvent.MatchId))).ToList();
+
+                if (timeLineEvents?.Count > 0)
+                {
+                    await cacheService.SetAsync(timelineEventsCacheKey, timeLineEvents, EventCacheOptions);
+                }
             }
 
-            if (timeLineList != null && timeLineList.Count > 0)
+            if (timeLineEvents?.Contains(matchEvent.Timeline) == true)
             {
-                await cacheService.SetAsync(cacheKey, timeLineList, EventCacheOptions);
-
-                if (timeLineList.Contains(matchEvent.Timeline))
+                if (timeLineEvents.Contains(matchEvent.Timeline))
                 {
                     return true;
                 }
 
-                timeLineList.Add(matchEvent.Timeline);
+                timeLineEvents.Add(matchEvent.Timeline);
             }
 
             return false;
