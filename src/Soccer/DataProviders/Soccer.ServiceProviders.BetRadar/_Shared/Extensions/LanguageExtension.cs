@@ -1,7 +1,7 @@
 ﻿namespace Soccer.DataProviders.SportRadar.Shared.Extensions
 {
-    using Soccer.Core.Shared.Enumerations;
     using System.Collections.Generic;
+    using Soccer.Core.Shared.Enumerations;
 
     public static class LanguageExtension
     {

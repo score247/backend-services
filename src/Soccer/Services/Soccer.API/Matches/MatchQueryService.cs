@@ -4,8 +4,8 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
-    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.Database.Matches.Criteria;
 
     public interface IMatchQueryService

@@ -5,10 +5,10 @@
     using Fanex.Caching;
     using Fanex.Data.Repository;
     using MassTransit;
-    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
+    using Soccer.Core.Shared.Enumerations;
 
     public class ReceiveNormalEventConsumer : BaseMatchEventConsumer, IConsumer<INormalEventReceivedMessage>
     {

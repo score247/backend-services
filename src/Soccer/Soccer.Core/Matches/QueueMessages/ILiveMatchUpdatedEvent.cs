@@ -1,7 +1,5 @@
 ﻿namespace Soccer.Core.Matches.Events
 {
-    using Soccer.Core.Shared.Enumerations;
-
     public interface ILiveMatchUpdatedEvent
     {
         string MatchId { get; }
@@ -11,7 +9,7 @@
     {
         public LiveMatchUpdatedEvent(string matchId)
         {
-            MatchId = matchId;            
+            MatchId = matchId;
         }
 
         public string MatchId { get; }

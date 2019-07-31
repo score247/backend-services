@@ -1,6 +1,5 @@
 ﻿namespace Soccer.DataProviders.SportRadar.Shared.Configurations
 {
-    using System;
     using System.Collections.Generic;
 
     public interface ISportRadarSettings

@@ -1,11 +1,11 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
+    using System.Threading.Tasks;
     using MassTransit;
     using Soccer.Core.Matches.Events;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.DataProviders.Matches.Services;
-    using System.Threading.Tasks;
 
     public interface IFetchLiveMatchesTask
     {

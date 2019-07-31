@@ -1,6 +1,5 @@
 ﻿namespace Soccer.Database.Matches.Commands
 {
-    using System;
     using Soccer.Core.Matches.Models;
 
     public class InsertTimelineCommand : BaseCommand

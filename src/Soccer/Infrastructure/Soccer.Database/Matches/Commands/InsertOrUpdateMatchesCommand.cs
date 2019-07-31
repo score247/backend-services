@@ -1,6 +1,5 @@
 ﻿namespace Soccer.Database.Matches.Commands
 {
-    using System;
     using System.Collections.Generic;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Models;

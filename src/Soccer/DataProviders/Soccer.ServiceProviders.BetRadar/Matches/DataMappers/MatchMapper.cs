@@ -1,10 +1,9 @@
 ﻿namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 {
-    using System.Collections.Generic;
     using System.Linq;
     using Score247.Shared.Enumerations;
-    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.DataProviders.SportRadar.Leagues.DataMappers;
     using Soccer.DataProviders.SportRadar.Matches.Dtos;
     using Soccer.DataProviders.SportRadar.Teams.DataMappers;

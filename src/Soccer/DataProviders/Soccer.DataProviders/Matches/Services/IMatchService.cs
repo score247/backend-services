@@ -3,8 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
-    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
+    using Soccer.Core.Shared.Enumerations;
 
     public interface IMatchService
     {

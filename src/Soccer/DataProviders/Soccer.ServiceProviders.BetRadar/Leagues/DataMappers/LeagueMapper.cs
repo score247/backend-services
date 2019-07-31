@@ -1,8 +1,8 @@
 ﻿namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
 {
     using Score247.Shared.Enumerations;
-    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Leagues.Models;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.DataProviders.SportRadar.Leagues.Dtos;
 
     public static class LeagueMapper

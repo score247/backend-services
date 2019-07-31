@@ -2,8 +2,8 @@
 {
     using System.Linq;
     using Score247.Shared.Enumerations;
-    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.Models;
 
     public static class TimelineMapper

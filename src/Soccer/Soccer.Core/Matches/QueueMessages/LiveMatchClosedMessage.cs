@@ -1,11 +1,10 @@
 ﻿namespace Soccer.Core.Matches.Events
 {
-    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
 
     public interface ILiveMatchClosedMessage
     {
-        string MatchId { get; }      
+        string MatchId { get; }
 
         MatchResult MatchResult { get; }
     }

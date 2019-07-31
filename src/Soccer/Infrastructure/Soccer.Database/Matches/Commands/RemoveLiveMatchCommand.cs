@@ -1,7 +1,5 @@
 ﻿namespace Soccer.Database.Matches.Commands
 {
-    using Fanex.Data.Repository;
-
     public class RemoveLiveMatchCommand : BaseCommand
     {
         public RemoveLiveMatchCommand(string matchId)

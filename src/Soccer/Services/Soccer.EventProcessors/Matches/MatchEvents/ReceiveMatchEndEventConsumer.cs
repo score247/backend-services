@@ -6,7 +6,6 @@
     using MassTransit;
     using Soccer.Core.Matches.Events;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
-    using Soccer.Core.Shared.Enumerations;
     using Soccer.Database.Matches.Commands;
 
     public class ReceiveMatchEndEventConsumer : BaseMatchEventConsumer, IConsumer<IMatchEndEventReceivedMessage>
@@ -29,8 +28,7 @@
             {
                 await dynamicRepository.ExecuteAsync(new InsertTimelineCommand(matchEvent?.MatchId, matchEvent?.Timeline));
 
-                await messageBus.Publish<ILiveMatchClosedMessage>(
-                    new LiveMatchClosedMessage(matchEvent?.MatchId, matchEvent?.MatchResult));
+                await messageBus.Publish<ILiveMatchClosedMessage>(new LiveMatchClosedMessage(matchEvent?.MatchId, matchEvent?.MatchResult));
             }
         }
     }
