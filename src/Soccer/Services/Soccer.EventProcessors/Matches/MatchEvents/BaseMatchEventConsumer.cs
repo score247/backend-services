@@ -26,7 +26,7 @@
             this.cacheService = cacheService;
         }
 
-        public async Task<bool> EventNotProcessed(MatchEvent matchEvent)
+        public async Task<bool> TimelineNotProcessed(MatchEvent matchEvent)
         {
             if (matchEvent == null)
             {

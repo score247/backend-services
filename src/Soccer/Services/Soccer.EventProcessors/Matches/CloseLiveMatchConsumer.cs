@@ -19,12 +19,12 @@
         {
             var message = context.Message;
 
-            await UpdateMatch(message);
+            await UpdateMatchResult(message);
 
             await RemoveLiveMatch(message);
         }
 
-        private async Task UpdateMatch(ILiveMatchClosedMessage message)
+        private async Task UpdateMatchResult(ILiveMatchClosedMessage message)
         {
             var command = new UpdateMatchResultCommand(message.MatchId, message.MatchResult, message.Language);
 

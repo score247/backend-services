@@ -31,7 +31,7 @@
         {
             var matchEvent = context?.Message?.MatchEvent;
 
-            if (await EventNotProcessed(matchEvent))
+            if (await TimelineNotProcessed(matchEvent))
             {
                 await HandlePenalty(matchEvent);
 
