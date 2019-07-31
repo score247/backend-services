@@ -1,22 +1,15 @@
 ﻿namespace Soccer.Database.Matches.Commands
 {
-    using Fanex.Data.Repository;
-    using Newtonsoft.Json;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
 
-    public class UpdateLiveMatchEventCommand : NonQueryCommand
+    public class UpdateLiveMatchEventCommand : BaseCommand
     {
         public UpdateLiveMatchEventCommand(string matchId, MatchEvent matchEvent)
         {
             SportId = Sport.Soccer.Value;
             MatchId = matchId;
-            MatchEvent = JsonConvert.SerializeObject(
-                matchEvent,
-                new JsonSerializerSettings
-                {
-                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
-                });
+            MatchEvent = ToJsonString(matchEvent);
         }
 
         public byte SportId { get; }

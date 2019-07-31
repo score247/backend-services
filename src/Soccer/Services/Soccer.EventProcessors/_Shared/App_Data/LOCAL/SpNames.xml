@@ -1,5 +1,20 @@
 ﻿<Functions>
-  <Function Name="AddPreMatches">
+  <Function Name="Score247_InsertOrUpdateMatches">
     <Setting Key="Score247_InsertOrUpdateMatches" SpName="Score247_InsertOrUpdateMatches" DbName="DefaultConnection" />
+  </Function>
+  <Function Name="Score247_InsertTimeline">
+    <Setting Key="Score247_InsertTimeline" SpName="Score247_InsertTimeline" DbName="DefaultConnection" />
+  </Function>
+  <Function Name="Score247_RemoveLiveMatch">
+    <Setting Key="Score247_RemoveLiveMatch" SpName="Score247_RemoveLiveMatch" DbName="DefaultConnection" />
+  </Function>
+  <Function Name="Score247_UpdateLiveMatchEvent">
+    <Setting Key="Score247_UpdateLiveMatchEvent" SpName="Score247_UpdateLiveMatchEvent" DbName="DefaultConnection" />
+  </Function>
+  <Function Name="Score247_UpdateMatchResult">
+    <Setting Key="Score247_UpdateMatchResult" SpName="Score247_UpdateMatchResult" DbName="DefaultConnection" />
+  </Function>
+  <Function Name="Score247_GetTimeline">
+    <Setting Key="Score247_GetTimeline" SpName="Score247_GetTimeline" DbName="DefaultConnection" />
   </Function>
 </Functions>

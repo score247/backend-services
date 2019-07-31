@@ -2,7 +2,7 @@
 {
     using Fanex.Data.Repository;
 
-    public class RemoveLiveMatchCommand : NonQueryCommand
+    public class RemoveLiveMatchCommand : BaseCommand
     {
         public RemoveLiveMatchCommand(string matchId)
         {
