@@ -30,7 +30,7 @@
                 await dynamicRepository.ExecuteAsync(new InsertTimelineCommand(matchEvent?.MatchId, matchEvent?.Timeline));
 
                 await messageBus.Publish<ILiveMatchClosedMessage>(
-                    new LiveMatchClosedMessage(matchEvent?.MatchId, Language.en_US, matchEvent?.MatchResult));
+                    new LiveMatchClosedMessage(matchEvent?.MatchId, matchEvent?.MatchResult));
             }
         }
     }

@@ -26,7 +26,7 @@
 
         private async Task UpdateMatchResult(ILiveMatchClosedMessage message)
         {
-            var command = new UpdateMatchResultCommand(message.MatchId, message.MatchResult, message.Language);
+            var command = new UpdateMatchResultCommand(message.MatchId, message.MatchResult);
 
             await dynamicRepository.ExecuteAsync(command);
         }

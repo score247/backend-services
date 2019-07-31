@@ -5,16 +5,13 @@
     public interface ILiveMatchUpdatedEvent
     {
         string MatchId { get; }
-
-        string Language { get; }
     }
 
     public class LiveMatchUpdatedEvent : ILiveMatchUpdatedEvent
     {
-        public LiveMatchUpdatedEvent(string matchId, Language language)
+        public LiveMatchUpdatedEvent(string matchId)
         {
-            MatchId = matchId;
-            Language = language.DisplayName;
+            MatchId = matchId;            
         }
 
         public string MatchId { get; }
