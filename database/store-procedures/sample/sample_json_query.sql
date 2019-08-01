@@ -1,6 +1,7 @@
-SELECT * FROM score247_db2.`Match`;
-TRUNCATE  score247_db2.`Match`;
-TRUNCATE  score247_db2.`LiveMatch`;
+SELECT * FROM `Match`;
+SELECT * FROM `LiveMatch`;
+TRUNCATE  `Match`;
+TRUNCATE  `LiveMatch`;
 SELECT `Value` FROM score247_db2.`Match` WHERE Language LIKE 'en-US';
 SELECT NonLiveMatch.`Value` 
     FROM score247_db2.Match as NonLiveMatch LEFT JOIN score247_db2.LiveMatch as LiveMatch
@@ -13,13 +14,17 @@ SELECT `Value` FROM score247_db2.`Match` as Matches
 SELECT JSON_LENGTH('[{ "Value": "{ \"EventDate\": \"2019-07-22T15:00:00Z\" }" , "LeagueId":"sr:tournament:695", "Language":"en-US", "SportId":1, "Region":"intl", "Id":"sr:match:18116347", "CreatedTime":"0001-01-01T00:00:00+00:00", "ModifiedTime":"0001-01-01T00:00:00+00:00"}]');
 SELECT JSON_EXTRACT('[ { "EventDate": "2019-07-22T15:00:00Z" }, { "EventDate": "2019-07-22T15:00:00Z" } ]', 
 '$[0]'); 
- SELECT JSON_EXTRACT( '{"male" : 2000, "female" : 3000, "other" : 600}', '$.male');
+ SELECT JSON_EXTRACT( '{"male" : 2000, "female" : 3000, "other" : 600}', '$');
 select @js := JSON_OBJECT('new_time',"2019-07-24T14:00:00Z"  );
 
 select CAST(JSON_UNQUOTE(JSON_EXTRACT(@js,'$.new_time')) as DATETIME);
  
  SELECT STR_TO_DATE('2019-07-22T14:00:00+00:00','%Y-%m-%dT%H:%i:%s') ;
+SELECT * FROM `Timeline`;
+ INSERT INTO `Timeline` VALUES (
+			'sr:1234aa',
+			JSON_UNQUOTE('{\"Type\":{\"IsMatchEnd\":false,\"IsPeriodStart\":false,\"IsScoreChange\":false,\"IsPenaltyShootout\":false,\"DisplayName\":\"match_started\",\"Value\":4},\"Time\":\"2019-06-20T10:00:32Z\",\"MatchTime\":0,\"Period\":0,\"PeriodType\":null,\"HomeScore\":0,\"AwayScore\":0,\"InjuryTimeAnnounced\":0,\"Description\":null,\"Outcome\":null,\"StoppageTime\":null,\"ShootoutHomeScore\":0,\"ShootoutAwayScore\":0,\"IsHomeShootoutScored\":false,\"IsAwayShootoutScored\":false,\"IsHome\":false,\"IsFirstShoot\":false,\"PenaltyStatus\":null,\"Id\":\"1\",\"CreatedTime\":\"0001-01-01T00:00:00+00:00\",\"ModifiedTime\":\"0001-01-01T00:00:00+00:00\"}'),
+            now(),
+            now());
 
-
-
-CALL Score247_InsertOrUpdatePreMatches('[{"Value":{"EventDate":"2019-07-24T14:00:00Z","Teams":[{"Country":"Portugal","CountryCode":"PRT","Flag":null,"IsHome":true,"Players":null,"Statistic":null,"Coach":null,"Formation":null,"Abbreviation":"POR","Substitutions":null,"Id":"sr:competitor:22549","Name":"Portugal"},{"Country":"Ireland","CountryCode":"IRL","Flag":null,"IsHome":false,"Players":null,"Statistic":null,"Coach":null,"Formation":null,"Abbreviation":"RIR","Substitutions":null,"Id":"sr:competitor:22551","Name":"Ireland"}],"MatchResult":{"MatchStatus":{"DisplayName":"NotStarted","Value":"not_started"},"EventStatus":{"DisplayName":"NotStarted","Value":"not_started"},"Period":0,"MatchPeriods":null,"MatchTime":0,"WinnerId":null,"HomeScore":0,"AwayScore":0,"AggregateHomeScore":0,"AggregateAwayScore":0,"AggregateWinnerId":null},"League":{"Order":0,"Flag":null,"Category":{"CountryCode":null,"Id":"sr:category:392","Name":"International Youth"},"Id":"sr:tournament:258","Name":"U19 European Ch.ship"},"LeagueRound":{"Type":{"DisplayName":"Cup","Value":"cup"},"Name":"semifinal","Number":0,"Phase":"playoffs","Group":null},"TimeLines":null,"LatestTimeline":null,"Attendance":0,"Venue":{"Capacity":0,"CityName":null,"CountryName":null,"CountryCode":null,"Id":null,"Name":null},"Referee":null,"Region":"intl","Id":"sr:match:18837582","Name":null},"EventDate":"2019-07-24T14:00:00+00:00","LeagueId":"sr:tournament:258","Language":"en-US","SportId":1,"Region":"intl","Id":"sr:match:18837582","CreatedTime":"0001-01-01T00:00:00+00:00","ModifiedTime":"0001-01-01T00:00:00+00:00"},{"Value":{"EventDate":"2019-07-24T17:00:00Z","Teams":[{"Country":"France","CountryCode":"FRA","Flag":null,"IsHome":true,"Players":null,"Statistic":null,"Coach":null,"Formation":null,"Abbreviation":"FRA","Substitutions":null,"Id":"sr:competitor:22509","Name":"France"},{"Country":"Spain","CountryCode":"ESP","Flag":null,"IsHome":false,"Players":null,"Statistic":null,"Coach":null,"Formation":null,"Abbreviation":"ESP","Substitutions":null,"Id":"sr:competitor:22560","Name":"Spain"}],"MatchResult":{"MatchStatus":{"DisplayName":"NotStarted","Value":"not_started"},"EventStatus":{"DisplayName":"NotStarted","Value":"not_started"},"Period":0,"MatchPeriods":null,"MatchTime":0,"WinnerId":null,"HomeScore":0,"AwayScore":0,"AggregateHomeScore":0,"AggregateAwayScore":0,"AggregateWinnerId":null},"League":{"Order":0,"Flag":null,"Category":{"CountryCode":null,"Id":"sr:category:392","Name":"International Youth"},"Id":"sr:tournament:258","Name":"U19 European Ch.ship"},"LeagueRound":{"Type":{"DisplayName":"Cup","Value":"cup"},"Name":"semifinal","Number":0,"Phase":"playoffs","Group":null},"TimeLines":null,"LatestTimeline":null,"Attendance":0,"Venue":{"Capacity":0,"CityName":null,"CountryName":null,"CountryCode":null,"Id":null,"Name":null},"Referee":null,"Region":"intl","Id":"sr:match:18837584","Name":null},"EventDate":"2019-07-24T17:00:00","LeagueId":"sr:tournament:258","Language":"en-US","SportId":1,"Region":"intl","Id":"sr:match:18837584","CreatedTime":"0001-01-01T00:00:00+00:00","ModifiedTime":"0001-01-01T00:00:00+00:00"}]')
+CALL Score247_InsertTimeline('sr:1234aa', '{\"Type\":{\"IsMatchEnd\":false,\"IsPeriodStart\":false,\"IsScoreChange\":false,\"IsPenaltyShootout\":false,\"DisplayName\":\"match_started\",\"Value\":4},\"Time\":\"2019-06-20T10:00:32Z\",\"MatchTime\":0,\"Period\":0,\"PeriodType\":null,\"HomeScore\":0,\"AwayScore\":0,\"InjuryTimeAnnounced\":0,\"Description\":null,\"Outcome\":null,\"StoppageTime\":null,\"ShootoutHomeScore\":0,\"ShootoutAwayScore\":0,\"IsHomeShootoutScored\":false,\"IsAwayShootoutScored\":false,\"IsHome\":false,\"IsFirstShoot\":false,\"PenaltyStatus\":null,\"Id\":\"1\",\"CreatedTime\":\"0001-01-01T00:00:00+00:00\",\"ModifiedTime\":\"0001-01-01T00:00:00+00:00\"}')

@@ -18,11 +18,19 @@
                 timeline.Type = Enumeration.FromDisplayName<EventType>(timelineDto.type);
                 timeline.Team = timelineDto.team;
                 timeline.InjuryTimeAnnounced = timelineDto.injury_time_announced;
-                timeline.PeriodType = Enumeration.FromDisplayName<PeriodType>(timelineDto.period_type);
-                if (string.IsNullOrWhiteSpace(timeline.PeriodType.DisplayName) && !string.IsNullOrWhiteSpace(timelineDto.period_name))
+
+                if (!string.IsNullOrWhiteSpace(timelineDto.period_type))
                 {
-                    timeline.PeriodType = Enumeration.FromDisplayName<PeriodType>(timelineDto.period_name.ToLowerInvariant().Replace(" ", "_").Trim());
+                    timeline.PeriodType = Enumeration.FromDisplayName<PeriodType>(timelineDto.period_type);
                 }
+                else
+                {
+                    if (!string.IsNullOrWhiteSpace(timelineDto.period_name))
+                    {
+                        timeline.PeriodType = Enumeration.FromDisplayName<PeriodType>(timelineDto.period_name.ToLowerInvariant().Replace(" ", "_").Trim());
+                    }
+                }
+
                 timeline.Period = timelineDto.period;
                 timeline.Time = timelineDto.time;
                 timeline.HomeScore = timelineDto.home_score;

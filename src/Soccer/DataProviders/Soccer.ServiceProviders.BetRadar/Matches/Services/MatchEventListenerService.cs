@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.IO;
     using System.Linq;
     using System.Net;
@@ -19,7 +20,6 @@
     public class MatchEventListenerService : IMatchEventListenerService
     {
         private const int MillisecondsTimeout = 10 * 1000;
-        private const string Endpoint = "soccer-xt3/{0}/stream/events/subscribe?format=json&api_key={1}";
         private readonly SportSettings soccerSettings;
         private readonly ISportRadarSettings sportRadarSettings;
         private readonly ILogger logger;
@@ -49,7 +49,8 @@
             {
                 if (!regionStreams.ContainsKey(region.Name))
                 {
-                    var formattedEndpoint = $"{sportRadarSettings.ServiceUrl}/{string.Format(Endpoint, region.Name, region.PushKey)}";
+                    var formattedEndpoint = $"{sportRadarSettings.ServiceUrl}/" +
+                        $"{string.Format(sportRadarSettings.PushEventEndpoint, region.Name, region.PushKey)}";
                     await logger.InfoAsync($"listen {formattedEndpoint}");
                     var endpoint = new Uri(formattedEndpoint);
 
@@ -101,10 +102,17 @@
                 await logger.InfoAsync($"{DateTime.Now} - region {region} Receiving: {matchEventPayload}");
 
                 var matchEventDto = JsonConvert.DeserializeObject<MatchEventDto>(matchEventPayload);
-                // TODO move json data to mapper
-                var matchEvent = MatchMapper.MapMatchEvent(matchEventDto);
+                try
+                {
+                    // TODO move json data to mapper
+                    var matchEvent = MatchMapper.MapMatchEvent(matchEventDto);
 
-                handler.Invoke(matchEvent);
+                    handler.Invoke(matchEvent);
+                }
+                catch
+                {
+                    Debug.WriteLine(matchEventPayload);
+                }
             } while (!string.IsNullOrWhiteSpace(matchEventPayload));
         }
     }

@@ -6,6 +6,8 @@
     {
         string ServiceUrl { get; set; }
 
+        string PushEventEndpoint { get; set; }
+
         IEnumerable<SportSettings> Sports { get; set; }
     }
 
@@ -13,7 +15,7 @@
     {
         public string ServiceUrl { get; set; }
 
-
+        public string PushEventEndpoint { get; set; }
 
         public IEnumerable<SportSettings> Sports { get; set; }
     }

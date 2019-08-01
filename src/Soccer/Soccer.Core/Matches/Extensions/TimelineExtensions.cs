@@ -7,9 +7,14 @@
         private const string NotTakenYetStatus = "not_taken_yet";
 
         public static bool IsScoreChangeInPenalty(this TimelineEventEntity timeline)
-            => timeline.PeriodType.IsPenalties && timeline.Type.IsScoreChange;
+            => timeline.PeriodType != null
+                && timeline.PeriodType.IsPenalties
+                && timeline.Type.IsScoreChange;
 
         public static bool IsShootOutInPenalty(this TimelineEventEntity timeline)
-            => timeline.PeriodType.IsPenalties && timeline.Type.IsPenaltyShootout && timeline.PenaltyStatus != NotTakenYetStatus;
+            => timeline.PeriodType != null
+                && timeline.PeriodType.IsPenalties
+                && timeline.Type.IsPenaltyShootout
+                && timeline.PenaltyStatus != NotTakenYetStatus;
     }
 }

@@ -99,6 +99,11 @@
         {
             services.AddScoped<FetchPreMatchesConsumer>();
             services.AddScoped<UpdatePostMatchesConsumer>();
+            services.AddScoped<CloseLiveMatchConsumer>();
+            services.AddScoped<ReceiveMatchEndEventConsumer>();
+            services.AddScoped<ReceiveNormalEventConsumer>();
+            services.AddScoped<ReceivePenaltyEventConsumer>();
+            services.AddScoped<ProcessMatchEventConsumer>();
 
             var bus = Bus.Factory.CreateUsingRabbitMq(
                    cfg =>
