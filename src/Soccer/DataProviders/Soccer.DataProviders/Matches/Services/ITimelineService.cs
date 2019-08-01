@@ -7,6 +7,6 @@
 
     public interface ITimelineService
     {
-        Task<IReadOnlyList<Timeline>> GetTimelines(string matchId, string region, Language language);
+        Task<IReadOnlyList<TimelineEventEntity>> GetTimelines(string matchId, string region, Language language);
     }
 }
