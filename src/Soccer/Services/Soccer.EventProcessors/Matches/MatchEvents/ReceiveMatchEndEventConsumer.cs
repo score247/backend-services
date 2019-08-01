@@ -26,9 +26,9 @@
 
             if (await IsTimelineEventNotProcessed(matchEvent))
             {
-                await dynamicRepository.ExecuteAsync(new InsertTimelineCommand(matchEvent?.MatchId, matchEvent?.Timeline));
-
                 await messageBus.Publish<ILiveMatchClosedMessage>(new LiveMatchClosedMessage(matchEvent?.MatchId, matchEvent?.MatchResult));
+
+                await dynamicRepository.ExecuteAsync(new InsertTimelineCommand(matchEvent?.MatchId, matchEvent?.Timeline));
             }
         }
     }
