@@ -23,7 +23,11 @@
             {
                 // TODO : Execute parallel
                 await dynamicRepository.ExecuteAsync(new InsertTimelineCommand(matchEvent.MatchId, matchEvent.Timeline));
-                await dynamicRepository.ExecuteAsync(new UpdateLiveMatchResultCommand(matchEvent.MatchId, matchEvent.MatchResult));
+
+                if (matchEvent.MatchResult.EventStatus.IsLive())
+                {
+                    await dynamicRepository.ExecuteAsync(new UpdateLiveMatchResultCommand(matchEvent.MatchId, matchEvent.MatchResult));
+                }
             }
         }
     }
