@@ -1,5 +1,6 @@
 SELECT * FROM `Match`;
 SELECT * FROM `LiveMatch`;
+TRUNCATE `Timeline`;
 TRUNCATE  `Match`;
 TRUNCATE  `LiveMatch`;
 SELECT `Value` FROM score247_db2.`Match` WHERE Language LIKE 'en-US';
@@ -27,4 +28,24 @@ SELECT * FROM `Timeline`;
             now(),
             now());
 
-CALL Score247_InsertTimeline('sr:1234aa', '{\"Type\":{\"IsMatchEnd\":false,\"IsPeriodStart\":false,\"IsScoreChange\":false,\"IsPenaltyShootout\":false,\"DisplayName\":\"match_started\",\"Value\":4},\"Time\":\"2019-06-20T10:00:32Z\",\"MatchTime\":0,\"Period\":0,\"PeriodType\":null,\"HomeScore\":0,\"AwayScore\":0,\"InjuryTimeAnnounced\":0,\"Description\":null,\"Outcome\":null,\"StoppageTime\":null,\"ShootoutHomeScore\":0,\"ShootoutAwayScore\":0,\"IsHomeShootoutScored\":false,\"IsAwayShootoutScored\":false,\"IsHome\":false,\"IsFirstShoot\":false,\"PenaltyStatus\":null,\"Id\":\"1\",\"CreatedTime\":\"0001-01-01T00:00:00+00:00\",\"ModifiedTime\":\"0001-01-01T00:00:00+00:00\"}')
+CALL Score247_InsertTimeline('sr:1234aa', '{\"Type\":{\"IsMatchEnd\":false,\"IsPeriodStart\":false,\"IsScoreChange\":false,\"IsPenaltyShootout\":false,\"DisplayName\":\"match_started\",\"Value\":4},\"Time\":\"2019-06-20T10:00:32Z\",\"MatchTime\":0,\"Period\":0,\"PeriodType\":null,\"HomeScore\":0,\"AwayScore\":0,\"InjuryTimeAnnounced\":0,\"Description\":null,\"Outcome\":null,\"StoppageTime\":null,\"ShootoutHomeScore\":0,\"ShootoutAwayScore\":0,\"IsHomeShootoutScored\":false,\"IsAwayShootoutScored\":false,\"IsHome\":false,\"IsFirstShoot\":false,\"PenaltyStatus\":null,\"Id\":\"1\",\"CreatedTime\":\"0001-01-01T00:00:00+00:00\",\"ModifiedTime\":\"0001-01-01T00:00:00+00:00\"}');
+
+	INSERT INTO `LiveMatch`
+	 SELECT 
+			Id, 
+			JSON_REPLACE(`Value`,  '$.MatchResult', JSON_UNQUOTE(JSON_EXTRACT("{\"MatchStatus\":{\"DisplayName\":\"1st_half\",\"Value\":6},\"EventStatus\":{\"DisplayName\":\"live\",\"Value\":5},\"Period\":1,\"MatchPeriods\":[{\"HomeScore\":0,\"AwayScore\":0,\"PeriodType\":{\"IsPenalties\":false,\"DisplayName\":\"regular_period\",\"Value\":1},\"Number\":1}],\"MatchTime\":0,\"WinnerId\":null,\"HomeScore\":0,\"AwayScore\":0,\"AggregateHomeScore\":0,\"AggregateAwayScore\":0,\"AggregateWinnerId\":null}", '$'))) as Value,
+			`Language`,
+			SportId,
+			LeagueId,
+			EventDate,
+			Region,
+			now(),
+			now()
+			FROM `Match`
+             WHERE `SportId` = 1 AND Id = 'sr:match:16542453'
+	 ON DUPLICATE KEY UPDATE
+		`Value` = JSON_REPLACE(VALUES(`Value`) ,  '$.MatchResult', JSON_UNQUOTE(JSON_EXTRACT("{\"MatchStatus\":{\"DisplayName\":\"1st_half\",\"Value\":6},\"EventStatus\":{\"DisplayName\":\"live\",\"Value\":5},\"Period\":1,\"MatchPeriods\":[{\"HomeScore\":0,\"AwayScore\":0,\"PeriodType\":{\"IsPenalties\":false,\"DisplayName\":\"regular_period\",\"Value\":1},\"Number\":1}],\"MatchTime\":0,\"WinnerId\":null,\"HomeScore\":0,\"AwayScore\":0,\"AggregateHomeScore\":0,\"AggregateAwayScore\":0,\"AggregateWinnerId\":null}", '$'))),
+		ModifiedTime = now();
+        SELECT * FROM `LiveMatch`;
+        TRUNCATE  `LiveMatch`;
+CALL Score247_UpdateLiveMatchResult(1, 'sr:match:16542453',  "{\"MatchStatus\":{\"DisplayName\":\"1st_half\",\"Value\":6},\"EventStatus\":{\"DisplayName\":\"live\",\"Value\":5},\"Period\":1,\"MatchPeriods\":[{\"HomeScore\":0,\"AwayScore\":0,\"PeriodType\":{\"IsPenalties\":false,\"DisplayName\":\"regular_period\",\"Value\":1},\"Number\":1}],\"MatchTime\":0,\"WinnerId\":null,\"HomeScore\":0,\"AwayScore\":0,\"AggregateHomeScore\":0,\"AggregateAwayScore\":0,\"AggregateWinnerId\":null}");

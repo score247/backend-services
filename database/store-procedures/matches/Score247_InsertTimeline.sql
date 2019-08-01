@@ -1,0 +1,12 @@
+CREATE DEFINER=`root`@`%` PROCEDURE `Score247_InsertTimeline`(IN matchId TEXT, IN timeline TEXT)
+BEGIN
+	 INSERT INTO `Timeline` VALUES (
+			JSON_UNQUOTE(JSON_EXTRACT(timeline, '$.Id')),
+			matchId,
+			JSON_UNQUOTE(JSON_EXTRACT(timeline, '$')),
+            now(),
+            now())
+	 ON DUPLICATE KEY UPDATE
+			`Value` = JSON_UNQUOTE(JSON_EXTRACT(timeline, '$')),
+			ModifiedTime = now();
+END
