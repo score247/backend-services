@@ -1,7 +1,9 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     using System.Threading.Tasks;
+    using Hangfire;
     using MassTransit;
+    using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Events;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
@@ -45,8 +47,6 @@
                         await PublishLiveMatchMessage(match);
                     }
                 }
-
-                //TODO trigger job to fetch timeline
             }
         }
 

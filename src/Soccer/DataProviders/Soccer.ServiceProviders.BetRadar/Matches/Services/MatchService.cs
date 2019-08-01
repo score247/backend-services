@@ -58,7 +58,7 @@
                 }
                 catch (Exception ex)
                 {
-                    await logger.InfoAsync(ex.Message);
+                    await logger.ErrorAsync(ex.Message, ex);
                 }
             }
 
@@ -83,7 +83,7 @@
                 }
                 catch (Exception ex)
                 {
-                    await logger.InfoAsync(ex.Message);
+                    await logger.ErrorAsync(ex.Message, ex);
                 }
             }
 
@@ -108,7 +108,7 @@
                 }
                 catch (Exception ex)
                 {
-                    await logger.InfoAsync(ex.Message);
+                    await logger.ErrorAsync(ex.Message, ex);
                 }
             }
 
