@@ -3,6 +3,7 @@
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using MassTransit;
+    using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Database.Matches.Commands;
 
@@ -21,14 +22,22 @@
 
             if (matchEvent != null)
             {
-                // TODO : Execute parallel
-                await dynamicRepository.ExecuteAsync(new InsertTimelineCommand(matchEvent.MatchId, matchEvent.Timeline));
+                var updateLiveMatchResultTask = new Task(async () => await UpdateLiveMatchResult(matchEvent));
+                var insertTimelineTask = new Task(async () => await InsertTimeline(matchEvent));
 
-                if (matchEvent.MatchResult.EventStatus.IsLive())
-                {
-                    await dynamicRepository.ExecuteAsync(new UpdateLiveMatchResultCommand(matchEvent.MatchId, matchEvent.MatchResult));
-                }
+                await Task.WhenAll(updateLiveMatchResultTask, insertTimelineTask);
             }
         }
+
+        private async Task UpdateLiveMatchResult(MatchEvent matchEvent)
+        {
+            if (matchEvent.MatchResult.EventStatus.IsLive())
+            {
+                await dynamicRepository.ExecuteAsync(new UpdateLiveMatchResultCommand(matchEvent.MatchId, matchEvent.MatchResult));
+            }
+        }
+
+        private async Task InsertTimeline(MatchEvent matchEvent)
+            => await dynamicRepository.ExecuteAsync(new InsertTimelineCommand(matchEvent.MatchId, matchEvent.Timeline));
     }
 }

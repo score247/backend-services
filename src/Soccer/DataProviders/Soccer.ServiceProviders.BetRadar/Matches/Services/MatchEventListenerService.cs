@@ -86,34 +86,29 @@
                     return;
                 }
 
-                // TODO: check again
                 await Task.Delay(MillisecondsTimeout);
             }
         }
 
         private async Task ListenRegion(StreamReader reader, string region, Action<MatchEvent> handler)
         {
-            string matchEventPayload;
+            var matchEventPayload = reader.ReadLine();
 
-            // TODO :  change do-while to while
-            do
+            while (!string.IsNullOrWhiteSpace(matchEventPayload))
             {
-                matchEventPayload = reader.ReadLine();
-                await logger.InfoAsync($"{DateTime.Now} - region {region} Receiving: {matchEventPayload}");
-
-                var matchEventDto = JsonConvert.DeserializeObject<MatchEventDto>(matchEventPayload);
                 try
                 {
-                    // TODO move json data to mapper
-                    var matchEvent = MatchMapper.MapMatchEvent(matchEventDto);
-
+                    await logger.InfoAsync($"{DateTime.Now} - region {region} Receiving: {matchEventPayload}");
+                    var matchEvent = MatchMapper.MapMatchEvent(matchEventPayload);
                     handler.Invoke(matchEvent);
                 }
                 catch
                 {
                     Debug.WriteLine(matchEventPayload);
                 }
-            } while (!string.IsNullOrWhiteSpace(matchEventPayload));
+
+                matchEventPayload = reader.ReadLine();
+            }
         }
     }
 }

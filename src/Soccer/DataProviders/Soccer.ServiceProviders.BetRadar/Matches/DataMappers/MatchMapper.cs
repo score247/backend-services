@@ -1,6 +1,7 @@
 ﻿namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 {
     using System.Linq;
+    using Newtonsoft.Json;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
@@ -96,10 +97,14 @@
                     CountryCode = venueDto.country_code
                 };
 
-        public static MatchEvent MapMatchEvent(MatchEventDto pushEventDto)
-            => new MatchEvent(
-                    pushEventDto.metadata.sport_event_id,
-                    MapMatchResult(pushEventDto.payload.sport_event_status),
-                    TimelineMapper.MapTimeline(pushEventDto.payload.timeline));
+        public static MatchEvent MapMatchEvent(string matchEventPayload)
+        {
+            var matchEventDto = JsonConvert.DeserializeObject<MatchEventDto>(matchEventPayload);
+
+            return new MatchEvent(
+                    matchEventDto.metadata.sport_event_id,
+                    MapMatchResult(matchEventDto.payload.sport_event_status),
+                    TimelineMapper.MapTimeline(matchEventDto.payload.timeline));
+        }
     }
 }
