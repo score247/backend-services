@@ -45,9 +45,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.DataProviders.SportR
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{4E291B9D-E764-49D1-8399-258034560AA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soccer.Cache", "src\Soccer\Infrastructure\Soccer.Cache\Soccer.Cache.csproj", "{A3667C17-163C-471D-9B08-ECE67FA9F798}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.Cache", "src\Soccer\Infrastructure\Soccer.Cache\Soccer.Cache.csproj", "{A3667C17-163C-471D-9B08-ECE67FA9F798}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.Database", "src\Soccer\Infrastructure\Soccer.Database\Soccer.Database.csproj", "{ECCB0353-4689-43CD-87F6-1AC447DD2EEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soccer.DataReceivers", "src\Soccer\DataReceivers\Soccer.DataReceivers\Soccer.DataReceivers.csproj", "{3CEAF5B3-E45C-41F0-949D-EBCA89545E96}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -103,6 +105,10 @@ Global
 		{ECCB0353-4689-43CD-87F6-1AC447DD2EEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECCB0353-4689-43CD-87F6-1AC447DD2EEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECCB0353-4689-43CD-87F6-1AC447DD2EEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CEAF5B3-E45C-41F0-949D-EBCA89545E96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CEAF5B3-E45C-41F0-949D-EBCA89545E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CEAF5B3-E45C-41F0-949D-EBCA89545E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CEAF5B3-E45C-41F0-949D-EBCA89545E96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -129,6 +135,7 @@ Global
 		{4E291B9D-E764-49D1-8399-258034560AA0} = {D789304D-10E4-47D0-9562-1F8CECF8F1A6}
 		{A3667C17-163C-471D-9B08-ECE67FA9F798} = {4E291B9D-E764-49D1-8399-258034560AA0}
 		{ECCB0353-4689-43CD-87F6-1AC447DD2EEA} = {4E291B9D-E764-49D1-8399-258034560AA0}
+		{3CEAF5B3-E45C-41F0-949D-EBCA89545E96} = {523D929A-EC51-45C4-B349-179D63B981B7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D13AD9D6-D937-45A2-AAA4-3EFA410C7411}
