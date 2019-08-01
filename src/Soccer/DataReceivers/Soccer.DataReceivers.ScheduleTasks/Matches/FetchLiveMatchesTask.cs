@@ -1,9 +1,7 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     using System.Threading.Tasks;
-    using Hangfire;
     using MassTransit;
-    using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Events;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
@@ -51,11 +49,9 @@
         }
 
         private async Task PublishClosedMatchMessage(Match match)
-            => await messageBus.Publish<ILiveMatchClosedMessage>(
-                new LiveMatchClosedMessage(match.Id, match.MatchResult));
+            => await messageBus.Publish<ILiveMatchClosedMessage>(new LiveMatchClosedMessage(match.Id, match.MatchResult));
 
         private async Task PublishLiveMatchMessage(Match match)
-            => await messageBus.Publish<ILiveMatchUpdatedMessage>(
-                                new LiveMatchUpdatedMessage(match.Id, match.MatchResult));
+            => await messageBus.Publish<ILiveMatchUpdatedMessage>(new LiveMatchUpdatedMessage(match.Id, match.MatchResult));
     }
 }

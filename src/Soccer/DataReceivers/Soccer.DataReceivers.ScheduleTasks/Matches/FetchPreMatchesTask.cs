@@ -54,7 +54,7 @@
             {
                 var matchesBatch = matches.Skip(i * batchSize).Take(batchSize);
 
-                await messageBus.Publish<IPreMatchesFetchedEvent>(new { Matches = matchesBatch, Language = language.DisplayName });
+                await messageBus.Publish<IPreMatchesFetchedMessage>(new PreMatchesFetchedMessage(matchesBatch, language.DisplayName));
             }
         }
     }

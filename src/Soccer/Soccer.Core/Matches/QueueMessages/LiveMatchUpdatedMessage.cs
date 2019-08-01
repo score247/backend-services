@@ -20,5 +20,5 @@
         public string MatchId { get; }
 
         public MatchResult MatchResult { get; }
-}
+    }
 }

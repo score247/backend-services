@@ -52,9 +52,9 @@
 
             for (var i = 0; i * batchSize < matches.Count; i++)
             {
-                var updatedMatches = matches.Skip(i * batchSize).Take(batchSize);
+                var matchesBatch = matches.Skip(i * batchSize).Take(batchSize);
 
-                await messageBus.Publish<IPostMatchUpdatedEvent>(new { Matches = updatedMatches, Language = language.DisplayName });
+                await messageBus.Publish<IPostMatchFetchedMessage>(new PostMatchFetchedMessage(matchesBatch, language.DisplayName));
             }
         }
     }

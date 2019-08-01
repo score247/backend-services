@@ -6,7 +6,7 @@
     using Soccer.Core.Matches.Events;
     using Soccer.Database.Matches.Commands;
 
-    public class FetchPreMatchesConsumer : IConsumer<IPreMatchesFetchedEvent>
+    public class FetchPreMatchesConsumer : IConsumer<IPreMatchesFetchedMessage>
     {
         private readonly IDynamicRepository dynamicRepository;
 
@@ -15,7 +15,7 @@
             this.dynamicRepository = dynamicRepository;
         }
 
-        public async Task Consume(ConsumeContext<IPreMatchesFetchedEvent> context)
+        public async Task Consume(ConsumeContext<IPreMatchesFetchedMessage> context)
         {
             var message = context.Message;
             var command = new InsertOrUpdateMatchesCommand(message.Matches, message.Language);
