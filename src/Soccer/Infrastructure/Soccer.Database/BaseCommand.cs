@@ -1,4 +1,4 @@
-﻿namespace Soccer.Database.Matches.Commands
+﻿namespace Soccer.Database
 {
     using Fanex.Data.Repository;
     using Newtonsoft.Json;

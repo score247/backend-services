@@ -16,10 +16,13 @@
     using Refit;
     using Sentry;
     using Soccer.DataProviders.Matches.Services;
+    using Soccer.DataProviders.Odds;
     using Soccer.DataProviders.SportRadar.Matches.Services;
     using Soccer.DataProviders.SportRadar.Shared.Configurations;
+    using Soccer.DataProviders.SportRadar.Odds;
     using Soccer.DataReceivers.ScheduleTasks.Matches;
     using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
+    using Soccer.DataReceivers.ScheduleTasks.Odds;
 
     public class Startup
     {
@@ -113,8 +116,12 @@
             Configuration.GetSection("DataProviders:SportRadar").Bind(sportRadarDataProviderSettings);
 
             services.AddSingleton<ISportRadarSettings>(sportRadarDataProviderSettings);
+
             services.AddSingleton(RestService.For<IMatchApi>(sportRadarDataProviderSettings.ServiceUrl));
             services.AddSingleton<IMatchService, MatchService>();
+
+            services.AddSingleton(RestService.For<IOddsApi>(sportRadarDataProviderSettings.ServiceUrl));
+            services.AddSingleton<IOddsService, OddsService>();
         }
 
         private void RegisterHangfire(IServiceCollection services)
@@ -125,18 +132,31 @@
             services.AddScoped<IFetchPreMatchesTask, FetchPreMatchesTask>();
             services.AddScoped<IFetchPostMatchesTask, FetchPostMatchesTask>();
             services.AddScoped<IFetchLiveMatchesTask, FetchLiveMatchesTask>();
+            services.AddScoped<IFetchOddsScheduleTask, FetchOddsScheduleTask>();
         }
 
         private static void RunHangfireJobs(IAppSettings appSettings)
         {
+            var taskSettings = appSettings.ScheduleTasksSettings;
+
             RecurringJob.AddOrUpdate<IFetchPreMatchesTask>(
-                "FetchPreMatch", job => job.FetchPreMatches(appSettings.ScheduleTasksSettings.FetchMatchScheduleDateSpan), " 0 0/6 * * *");
+                "FetchPreMatch", job => job.FetchPreMatches(taskSettings.FetchMatchScheduleDateSpan), " 0 0/6 * * *");
 
             RecurringJob.AddOrUpdate<IFetchPostMatchesTask>(
-                "FetchPostMatch", job => job.FetchPostMatches(appSettings.ScheduleTasksSettings.FetchMatchScheduleDateSpan), " 0 0/6 * * *");
+                "FetchPostMatch", job => job.FetchPostMatches(taskSettings.FetchMatchScheduleDateSpan), " 0 0/6 * * *");
 
             RecurringJob.AddOrUpdate<IFetchLiveMatchesTask>(
                 "FetchLiveMatch", job => job.FetchLiveMatches(), "*/45 * * * *");
+
+            RecurringJob.AddOrUpdate<IFetchOddsScheduleTask>(
+                nameof(IFetchOddsScheduleTask.FetchOdds), 
+                job => job.FetchOdds(), 
+                taskSettings.FetchOddsScheduleJobCron);
+
+            RecurringJob.AddOrUpdate<IFetchOddsScheduleTask>(
+                nameof(IFetchOddsScheduleTask.FetchOddsChangeLogs), 
+                job => job.FetchOddsChangeLogs(), 
+                taskSettings.FetchOddsChangeJobCron);
         }
     }
 }
