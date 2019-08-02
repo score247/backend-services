@@ -20,7 +20,7 @@
         [Get("/oddscomparison-rowt1/{language}/{oddsType}/sport_events/{unixTimeStamp}/changelog.json?api_key={apiKey}")]
         Task<OddsScheduleDto> GetOddsChangeLog(long unixTimeStamp, string apiKey, string language = "en", string oddsType = "eu");
 
-        [Get("oddscomparison-rowt1/{language}/{oddsType}/sport_events/{matchId}/markets.json?api_key={apiKey}")]
+        [Get("/oddscomparison-rowt1/{language}/{oddsType}/sport_events/{matchId}/markets.json?api_key={apiKey}")]
         Task<OddsScheduleDto> GetOddsByMatch(string matchId, string apiKey, string language = "en", string oddsType = "eu");
     }
 

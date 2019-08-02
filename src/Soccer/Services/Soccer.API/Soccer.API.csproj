@@ -52,4 +52,19 @@
     <ProjectReference Include="..\..\Infrastructure\Soccer.Database\Soccer.Database.csproj" />
     <ProjectReference Include="..\..\Soccer.Core\Soccer.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.local-auto-test.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="appsettings.local-dev.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="appsettings.local-main.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="appsettings.local-test.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

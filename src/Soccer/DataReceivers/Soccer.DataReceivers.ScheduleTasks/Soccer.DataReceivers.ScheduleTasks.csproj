@@ -15,9 +15,25 @@
 
   <ItemGroup>
     <None Remove="appsettings.json" />
+    <None Remove="appsettings.local-auto-test.json" />
+    <None Remove="appsettings.local-dev.json" />
+    <None Remove="appsettings.local-main.json" />
+    <None Remove="appsettings.local-test.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="appsettings.local-auto-test.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.local-main.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.local-test.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.local-dev.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

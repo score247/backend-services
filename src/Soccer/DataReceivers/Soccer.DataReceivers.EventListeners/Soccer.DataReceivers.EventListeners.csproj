@@ -15,10 +15,26 @@
 
   <ItemGroup>
     <None Remove="appsettings.json" />
+    <None Remove="appsettings.local-auto-test.json" />
+    <None Remove="appsettings.local-dev.json" />
+    <None Remove="appsettings.local-main.json" />
+    <None Remove="appsettings.local-test.json" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.local-auto-test.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.local-dev.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.local-main.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.local-test.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -28,7 +44,6 @@
     <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.4" />
     <PackageReference Include="Hangfire.MySql.Core" Version="2.2.5" />
-    <PackageReference Include="Hangfire.PostgreSql" Version="1.6.0" />
     <PackageReference Include="MassTransit" Version="5.5.3" />
     <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="5.5.3" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="5.5.3" />
