@@ -98,7 +98,7 @@
         private void RegisterRabbitMq(IServiceCollection services)
         {
             services.AddScoped<FetchPreMatchesConsumer>();
-            services.AddScoped<UpdatePostMatchesConsumer>();
+            services.AddScoped<FetchPostMatchesConsumer>();
             services.AddScoped<CloseLiveMatchConsumer>();
             services.AddScoped<ReceiveMatchEndEventConsumer>();
             services.AddScoped<ReceiveNormalEventConsumer>();
@@ -130,7 +130,7 @@
                            });
 
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<FetchPreMatchesConsumer>());
-                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<UpdatePostMatchesConsumer>());
+                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<FetchPostMatchesConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<CloseLiveMatchConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ReceiveMatchEndEventConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ReceiveNormalEventConsumer>());
