@@ -58,7 +58,7 @@
                 }
                 catch (Exception ex)
                 {
-                    await logger.ErrorAsync(ex.Message, ex);
+                    await LogApiException(ex);
                 }
             }
 
@@ -83,7 +83,7 @@
                 }
                 catch (Exception ex)
                 {
-                    await logger.ErrorAsync(ex.Message, ex);
+                    await LogApiException(ex);
                 }
             }
 
@@ -108,11 +108,18 @@
                 }
                 catch (Exception ex)
                 {
-                    await logger.ErrorAsync(ex.Message, ex);
+                    await LogApiException(ex);
                 }
             }
 
             return matches;
+        }
+
+        private async Task LogApiException(Exception ex)
+        {
+            var apiException = (ApiException)ex;
+            var message = $"Response: {apiException.Content} \r\nRequest URL: {apiException.RequestMessage.RequestUri}";
+            await logger.ErrorAsync(message, ex);
         }
     }
 }
