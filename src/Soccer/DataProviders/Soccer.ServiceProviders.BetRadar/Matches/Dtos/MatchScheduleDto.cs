@@ -17,6 +17,8 @@
     {
         public string id { get; set; }
 
+        public string status { get; set; }
+
         public DateTime scheduled { get; set; }
 
         public bool start_time_tbd { get; set; }
