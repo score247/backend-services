@@ -33,13 +33,13 @@
 
             foreach (var sportEvent in oddsScheduleDto.sport_events)
             {
-                matchOddsList.Add(new MatchOdds(sportEvent.id, BuildBetTypeOddsList(sportEvent), sportEvent.markets_last_updated));
+                matchOddsList.Add(MapToMatchOdds(sportEvent));
             }
 
             return matchOddsList;
         }
 
-        public static IEnumerable<BetTypeOdds> BuildBetTypeOddsList(SportEvent sport_event)
+        public static MatchOdds MapToMatchOdds(SportEvent sport_event)
         {
             var betTypeOddsList = new List<BetTypeOdds>();
             if (sport_event.markets.Any())
@@ -50,7 +50,7 @@
                 }
             }
 
-            return betTypeOddsList;
+            return new MatchOdds(sport_event.id, betTypeOddsList, sport_event.markets_last_updated);
         }
 
         private static void BuildBetTypeOdds(List<BetTypeOdds> betTypeOddsList, Market market)
@@ -74,7 +74,7 @@
                 betType.Item1, 
                 betType.Item2,
                 new Bookmaker(book.id, book.name),
-                DateTimeOffset.Now,
+                DateTime.Now,
                 book.outcomes?.Select(oc => BuildBetOption(betType, oc)));
 
         private static BetOptionOdds BuildBetOption((int, string) betType, Outcome oc)

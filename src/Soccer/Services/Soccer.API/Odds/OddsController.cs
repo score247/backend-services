@@ -1,29 +1,26 @@
 ﻿namespace Soccer.API.Odds
 {
     using System.Threading.Tasks;
+    using MediatR;
     using Microsoft.AspNetCore.Mvc;
-    using Score247.Shared.Enumerations;
+    using Soccer.API.Odds.Requests;
     using Soccer.Core.Odds.Models;
-    using Soccer.Core.Shared.Enumerations;
 
     [Route("api/soccer/")]
     [ApiController]
     public class OddsController : ControllerBase
     {
-        private readonly IOddsQueryService oddsQueryService;
+        private readonly IMediator mediator;
 
-        public OddsController(
-            IOddsQueryService oddsQueryService)
-        {
-            this.oddsQueryService = oddsQueryService;
-        }
+        public OddsController(IMediator mediator)
+            => this.mediator = mediator;
 
         [HttpGet("{lang}/odds/{matchId}/{betTypeId}/{format}")]
         public async Task<MatchOdds> Get(string matchId, int betTypeId, string lang = "en-US", string format = "dec")
-            => await oddsQueryService.GetOdds(matchId, betTypeId, Enumeration.FromDisplayName<Language>(lang));
+            => await mediator.Send(new OddsRequest(matchId, betTypeId, lang, format));
 
         [HttpGet("{lang}/odds-movement/{matchId}/{betTypeId}/{format}/{bookmakerId}")]
         public async Task<MatchOddsMovement> OddsMovement(string matchId, int betTypeId, string bookmakerId, string lang = "en-US", string format = "dec")
-            => await oddsQueryService.GetOddsMovement(matchId, betTypeId, bookmakerId, Enumeration.FromDisplayName<Language>(lang));
+            => await mediator.Send(new OddsMovementRequest(matchId, betTypeId, bookmakerId, lang, format));
     }
 }

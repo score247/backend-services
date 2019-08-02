@@ -16,5 +16,11 @@
   </Function>
   <Function Name="Score247_GetTimeline">
     <Setting Key="Score247_GetTimeline" SpName="Score247_GetTimeline" DbName="DefaultConnection" />
+    <Setting Key="Score247_GetMatchesByDateRange" SpName="Score247_GetMatchesByDateRange" DbName="DefaultConnection" />
+  </Function>
+
+  <Function Name="Odds">
+    <Setting Key="Odds_InsertOdds" SpName="Odds_InsertOdds" DbName="DefaultConnection" />
+    <Setting Key="Odds_GetOdds" SpName="Odds_GetOdds" DbName="DefaultConnection" />
   </Function>
 </Functions>

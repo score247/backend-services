@@ -100,4 +100,13 @@
         ////public Sport sport { get; set; }
         public List<SportEvent> sport_events { get; set; }
     }
+
+    public class OddsByMatchDto
+    {
+        public DateTime generated_at { get; set; }
+        public string schema { get; set; }
+
+        ////public Sport sport { get; set; }
+        public SportEvent sport_event { get; set; }
+    }
 }

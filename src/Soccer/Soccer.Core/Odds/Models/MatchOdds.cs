@@ -15,10 +15,10 @@
             BetTypeOddsList = betTypeOddsList;
         }
 
-        public string MatchId { get; private set; }
+        public string MatchId { get; }
 
-        public DateTime? LastUpdated { get; private set; }
+        public DateTime? LastUpdated { get; }
 
-        public IEnumerable<BetTypeOdds> BetTypeOddsList { get; private set; }
+        public IEnumerable<BetTypeOdds> BetTypeOddsList { get; }
     }
 }

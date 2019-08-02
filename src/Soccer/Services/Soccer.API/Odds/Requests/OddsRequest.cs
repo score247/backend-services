@@ -1,7 +1,9 @@
 ﻿namespace Soccer.API.Odds.Requests
 {
     using MediatR;
+    using Score247.Shared.Enumerations;
     using Soccer.Core.Odds.Models;
+    using Soccer.Core.Shared.Enumerations;
 
     public class OddsRequest : IRequest<MatchOdds>
     {
@@ -13,7 +15,7 @@
         {
             MatchId = matchId;
             BetTypeId = betTypeId;
-            Languge = language;
+            Languge = Enumeration.FromDisplayName<Language>(language);
             Format = format;
         }
 
@@ -21,7 +23,7 @@
 
         public int BetTypeId { get; }
 
-        public string Languge { get; }
+        public Language Languge { get; }
 
         public string Format { get; }
     }

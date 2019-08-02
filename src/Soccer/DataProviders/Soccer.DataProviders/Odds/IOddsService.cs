@@ -9,5 +9,7 @@
         Task<IEnumerable<MatchOdds>> GetOdds();
 
         Task<IEnumerable<MatchOdds>> GetOddsChange(int minuteInterval);
+
+        Task<MatchOdds> GetOdds(string matchId);
     }
 }

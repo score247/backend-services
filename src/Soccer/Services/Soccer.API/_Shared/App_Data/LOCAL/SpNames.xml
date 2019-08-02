@@ -8,4 +8,8 @@
   <Function Name="GetLiveMatches">
     <Setting Key="Score247_GetMatchById" SpName="Score247_GetMatchById" DbName="DefaultConnection" />
   </Function>
+
+  <Function Name="Odds">
+    <Setting Key="Odds_GetOdds" SpName="Odds_GetOdds" DbName="DefaultConnection" />
+  </Function>
 </Functions>

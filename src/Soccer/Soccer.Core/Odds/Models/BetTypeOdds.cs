@@ -10,7 +10,7 @@
             int id, 
             string name, 
             Bookmaker bookmaker,
-            DateTimeOffset lastUpdatedTime,
+            DateTime lastUpdatedTime,
             IEnumerable<BetOptionOdds> betOptions)
         {
             Id = id;
@@ -20,15 +20,20 @@
             BetOptions = betOptions;
         }
 
-        public int Id { get; private set; }
+        public int Id { get; }
 
-        public string Name { get; private set; }
+        public string Name { get; }
 
-        public Bookmaker Bookmaker { get; private set; }
+        public Bookmaker Bookmaker { get; }
 
-        public DateTimeOffset LastUpdatedTime { get; private set; }
+        public DateTime LastUpdatedTime { get; private set; }
 
         public IEnumerable<BetOptionOdds> BetOptions { get; private set; }
+
+        public void SetLastUpdatedTime(DateTime lastUpdatedTime)
+        {
+            LastUpdatedTime = lastUpdatedTime;
+        }
 
         public void AssignOpeningData(IEnumerable<BetOptionOdds> openingBetOptions)
         {

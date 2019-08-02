@@ -4,7 +4,7 @@
 
     public class GetOddsCriteria : CriteriaBase
     {
-        public GetOddsCriteria(string matchId, int betTypeId, string bookmakerId)
+        public GetOddsCriteria(string matchId, int betTypeId, string bookmakerId = "")
         {
             MatchId = matchId;
             BetTypeId = betTypeId;
@@ -18,11 +18,10 @@
         public string BookmakerId { get; }
 
         public override string GetSettingKey()
-            => "Score247_Odds_GetOdds";
+            => "Odds_GetOdds";
 
         public override bool IsValid()
             => !string.IsNullOrWhiteSpace(MatchId)
-                && BetTypeId > 0
-                && !string.IsNullOrWhiteSpace(BookmakerId);
+                && BetTypeId > 0;
     }
 }

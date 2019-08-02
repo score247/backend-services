@@ -9,6 +9,7 @@
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Odds.Models;
     using Soccer.Core.Shared.Enumerations;
+    using Soccer.Database.Odds.Criteria;
 
     public interface IOddsQueryService
     {
@@ -39,7 +40,7 @@
 
         private async Task<IEnumerable<BetTypeOdds>> GetBookmakerComparisonOdds(string matchId, int betTypeId)
         {
-            var oddsByBookmaker = (await GetOddsData(/*matchId, betTypeId*/)).GroupBy(o => o.Bookmaker.Id);
+            var oddsByBookmaker = (await GetOddsData(matchId, betTypeId)).GroupBy(o => o.Bookmaker?.Id);
 
             var betTypeOdssList = oddsByBookmaker
                 .Select(group =>
@@ -58,8 +59,8 @@
         }
 
         // TODO: Write SP & Implement get data code here
-        private static Task<IEnumerable<BetTypeOdds>> GetOddsData(/*string matchId, int betTypeId*/)
-            => Task.FromResult(Enumerable.Empty<BetTypeOdds>());
+        private async Task<IEnumerable<BetTypeOdds>> GetOddsData(string matchId, int betTypeId)
+            => await dynamicRepository.FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId));
 
         public async Task<MatchOddsMovement> GetOddsMovement(string matchId, int betTypeId, string bookmakerId, Language language)
         {

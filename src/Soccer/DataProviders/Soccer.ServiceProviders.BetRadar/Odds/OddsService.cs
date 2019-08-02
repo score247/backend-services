@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.Logging;
     using Refit;
     using Soccer.Core.Odds.Models;
     using Soccer.DataProviders.Odds;
@@ -21,7 +22,7 @@
         Task<OddsScheduleDto> GetOddsChangeLog(long unixTimeStamp, string apiKey, string language = "en", string oddsType = "eu");
 
         [Get("/oddscomparison-rowt1/{language}/{oddsType}/sport_events/{matchId}/markets.json?api_key={apiKey}")]
-        Task<OddsScheduleDto> GetOddsByMatch(string matchId, string apiKey, string language = "en", string oddsType = "eu");
+        Task<OddsByMatchDto> GetOddsByMatch(string matchId, string apiKey, string language = "en", string oddsType = "eu");
     }
 
     public class OddsService : IOddsService
@@ -29,16 +30,19 @@
         private readonly IOddsApi oddsApi;
         private readonly OddsSetting oddsSetting;
         private readonly Func<DateTimeOffset> getCurrentTimeFunc;
+        private readonly ILogger logger;
         private const int dayIncrementIndex = 1;
 
         public OddsService(
             IOddsApi oddsApi,
             ISportRadarSettings sportRadarSettings,
-            Func<DateTimeOffset> getCurrentTimeFunc)
+            Func<DateTimeOffset> getCurrentTimeFunc,
+            ILogger logger)
         {
             this.oddsApi = oddsApi;
             this.oddsSetting = sportRadarSettings.SoccerSettings.OddsSetting;
             this.getCurrentTimeFunc = getCurrentTimeFunc;
+            this.logger = logger;
         }
 
         public async Task<IEnumerable<MatchOdds>> GetOdds()
@@ -49,9 +53,15 @@
 
             for (var date = from.Date; date.Date <= to.Date; date = date.AddDays(dayIncrementIndex))
             {
-                var oddsScheduleDto = await oddsApi.GetOddsSchedule(date.ToSportRadarFormat(), oddsSetting.Key);
-
-                matchOddsList.AddRange(BuildMatchOddsList(oddsScheduleDto));
+                try
+                {
+                    var oddsScheduleDto = await oddsApi.GetOddsSchedule(date.ToSportRadarFormat(), oddsSetting.Key);
+                    matchOddsList.AddRange(BuildMatchOddsList(oddsScheduleDto));
+                }
+                catch(Exception ex)
+                {
+                    await logger.ErrorAsync(ex.ToString());
+                }
             }
 
             return matchOddsList;
@@ -68,6 +78,13 @@
             var oddsChangeDto = await oddsApi.GetOddsChangeLog(unixTimeStamp, oddsSetting.Key);
 
             return BuildMatchOddsList(oddsChangeDto);
+        }
+
+        public async Task<MatchOdds> GetOdds(string matchId)
+        {
+            var oddsByMatchDto = await oddsApi.GetOddsByMatch(matchId, oddsSetting.Key);
+
+            return OddsMapper.MapToMatchOdds(oddsByMatchDto.sport_event);
         }
     }
 }

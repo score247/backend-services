@@ -1,5 +1,6 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Odds
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -34,16 +35,29 @@
 
         public async Task FetchOddsChangeLogs()
         {
-            var oddsList = await oddsService.GetOdds();
+            //var oddsList = await oddsService.GetOdds();
 
-            await PublishOdds(oddsList);
+            //await PublishOdds(oddsList);
+
+            await PublishOdds(new List<MatchOdds> {
+                new MatchOdds(
+                    "1111", 
+                    new List<BetTypeOdds>{
+                        new BetTypeOdds(1, "demo", new Bookmaker("1", "name"), DateTime.Now, new List<BetOptionOdds>
+                        {
+                            new BetOptionOdds("home", 1, 1, "1", "1.5")
+                        })
+                },
+                    DateTime.Now)
+            });
         }
 
         public async Task FetchOdds()
         {
-            var oddsList = await oddsService.GetOddsChange(scheduleTaskSettings.FetchOddsChangeMinuteInterval);
+            //var oddsList = await oddsService.GetOddsChange(scheduleTaskSettings.FetchOddsChangeMinuteInterval);
 
-            await PublishOdds(oddsList);
+            //await PublishOdds(oddsList);
+            FetchOddsChangeLogs();
         }
 
         private async Task PublishOdds(IEnumerable<MatchOdds> oddsList)
@@ -55,7 +69,7 @@
             {
                 var oddsBatch = oddsList.Skip(batchIndex * batchSize).Take(batchSize);
 
-                await messageBus.Publish<IMatchOddsMessage>(new MatchOddsMessage(oddsBatch));
+                await messageBus.Publish<IOddsChangeMessage>(new OddsChangeMessage(oddsBatch));
             }
         }
     }

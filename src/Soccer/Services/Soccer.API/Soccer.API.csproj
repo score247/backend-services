@@ -31,6 +31,7 @@
     <PackageReference Include="Fanex.Caching.AspNetCore" Version="2.2.1" />
     <PackageReference Include="Fanex.Logging.Extensions.AspNetCore" Version="1.0.0" />
     <PackageReference Include="Fanex.Logging.Sentry" Version="1.0.6" />
+    <PackageReference Include="JsonNet.ContractResolvers" Version="1.1.0" />
     <PackageReference Include="MassTransit.AspNetCore" Version="5.5.4" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="5.5.4" />
     <PackageReference Include="MediatR" Version="7.0.0" />

@@ -23,6 +23,8 @@
     using Soccer.DataReceivers.ScheduleTasks.Matches;
     using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
     using Soccer.DataReceivers.ScheduleTasks.Odds;
+    using Soccer.Core._Shared.Configurations;
+    using System;
 
     public class Startup
     {
@@ -51,8 +53,14 @@
             RegisterRabbitMq(services);
             RegisterSportRadarDataProvider(services);
             RegisterHangfire(services);
+            RegisterServices(services);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+        }
+
+        private static void RegisterServices(IServiceCollection services)
+        {
+            services.AddSingleton<Func<DateTimeOffset>>(() => DateTimeOffset.Now);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -96,16 +104,21 @@
 
         private void RegisterRabbitMq(IServiceCollection services)
         {
+             var messageQueueSettings = new MessageQueueSettings();
+            Configuration.Bind("MessageQueue", messageQueueSettings);
+
             services.AddMassTransit(x =>
             {
                 x.AddBus(_ => Bus.Factory.CreateUsingRabbitMq(
                   cfg =>
                   {
-                      cfg.Host(Configuration.GetSection("MessageQueue:RabbitMQ:Host").Value, "/", h =>
-                      {
-                          h.Username(Configuration.GetSection("MessageQueue:RabbitMQ:UserName").Value);
-                          h.Password(Configuration.GetSection("MessageQueue:RabbitMQ:Password").Value);
-                      });
+                      cfg.Host(
+                           messageQueueSettings.Host,
+                           messageQueueSettings.VirtualHost, h =>
+                           {
+                               h.Username(messageQueueSettings.Username);
+                               h.Password(messageQueueSettings.Password);
+                           });
                   }));
             });
         }
@@ -148,15 +161,22 @@
             RecurringJob.AddOrUpdate<IFetchLiveMatchesTask>(
                 "FetchLiveMatch", job => job.FetchLiveMatches(), "*/45 * * * *");
 
-            RecurringJob.AddOrUpdate<IFetchOddsScheduleTask>(
-                nameof(IFetchOddsScheduleTask.FetchOdds), 
-                job => job.FetchOdds(), 
-                taskSettings.FetchOddsScheduleJobCron);
 
-            RecurringJob.AddOrUpdate<IFetchOddsScheduleTask>(
-                nameof(IFetchOddsScheduleTask.FetchOddsChangeLogs), 
-                job => job.FetchOddsChangeLogs(), 
+            if (!string.IsNullOrWhiteSpace(taskSettings.FetchOddsScheduleJobCron))
+            {
+                RecurringJob.AddOrUpdate<IFetchOddsScheduleTask>(
+                    nameof(IFetchOddsScheduleTask.FetchOdds),
+                    job => job.FetchOdds(),
+                    taskSettings.FetchOddsScheduleJobCron);
+            }
+
+            if (!string.IsNullOrWhiteSpace(taskSettings.FetchOddsChangeJobCron))
+            {
+                RecurringJob.AddOrUpdate<IFetchOddsScheduleTask>(
+                nameof(IFetchOddsScheduleTask.FetchOddsChangeLogs),
+                job => job.FetchOddsChangeLogs(),
                 taskSettings.FetchOddsChangeJobCron);
+            }
         }
     }
 }

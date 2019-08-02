@@ -4,6 +4,7 @@
     using Fanex.Data.Repository;
     using Microsoft.Extensions.DependencyInjection;
     using Soccer.API.Matches;
+    using Soccer.API.Odds;
 
     public static class ServiceMiddleware
     {
@@ -13,6 +14,7 @@
 
             services.AddSingleton<ICacheService, CacheService>();
             services.AddScoped<IMatchQueryService, MatchQueryService>();
+            services.AddScoped<IOddsQueryService, OddsQueryService>();
         }
     }
 }

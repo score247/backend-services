@@ -30,7 +30,7 @@
     {
         public string Key { get; set; }
 
-        public bool EnableOddsJobs { get; set; }
+        public bool EnabledOddsJobs { get; set; } = true;
 
         public string GetOddsScheduleCron { get; set; }
 

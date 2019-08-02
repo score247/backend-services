@@ -18,9 +18,11 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
     using Sentry;
+    using Soccer.Core._Shared.Configurations;
     using Soccer.Database;
     using Soccer.EventProcessors.Matches;
     using Soccer.EventProcessors.Matches.MatchEvents;
+    using Soccer.EventProcessors.Odds;
 
     public class Startup
     {
@@ -38,6 +40,7 @@
             RegisterLogging(services);
             RegisterDatabase(services);
             RegisterRabbitMq(services);
+            RegisterServices(services);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -80,6 +83,11 @@
             services.AddMemoryCache(Configuration.GetSection("fanex.caching"));
         }
 
+        private static void RegisterServices(IServiceCollection services)
+        {
+            services.AddSingleton<Func<DateTime>>(() => DateTime.Now);
+        }
+
         private void RegisterLogging(IServiceCollection services)
         {
             LogManager
@@ -104,30 +112,26 @@
             services.AddScoped<ReceiveNormalEventConsumer>();
             services.AddScoped<ReceivePenaltyEventConsumer>();
             services.AddScoped<ProcessMatchEventConsumer>();
+            services.AddScoped<OddsChangeConsumer>();
+
+            var messageQueueSettings = new MessageQueueSettings();
+            Configuration.Bind("MessageQueue", messageQueueSettings);
 
             var bus = Bus.Factory.CreateUsingRabbitMq(
                    cfg =>
                    {
-                       var host = cfg.Host(Configuration.GetSection("MessageQueue:RabbitMQ:Host").Value, "/", h =>
+                       var host = cfg.Host(
+                           messageQueueSettings.Host,
+                           messageQueueSettings.VirtualHost, h =>
                        {
-                           h.Username(Configuration.GetSection("MessageQueue:RabbitMQ:UserName").Value);
-                           h.Password(Configuration.GetSection("MessageQueue:RabbitMQ:Password").Value);
+                           h.Username(messageQueueSettings.Username);
+                           h.Password(messageQueueSettings.Password);
                        });
 
-                       cfg.ReceiveEndpoint(host, "score247", e =>
+                       cfg.ReceiveEndpoint(host, messageQueueSettings.QueueName, e =>
                        {
                            e.PrefetchCount = 16;
-                           e.UseMessageRetry(x =>
-                           {
-                               x.Interval(2, 100);
-                               x.Handle<Exception>((ex) =>
-                               {
-                                   var logger = services.BuildServiceProvider().GetRequiredService<ILogger>();
-                                   logger.Error(ex.Message, ex);
-
-                                   return true;
-                               });
-                           });
+                           e.UseMessageRetry(RetryAndLogError(services));
 
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<FetchPreMatchesConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<FetchPostMatchesConsumer>());
@@ -137,6 +141,14 @@
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ReceivePenaltyEventConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ProcessMatchEventConsumer>());
                        });
+
+                       cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_Odds", e =>
+                       {
+                           e.PrefetchCount = 16;
+                           e.UseMessageRetry(RetryAndLogError(services));
+
+                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<OddsChangeConsumer>());
+                       });
                    });
 
             bus.Start();
@@ -145,6 +157,21 @@
             {
                 s.AddBus(_ => bus);
             });
+        }
+
+        private static Action<GreenPipes.Configurators.IRetryConfigurator> RetryAndLogError(IServiceCollection services)
+        {
+            return x =>
+            {
+                x.Interval(1, 100);
+                x.Handle<Exception>((ex) =>
+                {
+                    var logger = services.BuildServiceProvider().GetRequiredService<ILogger>();
+                    logger.Error(ex.Message, ex);
+
+                    return true;
+                });
+            };
         }
     }
 }

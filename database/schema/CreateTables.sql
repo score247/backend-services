@@ -24,3 +24,12 @@ CREATE TABLE `LiveMatch` (
   PRIMARY KEY (`Id`,`Language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `Odds` (
+    `CreatedTime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `Value` JSON NOT NULL,
+    `MatchId` VARCHAR(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `BetTypeId` INTEGER NOT NULL,
+    `BookmakerId` VARCHAR(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+    CONSTRAINT `PK_Odds` PRIMARY KEY (`MatchId`, `BetTypeId`, `BookmakerId`, `CreatedTime`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
