@@ -38,11 +38,41 @@
         public async Task<Match> GetMatch(string id, Language language)
         {
             var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language));
+
+            if (match != null)
+            {
+                await GetMatchTimelineEvents(id, match);
+
+                GetMatchFunctions(match);
+            }
+
+            return match;
+        }
+
+        private static void GetMatchFunctions(Match match)
+        {
+            // TODO: Hardcode first
+            var functions = new List<MatchFunction>
+                {
+                    new MatchFunction { Abbreviation = "Odds", Name = "Odds" },
+                    new MatchFunction { Abbreviation = "Info", Name = "Match Info" },
+                    new MatchFunction { Abbreviation = "Tracker", Name = "Tracker" },
+                    new MatchFunction { Abbreviation = "Stats", Name = "Statistics" },
+                    new MatchFunction { Abbreviation = "Line-ups", Name = "Line-ups" },
+                    new MatchFunction { Abbreviation = "H2H", Name = "Head to Head" },
+                    new MatchFunction { Abbreviation = "Table", Name = "Table" },
+                    new MatchFunction { Abbreviation = "Social", Name = "Social" },
+                    new MatchFunction { Abbreviation = "TV", Name = "TV Schedule" }
+                };
+
+            match.Functions = functions;
+        }
+
+        private async Task GetMatchTimelineEvents(string id, Match match)
+        {
             var timelineEvent = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
 
             match.TimeLines = timelineEvent;
-
-            return match;
         }
     }
 }
