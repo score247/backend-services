@@ -17,7 +17,7 @@
 
         public string Timeline { get; }
 
-        public override string GetSettingKey() => "Score247_InsertTimeline";
+        public override string GetSettingKey() => "Match_InsertTimeline";
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(MatchId) && !string.IsNullOrWhiteSpace(Timeline);
     }

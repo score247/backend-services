@@ -1,4 +1,4 @@
-CREATE DEFINER=`root`@`%` PROCEDURE `Score247_InsertTimeline`(IN matchId TEXT, IN timeline TEXT)
+CREATE DEFINER=`user`@`%` PROCEDURE `Match_InsertTimeline`(IN matchId TEXT, IN timeline TEXT)
 BEGIN
 	 INSERT INTO `Timeline` VALUES (
 			JSON_UNQUOTE(JSON_EXTRACT(timeline, '$.Id')),

@@ -16,7 +16,7 @@
 
         public string Language { get; }
 
-        public override string GetSettingKey() => "Score247_GetLiveMatches";
+        public override string GetSettingKey() => "LiveMatch_GetBySportId";
 
         public override bool IsValid() => SportId > 0;
     }

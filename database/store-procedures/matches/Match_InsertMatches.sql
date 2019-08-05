@@ -1,4 +1,4 @@
-CREATE DEFINER=`user`@`%` PROCEDURE `Score247_InsertOrUpdateMatches`(IN sportId INT, IN matches MEDIUMTEXT, IN language TEXT)
+CREATE DEFINER=`user`@`%` PROCEDURE `Match_InsertMatches`(IN sportId INT, IN matches MEDIUMTEXT, IN language TEXT)
 BEGIN
 	DECLARE i INT DEFAULT 0;                                                                                                                                                    
     DECLARE e INT DEFAULT JSON_LENGTH(matches);

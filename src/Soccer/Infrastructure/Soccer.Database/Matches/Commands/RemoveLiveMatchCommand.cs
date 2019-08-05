@@ -9,7 +9,7 @@
 
         public string MatchId { get; }
 
-        public override string GetSettingKey() => "Score247_RemoveLiveMatch";
+        public override string GetSettingKey() => "LiveMatch_RemoveById";
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(MatchId);
     }

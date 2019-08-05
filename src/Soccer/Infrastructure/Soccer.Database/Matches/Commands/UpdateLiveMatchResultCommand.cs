@@ -18,7 +18,7 @@
 
         public string MatchResult { get; }
 
-        public override string GetSettingKey() => "Score247_UpdateLiveMatchResult";
+        public override string GetSettingKey() => "LiveMatch_UpdateMatchResult";
 
         public override bool IsValid() =>
             !string.IsNullOrWhiteSpace(MatchId)

@@ -55,7 +55,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="appsettings.local-auto-test.json">
+    <Content Update="appsettings.local-acceptance-test.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="appsettings.local-dev.json">

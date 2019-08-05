@@ -23,7 +23,7 @@
 
         public string Language { get; }
 
-        public override string GetSettingKey() => "Score247_GetMatchesByDateRange";
+        public override string GetSettingKey() => "Match_GetByDateRange";
 
         public override bool IsValid() => SportId > 0 && FromDate <= ToDate;
     }

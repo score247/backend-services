@@ -1,4 +1,4 @@
-CREATE DEFINER=`user`@`%` PROCEDURE `Score247_UpdateLiveMatchResult`(
+CREATE DEFINER=`user`@`%` PROCEDURE `LiveMatch_UpdateMatchResult`(
 	IN sportId INT(11), 
     IN matchId VARCHAR(45), 
     IN matchResult TEXT)

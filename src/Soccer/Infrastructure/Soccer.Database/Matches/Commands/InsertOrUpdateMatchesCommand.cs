@@ -22,7 +22,7 @@
 
         public string Language { get; }
 
-        public override string GetSettingKey() => "Score247_InsertOrUpdateMatches";
+        public override string GetSettingKey() => "Match_InsertMatches";
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(Matches) && !string.IsNullOrWhiteSpace(Language);
     }
