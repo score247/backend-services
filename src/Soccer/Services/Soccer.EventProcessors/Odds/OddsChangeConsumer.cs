@@ -54,7 +54,7 @@
                 if (lastOdds == null
                     || forceInsert
                     || (lastOdds.LastUpdatedTime < matchOdds.LastUpdated
-                        && lastOdds.Equals(betTypeOdds)))
+                        && !lastOdds.Equals(betTypeOdds)))
                 {
                     betTypeOdds.SetLastUpdatedTime(matchOdds.LastUpdated ?? DateTime.Now);
                     insertOddsList.Add(betTypeOdds);
