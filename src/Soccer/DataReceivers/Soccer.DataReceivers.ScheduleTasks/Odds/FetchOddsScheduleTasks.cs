@@ -34,14 +34,14 @@
 
         public async Task FetchOddsChangeLogs()
         {
-            var oddsList = await oddsService.GetOdds();
+            var oddsList = await oddsService.GetOddsChange(scheduleTaskSettings.FetchOddsChangeMinuteInterval);
 
             await PublishOdds(oddsList);
         }
 
         public async Task FetchOdds()
         {
-            var oddsList = await oddsService.GetOddsChange(scheduleTaskSettings.FetchOddsChangeMinuteInterval);
+            var oddsList = await oddsService.GetOdds();
 
             await PublishOdds(oddsList);
         }
