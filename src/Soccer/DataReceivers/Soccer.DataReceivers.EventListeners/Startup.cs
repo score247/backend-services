@@ -16,6 +16,7 @@
     using Newtonsoft.Json;
     using Refit;
     using Sentry;
+    using Soccer.Core._Shared.Configurations;
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataProviders.SportRadar.Matches.Services;
     using Soccer.DataProviders.SportRadar.Shared.Configurations;
@@ -94,16 +95,21 @@
 
         private void RegisterRabbitMq(IServiceCollection services)
         {
+            var messageQueueSettings = new MessageQueueSettings();
+            Configuration.Bind("MessageQueue", messageQueueSettings);
+
             services.AddMassTransit(x =>
             {
                 x.AddBus(_ => Bus.Factory.CreateUsingRabbitMq(
                   cfg =>
                   {
-                      cfg.Host(Configuration.GetSection("MessageQueue:RabbitMQ:Host").Value, "/", h =>
-                      {
-                          h.Username(Configuration.GetSection("MessageQueue:RabbitMQ:UserName").Value);
-                          h.Password(Configuration.GetSection("MessageQueue:RabbitMQ:Password").Value);
-                      });
+                      cfg.Host(
+                           messageQueueSettings.Host,
+                           messageQueueSettings.VirtualHost, h =>
+                           {
+                               h.Username(messageQueueSettings.Username);
+                               h.Password(messageQueueSettings.Password);
+                           });
                   }));
             });
         }
