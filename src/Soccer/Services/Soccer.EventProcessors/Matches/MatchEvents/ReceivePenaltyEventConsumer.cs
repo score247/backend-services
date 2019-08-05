@@ -42,7 +42,7 @@
         public async Task HandlePenalty(MatchEvent matchEvent)
         {
             var matchEventsCacheKey = $"Penalty_Match_{matchEvent.MatchId}";
-            var cachedPenaltyEvents = (await cacheService.GetAsync<IList<TimelineEventEntity>>(matchEventsCacheKey)) ?? new List<TimelineEventEntity>();
+            var cachedPenaltyEvents = (await cacheService.GetAsync<IList<TimelineEvent>>(matchEventsCacheKey)) ?? new List<TimelineEvent>();
 
             cachedPenaltyEvents.Add(matchEvent.Timeline);
 
@@ -53,7 +53,7 @@
             await CachePenaltyEvents(matchEventsCacheKey, cachedPenaltyEvents);
         }
 
-        private async Task HandleLastShootAndCombineInfoWithCurrentShoot(TimelineEventEntity shootoutEvent, string matchId)
+        private async Task HandleLastShootAndCombineInfoWithCurrentShoot(TimelineEvent shootoutEvent, string matchId)
         {
             var latestEventCacheKey = $"Penalty_Match_{matchId}_Latest_Event";
             var latestShootout = await GetLatestShoot(shootoutEvent, latestEventCacheKey);
@@ -69,9 +69,9 @@
             }
         }
 
-        private async Task<TimelineEventEntity> GetLatestShoot(TimelineEventEntity shootoutEvent, string latestEventCacheKey)
+        private async Task<TimelineEvent> GetLatestShoot(TimelineEvent shootoutEvent, string latestEventCacheKey)
         {
-            var latestShootout = await cacheService.GetAsync<TimelineEventEntity>(latestEventCacheKey);
+            var latestShootout = await cacheService.GetAsync<TimelineEvent>(latestEventCacheKey);
 
             if (latestShootout == null)
             {
@@ -81,7 +81,7 @@
             return latestShootout;
         }
 
-        private static void SetFirstShoot(TimelineEventEntity shootoutEvent)
+        private static void SetFirstShoot(TimelineEvent shootoutEvent)
         {
             shootoutEvent.IsFirstShoot = true;
 
@@ -97,8 +97,8 @@
 
         private async Task HandleLatestPenaltyEvent(
             string latestEventCacheKey,
-            TimelineEventEntity shootoutEvent,
-            TimelineEventEntity latestPenalty)
+            TimelineEvent shootoutEvent,
+            TimelineEvent latestPenalty)
         {
             if (latestPenalty != null)
             {
@@ -119,10 +119,10 @@
             }
         }
 
-        private async Task CachePenaltyEvents(string cacheKey, IList<TimelineEventEntity> cachedPenaltyEvents)
+        private async Task CachePenaltyEvents(string cacheKey, IList<TimelineEvent> cachedPenaltyEvents)
             => await cacheService.SetAsync(cacheKey, cachedPenaltyEvents, MatchPenaltyCacheOptions);
 
-        private static void SetTotalScore(IList<TimelineEventEntity> shootoutEvents, TimelineEventEntity shootoutTimeline)
+        private static void SetTotalScore(IList<TimelineEvent> shootoutEvents, TimelineEvent shootoutTimeline)
         {
             var homeScore = 0;
             var awayScore = 0;

@@ -7,7 +7,7 @@
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.Models;
 
-    public class TimelineEventEntity : BaseEntity
+    public class TimelineEvent : BaseEntity
     {
         public EventType Type { get; set; }
 

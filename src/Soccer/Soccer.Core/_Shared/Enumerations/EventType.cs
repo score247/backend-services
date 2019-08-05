@@ -68,28 +68,12 @@
         {
         }
 
-        public bool IsMatchEnd => this == MatchEnded;
+        public bool IsMatchEnd() => this == MatchEnded;
 
-        public bool IsPeriodStart => this == PeriodStart;
+        public bool IsPeriodStart() => this == PeriodStart;
 
-        public bool IsScoreChange => this == ScoreChange;
+        public bool IsScoreChange() => this == ScoreChange;
 
-        public bool IsPenaltyShootout => this == PenaltyShootout;
-
-        public static List<byte> BasicSoccerEventType { get; }
-            = new List<byte>
-            {
-                MatchStarted.Value,
-                PeriodStart.Value,
-                BreakStart.Value,
-                ScoreChange.Value,
-                YellowCard.Value,
-                YellowRedCard.Value,
-                RedCard.Value,
-                PenaltyShootout.Value,
-                MatchEnded.Value,
-                InjuryTimeShown.Value,
-                PenaltyMissed.Value
-            };
+        public bool IsPenaltyShootout() => this == PenaltyShootout;
     }
 }

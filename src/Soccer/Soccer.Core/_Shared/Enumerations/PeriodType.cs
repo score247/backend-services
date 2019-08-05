@@ -26,6 +26,6 @@
         {
         }
 
-        public bool IsPenalties => this == Penalties;
+        public bool IsPenalties() => this == Penalties;
     }
 }

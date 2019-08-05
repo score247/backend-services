@@ -49,7 +49,7 @@
                 var matchTime = timeline.MatchTime;
                 var matchStatus = matchEvent.MatchResult.MatchStatus.Value;
 
-                if (timeline.Type.IsPeriodStart && PeriodStartTimeMapper.ContainsKey(matchStatus))
+                if (timeline.Type.IsPeriodStart() && PeriodStartTimeMapper.ContainsKey(matchStatus))
                 {
                     matchTime = PeriodStartTimeMapper[matchStatus];
                 }

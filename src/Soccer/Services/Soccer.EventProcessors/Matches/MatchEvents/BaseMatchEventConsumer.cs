@@ -35,11 +35,11 @@
 
             var timelineEventsCacheKey = $"MatchPushEvent_Match_{matchEvent.MatchId}";
 
-            var timeLineEvents = cacheService.Get<IList<TimelineEventEntity>>(timelineEventsCacheKey);
+            var timeLineEvents = cacheService.Get<IList<TimelineEvent>>(timelineEventsCacheKey);
 
             if (timeLineEvents == null || timeLineEvents.Count == 0)
             {
-                timeLineEvents = (await dynamicRepository.FetchAsync<TimelineEventEntity>
+                timeLineEvents = (await dynamicRepository.FetchAsync<TimelineEvent>
                     (new GetTimelineCriteria(matchEvent.MatchId))).ToList();
 
                 if (timeLineEvents?.Count > 0)

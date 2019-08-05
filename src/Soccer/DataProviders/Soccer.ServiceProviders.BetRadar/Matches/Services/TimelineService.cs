@@ -35,9 +35,9 @@
             this.logger = logger;
         }
 
-        public async Task<IReadOnlyList<TimelineEventEntity>> GetTimelines(string matchId, string region, Language language)
+        public async Task<IReadOnlyList<TimelineEvent>> GetTimelines(string matchId, string region, Language language)
         {
-            var timelines = new List<TimelineEventEntity>();
+            var timelines = new List<TimelineEvent>();
             var sportRadarLanguage = language.ToSportRadarFormat();
 
             try

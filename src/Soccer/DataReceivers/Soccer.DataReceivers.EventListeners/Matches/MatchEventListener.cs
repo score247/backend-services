@@ -34,7 +34,7 @@
                     return;
                 }
 
-                if (matchEvent.Timeline.Type.IsMatchEnd)
+                if (matchEvent.Timeline.Type.IsMatchEnd())
                 {
                     await messageBus.Publish<IMatchEndEventReceivedMessage>(new MatchEndEventReceivedMessage(matchEvent));
                     return;

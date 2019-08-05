@@ -108,7 +108,7 @@
             return oddsMovements.Reverse();
         }
 
-        private static IEnumerable<TimelineEventEntity> GetMainEvents(Match match)
+        private static IEnumerable<TimelineEvent> GetMainEvents(Match match)
             => match.TimeLines.Where(tl
 #pragma warning disable S1067 // Expressions should not be too complex
                  => tl != null
@@ -146,7 +146,7 @@
 
             var homeScore = 0;
             var awayScore = 0;
-            TimelineEventEntity currentEvent = null;
+            TimelineEvent currentEvent = null;
             var timelineEvents = GetMainEvents(match);
             var oddsMovements = new List<OddsMovement>();
             var matchLiveOdds = betTypeOddsList.Where(o => o.LastUpdatedTime >= match.EventDate);
@@ -165,8 +165,8 @@
         private static OddsMovement BuildOddsMovementEvent(
             ref int homeScore,
             ref int awayScore,
-            ref TimelineEventEntity currentEvent,
-            TimelineEventEntity timelineEvent,
+            ref TimelineEvent currentEvent,
+            TimelineEvent timelineEvent,
             BetTypeOdds betTypeOdds)
         {
             var matchTime = string.Empty;
@@ -211,22 +211,22 @@
                 awayScore);
         }
 
-        private static bool IsScoreChange(TimelineEventEntity timelineEvent)
+        private static bool IsScoreChange(TimelineEvent timelineEvent)
             => timelineEvent != null
                 && timelineEvent.Type == EventType.ScoreChange;
 
-        private static bool IsHalfTimeBreakStart(TimelineEventEntity timelineEvent)
+        private static bool IsHalfTimeBreakStart(TimelineEvent timelineEvent)
             => timelineEvent != null
                 && timelineEvent.Type == EventType.BreakStart
                 && timelineEvent.PeriodType.DisplayName.ToLowerInvariant() == pause;
 
-        private static bool IsSecondPeriodStart(TimelineEventEntity timelineEvent)
+        private static bool IsSecondPeriodStart(TimelineEvent timelineEvent)
             => timelineEvent != null
                 && timelineEvent.Type == EventType.PeriodStart
                 && timelineEvent.Period == secondPeriod
                 && timelineEvent.PeriodType == PeriodType.RegularPeriod;
 
-        private static bool IsFirstPeriodStart(TimelineEventEntity timelineEvent)
+        private static bool IsFirstPeriodStart(TimelineEvent timelineEvent)
             => timelineEvent != null
                 && timelineEvent.Type == EventType.PeriodStart
                 && timelineEvent.Period == firstPeriod

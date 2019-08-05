@@ -2,7 +2,7 @@
 {
     public class MatchEvent
     {
-        public MatchEvent(string matchId, MatchResult matchResult, TimelineEventEntity timeline)
+        public MatchEvent(string matchId, MatchResult matchResult, TimelineEvent timeline)
         {
             MatchId = matchId;
             MatchResult = matchResult;
@@ -13,6 +13,6 @@
 
         public MatchResult MatchResult { get; }
 
-        public TimelineEventEntity Timeline { get; }
+        public TimelineEvent Timeline { get; }
     }
 }

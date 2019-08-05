@@ -18,9 +18,9 @@
 
         public LeagueRound LeagueRound { get; set; }
 
-        public IEnumerable<TimelineEventEntity> TimeLines { get; set; }
+        public IEnumerable<TimelineEvent> TimeLines { get; set; }
 
-        public TimelineEventEntity LatestTimeline { get; set; }
+        public TimelineEvent LatestTimeline { get; set; }
 
         public int Attendance { get; set; }
 

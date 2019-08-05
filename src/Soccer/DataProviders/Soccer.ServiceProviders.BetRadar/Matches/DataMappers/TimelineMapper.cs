@@ -8,9 +8,9 @@
 
     public static class TimelineMapper
     {
-        public static TimelineEventEntity MapTimeline(Dtos.TimelineDto timelineDto)
+        public static TimelineEvent MapTimeline(Dtos.TimelineDto timelineDto)
         {
-            var timeline = new TimelineEventEntity();
+            var timeline = new TimelineEvent();
 
             if (timelineDto != null)
             {
@@ -65,7 +65,7 @@
                              ? 0
                              : int.Parse(matchClock.Split(':')[0]);
 
-        private static void SetPenaltyInfo(Dtos.TimelineDto timelineDto, TimelineEventEntity timeline)
+        private static void SetPenaltyInfo(Dtos.TimelineDto timelineDto, TimelineEvent timeline)
         {
             if (timelineDto.period_type == PeriodType.Penalties.DisplayName)
             {

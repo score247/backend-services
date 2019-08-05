@@ -6,7 +6,7 @@
     {
         public InsertTimelineCommand(
             string matchId,
-            TimelineEventEntity timeline)
+            TimelineEvent timeline)
 
         {
             MatchId = matchId;
