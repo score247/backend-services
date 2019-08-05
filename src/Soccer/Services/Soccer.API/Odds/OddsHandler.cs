@@ -22,8 +22,6 @@
             => oddsQueryService.GetOdds(request.MatchId, request.BetTypeId, request.Languge);
 
         public Task<MatchOddsMovement> Handle(OddsMovementRequest request, CancellationToken cancellationToken)
-        {
-            throw new System.NotImplementedException();
-        }
+            => oddsQueryService.GetOddsMovement(request.MatchId, request.BetTypeId, request.BookmakerId, request.Languge);
     }
 }

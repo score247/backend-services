@@ -64,7 +64,7 @@
 
         public async Task<MatchOddsMovement> GetOddsMovement(string matchId, int betTypeId, string bookmakerId, Language language)
         {
-            var betTypeOddsList = await GetBookmakerOddsListByBetType(/*matchId, betTypeId, bookmakerId*/);
+            var betTypeOddsList = await GetBookmakerOddsListByBetType(matchId, betTypeId, bookmakerId);
             var firstOdds = betTypeOddsList.FirstOrDefault();
 
             if (firstOdds == null)
@@ -72,12 +72,12 @@
                 return new MatchOddsMovement();
             }
 
-            return new MatchOddsMovement(matchId, firstOdds.Bookmaker, await BuildOddsMovement(matchId, betTypeOddsList, language));
+            return new MatchOddsMovement(matchId, firstOdds.Bookmaker, await BuildOddsMovement(matchId, betTypeOddsList.ToList(), language));
         }
 
         // TODO: Write SP & Implement get data code here
-        private static Task<List<BetTypeOdds>> GetBookmakerOddsListByBetType(/*string matchId, int betTypeId, string bookmakerId*/)
-            => Task.FromResult(new List<BetTypeOdds>());
+        private async Task<IEnumerable<BetTypeOdds>> GetBookmakerOddsListByBetType(string matchId, int betTypeId, string bookmakerId)
+            => await dynamicRepository.FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId, bookmakerId));
 
         private static readonly IList<byte> OddChangeEventIds
             = new List<byte>

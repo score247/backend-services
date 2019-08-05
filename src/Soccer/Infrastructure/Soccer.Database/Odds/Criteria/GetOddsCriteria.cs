@@ -8,7 +8,7 @@
         {
             MatchId = matchId;
             BetTypeId = betTypeId;
-            BookmakerId = bookmakerId;
+            BookmakerId = bookmakerId ?? string.Empty;
         }
 
         public string MatchId { get; }
