@@ -32,13 +32,13 @@
         {
             var message = context.Message;
             // TODO: Wait for Get Match API
-            //var availableMatches = await GetMatch();
+            var availableMatches = await GetMatch();
             foreach (var matchOdds in message.MatchOddsList)
             {
-                //if (availableMatches.Any(match => match.Id == matchOdds.MatchId))
-                //{
-                await InsertOdds(matchOdds, message.IsForceInsert);
-                //}
+                if (availableMatches.Any(match => match.Id == matchOdds.MatchId))
+                {
+                    await InsertOdds(matchOdds, message.IsForceInsert);
+                }
             }
         }
 

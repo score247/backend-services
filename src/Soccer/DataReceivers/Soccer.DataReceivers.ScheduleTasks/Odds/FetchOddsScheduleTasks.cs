@@ -35,29 +35,16 @@
 
         public async Task FetchOddsChangeLogs()
         {
-            //var oddsList = await oddsService.GetOdds();
+            var oddsList = await oddsService.GetOdds();
 
-            //await PublishOdds(oddsList);
-
-            await PublishOdds(new List<MatchOdds> {
-                new MatchOdds(
-                    "1111", 
-                    new List<BetTypeOdds>{
-                        new BetTypeOdds(1, "demo", new Bookmaker("1", "name"), DateTime.Now, new List<BetOptionOdds>
-                        {
-                            new BetOptionOdds("home", 1, 1, "1", "1.5")
-                        })
-                },
-                    DateTime.Now)
-            });
+            await PublishOdds(oddsList);
         }
 
         public async Task FetchOdds()
         {
-            //var oddsList = await oddsService.GetOddsChange(scheduleTaskSettings.FetchOddsChangeMinuteInterval);
+            var oddsList = await oddsService.GetOddsChange(scheduleTaskSettings.FetchOddsChangeMinuteInterval);
 
-            //await PublishOdds(oddsList);
-            FetchOddsChangeLogs();
+            await PublishOdds(oddsList);
         }
 
         private async Task PublishOdds(IEnumerable<MatchOdds> oddsList)
