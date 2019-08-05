@@ -1,11 +1,11 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
+    using System.Threading.Tasks;
     using Hangfire;
     using MassTransit;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.DataProviders.Matches.Services;
-    using System.Threading.Tasks;
 
     public interface IFetchTimelineTask
     {
@@ -15,7 +15,7 @@
     }
 
     public class FetchTimelineTask : IFetchTimelineTask
-    {        
+    {
         private readonly ITimelineService timelineService;
         private readonly IBus messageBus;
 

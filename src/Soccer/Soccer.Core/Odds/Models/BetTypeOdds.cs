@@ -7,8 +7,8 @@
     public class BetTypeOdds
     {
         public BetTypeOdds(
-            int id, 
-            string name, 
+            int id,
+            string name,
             Bookmaker bookmaker,
             DateTime lastUpdatedTime,
             IEnumerable<BetOptionOdds> betOptions)

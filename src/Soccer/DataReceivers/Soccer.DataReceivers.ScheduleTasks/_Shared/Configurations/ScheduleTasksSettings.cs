@@ -23,7 +23,7 @@
         public int FetchMatchResultDateSpan { get; set; }
 
         public int FetchMatchScheduleDateSpan { get; set; }
-        
+
         public string FetchOddsScheduleJobCron { get; }
 
         public string FetchOddsChangeJobCron { get; }

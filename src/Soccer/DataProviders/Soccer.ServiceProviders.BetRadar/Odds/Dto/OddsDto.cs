@@ -2,8 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using Soccer.DataProviders.SportRadar.Leagues.Dtos;
-    using Soccer.DataProviders.SportRadar.Matches.Dtos;
 
     public class TournamentRound
     {

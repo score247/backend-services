@@ -71,7 +71,7 @@
 
         private static BetTypeOdds BuildBetTypeOdds((int, string) betType, Book book)
             => new BetTypeOdds(
-                betType.Item1, 
+                betType.Item1,
                 betType.Item2,
                 new Bookmaker(book.id, book.name),
                 DateTime.Now,

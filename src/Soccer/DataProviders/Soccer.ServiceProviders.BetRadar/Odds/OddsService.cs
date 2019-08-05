@@ -58,7 +58,7 @@
                     var oddsScheduleDto = await oddsApi.GetOddsSchedule(date.ToSportRadarFormat(), oddsSetting.Key);
                     matchOddsList.AddRange(BuildMatchOddsList(oddsScheduleDto));
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     await logger.ErrorAsync(ex.ToString());
                 }

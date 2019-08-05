@@ -1,6 +1,5 @@
 ﻿namespace Soccer.Database.Odds.Commands
 {
-    using System;
     using System.Collections.Generic;
     using Soccer.Core.Odds.Models;
 

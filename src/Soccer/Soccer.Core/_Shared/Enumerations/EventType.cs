@@ -1,6 +1,5 @@
 ﻿namespace Soccer.Core.Shared.Enumerations
 {
-    using System.Collections.Generic;
     using Score247.Shared.Enumerations;
 
     public class EventType : Enumeration

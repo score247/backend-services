@@ -7,7 +7,7 @@
     public class OddsMovement
     {
         public OddsMovement(
-            IEnumerable<BetOptionOdds> betOptions, 
+            IEnumerable<BetOptionOdds> betOptions,
             string matchTime,
             DateTimeOffset updateTime,
             bool isMatchStated = false,

@@ -1,5 +1,6 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks
 {
+    using System;
     using System.Linq;
     using Fanex.Logging;
     using Fanex.Logging.Sentry;
@@ -15,16 +16,15 @@
     using Newtonsoft.Json;
     using Refit;
     using Sentry;
+    using Soccer.Core._Shared.Configurations;
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataProviders.Odds;
     using Soccer.DataProviders.SportRadar.Matches.Services;
-    using Soccer.DataProviders.SportRadar.Shared.Configurations;
     using Soccer.DataProviders.SportRadar.Odds;
+    using Soccer.DataProviders.SportRadar.Shared.Configurations;
     using Soccer.DataReceivers.ScheduleTasks.Matches;
-    using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
     using Soccer.DataReceivers.ScheduleTasks.Odds;
-    using Soccer.Core._Shared.Configurations;
-    using System;
+    using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
 
     public class Startup
     {
@@ -104,7 +104,7 @@
 
         private void RegisterRabbitMq(IServiceCollection services)
         {
-             var messageQueueSettings = new MessageQueueSettings();
+            var messageQueueSettings = new MessageQueueSettings();
             Configuration.Bind("MessageQueue", messageQueueSettings);
 
             services.AddMassTransit(x =>

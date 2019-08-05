@@ -22,7 +22,7 @@
         public string PushEventEndpoint { get; set; }
 
         public IEnumerable<SportSettings> Sports { get; set; }
-        
+
         public SportSettings SoccerSettings => Sports.FirstOrDefault(sport => sport.Id == Sport.Soccer.Value);
     }
 
