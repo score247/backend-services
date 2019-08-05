@@ -36,16 +36,20 @@
             }
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .ConfigureLogging((hostingContext, logging) =>
-                {
-                })
-                .ConfigureAppConfiguration((hostingContext, config) =>
-                {
-                    config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
-                })
-                .UseStartup<Startup>()
-                .UseUrls("http://0.0.0.0:5001");
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        {
+            var configuration = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                    .Build();
+
+            return WebHost.CreateDefaultBuilder(args)
+               .ConfigureLogging((hostingContext, logging) =>
+               {
+               })
+               .UseConfiguration(configuration)
+               .UseStartup<Startup>()
+               .UseUrls($"http://0.0.0.0:{configuration["Port"]}");
+        }
     }
 }
