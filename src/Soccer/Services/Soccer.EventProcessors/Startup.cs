@@ -136,6 +136,13 @@
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<FetchPreMatchesConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<FetchPostMatchesConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<CloseLiveMatchConsumer>());
+                       });
+
+                       cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents", e =>
+                       {
+                           e.PrefetchCount = 16;
+                           e.UseMessageRetry(RetryAndLogError(services));
+
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ReceiveMatchEndEventConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ReceiveNormalEventConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ReceivePenaltyEventConsumer>());

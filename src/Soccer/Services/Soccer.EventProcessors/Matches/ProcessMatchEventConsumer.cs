@@ -1,5 +1,6 @@
 ﻿namespace Soccer.EventProcessors.Matches
 {
+    using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using MassTransit;
@@ -22,10 +23,13 @@
 
             if (matchEvent != null)
             {
-                var updateLiveMatchResultTask = new Task(async () => await UpdateLiveMatchResult(matchEvent));
-                var insertTimelineTask = new Task(async () => await InsertTimeline(matchEvent));
+                var tasks = new List<Task>
+                {
+                    UpdateLiveMatchResult(matchEvent),
+                    InsertTimeline(matchEvent)
+                };
 
-                await Task.WhenAll(updateLiveMatchResultTask, insertTimelineTask);
+                await Task.WhenAll(tasks);
             }
         }
 
