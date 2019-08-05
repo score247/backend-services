@@ -19,9 +19,11 @@
             DisplayName = displayName;
         }
 
-        public string DisplayName { get; private set; }
+        // TODO: private set make hangfire method can not receive data
+        public string DisplayName { get; set; }
 
-        public byte Value { get; private set; }
+        // TODO: private set make hangfire method can not receive data
+        public byte Value { get; set; }
 
         public static byte AbsoluteDifference(Enumeration firstValue, Enumeration secondValue)
         {
