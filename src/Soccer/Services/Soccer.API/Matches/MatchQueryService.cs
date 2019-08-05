@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using Soccer.Core.Matches.Models;
@@ -36,6 +37,13 @@
 
         // TODO: Remove convert to client timezone, remember to move this business to front-end
         public async Task<Match> GetMatch(string id, Language language)
-            => await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language));
+        {
+            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language));
+            var timelineEvent = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
+
+            match.TimeLines = timelineEvent;
+
+            return match;
+        }
     }
 }

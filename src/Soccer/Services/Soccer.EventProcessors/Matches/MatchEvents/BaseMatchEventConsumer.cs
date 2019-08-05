@@ -40,7 +40,7 @@
             if (timeLineEvents == null || timeLineEvents.Count == 0)
             {
                 timeLineEvents = (await dynamicRepository.FetchAsync<TimelineEvent>
-                    (new GetTimelineCriteria(matchEvent.MatchId))).ToList();
+                    (new GetTimelineEventsCriteria(matchEvent.MatchId))).ToList();
 
                 if (timeLineEvents?.Count > 0)
                 {

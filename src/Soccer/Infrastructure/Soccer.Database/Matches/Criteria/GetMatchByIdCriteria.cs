@@ -15,8 +15,8 @@
 
         public string Language { get; }
 
-        public override string GetSettingKey() => "Score247_GetMatchById";
+        public override string GetSettingKey() => "Match_GetById";
 
-        public override bool IsValid() => string.IsNullOrEmpty(Id);
+        public override bool IsValid() => !string.IsNullOrEmpty(Id);
     }
 }

@@ -2,16 +2,16 @@
 {
     using Fanex.Data.Repository;
 
-    public class GetTimelineCriteria : CriteriaBase
+    public class GetTimelineEventsCriteria : CriteriaBase
     {
-        public GetTimelineCriteria(string matchId)
+        public GetTimelineEventsCriteria(string matchId)
         {
             MatchId = matchId;
         }
 
         public string MatchId { get; }
 
-        public override string GetSettingKey() => "Score247_GetTimeline";
+        public override string GetSettingKey() => "Match_GetTimelineEvents";
 
         public override bool IsValid() => !string.IsNullOrEmpty(MatchId);
     }

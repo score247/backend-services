@@ -1,21 +1,11 @@
 ﻿<Functions>
-  <Function Name="Score247_InsertOrUpdateMatches">
+  <Function Name="Match">
     <Setting Key="Score247_InsertOrUpdateMatches" SpName="Score247_InsertOrUpdateMatches" DbName="DefaultConnection" />
-  </Function>
-  <Function Name="Score247_InsertTimeline">
     <Setting Key="Score247_InsertTimeline" SpName="Score247_InsertTimeline" DbName="DefaultConnection" />
-  </Function>
-  <Function Name="Score247_RemoveLiveMatch">
     <Setting Key="Score247_RemoveLiveMatch" SpName="Score247_RemoveLiveMatch" DbName="DefaultConnection" />
-  </Function>
-  <Function Name="Score247_UpdateLiveMatchResult">
     <Setting Key="Score247_UpdateLiveMatchResult" SpName="Score247_UpdateLiveMatchResult" DbName="DefaultConnection" />
-  </Function>
-  <Function Name="Score247_UpdateMatchResult">
     <Setting Key="Score247_UpdateMatchResult" SpName="Score247_UpdateMatchResult" DbName="DefaultConnection" />
-  </Function>
-  <Function Name="Score247_GetTimeline">
-    <Setting Key="Score247_GetTimeline" SpName="Score247_GetTimeline" DbName="DefaultConnection" />
+    <Setting Key="Match_GetTimelineEvents" SpName="Match_GetTimelineEvents" DbName="DefaultConnection" />
     <Setting Key="Score247_GetMatchesByDateRange" SpName="Score247_GetMatchesByDateRange" DbName="DefaultConnection" />
   </Function>
 
