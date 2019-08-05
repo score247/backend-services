@@ -8,7 +8,7 @@ BEGIN
 		 INSERT INTO `LiveMatch`
 		 SELECT 
 			Id, 
-			JSON_REPLACE(`Value`,  '$.MatchResult', JSON_UNQUOTE(JSON_EXTRACT(matchResult, '$'))) as `Value`,
+			JSON_REPLACE(`Value`,  '$.MatchResult', JSON_EXTRACT(matchResult, '$')) as `Value`,
 			`Language`,
 			`SportId`,
 			LeagueId,
@@ -16,10 +16,10 @@ BEGIN
 			Region,
 			now(),
 			now()
-			FROM `Match`
-		 WHERE `SportId` = sportId AND Id = matchId
+			FROM `Match` as M
+		 WHERE M.`SportId` = sportId AND M.Id = matchId
 		 ON DUPLICATE KEY UPDATE
-			`Value` = JSON_REPLACE(VALUES(`Value`),  '$.MatchResult', JSON_UNQUOTE(JSON_EXTRACT(matchResult, '$'))),
+			`Value` = JSON_REPLACE(VALUES(`Value`),  '$.MatchResult', JSON_EXTRACT(matchResult, '$')),
 			ModifiedTime = now();
     END;
     END IF;

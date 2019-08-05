@@ -4,7 +4,7 @@ CREATE DEFINER=`user`@`%` PROCEDURE `Score247_UpdateMatchResult`(
     IN matchResult TEXT)
 BEGIN
 	UPDATE `Match` 
-    SET Value =  JSON_REPLACE(VALUES(`Value`),  '$.MatchResult', JSON_UNQUOTE(JSON_EXTRACT(matchResult, '$')))
+    SET Value =  JSON_REPLACE(VALUES(`Value`),  '$.MatchResult', JSON_EXTRACT(matchResult, '$'))
 	WHERE SportId = sportId
 		AND Id = matchId;
 END
