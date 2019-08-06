@@ -29,6 +29,7 @@
     public class Startup
     {
         private const int MaxWorker = 2;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -75,6 +76,8 @@
             {
                 app.UseExceptionHandler("/Error");
             }
+
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseHangfireDashboard(options: new DashboardOptions
             {
@@ -160,7 +163,6 @@
 
             RecurringJob.AddOrUpdate<IFetchLiveMatchesTask>(
                 "FetchLiveMatch", job => job.FetchLiveMatches(), "*/45 * * * *");
-
 
             if (!string.IsNullOrWhiteSpace(taskSettings.FetchOddsScheduleJobCron))
             {

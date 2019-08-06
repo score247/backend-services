@@ -66,7 +66,8 @@
             {
                 app.UseExceptionHandler("/Error");
             }
-            app.UseCors(options => options.AllowAnyOrigin());
+
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseHangfireDashboard(options: new DashboardOptions
             {
