@@ -72,10 +72,7 @@
             app.UseHangfireDashboard(options: new DashboardOptions
             {
                 Authorization = Enumerable.Empty<IDashboardAuthorizationFilter>()
-            }).UseHangfireServer(options: new BackgroundJobServerOptions
-            {
-                WorkerCount = NumberWorkerProcess
-            });
+            }).UseHangfireServer();
 
             RunHangfireJobs();
 

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using Soccer.Core.Matches.Models;
@@ -72,7 +73,7 @@
         {
             var timelineEvent = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
 
-            match.TimeLines = timelineEvent;
+            match.TimeLines = timelineEvent.OrderByDescending(t => t.Time);
         }
     }
 }
