@@ -111,10 +111,19 @@
         private static IEnumerable<TimelineEvent> GetMainEvents(Match match)
             => match.TimeLines.Where(tl
 #pragma warning disable S1067 // Expressions should not be too complex
-                 => tl != null
-                    && OddChangeEventIds.Contains(tl.Type.Value)
-                    && (tl.PeriodType == PeriodType.RegularPeriod
-                            || tl.PeriodType.DisplayName == pause));
+                 => IsTimelineNeedMapWithOddsData(tl));
+
+        private static bool IsTimelineNeedMapWithOddsData(TimelineEvent tl)
+        {
+            var needMap = tl != null
+                                && tl.Type != null
+                                && OddChangeEventIds.Contains(tl.Type.Value)
+                                && tl.PeriodType != null 
+                                && (tl.PeriodType == PeriodType.RegularPeriod
+                                        || tl.PeriodType.DisplayName == pause);
+
+            return needMap;
+        }
 
 #pragma warning restore S1067 // Expressions should not be too complex
 
@@ -236,6 +245,7 @@
             List<BetTypeOdds> betTypeOddsList,
             Match match)
         {
+            betTypeOddsList.Reverse();
             var firstBetTypeOdds = betTypeOddsList.FirstOrDefault();
             var oddsMovements = new List<OddsMovement>
             {
