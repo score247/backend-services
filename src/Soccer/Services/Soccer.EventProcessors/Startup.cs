@@ -62,6 +62,8 @@
                     template: "{controller=Home}/{action=Index}");
             });
 
+            app.UseCors(options => options.AllowAnyOrigin());
+
             app.UseHealthCheck();
 
             Dictionary<string, ConnectionConfiguration> connections = Configuration
