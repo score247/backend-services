@@ -20,6 +20,7 @@
     using Sentry;
     using Soccer.Core._Shared.Configurations;
     using Soccer.Database;
+    using Soccer.EventProcessors.Shared.Middlewares;
     using Soccer.EventProcessors.Matches;
     using Soccer.EventProcessors.Matches.MatchEvents;
     using Soccer.EventProcessors.Odds;
@@ -41,6 +42,7 @@
             RegisterDatabase(services);
             RegisterRabbitMq(services);
             RegisterServices(services);
+            services.AddHealthCheck();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -59,6 +61,8 @@
                     name: "default",
                     template: "{controller=Home}/{action=Index}");
             });
+
+            app.UseHealthCheck();
 
             Dictionary<string, ConnectionConfiguration> connections = Configuration
                 .GetSection("ConnectionStrings")
