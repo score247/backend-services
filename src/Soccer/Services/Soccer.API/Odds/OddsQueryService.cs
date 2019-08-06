@@ -118,7 +118,7 @@
             var needMap = tl != null
                                 && tl.Type != null
                                 && OddChangeEventIds.Contains(tl.Type.Value)
-                                && tl.PeriodType != null 
+                                && tl.PeriodType != null
                                 && (tl.PeriodType == PeriodType.RegularPeriod
                                         || tl.PeriodType.DisplayName == pause);
 
@@ -180,35 +180,38 @@
         {
             var matchTime = string.Empty;
 
-            if (IsScoreChange(timelineEvent))
+            if (timelineEvent != null)
             {
-                homeScore = timelineEvent.HomeScore;
-                awayScore = timelineEvent.AwayScore;
-                matchTime = $"{timelineEvent.MatchTime}'";
-            }
+                if (IsScoreChange(timelineEvent))
+                {
+                    homeScore = timelineEvent.HomeScore;
+                    awayScore = timelineEvent.AwayScore;
+                    matchTime = $"{timelineEvent.MatchTime}'";
+                }
 
-            if (IsHalfTimeBreakStart(timelineEvent))
-            {
-                currentEvent = timelineEvent;
-                matchTime = AppResources.HT;
-            }
+                if (IsHalfTimeBreakStart(timelineEvent))
+                {
+                    currentEvent = timelineEvent;
+                    matchTime = AppResources.HT;
+                }
 
-            if (IsFirstPeriodStart(timelineEvent))
-            {
-                currentEvent = timelineEvent;
-                matchTime = AppResources.KO;
-            }
+                if (IsFirstPeriodStart(timelineEvent))
+                {
+                    currentEvent = timelineEvent;
+                    matchTime = AppResources.KO;
+                }
 
-            if (IsSecondPeriodStart(timelineEvent))
-            {
-                currentEvent = timelineEvent;
-                currentEvent.Time = currentEvent.Time.AddMinutes(-startSecondHaft);
-            }
+                if (IsSecondPeriodStart(timelineEvent))
+                {
+                    currentEvent = timelineEvent;
+                    currentEvent.Time = currentEvent.Time.AddMinutes(-startSecondHaft);
+                }
 
-            if (string.IsNullOrWhiteSpace(matchTime))
-            {
-                var totalMinutes = (betTypeOdds.LastUpdatedTime - currentEvent.Time).TotalMinutes;
-                matchTime = totalMinutes.ToString("0") + "'";
+                if (string.IsNullOrWhiteSpace(matchTime))
+                {
+                    var totalMinutes = (betTypeOdds.LastUpdatedTime - currentEvent.Time).TotalMinutes;
+                    matchTime = totalMinutes.ToString("0") + "'";
+                }
             }
 
             return new OddsMovement(

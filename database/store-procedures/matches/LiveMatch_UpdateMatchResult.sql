@@ -20,6 +20,7 @@ BEGIN
 		 WHERE M.`SportId` = sportId AND M.Id = matchId
 		 ON DUPLICATE KEY UPDATE
 			`Value` = JSON_REPLACE(VALUES(`Value`),  '$.MatchResult', JSON_EXTRACT(matchResult, '$')),
+            EventDate = M.EventDate,
 			ModifiedTime = now();
     END;
     END IF;
