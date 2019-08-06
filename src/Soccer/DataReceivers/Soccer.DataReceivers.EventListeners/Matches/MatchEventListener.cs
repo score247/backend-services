@@ -28,7 +28,12 @@
         {
             await eventListenerService.ListenEvents(async (matchEvent) =>
             {
-                if (matchEvent.Timeline.IsScoreChangeInPenalty() && matchEvent.Timeline.IsShootOutInPenalty())
+                if (matchEvent.Timeline.IsScoreChangeInPenalty())
+                {
+                    return;
+                }
+
+                if (matchEvent.Timeline.IsShootOutInPenalty())
                 {
                     await messageBus.Publish<IPenaltyEventReceivedMessage>(new PenaltyEventReceivedMessage(matchEvent));
                     return;

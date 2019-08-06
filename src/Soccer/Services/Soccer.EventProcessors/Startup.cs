@@ -3,7 +3,6 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Fanex.Caching.Memory;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Data.Repository;
@@ -24,6 +23,7 @@
     using Soccer.EventProcessors.Matches;
     using Soccer.EventProcessors.Matches.MatchEvents;
     using Soccer.EventProcessors.Odds;
+    using Fanex.Caching;
 
     public class Startup
     {
@@ -86,7 +86,7 @@
 
         private void RegisterCache(IServiceCollection services)
         {
-            services.AddMemoryCache(Configuration.GetSection("fanex.caching"));
+            services.AddSingleton<ICacheService, CacheService>();
         }
 
         private static void RegisterServices(IServiceCollection services)

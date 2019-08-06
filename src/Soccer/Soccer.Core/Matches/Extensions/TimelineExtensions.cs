@@ -33,7 +33,7 @@
             => timeline.PeriodType != null
                 && timeline.PeriodType.IsPenalties()
                 && timeline.Type.IsPenaltyShootout()
-                && timeline.PenaltyStatus != NotTakenYetStatus;
+                && timeline.PenaltyStatus?.ToLowerInvariant() != NotTakenYetStatus;
 
         public static bool IsBasicEvent(this TimelineEvent timeline)
         {
