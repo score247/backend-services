@@ -96,9 +96,10 @@
             {
                 try
                 {
-                    await logger.InfoAsync($"{DateTime.Now} - region {region} Receiving: {matchEventPayload}");
                     var matchEvent = MatchMapper.MapMatchEvent(matchEventPayload);
                     handler.Invoke(matchEvent);
+
+                    await logger.InfoAsync($"{DateTime.Now} - region {region} Receiving: {matchEventPayload}");
                 }
                 catch
                 {

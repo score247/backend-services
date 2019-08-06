@@ -49,9 +49,9 @@
             return match;
         }
 
+        // TODO: Bring to client
         private static void GetMatchFunctions(Match match)
         {
-            // TODO: Hardcode first
             var functions = new List<MatchFunction>
                 {
                     new MatchFunction { Abbreviation = "Odds", Name = "Odds" },
