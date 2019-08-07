@@ -1,39 +1,14 @@
 ﻿namespace Soccer.Services.EventPublishers
 {
-    using Fanex.Logging;
-    using Fanex.Logging.Sentry;
+    using JsonNet.ContractResolvers;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Sentry;
-    using Soccer.EventPublishers.Shared.Middlewares;
-    using Soccer.EventPublishers.Matches.Hubs;
     using Newtonsoft.Json;
-    using Newtonsoft.Json.Serialization;
-    using System.Reflection;
-
-    public class PrivateResolver : DefaultContractResolver
-    {
-        protected override JsonProperty CreateProperty(MemberInfo member
-                                                     , MemberSerialization memberSerialization)
-        {
-            var prop = base.CreateProperty(member, memberSerialization);
-
-            if (!prop.Writable)
-            {
-                var property = member as PropertyInfo;
-                if (property != null)
-                {
-                    var hasPrivateSetter = property.GetSetMethod(true) != null;
-                    prop.Writable = hasPrivateSetter;
-                }
-            }
-
-            return prop;
-        }
-    }
+    using Soccer.EventPublishers.Matches.Hubs;
+    using Soccer.EventPublishers.Shared.Middlewares;
 
     public class Startup
     {
@@ -52,7 +27,7 @@
                 return new JsonSerializerSettings
                 {
                     DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-                    ContractResolver = new PrivateResolver()
+                    ContractResolver = new PrivateSetterContractResolver()
                 };
             };
 
