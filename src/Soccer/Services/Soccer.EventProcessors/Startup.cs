@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Fanex.Caching;
     using Fanex.Data;
     using Fanex.Data.MySql;
     using Fanex.Data.Repository;
@@ -19,11 +20,10 @@
     using Sentry;
     using Soccer.Core._Shared.Configurations;
     using Soccer.Database;
-    using Soccer.EventProcessors.Shared.Middlewares;
     using Soccer.EventProcessors.Matches;
     using Soccer.EventProcessors.Matches.MatchEvents;
     using Soccer.EventProcessors.Odds;
-    using Fanex.Caching;
+    using Soccer.EventProcessors.Shared.Middlewares;
 
     public class Startup
     {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Score247.Shared.Base;
+﻿using Score247.Shared.Base;
 
 namespace Soccer.Core.Matches.Models
 {

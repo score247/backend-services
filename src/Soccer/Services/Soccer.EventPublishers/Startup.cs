@@ -1,18 +1,19 @@
-﻿using System;
-using Fanex.Logging;
-using Fanex.Logging.Sentry;
-using GreenPipes;
-using MassTransit;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Sentry;
-using Soccer.EventPublishers.Matches;
-
-namespace Soccer.Services.EventPublishers
+﻿namespace Soccer.Services.EventPublishers
 {
+    using System;
+    using Fanex.Logging;
+    using Fanex.Logging.Sentry;
+    using GreenPipes;
+    using MassTransit;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Sentry;
+    using Soccer.EventPublishers.Matches;
+    using Soccer.EventPublishers.Matches.Hubs;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -27,6 +28,8 @@ namespace Soccer.Services.EventPublishers
         {
             RegisterLogging(services);
             RegisterRabbitMq(services);
+            services.AddSignalR();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -38,7 +41,17 @@ namespace Soccer.Services.EventPublishers
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
+            app.UseSignalR(routes =>
+            {
+                routes.MapHub<MatchEventHub>("/hubs/MatchEventHub");
+            });
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}");
+            });
         }
 
         private void RegisterLogging(IServiceCollection services)

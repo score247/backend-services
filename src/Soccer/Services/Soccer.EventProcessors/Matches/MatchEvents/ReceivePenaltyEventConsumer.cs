@@ -7,7 +7,6 @@
     using Fanex.Data.Repository;
     using Fanex.Logging;
     using MassTransit;
-    using Newtonsoft.Json;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;

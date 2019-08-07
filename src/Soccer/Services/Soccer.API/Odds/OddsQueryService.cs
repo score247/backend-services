@@ -211,7 +211,7 @@
                 }
             }
 
-            if (string.IsNullOrWhiteSpace(matchTime) 
+            if (string.IsNullOrWhiteSpace(matchTime)
                 && currentEvent != null)
             {
                 if (IsHalfTimeBreakStart(currentEvent))

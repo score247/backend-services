@@ -6,7 +6,7 @@ namespace Soccer.EventProcessors
     {
         public IActionResult Index()
         {
-            return new JsonResult("Started!");
+            return new JsonResult("Event Processors Started!");
         }
     }
 }
