@@ -113,7 +113,7 @@
         private static IEnumerable<TimelineEvent> GetMainEvents(Match match)
             => match.TimeLines.Where(tl
 #pragma warning disable S1067 // Expressions should not be too complex
-                 => IsTimelineNeedMapWithOddsData(tl));
+                 => IsTimelineNeedMapWithOddsData(tl)).OrderBy(t => t.Time);
 
         private static bool IsTimelineNeedMapWithOddsData(TimelineEvent tl)
         {
