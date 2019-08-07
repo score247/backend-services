@@ -31,7 +31,7 @@
                 };
             };
 
-            services.AddLogging();
+            services.AddLogging(Configuration);
             services.AddRabbitMq(Configuration);
             services.AddSignalR();
 
