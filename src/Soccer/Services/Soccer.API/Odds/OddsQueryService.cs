@@ -45,8 +45,9 @@
             var betTypeOdssList = oddsByBookmaker
                 .Select(group =>
                 {
-                    var first = group.First();
-                    var last = group.Last();
+                    var orderedGroup = group.OrderByDescending(bto => bto.LastUpdatedTime);
+                    var first = orderedGroup.First();
+                    var last = orderedGroup.Last();
 
                     first.AssignOpeningData(last.BetOptions);
 
