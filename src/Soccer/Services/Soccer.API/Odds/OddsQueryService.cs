@@ -72,12 +72,14 @@
                 return new MatchOddsMovement();
             }
 
-            return new MatchOddsMovement(matchId, firstOdds.Bookmaker, await BuildOddsMovement(matchId, betTypeOddsList.ToList(), language));
+            return new MatchOddsMovement(matchId, firstOdds.Bookmaker, await BuildOddsMovement(matchId, betTypeOddsList, language));
         }
 
         // TODO: Write SP & Implement get data code here
-        private async Task<IEnumerable<BetTypeOdds>> GetBookmakerOddsListByBetType(string matchId, int betTypeId, string bookmakerId)
-            => await dynamicRepository.FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId, bookmakerId));
+        private async Task<List<BetTypeOdds>> GetBookmakerOddsListByBetType(string matchId, int betTypeId, string bookmakerId)
+            => (await dynamicRepository.FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId, bookmakerId)))
+                .OrderBy(bto => bto.LastUpdatedTime)
+                .ToList();
 
         private static readonly IList<byte> OddChangeEventIds
             = new List<byte>
@@ -207,7 +209,7 @@
                     currentEvent.Time = currentEvent.Time.AddMinutes(-startSecondHaft);
                 }
 
-                if (string.IsNullOrWhiteSpace(matchTime))
+                if (string.IsNullOrWhiteSpace(matchTime) && currentEvent != null)
                 {
                     var totalMinutes = (betTypeOdds.LastUpdatedTime - currentEvent.Time).TotalMinutes;
                     matchTime = totalMinutes.ToString("0") + "'";
@@ -248,7 +250,6 @@
             List<BetTypeOdds> betTypeOddsList,
             Match match)
         {
-            betTypeOddsList.Reverse();
             var firstBetTypeOdds = betTypeOddsList.FirstOrDefault();
             var oddsMovements = new List<OddsMovement>
             {
