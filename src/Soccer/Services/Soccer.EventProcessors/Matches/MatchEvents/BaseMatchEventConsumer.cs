@@ -56,6 +56,8 @@
                 }
 
                 timeLineEvents.Add(matchEvent.Timeline);
+
+                await cacheService.SetAsync(timelineEventsCacheKey, timeLineEvents, EventCacheOptions);
             }
 
             return false;
