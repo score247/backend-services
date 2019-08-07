@@ -4,6 +4,7 @@
     using Fanex.Logging;
     using MassTransit;
     using Microsoft.AspNetCore.SignalR;
+    using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Extensions;

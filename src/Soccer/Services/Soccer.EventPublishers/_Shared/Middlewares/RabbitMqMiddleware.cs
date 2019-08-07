@@ -16,10 +16,11 @@
         {
             var messageQueueSettings = new MessageQueueSettings();
             configuration.Bind("MessageQueue", messageQueueSettings);
+            services.AddTransient<ProcessMatchEventPublisher>();
 
-            services.AddScoped<ProcessMatchEventPublisher>();
-
-            var bus = Bus.Factory.CreateUsingRabbitMq(
+            services.AddMassTransit(s =>
+            {
+                s.AddBus(_ => Bus.Factory.CreateUsingRabbitMq(
                   cfg =>
                   {
                       var host = cfg.Host(
@@ -35,15 +36,9 @@
                           e.PrefetchCount = 16;
                           e.UseMessageRetry(RetryAndLogError(services));
 
-                          e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ProcessMatchEventPublisher>());
+                          e.Consumer<ProcessMatchEventPublisher>(services.BuildServiceProvider());
                       });
-                  });
-
-            bus.Start();
-
-            services.AddMassTransit(s =>
-            {
-                s.AddBus(_ => bus);
+                  }));
             });
         }
 
