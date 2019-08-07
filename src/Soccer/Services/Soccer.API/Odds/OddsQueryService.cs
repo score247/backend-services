@@ -208,8 +208,16 @@
                     currentEvent = timelineEvent;
                     currentEvent.Time = currentEvent.Time.AddMinutes(-startSecondHaft);
                 }
+            }
 
-                if (string.IsNullOrWhiteSpace(matchTime) && currentEvent != null)
+            if (string.IsNullOrWhiteSpace(matchTime) 
+                && currentEvent != null)
+            {
+                if (IsHalfTimeBreakStart(currentEvent))
+                {
+                    matchTime = AppResources.HT;
+                }
+                else
                 {
                     var totalMinutes = (betTypeOdds.LastUpdatedTime - currentEvent.Time).TotalMinutes;
                     matchTime = totalMinutes.ToString("0") + "'";
