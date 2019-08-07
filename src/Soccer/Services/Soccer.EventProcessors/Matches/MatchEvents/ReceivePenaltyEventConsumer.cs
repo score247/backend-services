@@ -37,18 +37,26 @@
 
             if (await IsTimelineEventNotProcessed(matchEvent))
             {
-                await HandlePenalty(matchEvent);
+                var isCompleted = await HandlePenalty(matchEvent);
 
-                await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
+                if (isCompleted)
+                {
+                    await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
+                }
             }
         }
 
-        public async Task HandlePenalty(MatchEvent matchEvent)
+        public async Task<bool> HandlePenalty(MatchEvent matchEvent)
         {
             var matchEventsCacheKey = $"Penalty_Match_{matchEvent.MatchId}";
             var cachedPenaltyEvents = (await cacheService.GetAsync<IList<TimelineEvent>>(matchEventsCacheKey)) ?? new List<TimelineEvent>();
 
             await logger.InfoAsync(JsonConvert.SerializeObject(cachedPenaltyEvents));
+
+            if (cachedPenaltyEvents.Contains(matchEvent.Timeline))
+            {
+                return false;
+            }
 
             cachedPenaltyEvents.Add(matchEvent.Timeline);
 
@@ -57,6 +65,8 @@
             SetTotalScore(cachedPenaltyEvents, matchEvent.Timeline);
 
             await CachePenaltyEvents(matchEventsCacheKey, cachedPenaltyEvents);
+
+            return true;
         }
 
         private async Task HandleLastShootAndCombineInfoWithCurrentShoot(TimelineEvent shootoutEvent, string matchId)
