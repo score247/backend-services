@@ -27,7 +27,7 @@
 
             if (matchEvent?.Timeline?.IsBasicEvent() == true)
             {
-                await hubContext.Clients.All.SendAsync("MatchEvent", Sport.Soccer.Value, matchEvent);
+                await hubContext.Clients.All.SendAsync("MatchEvent", Sport.Soccer.Value, JsonConvert.SerializeObject(matchEvent));
                 await logger.InfoAsync("Send Match Event: \r\n" + JsonConvert.SerializeObject(matchEvent));
             }
         }
