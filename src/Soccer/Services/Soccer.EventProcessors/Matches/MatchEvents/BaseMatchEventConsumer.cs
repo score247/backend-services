@@ -50,15 +50,12 @@
 
             if (timeLineEvents?.Contains(matchEvent.Timeline) == true)
             {
-                if (timeLineEvents.Contains(matchEvent.Timeline))
-                {
-                    return true;
-                }
-
-                timeLineEvents.Add(matchEvent.Timeline);
-
-                await cacheService.SetAsync(timelineEventsCacheKey, timeLineEvents, EventCacheOptions);
+                return true;
             }
+
+            timeLineEvents.Add(matchEvent.Timeline);
+
+            await cacheService.SetAsync(timelineEventsCacheKey, timeLineEvents, EventCacheOptions);
 
             return false;
         }
