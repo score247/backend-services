@@ -72,12 +72,9 @@
                 .ToDictionary(connection => connection.Key,
                               connection => new ConnectionConfiguration(connection.Key, connection.Value));
 
-            // It comes with a default connection string provider, which works well with MySql connections, as well as a default DbSetting provider
             DbSettingProviderManager
                 .StartNewSession()
                 .Use(connections)
-                // It comes with a default connection string provider, which works well with MySql connections,
-                // as well as a default DbSetting provider
                 .WithMySql(resourcePath: Configuration["AppDataPath"])
                 .Run();
 

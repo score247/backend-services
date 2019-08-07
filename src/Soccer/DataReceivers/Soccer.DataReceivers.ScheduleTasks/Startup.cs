@@ -28,8 +28,6 @@
 
     public class Startup
     {
-        private const int MaxWorker = 2;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
