@@ -90,12 +90,14 @@
 
         private async Task ListenRegion(StreamReader reader, string region, Action<MatchEvent> handler)
         {
-            var matchEventPayload = reader.ReadLine();
+            var matchEventPayload = string.Empty;
 
-            while (!string.IsNullOrWhiteSpace(matchEventPayload))
+            while (!reader.EndOfStream)
             {
                 try
                 {
+                    matchEventPayload = reader.ReadLine();
+
                     var matchEvent = MatchMapper.MapMatchEvent(matchEventPayload);
                     handler.Invoke(matchEvent);
 
@@ -105,8 +107,6 @@
                 {
                     Debug.WriteLine(matchEventPayload);
                 }
-
-                matchEventPayload = reader.ReadLine();
             }
         }
     }
