@@ -37,7 +37,7 @@
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<MatchEventHub>("/hubs/MatchEventHub");
+                routes.MapHub<MatchEventHub>("/hubs/Soccer/MatchEventHub");
             });
 
             app.UseMvc(routes =>
