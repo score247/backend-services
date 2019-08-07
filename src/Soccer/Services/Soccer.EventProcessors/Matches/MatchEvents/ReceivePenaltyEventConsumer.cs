@@ -5,7 +5,9 @@
     using System.Threading.Tasks;
     using Fanex.Caching;
     using Fanex.Data.Repository;
+    using Fanex.Logging;
     using MassTransit;
+    using Newtonsoft.Json;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
@@ -19,12 +21,14 @@
 
         private readonly ICacheService cacheService;
         private readonly IBus messageBus;
+        private readonly ILogger logger;
 
-        public ReceivePenaltyEventConsumer(IBus messageBus, ICacheService cacheService, IDynamicRepository dynamicRepository)
+        public ReceivePenaltyEventConsumer(IBus messageBus, ICacheService cacheService, IDynamicRepository dynamicRepository, ILogger logger)
             : base(cacheService, dynamicRepository)
         {
             this.messageBus = messageBus;
             this.cacheService = cacheService;
+            this.logger = logger;
         }
 
         public async Task Consume(ConsumeContext<IPenaltyEventReceivedMessage> context)
@@ -43,6 +47,8 @@
         {
             var matchEventsCacheKey = $"Penalty_Match_{matchEvent.MatchId}";
             var cachedPenaltyEvents = (await cacheService.GetAsync<IList<TimelineEvent>>(matchEventsCacheKey)) ?? new List<TimelineEvent>();
+
+            await logger.InfoAsync(JsonConvert.SerializeObject(cachedPenaltyEvents));
 
             cachedPenaltyEvents.Add(matchEvent.Timeline);
 
