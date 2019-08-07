@@ -51,8 +51,6 @@
             var matchEventsCacheKey = $"Penalty_Match_{matchEvent.MatchId}";
             var cachedPenaltyEvents = (await cacheService.GetAsync<IList<TimelineEvent>>(matchEventsCacheKey)) ?? new List<TimelineEvent>();
 
-            await logger.InfoAsync(JsonConvert.SerializeObject(cachedPenaltyEvents));
-
             if (cachedPenaltyEvents.Contains(matchEvent.Timeline))
             {
                 return false;
