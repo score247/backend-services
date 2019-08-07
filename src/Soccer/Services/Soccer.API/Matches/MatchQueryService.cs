@@ -73,7 +73,7 @@
         {
             var timelineEvent = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
 
-            match.TimeLines = timelineEvent.OrderByDescending(t => t.Time);
+            match.TimeLines = timelineEvent;
         }
     }
 }
