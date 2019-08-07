@@ -81,7 +81,8 @@
 
             app.UseHangfireDashboard(options: new DashboardOptions
             {
-                Authorization = Enumerable.Empty<IDashboardAuthorizationFilter>()
+                Authorization = Enumerable.Empty<IDashboardAuthorizationFilter>(),
+                IgnoreAntiforgeryToken = true
             }).UseHangfireServer();
 
             RunHangfireJobs(appSettings);
