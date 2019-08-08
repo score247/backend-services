@@ -13,6 +13,8 @@
 
     public static class RabbitMqMiddleware
     {
+        private const int prefetCount = 16;
+
         public static void AddRabbitMq(this IServiceCollection services, IConfiguration configuration)
         {
             var messageQueueSettings = new MessageQueueSettings();
@@ -22,7 +24,7 @@
 
             services.AddMassTransit(s =>
             {
-                s.AddBus(_ => Bus.Factory.CreateUsingRabbitMq(
+                s.AddBus(serviceProvider => Bus.Factory.CreateUsingRabbitMq(
                   cfg =>
                   {
                       var host = cfg.Host(
@@ -35,18 +37,18 @@
 
                       cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents", e =>
                       {
-                          e.PrefetchCount = 16;
+                          e.PrefetchCount = prefetCount;
                           e.UseMessageRetry(RetryAndLogError(services));
 
-                          e.Consumer<ProcessMatchEventPublisher>(services.BuildServiceProvider());
+                          e.Consumer<ProcessMatchEventPublisher>(serviceProvider);
                       });
 
                       cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_OddsEvents", e =>
                       {
-                          e.PrefetchCount = 16;
+                          e.PrefetchCount = prefetCount;
                           e.UseMessageRetry(RetryAndLogError(services));
 
-                          e.Consumer<OddsChangePublisher>(_);
+                          e.Consumer<OddsChangePublisher>(serviceProvider);
                       });
                   }));
             });
