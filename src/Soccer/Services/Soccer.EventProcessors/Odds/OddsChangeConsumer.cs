@@ -31,7 +31,6 @@
         public async Task Consume(ConsumeContext<IOddsChangeMessage> context)
         {
             var message = context.Message;
-            // TODO: Wait for Get Match API
             var availableMatches = await GetMatch();
             foreach (var matchOdds in message.MatchOddsList)
             {
@@ -46,6 +45,26 @@
         {
             var insertOddsList = new List<BetTypeOdds>();
 
+            if (forceInsert
+                && (matchOdds.BetTypeOddsList == null || !matchOdds.BetTypeOddsList.Any()))
+            {
+                await HandleMatchOddsMissingOddsInformation(matchOdds, insertOddsList);
+            }
+            else
+            {
+                await HandleMatchOdds(matchOdds, forceInsert, insertOddsList);
+            }
+
+            if (insertOddsList.Any())
+            {
+                return await InsertOdds(insertOddsList, matchOdds.MatchId);
+            }
+
+            return true;
+        }
+
+        private async Task HandleMatchOdds(MatchOdds matchOdds, bool forceInsert, List<BetTypeOdds> insertOddsList)
+        {
             foreach (var betTypeOdds in matchOdds.BetTypeOddsList)
             {
                 var lastOddsList = await GetOddsData(matchOdds.MatchId, betTypeOdds.Id);
@@ -60,13 +79,22 @@
                     insertOddsList.Add(betTypeOdds);
                 }
             }
+        }
 
-            if (insertOddsList.Any())
+        private async Task HandleMatchOddsMissingOddsInformation(MatchOdds matchOdds, List<BetTypeOdds> insertOddsList)
+        {
+            var lastOddsList = await GetOddsData(matchOdds.MatchId);
+            var groupByBookmakers = lastOddsList.GroupBy(bto => new { bookmakerId = bto.Bookmaker.Id, bto.Id });
+
+            foreach (var groupByBookmaker in groupByBookmakers)
             {
-                return await InsertOdds(insertOddsList, matchOdds.MatchId);
+                var lastOddsByBookmaker = groupByBookmaker.OrderBy(bto => bto.LastUpdatedTime).FirstOrDefault();
+                if (lastOddsByBookmaker != null)
+                {
+                    lastOddsByBookmaker.SetLastUpdatedTime(matchOdds.LastUpdated ?? DateTime.Now);
+                    insertOddsList.Add(lastOddsByBookmaker);
+                }
             }
-
-            return true;
         }
 
         private async Task<IEnumerable<Match>> GetMatch()
@@ -82,8 +110,8 @@
             return matches;
         }
 
-        private async Task<IEnumerable<BetTypeOdds>> GetOddsData(string matchId, int betTypeId)
-            => await dynamicRepository.FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId));
+        private async Task<IEnumerable<BetTypeOdds>> GetOddsData(string matchId, int betTypeId = 0)
+            => (await dynamicRepository.FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId))).OrderByDescending(bto => bto.LastUpdatedTime);
 
         private async Task<bool> InsertOdds(
             IEnumerable<BetTypeOdds> betTypeOdds,

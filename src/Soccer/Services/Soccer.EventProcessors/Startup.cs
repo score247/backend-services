@@ -81,7 +81,7 @@
             SqlMappers.RegisterJsonTypeHandlers();
         }
 
-        private void RegisterCache(IServiceCollection services)
+        private static void RegisterCache(IServiceCollection services)
         {
             services.AddSingleton<ICacheService, CacheService>();
         }

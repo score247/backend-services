@@ -4,7 +4,7 @@
 
     public class GetOddsCriteria : CriteriaBase
     {
-        public GetOddsCriteria(string matchId, int betTypeId, string bookmakerId = "")
+        public GetOddsCriteria(string matchId, int betTypeId = 0, string bookmakerId = "")
         {
             MatchId = matchId;
             BetTypeId = betTypeId;
@@ -22,6 +22,6 @@
 
         public override bool IsValid()
             => !string.IsNullOrWhiteSpace(MatchId)
-                && BetTypeId > 0;
+                && BetTypeId >= 0;
     }
 }

@@ -17,8 +17,13 @@
 
         public string MatchId { get; }
 
-        public DateTime? LastUpdated { get; }
+        public DateTime? LastUpdated { get; private set; }
 
         public IEnumerable<BetTypeOdds> BetTypeOddsList { get; }
+
+        public void SetLastUpdated(DateTime lastUpdated)
+        {
+            LastUpdated = lastUpdated;
+        }
     }
 }

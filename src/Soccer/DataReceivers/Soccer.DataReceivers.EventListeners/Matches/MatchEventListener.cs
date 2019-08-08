@@ -5,6 +5,7 @@
     using Soccer.Core.Matches.Extensions;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
     using Soccer.DataProviders.Matches.Services;
+    using Soccer.DataReceivers.Odds;
 
     public interface IMatchEventListener
     {
@@ -15,13 +16,16 @@
     {
         private readonly IBus messageBus;
         private readonly IMatchEventListenerService eventListenerService;
+        private readonly IOddsMessagePublisher oddsMessagePublisher;
 
         public MatchEventListener(
             IBus messageBus,
-            IMatchEventListenerService eventListenerService)
+            IMatchEventListenerService eventListenerService,
+            IOddsMessagePublisher oddsMessagePublisher)
         {
             this.messageBus = messageBus;
             this.eventListenerService = eventListenerService;
+            this.oddsMessagePublisher = oddsMessagePublisher;
         }
 
         public async Task ListenMatchEvents()
@@ -45,7 +49,11 @@
                     return;
                 }
 
-                await messageBus.Publish<INormalEventReceivedMessage>(new NormalEventReceivedMessage(matchEvent));
+                var normalEventMessage = new NormalEventReceivedMessage(matchEvent);
+                
+                await Task.WhenAll(
+                    messageBus.Publish<INormalEventReceivedMessage>(normalEventMessage),
+                    Task.Factory.StartNew(() => { oddsMessagePublisher.PublishOdds(normalEventMessage); }));
             });
         }
     }

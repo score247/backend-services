@@ -1,5 +1,6 @@
 ﻿namespace Soccer.DataReceivers.EventListeners
 {
+    using System;
     using System.Linq;
     using Fanex.Caching;
     using Fanex.Logging;
@@ -18,10 +19,13 @@
     using Sentry;
     using Soccer.Core._Shared.Configurations;
     using Soccer.DataProviders.Matches.Services;
+    using Soccer.DataProviders.Odds;
     using Soccer.DataProviders.SportRadar.Matches.Services;
+    using Soccer.DataProviders.SportRadar.Odds;
     using Soccer.DataProviders.SportRadar.Shared.Configurations;
     using Soccer.DataReceivers.EventListeners.Matches;
     using Soccer.DataReceivers.EventListeners.Shared.Configurations;
+    using Soccer.DataReceivers.Odds;
 
     public class Startup
     {
@@ -126,6 +130,11 @@
             services.AddSingleton<IMatchEventListenerService, MatchEventListenerService>();
 
             services.AddScoped<IMatchEventListener, MatchEventListener>();
+
+            services.AddScoped<IOddsMessagePublisher, OddsMessagePublisher>();
+            services.AddScoped<IOddsService, OddsService>();
+            services.AddSingleton(RestService.For<IOddsApi>(sportRadarDataProviderSettings.ServiceUrl));
+            services.AddSingleton<Func<DateTimeOffset>>(() => DateTimeOffset.Now);
         }
 
         private void RegisterHangfire(IServiceCollection services)

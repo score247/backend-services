@@ -103,9 +103,9 @@
 
                     await logger.InfoAsync($"{DateTime.Now} - region {region} Receiving: {matchEventPayload}");
                 }
-                catch
+                catch(Exception ex)
                 {
-                    Debug.WriteLine(matchEventPayload);
+                    Debug.WriteLine($"Message: {ex}\r\nPayload: {matchEventPayload}");
                 }
             }
         }
