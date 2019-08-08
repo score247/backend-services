@@ -14,9 +14,13 @@
 
         public SportEventStatusDto sport_event_status { get; set; }
 
+        public SportEventConditions sport_event_conditions { get; set; }
+
         public IEnumerable<TimelineDto> timeline { get; set; }
 
         public StatisticsDto statistics { get; set; }
+
+        public CoverageInfoDto coverage_info { get; set; }
     }
 
     public class StatisticsDto
@@ -89,5 +93,26 @@
     public class CommentaryDto
     {
         public string text { get; set; }
+    }
+
+    public class CoverageInfoDto
+    {
+        public string level { get; set; }
+        public string live_coverage { get; set; }
+
+        public CoverageDto coverage { get; set; }
+    }
+
+    public class CoverageDto
+    {
+        public bool basic_score { get; set; }
+
+        public bool key_events { get; set; }
+
+        public bool detailed_events { get; set; }
+
+        public bool lineups { get; set; }
+
+        public bool commentary { get; set; }
     }
 }

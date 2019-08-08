@@ -53,7 +53,7 @@
 
                     if (matchResult?.results?.Any() == true)
                     {
-                        matches.AddRange(matchResult.results.Select(mr => MatchMapper.MapMatch(mr.sport_event, mr.sport_event_status, region.Name)));
+                        matches.AddRange(matchResult.results.Select(mr => MatchMapper.MapMatch(mr.sport_event, mr.sport_event_status, null, region.Name)));
                     }
                 }
                 catch (Exception ex)
@@ -78,7 +78,7 @@
 
                     if (matchSchedule?.sport_events?.Any() == true)
                     {
-                        matches.AddRange(matchSchedule.sport_events.Select(ms => MatchMapper.MapMatch(ms, null, region.Name)));
+                        matches.AddRange(matchSchedule.sport_events.Select(ms => MatchMapper.MapMatch(ms, null, null, region.Name)));
                     }
                 }
                 catch (Exception ex)
@@ -103,7 +103,7 @@
 
                     if (liveResult?.results?.Any() == true)
                     {
-                        matches.AddRange(liveResult.results.Select(mr => MatchMapper.MapMatch(mr.sport_event, mr.sport_event_status, region.Name)));
+                        matches.AddRange(liveResult.results.Select(mr => MatchMapper.MapMatch(mr.sport_event, mr.sport_event_status, null, region.Name)));
                     }
                 }
                 catch (Exception ex)

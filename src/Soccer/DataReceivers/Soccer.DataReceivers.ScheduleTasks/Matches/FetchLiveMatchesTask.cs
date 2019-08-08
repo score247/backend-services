@@ -1,6 +1,7 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     using System.Threading.Tasks;
+    using Hangfire;
     using MassTransit;
     using Soccer.Core.Matches.Events;
     using Soccer.Core.Matches.Models;
@@ -45,6 +46,8 @@
                         await PublishLiveMatchMessage(match);
                     }
                 }
+
+                StartFetchTimelinesTask(match.Id, match.Region);
             }
         }
 
@@ -53,5 +56,10 @@
 
         private async Task PublishLiveMatchMessage(Match match)
             => await messageBus.Publish<ILiveMatchUpdatedMessage>(new LiveMatchUpdatedMessage(match.Id, match.MatchResult));
+
+        private static void StartFetchTimelinesTask(string matchId, string region)
+        {
+            BackgroundJob.Enqueue<IFetchTimelineTask>(t => t.FetchTimelines(matchId, region));
+        }
     }
 }

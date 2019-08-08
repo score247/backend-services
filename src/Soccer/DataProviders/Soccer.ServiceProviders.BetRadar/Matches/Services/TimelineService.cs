@@ -35,28 +35,33 @@
             this.logger = logger;
         }
 
-        public async Task<IReadOnlyList<TimelineEvent>> GetTimelines(string matchId, string region, Language language)
+        public async Task<Match> GetTimelines(string matchId, string region, Language language)
         {
-            var timelines = new List<TimelineEvent>();
+            var match = new Match { Id = matchId, Region = region };
+            
             var sportRadarLanguage = language.ToSportRadarFormat();
 
             try
             {
                 var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == region).Key;
-
+               
                 var timelineDto = await timelineApi.GetTimelines(matchId, region, sportRadarLanguage, apiKey);
+                match = MatchMapper.MapMatch(timelineDto.sport_event, timelineDto.sport_event_status, timelineDto.sport_event_conditions, region);             
 
                 if (timelineDto?.timeline?.Any() == true)
-                {
-                    timelines = timelineDto.timeline.Select(t => TimelineMapper.MapTimeline(t)).ToList();
+                {                    
+                    match.TimeLines = timelineDto.timeline.Select(t => TimelineMapper.MapTimeline(t)).ToList();
                 }
+
+                //TODO handle map coverage info
+                //TODO handle map statistic
             }
             catch (Exception ex)
             {
                 await logger.ErrorAsync(ex.Message, ex);
             }
 
-            return timelines;
+            return match;
         }
     }
 }

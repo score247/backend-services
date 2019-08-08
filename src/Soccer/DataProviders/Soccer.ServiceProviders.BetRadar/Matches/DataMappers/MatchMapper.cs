@@ -11,7 +11,11 @@
 
     public static class MatchMapper
     {
-        public static Match MapMatch(SportEventDto sportEvent, SportEventStatusDto sportEventStatus, string region)
+        public static Match MapMatch(
+            SportEventDto sportEvent, 
+            SportEventStatusDto sportEventStatus, 
+            SportEventConditions sportEventConditions, 
+            string region)
         {
             var match = new Match
             {
@@ -21,6 +25,8 @@
                 League = LeagueMapper.MapLeague(sportEvent.tournament),
                 LeagueRound = LeagueMapper.MapLeagueRound(sportEvent.tournament_round),
                 MatchResult = MapMatchResult(sportEventStatus),
+                Attendance = sportEventConditions == null ? 0 : sportEventConditions.attendance,
+                Referee = sportEventConditions?.referee?.name,
                 Region = region,
                 Venue = MapVenue(sportEvent.venue)
             };
