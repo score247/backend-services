@@ -134,6 +134,9 @@
 
             services.AddSingleton(RestService.For<IOddsApi>(sportRadarDataProviderSettings.ServiceUrl));
             services.AddSingleton<IOddsService, OddsService>();
+
+            services.AddSingleton(RestService.For<ITimelineApi>(sportRadarDataProviderSettings.ServiceUrl));
+            services.AddSingleton<ITimelineService, TimelineService>();
         }
 
         private void RegisterHangfire(IServiceCollection services)
@@ -145,6 +148,7 @@
             services.AddScoped<IFetchPostMatchesTask, FetchPostMatchesTask>();
             services.AddScoped<IFetchLiveMatchesTask, FetchLiveMatchesTask>();
             services.AddScoped<IFetchOddsScheduleTask, FetchOddsScheduleTask>();
+            services.AddScoped<IFetchTimelineTask, FetchTimelineTask>();
         }
 
         private static void RunHangfireJobs(IAppSettings appSettings)

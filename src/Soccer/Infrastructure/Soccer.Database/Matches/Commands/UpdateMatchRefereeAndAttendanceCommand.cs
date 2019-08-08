@@ -28,8 +28,8 @@
         public override bool IsValid() =>
             !string.IsNullOrWhiteSpace(MatchId)
             && !string.IsNullOrWhiteSpace(Language)
-            && IsValidRefereeOrAttendance;
+            && IsValidRefereeOrAttendance();
 
-        public bool IsValidRefereeOrAttendance => !string.IsNullOrWhiteSpace(Referee) || Attendance > 0;
+        public bool IsValidRefereeOrAttendance() => !string.IsNullOrWhiteSpace(Referee) || Attendance > 0;
     }
 }

@@ -116,6 +116,7 @@
             services.AddScoped<ReceivePenaltyEventConsumer>();
             services.AddScoped<ProcessMatchEventConsumer>();
             services.AddScoped<OddsChangeConsumer>();
+            services.AddScoped<UpdateMatchConditionsConsumer>();
 
             var messageQueueSettings = new MessageQueueSettings();
             Configuration.Bind("MessageQueue", messageQueueSettings);
@@ -139,6 +140,7 @@
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<FetchPreMatchesConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<FetchPostMatchesConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<CloseLiveMatchConsumer>());
+                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<UpdateMatchConditionsConsumer>());
                        });
 
                        cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents", e =>

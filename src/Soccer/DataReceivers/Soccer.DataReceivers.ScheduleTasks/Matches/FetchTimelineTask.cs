@@ -43,32 +43,34 @@
         {
             var match = await timelineService.GetTimelines(matchId, region, language);
 
-            foreach (var timelineItem in match.TimeLines)
-            {
-                var matchEvent = new MatchEvent(match.Id, match.MatchResult, timelineItem);
+            //if (match.TimeLines != null)
+            //{
+            //    foreach (var timelineItem in match.TimeLines)
+            //    {
+            //        var matchEvent = new MatchEvent(match.Id, match.MatchResult, timelineItem);
 
-                if (timelineItem.IsScoreChangeInPenalty())
-                {
-                    return;
-                }
+            //        if (timelineItem.IsScoreChangeInPenalty())
+            //        {
+            //            return;
+            //        }
 
-                if (timelineItem.IsShootOutInPenalty())
-                {
-                    await messageBus.Publish<IPenaltyEventReceivedMessage>(new PenaltyEventReceivedMessage(matchEvent));
-                    return;
-                }
+            //        if (timelineItem.IsShootOutInPenalty())
+            //        {
+            //            await messageBus.Publish<IPenaltyEventReceivedMessage>(new PenaltyEventReceivedMessage(matchEvent));
+            //            return;
+            //        }
 
-                if (timelineItem.Type.IsMatchEnd())
-                {
-                    await messageBus.Publish<IMatchEndEventReceivedMessage>(new MatchEndEventReceivedMessage(matchEvent));
-                    return;
-                }
+            //        if (timelineItem.Type.IsMatchEnd())
+            //        {
+            //            await messageBus.Publish<IMatchEndEventReceivedMessage>(new MatchEndEventReceivedMessage(matchEvent));
+            //            return;
+            //        }
 
-                await messageBus.Publish<INormalEventReceivedMessage>(new NormalEventReceivedMessage(matchEvent));
-            }
+            //        await messageBus.Publish<INormalEventReceivedMessage>(new NormalEventReceivedMessage(matchEvent));
+            //    }
+            //}            
 
             await messageBus.Publish<IMatchUpdatedConditionsMessage>(new MatchUpdatedConditionsMessage(matchId, match.Referee, match.Attendance, language));
-           
         }
     }
 }

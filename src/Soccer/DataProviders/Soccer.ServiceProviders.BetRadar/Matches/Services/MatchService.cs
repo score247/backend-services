@@ -93,7 +93,7 @@
         public async Task<IReadOnlyList<Match>> GetLiveMatches(Language language)
         {
             var matches = new List<Match>();
-            var sportRadarLanguage = language.ToSportRadarFormat();
+          var sportRadarLanguage = language.ToSportRadarFormat();
 
             foreach (var region in soccerSettings.Regions)
             {
