@@ -29,8 +29,6 @@
 
     public class Startup
     {
-        private const int NumberWorkerProcess = 2;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -137,15 +135,23 @@
             services.AddSingleton<Func<DateTimeOffset>>(() => DateTimeOffset.Now);
         }
 
+        private const int OneYearDays = 365;
         private void RegisterHangfire(IServiceCollection services)
         {
-            services.AddHangfire(x => x.UseStorage(new MySqlStorage(Configuration.GetConnectionString("Hangfire"))));
+            services.AddHangfire(x => x.UseStorage(
+                new MySqlStorage(
+                    Configuration.GetConnectionString("Hangfire"), 
+                new MySqlStorageOptions
+                    {
+                        InvisibilityTimeout = TimeSpan.FromDays(OneYearDays)
+                    })));
         }
 
         private static void RunHangfireJobs()
         {
-            RecurringJob.AddOrUpdate<IMatchEventListener>(
-                "ListenMatchEvent", job => job.ListenMatchEvents(), " 0 0/6 * * *");
+            BackgroundJob.Enqueue<IMatchEventListener>(job => job.ListenMatchEvents());
+            //RecurringJob.AddOrUpdate<IMatchEventListener>(
+            //    "ListenMatchEvent", job => job.ListenMatchEvents(), " 0 0/6 * * *");
         }
     }
 }

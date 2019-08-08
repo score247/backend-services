@@ -11,7 +11,7 @@
         private static void Main(string[] args)
         {
             connection = new HubConnectionBuilder()
-                .WithUrl("http://localhost:57321/hubs/oddsevent")
+                .WithUrl("http://localhost:57321/hubs/Soccer/OddsEventHub")
                 .Build();
 
             connection.Closed += async (error) =>
@@ -20,7 +20,7 @@
                 await connection.StartAsync();
             };
 
-            connection.On<string, string>("MatchOdds", (sportId, data) =>
+            connection.On<byte, string>("MatchOdds", (sportId, data) =>
             {
                 //var pushEvents = JsonConvert.DeserializeObject<Dictionary<string, MatchPushEvent>>(data);
                 Console.WriteLine($"{sportId}: {data}");

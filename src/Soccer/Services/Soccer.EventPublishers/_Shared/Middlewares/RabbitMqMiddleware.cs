@@ -9,6 +9,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Soccer.Core._Shared.Configurations;
     using Soccer.EventPublishers.Matches;
+    using Soccer.EventPublishers.Odds;
 
     public static class RabbitMqMiddleware
     {
@@ -17,6 +18,7 @@
             var messageQueueSettings = new MessageQueueSettings();
             configuration.Bind("MessageQueue", messageQueueSettings);
             services.AddTransient<ProcessMatchEventPublisher>();
+            services.AddTransient<OddsChangePublisher>();
 
             services.AddMassTransit(s =>
             {
@@ -37,6 +39,14 @@
                           e.UseMessageRetry(RetryAndLogError(services));
 
                           e.Consumer<ProcessMatchEventPublisher>(services.BuildServiceProvider());
+                      });
+
+                      cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_OddsEvents", e =>
+                      {
+                          e.PrefetchCount = 16;
+                          e.UseMessageRetry(RetryAndLogError(services));
+
+                          e.Consumer<OddsChangePublisher>(_);
                       });
                   }));
             });

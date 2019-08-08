@@ -13,6 +13,7 @@
     using Soccer.Core._Shared.Configurations;
     using Soccer.EventPublishers.Matches;
     using Soccer.EventPublishers.Matches.Hubs;
+    using Soccer.EventPublishers.Odds;
     using Soccer.EventPublishers.Shared.Middlewares;
 
     public class Startup
@@ -51,6 +52,7 @@
             app.UseSignalR(routes =>
             {
                 routes.MapHub<MatchEventHub>("/hubs/Soccer/MatchEventHub");
+                routes.MapHub<OddsEventHub>("/hubs/Soccer/OddsEventHub");
             });
 
             var bus = app.ApplicationServices.GetService<IBusControl>();

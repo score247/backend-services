@@ -42,7 +42,8 @@
         public static MatchOdds MapToMatchOdds(SportEvent sport_event)
         {
             var betTypeOddsList = new List<BetTypeOdds>();
-            if (sport_event.markets.Any())
+            if (sport_event.markets != null 
+                && sport_event.markets.Any())
             {
                 foreach (var market in sport_event.markets)
                 {

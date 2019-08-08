@@ -80,11 +80,20 @@
             return BuildMatchOddsList(oddsChangeDto);
         }
 
-        public async Task<MatchOdds> GetOdds(string matchId)
+        public async Task<MatchOdds> GetOdds(string matchId, DateTime lastUpdated)
         {
             var oddsByMatchDto = await oddsApi.GetOddsByMatch(matchId, oddsSetting.Key);
 
-            return OddsMapper.MapToMatchOdds(oddsByMatchDto.sport_event);
+            var matchOdds = OddsMapper.MapToMatchOdds(oddsByMatchDto.sport_event
+                ?? new SportEvent
+                {
+                    id = matchId,
+                    markets_last_updated = lastUpdated
+                });
+
+            matchOdds.SetLastUpdated(lastUpdated);
+
+            return matchOdds;
         }
     }
 }

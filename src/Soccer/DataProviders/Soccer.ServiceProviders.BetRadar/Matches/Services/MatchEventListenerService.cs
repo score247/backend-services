@@ -99,6 +99,12 @@
                     matchEventPayload = reader.ReadLine();
 
                     var matchEvent = MatchMapper.MapMatchEvent(matchEventPayload);
+
+                    if(matchEvent == default(MatchEvent))
+                    {
+                        continue;
+                    }
+
                     handler.Invoke(matchEvent);
 
                     await logger.InfoAsync($"{DateTime.Now} - region {region} Receiving: {matchEventPayload}");

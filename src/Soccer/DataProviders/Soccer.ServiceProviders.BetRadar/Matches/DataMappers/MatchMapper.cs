@@ -101,6 +101,11 @@
         {
             var matchEventDto = JsonConvert.DeserializeObject<MatchEventDto>(matchEventPayload);
 
+            if(matchEventDto.payload == null)
+            {
+                return default;
+            }
+
             return new MatchEvent(
                     matchEventDto.metadata.sport_event_id,
                     MapMatchResult(matchEventDto.payload.sport_event_status),

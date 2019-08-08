@@ -1,5 +1,6 @@
 ﻿namespace Soccer.DataProviders.Odds
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Soccer.Core.Odds.Models;
@@ -10,6 +11,6 @@
 
         Task<IEnumerable<MatchOdds>> GetOddsChange(int minuteInterval);
 
-        Task<MatchOdds> GetOdds(string matchId);
+        Task<MatchOdds> GetOdds(string matchId, DateTime lastUpdated);
     }
 }

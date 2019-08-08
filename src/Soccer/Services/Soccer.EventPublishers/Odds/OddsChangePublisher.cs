@@ -13,7 +13,9 @@
         private readonly IHubContext<OddsEventHub> hubContext;
         private readonly ILogger logger;
 
-        public OddsChangePublisher(IHubContext<OddsEventHub> hubContext, ILogger logger)
+        public OddsChangePublisher(
+            IHubContext<OddsEventHub> hubContext, 
+            ILogger logger)
         {
             this.hubContext = hubContext;
             this.logger = logger;

@@ -43,17 +43,18 @@
 
         public async Task PublishOdds(INormalEventReceivedMessage message)
         {
-            var currentOdds = await oddsService.GetOdds(message.MatchEvent.MatchId);
+            var currentOdds = await oddsService.GetOdds(message.MatchEvent.MatchId, message.MatchEvent.Timeline.Time);
 
-            currentOdds.SetLastUpdated(message.MatchEvent.Timeline.Time);
-
-            await messageBus.Publish<IOddsChangeMessage>(
+            await Task.WhenAll(
+                messageBus.Publish<IOddsChangeMessage>(
                 new OddsChangeMessage(
                     new List<MatchOdds>
                     {
                         currentOdds
                     },
-                    true));
+                    true)),
+                messageBus.Publish<IOddsChangeOnMatchEventMessage>(
+                    new OddsChangeOnMatchEventMessage(currentOdds)));
         }
     }
 }
