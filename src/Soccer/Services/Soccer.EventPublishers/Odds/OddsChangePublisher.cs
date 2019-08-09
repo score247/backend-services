@@ -8,7 +8,7 @@
     using Score247.Shared.Enumerations;
     using Soccer.Core.Odds.Messages;
 
-    public class OddsChangePublisher : IConsumer<IOddsChangeOnMatchEventMessage>
+    public class OddsChangePublisher : IConsumer<IMatchEventOddsMessage>
     {
         private readonly IHubContext<OddsEventHub> hubContext;
         private readonly ILogger logger;
@@ -21,7 +21,7 @@
             this.logger = logger;
         }
 
-        public async Task Consume(ConsumeContext<IOddsChangeOnMatchEventMessage> context)
+        public async Task Consume(ConsumeContext<IMatchEventOddsMessage> context)
         {
             var matchId = context?.Message?.MatchId;
 

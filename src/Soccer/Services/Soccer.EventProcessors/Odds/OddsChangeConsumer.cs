@@ -89,7 +89,7 @@
 
             if(oddsEvent.Any())
             {
-                await messageBus.Publish<IOddsChangeOnMatchEventMessage>(new OddsChangeOnMatchEventMessage(matchOdds.MatchId, oddsEvent));
+                await messageBus.Publish<IMatchEventOddsMessage>(new MatchEventOddsMessage(matchOdds.MatchId, oddsEvent));
             }
         }
 
