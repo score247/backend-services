@@ -23,12 +23,12 @@
 
         public async Task Consume(ConsumeContext<IOddsChangeOnMatchEventMessage> context)
         {
-            var matchOdds = context?.Message?.MatchOdds;
+            var matchId = context?.Message?.MatchId;
 
-            if (matchOdds != null)
+            if (matchId != null)
             {
-                await hubContext.Clients.All.SendAsync("MatchOdds", Sport.Soccer.Value, JsonConvert.SerializeObject(matchOdds));
-                await logger.InfoAsync("Send Match Odds: \r\n" + JsonConvert.SerializeObject(matchOdds));
+                await hubContext.Clients.All.SendAsync("MatchOdds", Sport.Soccer.Value, JsonConvert.SerializeObject(context.Message));
+                await logger.InfoAsync("Send Match Odds: \r\n" + JsonConvert.SerializeObject(context.Message));
             }
         }
     }

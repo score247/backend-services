@@ -1,19 +1,28 @@
 ﻿namespace Soccer.Core.Odds.Messages
 {
+    using System.Collections.Generic;
     using Soccer.Core.Odds.Models;
+    using Soccer.Core.Odds.SignalREvents;
 
     public interface IOddsChangeOnMatchEventMessage
     {
-        MatchOdds MatchOdds { get; }
+        string MatchId { get; }
+
+        IEnumerable<OddsEvent> OddsEvents { get; }
     }
 
     public class OddsChangeOnMatchEventMessage : IOddsChangeOnMatchEventMessage
     {
-        public OddsChangeOnMatchEventMessage(MatchOdds matchOdds)
+        public OddsChangeOnMatchEventMessage(
+            string matchId, 
+            IEnumerable<OddsEvent> oddsEvents)
         {
-            MatchOdds = matchOdds;
+            MatchId = matchId;
+            OddsEvents = oddsEvents;
         }
 
-        public MatchOdds MatchOdds { get; }
+        public string MatchId { get; }
+
+        public IEnumerable<OddsEvent> OddsEvents { get; }
     }
 }

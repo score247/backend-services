@@ -150,8 +150,6 @@
         private static void RunHangfireJobs()
         {
             BackgroundJob.Enqueue<IMatchEventListener>(job => job.ListenMatchEvents());
-            //RecurringJob.AddOrUpdate<IMatchEventListener>(
-            //    "ListenMatchEvent", job => job.ListenMatchEvents(), " 0 0/6 * * *");
         }
     }
 }

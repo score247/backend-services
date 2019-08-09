@@ -7,8 +7,10 @@
     using Fanex.Data.Repository;
     using MassTransit;
     using Soccer.Core.Matches.Models;
+    using Soccer.Core.Odds;
     using Soccer.Core.Odds.Messages;
     using Soccer.Core.Odds.Models;
+    using Soccer.Core.Odds.SignalREvents;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Database.Matches.Criteria;
     using Soccer.Database.Odds.Commands;
@@ -17,15 +19,18 @@
     public class OddsChangeConsumer : IConsumer<IOddsChangeMessage>
     {
         private const int maxGetMatchDate = 10;
+        private readonly IBus messageBus;
         private readonly IDynamicRepository dynamicRepository;
         private readonly Func<DateTime> getCurrentTimeFunc;
 
         public OddsChangeConsumer(
             IDynamicRepository dynamicRepository,
-            Func<DateTime> getCurrentTimeFunc)
+            Func<DateTime> getCurrentTimeFunc,
+            IBus messageBus)
         {
             this.dynamicRepository = dynamicRepository;
             this.getCurrentTimeFunc = getCurrentTimeFunc;
+            this.messageBus = messageBus;
         }
 
         public async Task Consume(ConsumeContext<IOddsChangeMessage> context)
@@ -34,14 +39,15 @@
             var availableMatches = await GetMatch();
             foreach (var matchOdds in message.MatchOddsList)
             {
-                if (availableMatches.Any(match => match.Id == matchOdds.MatchId))
+                var availableMatch = availableMatches.FirstOrDefault(match => match.Id == matchOdds.MatchId);
+                if (availableMatch != null)
                 {
-                    await InsertOdds(matchOdds, message.IsForceInsert);
+                    await InsertOdds(matchOdds, message.IsForceInsert, availableMatch);
                 }
             }
         }
 
-        private async Task<bool> InsertOdds(MatchOdds matchOdds, bool forceInsert)
+        private async Task InsertOdds(MatchOdds matchOdds, bool forceInsert, Match match)
         {
             var insertOddsList = new List<BetTypeOdds>();
 
@@ -57,11 +63,40 @@
 
             if (insertOddsList.Any())
             {
-                return await InsertOdds(insertOddsList, matchOdds.MatchId);
+                await Task.WhenAll(
+                    InsertOdds(insertOddsList, matchOdds.MatchId),
+                    PushOddsEvent(matchOdds, insertOddsList, match));
+            }
+        }
+
+        private async Task PushOddsEvent(MatchOdds matchOdds, IEnumerable<BetTypeOdds> betTypeOddsList, Match match)
+        {
+            match.TimeLines = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(matchOdds.MatchId));
+
+            var oddsEvent = new List<OddsEvent>();
+
+            foreach (var betTypeOdds in betTypeOddsList)
+            {
+                var oddsByBookmaker = await GetBookmakerOddsListByBetType(matchOdds.MatchId, betTypeOdds.Id, betTypeOdds.Bookmaker.Id);
+
+                var oddsMovement = OddsMovementProcessor.BuildOddsMovements(match, oddsByBookmaker).FirstOrDefault();
+
+                if(oddsMovement != null)
+                {
+                    oddsEvent.Add(new OddsEvent(betTypeOdds.Id, betTypeOdds.Bookmaker, oddsMovement));
+                }
             }
 
-            return true;
+            if(oddsEvent.Any())
+            {
+                await messageBus.Publish<IOddsChangeOnMatchEventMessage>(new OddsChangeOnMatchEventMessage(matchOdds.MatchId, oddsEvent));
+            }
         }
+
+        private async Task<List<BetTypeOdds>> GetBookmakerOddsListByBetType(string matchId, int betTypeId, string bookmakerId)
+            => (await dynamicRepository.FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId, bookmakerId)))
+                .OrderBy(bto => bto.LastUpdatedTime)
+                .ToList();
 
         private async Task HandleMatchOdds(MatchOdds matchOdds, bool forceInsert, List<BetTypeOdds> insertOddsList)
         {
@@ -113,9 +148,11 @@
         private async Task<IEnumerable<BetTypeOdds>> GetOddsData(string matchId, int betTypeId = 0)
             => (await dynamicRepository.FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId))).OrderByDescending(bto => bto.LastUpdatedTime);
 
-        private async Task<bool> InsertOdds(
+        private async Task InsertOdds(
             IEnumerable<BetTypeOdds> betTypeOdds,
             string matchId)
-            => (await dynamicRepository.ExecuteAsync(new InsertOddsCommand(betTypeOdds, matchId))) > 0;
+        {
+            await dynamicRepository.ExecuteAsync(new InsertOddsCommand(betTypeOdds, matchId));
+        }
     }
 }

@@ -45,16 +45,13 @@
         {
             var currentOdds = await oddsService.GetOdds(message.MatchEvent.MatchId, message.MatchEvent.Timeline.Time);
 
-            await Task.WhenAll(
-                messageBus.Publish<IOddsChangeMessage>(
+            await messageBus.Publish<IOddsChangeMessage>(
                 new OddsChangeMessage(
                     new List<MatchOdds>
                     {
                         currentOdds
                     },
-                    true)),
-                messageBus.Publish<IOddsChangeOnMatchEventMessage>(
-                    new OddsChangeOnMatchEventMessage(currentOdds)));
+                    true));
         }
     }
 }

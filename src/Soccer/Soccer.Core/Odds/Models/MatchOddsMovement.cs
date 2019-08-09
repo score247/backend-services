@@ -6,7 +6,10 @@
     {
         public MatchOddsMovement() { }
 
-        public MatchOddsMovement(string matchId, Bookmaker bookmaker, IEnumerable<OddsMovement> oddsMovements)
+        public MatchOddsMovement(
+            string matchId, 
+            Bookmaker bookmaker, 
+            IEnumerable<OddsMovement> oddsMovements)
         {
             MatchId = matchId;
             Bookmaker = bookmaker;

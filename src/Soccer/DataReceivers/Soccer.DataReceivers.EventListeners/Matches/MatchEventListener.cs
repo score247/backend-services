@@ -53,7 +53,7 @@
                 
                 await Task.WhenAll(
                     messageBus.Publish<INormalEventReceivedMessage>(normalEventMessage),
-                    Task.Factory.StartNew(() => { oddsMessagePublisher.PublishOdds(normalEventMessage); }));
+                    oddsMessagePublisher.PublishOdds(normalEventMessage));
             });
         }
     }
