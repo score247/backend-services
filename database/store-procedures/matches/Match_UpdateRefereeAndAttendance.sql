@@ -1,4 +1,4 @@
-CREATE DEFINER=`root`@`%` PROCEDURE `Match_UpdateRefereeAndAttendance`(
+CREATE DEFINER=`user`@`%` PROCEDURE `Match_UpdateRefereeAndAttendance`(
 	IN sportId INT, 
     IN matchId VARCHAR(45), 
     IN referee VARCHAR(200),
