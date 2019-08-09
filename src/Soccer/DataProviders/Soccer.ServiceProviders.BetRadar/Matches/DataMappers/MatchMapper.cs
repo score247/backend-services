@@ -24,7 +24,7 @@
                 Teams = TeamMapper.MapTeams(sportEvent),
                 League = LeagueMapper.MapLeague(sportEvent.tournament),
                 LeagueRound = LeagueMapper.MapLeagueRound(sportEvent.tournament_round),
-                MatchResult = MapMatchResult(sportEventStatus),
+                MatchResult = MapMatchResult(sportEvent.status, sportEventStatus),
                 Attendance = sportEventConditions == null ? 0 : sportEventConditions.attendance,
                 Referee = sportEventConditions?.referee?.name,
                 Region = region,
@@ -34,11 +34,11 @@
             return match;
         }
 
-        public static MatchResult MapMatchResult(SportEventStatusDto sportEventStatus = null)
+        public static MatchResult MapMatchResult(string status, SportEventStatusDto sportEventStatus = null)
         {
             var matchResult = new MatchResult
             {
-                EventStatus = MatchStatus.NotStarted,
+                EventStatus = string.IsNullOrWhiteSpace(status) ? MatchStatus.NotStarted : Enumeration.FromDisplayName<MatchStatus>(status),
                 MatchStatus = MatchStatus.NotStarted,
                 HomeScore = 0,
                 AwayScore = 0,
@@ -114,7 +114,7 @@
 
             return new MatchEvent(
                     matchEventDto.metadata.sport_event_id,
-                    MapMatchResult(matchEventDto.payload.sport_event_status),
+                    MapMatchResult(string.Empty, matchEventDto.payload.sport_event_status),
                     TimelineMapper.MapTimeline(matchEventDto.payload.timeline));
         }
     }
