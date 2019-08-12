@@ -128,7 +128,7 @@
                 .FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(matchId)))
                 .ToList();
 
-            if (!timelines.Any(tl => tl.Id == matchEvent.Timeline.Id))
+            if (!timelines.Any(tl => tl.Id == matchEvent.Timeline?.Id))
             {
                 timelines.Add(matchEvent.Timeline);
             }
