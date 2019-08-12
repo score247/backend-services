@@ -68,7 +68,27 @@
             Match match,
             IEnumerable<BetTypeOdds> betTypeOddsList)
         {
-            var oddsComparisonMessage = new OddsComparisonMessage(match.Id, betTypeOddsList);
+            var processedBetTypeOddsList = new List<BetTypeOdds>();
+            var betTypeOddsListGroups = betTypeOddsList.GroupBy(bto => bto.Id);
+            foreach (var betTypeOddsListGroup in betTypeOddsListGroups)
+            {
+                var oddsByBookmakers = (await GetOddsData(match.Id, betTypeOddsListGroup.Key)).ToList();
+
+                if (oddsByBookmakers.Any())
+                {
+                    foreach (var betTypeOddsBookmaker in betTypeOddsListGroup)
+                    {
+                        var openingOdds = oddsByBookmakers.LastOrDefault(o => o.Bookmaker?.Id == betTypeOddsBookmaker.Bookmaker?.Id);
+                        if (openingOdds != null)
+                        {
+                            betTypeOddsBookmaker.AssignOpeningData(openingOdds.BetOptions);
+                            processedBetTypeOddsList.Add(betTypeOddsBookmaker);
+                        }
+                    }
+                }
+            }
+
+            var oddsComparisonMessage = new OddsComparisonMessage(match.Id, processedBetTypeOddsList);
 
             await messageBus.Publish<IOddsComparisonMessage>(oddsComparisonMessage);
         }
@@ -185,7 +205,9 @@
         }
 
         private async Task<IEnumerable<BetTypeOdds>> GetOddsData(string matchId, int betTypeId = 0)
-            => (await dynamicRepository.FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId))).OrderByDescending(bto => bto.LastUpdatedTime);
+            => (await dynamicRepository
+                .FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId)))
+                .OrderByDescending(bto => bto.LastUpdatedTime);
 
         private async Task InsertOdds(
             IEnumerable<BetTypeOdds> betTypeOdds,

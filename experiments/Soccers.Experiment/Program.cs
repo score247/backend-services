@@ -12,6 +12,7 @@
         {
             connection = new HubConnectionBuilder()
                 .WithUrl("http://localhost:57321/hubs/Soccer/OddsEventHub")
+                //.WithUrl("https://score247-api2.nexdev.net/dev/hubs/Soccer/OddsEventHub")
                 .Build();
 
             connection.Closed += async (error) =>

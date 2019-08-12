@@ -32,6 +32,17 @@
             return oddsMovements.Reverse();
         }
 
+        public static BetTypeOdds AssignOpeningOddsToFirstOdds(IGrouping<string, BetTypeOdds> group)
+        {
+            var orderedGroup = group.OrderByDescending(bto => bto.LastUpdatedTime);
+            var first = orderedGroup.First();
+            var last = orderedGroup.Last();
+
+            first.AssignOpeningData(last.BetOptions);
+
+            return first;
+        }
+
         private static readonly IList<byte> OddChangeEventIds
             = new List<byte>
             {
