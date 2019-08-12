@@ -44,13 +44,20 @@
                           e.Consumer<ProcessMatchEventPublisher>(serviceProvider);
                       });
 
-                      cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_OddsEvents", e =>
+                      cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_OddsMovement", e =>
+                      {
+                          e.PrefetchCount = prefetCount;
+                          e.UseMessageRetry(RetryAndLogError(services));
+
+                          e.Consumer<OddsComparisonPublisher>(serviceProvider);
+                      });
+
+                      cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_OddsComparison", e =>
                       {
                           e.PrefetchCount = prefetCount;
                           e.UseMessageRetry(RetryAndLogError(services));
 
                           e.Consumer<OddsMovementPublisher>(serviceProvider);
-                          e.Consumer<OddsComparisonPublisher>(serviceProvider);
                       });
                   }));
             });

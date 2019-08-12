@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.Caching;
     using Fanex.Data.Repository;
     using MassTransit;
     using Soccer.Core.Matches.Models;
@@ -18,19 +19,23 @@
 
     public class OddsChangeConsumer : IConsumer<IOddsChangeMessage>
     {
+        private const int cacheMatchHours = 3;
         private const int maxGetMatchDate = 10;
         private readonly IBus messageBus;
         private readonly IDynamicRepository dynamicRepository;
         private readonly Func<DateTime> getCurrentTimeFunc;
+        private readonly ICacheService cacheService;
 
         public OddsChangeConsumer(
             IDynamicRepository dynamicRepository,
             Func<DateTime> getCurrentTimeFunc,
-            IBus messageBus)
+            IBus messageBus,
+            ICacheService cacheService)
         {
             this.dynamicRepository = dynamicRepository;
             this.getCurrentTimeFunc = getCurrentTimeFunc;
             this.messageBus = messageBus;
+            this.cacheService = cacheService;
         }
 
         public async Task Consume(ConsumeContext<IOddsChangeMessage> context)
@@ -42,12 +47,12 @@
                 var availableMatch = availableMatches.FirstOrDefault(match => match.Id == matchOdds.MatchId);
                 if (availableMatch != null)
                 {
-                    await InsertOdds(matchOdds, availableMatch, message.MatchEvent);
+                    await ProcessOdds(matchOdds, availableMatch, message.MatchEvent);
                 }
             }
         }
 
-        private async Task InsertOdds(MatchOdds matchOdds, Match match, MatchEvent matchEvent)
+        private async Task ProcessOdds(MatchOdds matchOdds, Match match, MatchEvent matchEvent)
         {
             var isForceInsert = matchEvent != null;
             var oddsList = isForceInsert && matchOdds.IsBetTypeOddsListEmpty() 
@@ -194,16 +199,24 @@
 
         private async Task<IEnumerable<Match>> GetMatch()
         {
-            // TODO: should use cache to cache match list here
             var utcTime = getCurrentTimeFunc().ToUniversalTime();
-            var matches = await dynamicRepository.FetchAsync<Match>(
-                new GetMatchesByDateRangeCriteria(
-                    utcTime.Date,
-                    utcTime.AddDays(maxGetMatchDate),
-                    Language.en_US));
+            var fromDate = utcTime.Date;
+            var cacheKey = $"Odds_Match_{fromDate.ToString("ddMMyyyy")}";
+
+            var matches = await cacheService.GetOrSetAsync(
+                cacheKey,
+                () => GetMatch(utcTime),
+                new CacheItemOptions().SetAbsoluteExpiration(new TimeSpan(cacheMatchHours, 0, 0)));
 
             return matches;
         }
+
+        private IEnumerable<Match> GetMatch(DateTime utcTime)
+            => dynamicRepository.Fetch<Match>(
+                    new GetMatchesByDateRangeCriteria(
+                        utcTime.Date,
+                        utcTime.AddDays(maxGetMatchDate),
+                        Language.en_US));
 
         private async Task<IEnumerable<BetTypeOdds>> GetOddsData(string matchId, int betTypeId = 0)
             => (await dynamicRepository
