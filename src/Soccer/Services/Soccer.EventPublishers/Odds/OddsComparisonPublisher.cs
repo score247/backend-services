@@ -8,27 +8,27 @@
     using Score247.Shared.Enumerations;
     using Soccer.Core.Odds.Messages;
 
-    public class OddsChangePublisher : IConsumer<IMatchEventOddsMessage>
+    public class OddsComparisonPublisher : IConsumer<IOddsComparisonMessage>
     {
         private readonly IHubContext<OddsEventHub> hubContext;
         private readonly ILogger logger;
 
-        public OddsChangePublisher(
-            IHubContext<OddsEventHub> hubContext, 
+        public OddsComparisonPublisher(
+            IHubContext<OddsEventHub> hubContext,
             ILogger logger)
         {
             this.hubContext = hubContext;
             this.logger = logger;
         }
 
-        public async Task Consume(ConsumeContext<IMatchEventOddsMessage> context)
+        public async Task Consume(ConsumeContext<IOddsComparisonMessage> context)
         {
             var matchId = context?.Message?.MatchId;
 
             if (matchId != null)
             {
-                await hubContext.Clients.All.SendAsync("MatchOdds", Sport.Soccer.Value, JsonConvert.SerializeObject(context.Message));
-                await logger.InfoAsync("Send Match Odds: \r\n" + JsonConvert.SerializeObject(context.Message));
+                await hubContext.Clients.All.SendAsync("OddsComparison", Sport.Soccer.Value, JsonConvert.SerializeObject(context.Message));
+                await logger.InfoAsync("Send Odds Comparison: \r\n" + JsonConvert.SerializeObject(context.Message));
             }
         }
     }

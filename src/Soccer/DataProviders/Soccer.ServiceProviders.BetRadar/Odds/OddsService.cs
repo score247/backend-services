@@ -40,7 +40,7 @@
             ILogger logger)
         {
             this.oddsApi = oddsApi;
-            this.oddsSetting = sportRadarSettings.SoccerSettings.OddsSetting;
+            oddsSetting = sportRadarSettings.SoccerSettings.OddsSetting;
             this.getCurrentTimeFunc = getCurrentTimeFunc;
             this.logger = logger;
         }
@@ -84,12 +84,13 @@
         {
             var oddsByMatchDto = await oddsApi.GetOddsByMatch(matchId, oddsSetting.Key);
 
-            var matchOdds = OddsMapper.MapToMatchOdds(oddsByMatchDto.sport_event
-                ?? new SportEvent
-                {
-                    id = matchId,
-                    markets_last_updated = lastUpdated
-                });
+            var matchOdds = OddsMapper.MapToMatchOdds(
+                oddsByMatchDto.sport_event
+                    ?? new SportEvent
+                    {
+                        id = matchId,
+                        markets_last_updated = lastUpdated
+                    });
 
             matchOdds.SetLastUpdated(lastUpdated);
 

@@ -51,7 +51,7 @@
                     {
                         currentOdds
                     },
-                    true));
+                    message.MatchEvent));
         }
     }
 }

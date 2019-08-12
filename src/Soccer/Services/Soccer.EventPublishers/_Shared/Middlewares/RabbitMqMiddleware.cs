@@ -20,7 +20,8 @@
             var messageQueueSettings = new MessageQueueSettings();
             configuration.Bind("MessageQueue", messageQueueSettings);
             services.AddTransient<ProcessMatchEventPublisher>();
-            services.AddTransient<OddsChangePublisher>();
+            services.AddTransient<OddsMovementPublisher>();
+            services.AddTransient<OddsComparisonPublisher>();
 
             services.AddMassTransit(s =>
             {
@@ -48,7 +49,8 @@
                           e.PrefetchCount = prefetCount;
                           e.UseMessageRetry(RetryAndLogError(services));
 
-                          e.Consumer<OddsChangePublisher>(serviceProvider);
+                          e.Consumer<OddsMovementPublisher>(serviceProvider);
+                          e.Consumer<OddsComparisonPublisher>(serviceProvider);
                       });
                   }));
             });

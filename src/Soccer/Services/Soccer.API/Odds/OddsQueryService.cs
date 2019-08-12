@@ -38,20 +38,22 @@
             var oddsByBookmaker = (await GetOddsData(matchId, betTypeId)).GroupBy(o => o.Bookmaker?.Id);
 
             var betTypeOdssList = oddsByBookmaker
-                .Select(group =>
-                {
-                    var orderedGroup = group.OrderByDescending(bto => bto.LastUpdatedTime);
-                    var first = orderedGroup.First();
-                    var last = orderedGroup.Last();
-
-                    first.AssignOpeningData(last.BetOptions);
-
-                    return first;
-                })
+                .Select(group => AssignOpeningOddsToFirstOdds(group))
                 .OrderBy(bto => bto.Bookmaker.Name)
                 .AsEnumerable();
 
             return betTypeOdssList;
+        }
+
+        private static BetTypeOdds AssignOpeningOddsToFirstOdds(IGrouping<string, BetTypeOdds> group)
+        {
+            var orderedGroup = group.OrderByDescending(bto => bto.LastUpdatedTime);
+            var first = orderedGroup.First();
+            var last = orderedGroup.Last();
+
+            first.AssignOpeningData(last.BetOptions);
+
+            return first;
         }
 
         private async Task<IEnumerable<BetTypeOdds>> GetOddsData(string matchId, int betTypeId)

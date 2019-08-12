@@ -42,55 +42,78 @@
                 var availableMatch = availableMatches.FirstOrDefault(match => match.Id == matchOdds.MatchId);
                 if (availableMatch != null)
                 {
-                    await InsertOdds(matchOdds, message.IsForceInsert, availableMatch);
+                    await InsertOdds(matchOdds, availableMatch, message.MatchEvent);
                 }
             }
         }
 
-        private async Task InsertOdds(MatchOdds matchOdds, bool forceInsert, Match match)
+        private async Task InsertOdds(MatchOdds matchOdds, Match match, MatchEvent matchEvent)
         {
-            var insertOddsList = new List<BetTypeOdds>();
+            var isForceInsert = matchEvent != null;
+            var oddsList = isForceInsert && matchOdds.IsBetTypeOddsListEmpty() 
+                ? await BuildMatchOddsWithoutCurrentOddsInformation(matchOdds) 
+                : await BuildMatchOdds(matchOdds, isForceInsert);
 
-            if (forceInsert
-                && (matchOdds.BetTypeOddsList == null || !matchOdds.BetTypeOddsList.Any()))
-            {
-                await HandleMatchOddsMissingOddsInformation(matchOdds, insertOddsList);
-            }
-            else
-            {
-                await HandleMatchOdds(matchOdds, forceInsert, insertOddsList);
-            }
-
-            if (insertOddsList.Any())
+            if (oddsList.Any())
             {
                 await Task.WhenAll(
-                    InsertOdds(insertOddsList, matchOdds.MatchId),
-                    PushOddsEvent(matchOdds, insertOddsList, match));
+                    InsertOdds(oddsList, matchOdds.MatchId),
+                    PushOddsMovementEvent(match, oddsList, matchEvent),
+                    PushOddsComparisonEvent(match, oddsList));
             }
         }
 
-        private async Task PushOddsEvent(MatchOdds matchOdds, IEnumerable<BetTypeOdds> betTypeOddsList, Match match)
-        {
-            match.TimeLines = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(matchOdds.MatchId));
 
-            var oddsEvent = new List<OddsEvent>();
+        private async Task PushOddsComparisonEvent(
+            Match match,
+            IEnumerable<BetTypeOdds> betTypeOddsList)
+        {
+            var oddsComparisonMessage = new OddsComparisonMessage(match.Id, betTypeOddsList);
+
+            await messageBus.Publish<IOddsComparisonMessage>(oddsComparisonMessage);
+        }
+
+        private async Task PushOddsMovementEvent(
+            Match match,
+            IEnumerable<BetTypeOdds> betTypeOddsList,  
+            MatchEvent matchEvent)
+        {
+            var oddsEvents = new List<OddsMovementEvent>();
+
+            match.TimeLines = await GetMatchTimelines(match.Id, matchEvent);
 
             foreach (var betTypeOdds in betTypeOddsList)
             {
-                var oddsByBookmaker = await GetBookmakerOddsListByBetType(matchOdds.MatchId, betTypeOdds.Id, betTypeOdds.Bookmaker.Id);
+                var oddsByBookmaker = await GetBookmakerOddsListByBetType(match.Id, betTypeOdds.Id, betTypeOdds.Bookmaker.Id);
 
-                var oddsMovement = OddsMovementProcessor.BuildOddsMovements(match, oddsByBookmaker).FirstOrDefault();
+                var oddsMovement = OddsMovementProcessor
+                    .BuildOddsMovements(match, oddsByBookmaker)
+                    .FirstOrDefault();
 
-                if(oddsMovement != null)
+                if (oddsMovement != null)
                 {
-                    oddsEvent.Add(new OddsEvent(betTypeOdds.Id, betTypeOdds.Bookmaker, oddsMovement));
+                    oddsEvents.Add(new OddsMovementEvent(betTypeOdds.Id, betTypeOdds.Bookmaker, oddsMovement));
                 }
             }
 
-            if(oddsEvent.Any())
+            if (oddsEvents.Any())
             {
-                await messageBus.Publish<IMatchEventOddsMessage>(new MatchEventOddsMessage(matchOdds.MatchId, oddsEvent));
+                await messageBus.Publish<IOddsMovementMessage>(new OddsMovementMessage(match.Id, oddsEvents));
             }
+        }
+
+        private async Task<IList<TimelineEvent>> GetMatchTimelines(string matchId, MatchEvent matchEvent)
+        {
+            var timelines = (await dynamicRepository
+                .FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(matchId)))
+                .ToList();
+
+            if (!timelines.Any(tl => tl.Id == matchEvent.Timeline.Id))
+            {
+                timelines.Add(matchEvent.Timeline);
+            }
+
+            return timelines;
         }
 
         private async Task<List<BetTypeOdds>> GetBookmakerOddsListByBetType(string matchId, int betTypeId, string bookmakerId)
@@ -98,8 +121,12 @@
                 .OrderBy(bto => bto.LastUpdatedTime)
                 .ToList();
 
-        private async Task HandleMatchOdds(MatchOdds matchOdds, bool forceInsert, List<BetTypeOdds> insertOddsList)
+        private async Task<List<BetTypeOdds>> BuildMatchOdds(
+            MatchOdds matchOdds, 
+            bool forceInsert)
         {
+            var insertOddsList = new List<BetTypeOdds>();
+
             foreach (var betTypeOdds in matchOdds.BetTypeOddsList)
             {
                 var lastOddsList = await GetOddsData(matchOdds.MatchId, betTypeOdds.Id);
@@ -114,22 +141,34 @@
                     insertOddsList.Add(betTypeOdds);
                 }
             }
+
+            return insertOddsList;
         }
 
-        private async Task HandleMatchOddsMissingOddsInformation(MatchOdds matchOdds, List<BetTypeOdds> insertOddsList)
+        private async Task<List<BetTypeOdds>> BuildMatchOddsWithoutCurrentOddsInformation(MatchOdds matchOdds)
         {
+            var insertOddsList = new List<BetTypeOdds>();
             var lastOddsList = await GetOddsData(matchOdds.MatchId);
-            var groupByBookmakers = lastOddsList.GroupBy(bto => new { bookmakerId = bto.Bookmaker.Id, bto.Id });
+            var groupByBookmakers = lastOddsList.GroupBy(bto 
+                => new {
+                    bookmakerId = bto.Bookmaker.Id,
+                    bto.Id
+                });
 
             foreach (var groupByBookmaker in groupByBookmakers)
             {
-                var lastOddsByBookmaker = groupByBookmaker.OrderBy(bto => bto.LastUpdatedTime).FirstOrDefault();
+                var lastOddsByBookmaker = groupByBookmaker
+                    .OrderBy(bto => bto.LastUpdatedTime)
+                    .FirstOrDefault();
+
                 if (lastOddsByBookmaker != null)
                 {
                     lastOddsByBookmaker.SetLastUpdatedTime(matchOdds.LastUpdated ?? DateTime.Now);
                     insertOddsList.Add(lastOddsByBookmaker);
                 }
             }
+
+            return insertOddsList;
         }
 
         private async Task<IEnumerable<Match>> GetMatch()

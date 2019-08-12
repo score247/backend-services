@@ -20,10 +20,16 @@
                 await connection.StartAsync();
             };
 
-            connection.On<byte, string>("MatchOdds", (sportId, data) =>
+            connection.On<byte, string>("OddsMovement", (sportId, data) =>
             {
                 //var pushEvents = JsonConvert.DeserializeObject<Dictionary<string, MatchPushEvent>>(data);
-                Console.WriteLine($"{sportId}: {data}");
+                Console.WriteLine($"OddsMovement \r\n {sportId}: {data}");
+            });
+
+            connection.On<byte, string>("OddsComparison", (sportId, data) =>
+            {
+                //var pushEvents = JsonConvert.DeserializeObject<Dictionary<string, MatchPushEvent>>(data);
+                Console.WriteLine($"OddsComparison \r\n {sportId}: {data}");
             });
 
             connection.On<string>("TestEvent", (text) =>

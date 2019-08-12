@@ -1,27 +1,28 @@
 ﻿namespace Soccer.Core.Odds.Messages
 {
     using System.Collections.Generic;
+    using Soccer.Core.Matches.Models;
     using Soccer.Core.Odds.Models;
 
     public interface IOddsChangeMessage
     {
         IEnumerable<MatchOdds> MatchOddsList { get; }
 
-        bool IsForceInsert { get; }
+        MatchEvent MatchEvent { get; }
     }
 
     public class OddsChangeMessage : IOddsChangeMessage
     {
         public OddsChangeMessage(
             IEnumerable<MatchOdds> matchOddsList,
-            bool isForceInsert = false)
+            MatchEvent matchEvent = null)
         {
             MatchOddsList = matchOddsList;
-            IsForceInsert = isForceInsert;
+            MatchEvent = matchEvent;
         }
 
         public IEnumerable<MatchOdds> MatchOddsList { get; }
 
-        public bool IsForceInsert { get; }
+        public MatchEvent MatchEvent { get; }
     }
 }

@@ -2,9 +2,9 @@
 {
     using Soccer.Core.Odds.Models;
 
-    public class OddsEvent
+    public class OddsMovementEvent
     {
-        public OddsEvent(
+        public OddsMovementEvent(
             int betTypeId,
             Bookmaker bookmaker,
             OddsMovement oddsMovement)

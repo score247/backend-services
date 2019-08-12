@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     public class MatchOdds
     {
@@ -25,5 +26,8 @@
         {
             LastUpdated = lastUpdated;
         }
+
+        public bool IsBetTypeOddsListEmpty()
+            => BetTypeOddsList == null || !BetTypeOddsList.Any();
     }
 }

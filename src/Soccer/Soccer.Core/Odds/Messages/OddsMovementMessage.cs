@@ -3,18 +3,18 @@
     using System.Collections.Generic;
     using Soccer.Core.Odds.SignalREvents;
 
-    public interface IMatchEventOddsMessage
+    public interface IOddsMovementMessage
     {
         string MatchId { get; }
 
-        IEnumerable<OddsEvent> OddsEvents { get; }
+        IEnumerable<OddsMovementEvent> OddsEvents { get; }
     }
 
-    public class MatchEventOddsMessage : IMatchEventOddsMessage
+    public class OddsMovementMessage : IOddsMovementMessage
     {
-        public MatchEventOddsMessage(
+        public OddsMovementMessage(
             string matchId,
-            IEnumerable<OddsEvent> oddsEvents)
+            IEnumerable<OddsMovementEvent> oddsEvents)
         {
             MatchId = matchId;
             OddsEvents = oddsEvents;
@@ -22,6 +22,6 @@
 
         public string MatchId { get; }
 
-        public IEnumerable<OddsEvent> OddsEvents { get; }
+        public IEnumerable<OddsMovementEvent> OddsEvents { get; }
     }
 }
