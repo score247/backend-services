@@ -115,66 +115,70 @@
             var messageQueueSettings = new MessageQueueSettings();
             Configuration.Bind("MessageQueue", messageQueueSettings);
 
-            services.AddMassTransit(x =>
+            services.AddMassTransit(serviceCollectionConfigurator =>
             {
-                x.AddConsumer<FetchPreMatchesConsumer>();
-                x.AddConsumer<FetchPostMatchesConsumer>();
-                x.AddConsumer<CloseLiveMatchConsumer>();
-                x.AddConsumer<ReceiveMatchEndEventConsumer>();
-                x.AddConsumer<ReceiveNormalEventConsumer>();
-                x.AddConsumer<ReceivePenaltyEventConsumer>();
-                x.AddConsumer<ProcessMatchEventConsumer>();
-                x.AddConsumer<OddsChangeConsumer>();
-                x.AddConsumer<UpdateMatchConditionsConsumer>();
-
-                x.AddBus(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
-                {
-                    var host = cfg.Host(
-                           messageQueueSettings.Host,
-                           messageQueueSettings.VirtualHost, h =>
-                           {
-                               h.Username(messageQueueSettings.Username);
-                               h.Password(messageQueueSettings.Password);
-                           });
-
-                    cfg.ReceiveEndpoint(host, messageQueueSettings.QueueName, e =>
-                    {
-                        e.PrefetchCount = 16;
-                        e.UseMessageRetry(RetryAndLogError(services));
-
-                        e.ConfigureConsumer<FetchPreMatchesConsumer>(provider);
-                        e.ConfigureConsumer<FetchPostMatchesConsumer>(provider);
-                        e.ConfigureConsumer<CloseLiveMatchConsumer>(provider);
-                        e.ConfigureConsumer<UpdateMatchConditionsConsumer>(provider);
-                    });
-
-                    cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents", e =>
-                    {
-                        e.PrefetchCount = 16;
-                        e.UseMessageRetry(RetryAndLogError(services));
-
-                        e.ConfigureConsumer<ReceiveMatchEndEventConsumer>(provider);
-                        e.ConfigureConsumer<ReceiveNormalEventConsumer>(provider);
-                        e.ConfigureConsumer<ProcessMatchEventConsumer>(provider);
-                    });
-
-                    cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents_Penalties", e =>
-                    {
-                        e.PrefetchCount = 1;
-                        e.UseMessageRetry(RetryAndLogError(services));
-
-                        e.ConfigureConsumer<ReceivePenaltyEventConsumer>(provider);
-                    });
-
-                    cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_Odds", e =>
-                    {
-                        e.PrefetchCount = 16;
-                        e.UseMessageRetry(RetryAndLogError(services));
-
-                        e.ConfigureConsumer<OddsChangeConsumer>(provider);
-                    });
-                }));
+                serviceCollectionConfigurator.AddConsumer<FetchPreMatchesConsumer>();
+                serviceCollectionConfigurator.AddConsumer<FetchPostMatchesConsumer>();
+                serviceCollectionConfigurator.AddConsumer<CloseLiveMatchConsumer>();
+                serviceCollectionConfigurator.AddConsumer<ReceiveMatchEndEventConsumer>();
+                serviceCollectionConfigurator.AddConsumer<ReceiveNormalEventConsumer>();
+                serviceCollectionConfigurator.AddConsumer<ReceivePenaltyEventConsumer>();
+                serviceCollectionConfigurator.AddConsumer<ProcessMatchEventConsumer>();
+                serviceCollectionConfigurator.AddConsumer<OddsChangeConsumer>();
+                serviceCollectionConfigurator.AddConsumer<UpdateMatchConditionsConsumer>();
             });
+
+            services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+            {
+                var host = cfg.Host(
+                       messageQueueSettings.Host,
+                       messageQueueSettings.VirtualHost, h =>
+                       {
+                           h.Username(messageQueueSettings.Username);
+                           h.Password(messageQueueSettings.Password);
+                       });
+
+                cfg.ReceiveEndpoint(host, messageQueueSettings.QueueName, e =>
+                {
+                    e.PrefetchCount = 16;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<FetchPreMatchesConsumer>(provider);
+                    e.Consumer<FetchPostMatchesConsumer>(provider);
+                    e.Consumer<CloseLiveMatchConsumer>(provider);
+                    e.Consumer<UpdateMatchConditionsConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents", e =>
+                {
+                    e.PrefetchCount = 16;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<ReceiveMatchEndEventConsumer>(provider);
+                    e.Consumer<ReceiveNormalEventConsumer>(provider);
+                    e.Consumer<ProcessMatchEventConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents_Penalties", e =>
+                {
+                    e.PrefetchCount = 1;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<ReceivePenaltyEventConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_Odds", e =>
+                {
+                    e.PrefetchCount = 16;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<OddsChangeConsumer>(provider);
+                });
+            }));
+
+            services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
+            services.AddSingleton<ISendEndpointProvider>(provider => provider.GetRequiredService<IBusControl>());
+            services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
         }
 
         private static Action<GreenPipes.Configurators.IRetryConfigurator> RetryAndLogError(IServiceCollection services)

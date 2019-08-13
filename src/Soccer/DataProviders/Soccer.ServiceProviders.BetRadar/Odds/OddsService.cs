@@ -84,6 +84,8 @@
         {
             var oddsByMatchDto = await oddsApi.GetOddsByMatch(matchId, oddsSetting.Key);
 
+            await logger.InfoAsync($"Get Odds API: {matchId} at {DateTime.Now}");
+
             var matchOdds = OddsMapper.MapToMatchOdds(
                 oddsByMatchDto.sport_event
                     ?? new SportEvent
