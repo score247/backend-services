@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Soccer.Core.Shared.Resources;
+    using Soccer.Core._Shared.Resources;
     using Soccer.Core.Odds.Models;
     using Soccer.DataProviders.SportRadar.Odds.Dtos;
 
@@ -42,7 +42,7 @@
         public static MatchOdds MapToMatchOdds(SportEvent sport_event)
         {
             var betTypeOddsList = new List<BetTypeOdds>();
-            if (sport_event.markets != null 
+            if (sport_event.markets != null
                 && sport_event.markets.Any())
             {
                 foreach (var market in sport_event.markets)

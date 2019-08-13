@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Soccer.Core.Shared.Resources;
+    using Soccer.Core._Shared.Resources;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Odds.Models;
     using Soccer.Core.Shared.Enumerations;
@@ -92,7 +92,7 @@
             IEnumerable<BetTypeOdds> betTypeOddsList,
             Match match)
         {
-            if (match.TimeLines == null 
+            if (match.TimeLines == null
                 || !match.TimeLines.Any())
             {
                 return Enumerable.Empty<OddsMovement>();
