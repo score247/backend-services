@@ -57,7 +57,7 @@
 #pragma warning disable S1067 // Expressions should not be too complex
                  => IsTimelineNeedMapWithOddsData(tl)).OrderBy(t => t.Time);
 
-        private static bool IsTimelineNeedMapWithOddsData(TimelineEvent tl)
+        public static bool IsTimelineNeedMapWithOddsData(TimelineEvent tl)
         {
             var needMap = tl != null
                                 && tl.Type != null

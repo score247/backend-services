@@ -54,6 +54,12 @@
 
         private async Task ProcessOdds(MatchOdds matchOdds, Match match, MatchEvent matchEvent)
         {
+            if(matchEvent != null 
+                && !OddsMovementProcessor.IsTimelineNeedMapWithOddsData(matchEvent.Timeline))
+            {
+                return;
+            }
+
             var isForceInsert = matchEvent != null;
             var oddsList = isForceInsert && matchOdds.IsBetTypeOddsListEmpty() 
                 ? await BuildMatchOddsWithoutCurrentOddsInformation(matchOdds) 
