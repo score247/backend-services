@@ -17,65 +17,75 @@
     {
         public static void AddRabbitMq(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<FetchPreMatchesConsumer>();
-            services.AddScoped<FetchPostMatchesConsumer>();
-            services.AddScoped<CloseLiveMatchConsumer>();
-            services.AddScoped<ReceiveMatchEventConsumer>();
-            services.AddScoped<ProcessMatchEventConsumer>();
-            services.AddScoped<PenaltyEventConsumer>();
-            services.AddScoped<MatchEndEventConsumer>();
-            services.AddScoped<RedCardEventConsumer>();
-            services.AddScoped<OddsChangeConsumer>();
-            services.AddScoped<UpdateMatchConditionsConsumer>();
-
             var messageQueueSettings = new MessageQueueSettings();
             configuration.Bind("MessageQueue", messageQueueSettings);
 
-            services.AddMassTransit(s =>
+            services.AddMassTransit(serviceCollectionConfigurator =>
             {
-                s.AddBus(serviceProvider => Bus.Factory.CreateUsingRabbitMq(
-                   cfg =>
-                   {
-                       var host = cfg.Host(
-                           messageQueueSettings.Host,
-                           messageQueueSettings.VirtualHost, h =>
-                           {
-                               h.Username(messageQueueSettings.Username);
-                               h.Password(messageQueueSettings.Password);
-                           });
-
-                       cfg.ReceiveEndpoint(host, messageQueueSettings.QueueName, e =>
-                       {
-                           e.PrefetchCount = 16;
-                           e.UseMessageRetry(RetryAndLogError(services));
-
-                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<FetchPreMatchesConsumer>());
-                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<FetchPostMatchesConsumer>());
-                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<CloseLiveMatchConsumer>());
-                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<UpdateMatchConditionsConsumer>());
-                       });
-
-                       cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents", e =>
-                       {
-                           e.PrefetchCount = 16;
-                           e.UseMessageRetry(RetryAndLogError(services));
-
-                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ProcessMatchEventConsumer>());
-                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ReceiveMatchEventConsumer>());
-                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<MatchEndEventConsumer>());
-                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<PenaltyEventConsumer>());
-                           e.Consumer<RedCardEventConsumer>(serviceProvider);
-                       });
-
-                       cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_Odds", e =>
-                       {
-                           e.PrefetchCount = 16;
-                           e.UseMessageRetry(RetryAndLogError(services));
-
-                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<OddsChangeConsumer>());
-                       });
-                   }));
+                serviceCollectionConfigurator.AddConsumer<FetchPreMatchesConsumer>();
+                serviceCollectionConfigurator.AddConsumer<FetchPostMatchesConsumer>();
+                serviceCollectionConfigurator.AddConsumer<CloseLiveMatchConsumer>();
+                serviceCollectionConfigurator.AddConsumer<MatchEndEventConsumer>();
+                serviceCollectionConfigurator.AddConsumer<RedCardEventConsumer>();
+                serviceCollectionConfigurator.AddConsumer<PenaltyEventConsumer>();
+                serviceCollectionConfigurator.AddConsumer<ReceiveMatchEventConsumer>();
+                serviceCollectionConfigurator.AddConsumer<ProcessMatchEventConsumer>();
+                serviceCollectionConfigurator.AddConsumer<OddsChangeConsumer>();
+                serviceCollectionConfigurator.AddConsumer<UpdateMatchConditionsConsumer>();
             });
+
+            services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
+            {
+                var host = cfg.Host(
+                       messageQueueSettings.Host,
+                       messageQueueSettings.VirtualHost, h =>
+                       {
+                           h.Username(messageQueueSettings.Username);
+                           h.Password(messageQueueSettings.Password);
+                       });
+
+                cfg.ReceiveEndpoint(host, messageQueueSettings.QueueName, e =>
+                {
+                    e.PrefetchCount = 16;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<FetchPreMatchesConsumer>(provider);
+                    e.Consumer<FetchPostMatchesConsumer>(provider);
+                    e.Consumer<CloseLiveMatchConsumer>(provider);
+                    e.Consumer<UpdateMatchConditionsConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents", e =>
+                {
+                    e.PrefetchCount = 16;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<MatchEndEventConsumer>(provider);
+                    e.Consumer<RedCardEventConsumer>(provider);
+                    e.Consumer<ReceiveMatchEventConsumer>(provider);
+                    e.Consumer<ProcessMatchEventConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents_Penalties", e =>
+                {
+                    e.PrefetchCount = 1;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<PenaltyEventConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_Odds", e =>
+                {
+                    e.PrefetchCount = 16;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<OddsChangeConsumer>(provider);
+                });
+            }));
+
+            services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
+            services.AddSingleton<ISendEndpointProvider>(provider => provider.GetRequiredService<IBusControl>());
+            services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
         }
 
         public static void UseRabbitMq(this IApplicationBuilder application)

@@ -7,7 +7,7 @@
     using Fanex.Logging;
     using MassTransit;
     using Newtonsoft.Json;
-    using Soccer.Core.Matches.QueueMessages.MatchEvents;
+    using Soccer.Core.Matches.Models;
     using Soccer.Core.Odds;
     using Soccer.Core.Odds.Messages;
     using Soccer.Core.Odds.Models;
@@ -52,9 +52,9 @@
         {
             try
             {
-                if (OddsMovementProcessor.IsTimelineNeedMapWithOddsData(message.MatchEvent.Timeline))
+                if (OddsMovementProcessor.IsTimelineNeedMapWithOddsData(matchEvent.Timeline))
                 {
-                    var currentOdds = await oddsService.GetOdds(message.MatchEvent.MatchId, message.MatchEvent.Timeline.Time);
+                    var currentOdds = await oddsService.GetOdds(matchEvent.MatchId, matchEvent.Timeline.Time);
 
                     await messageBus.Publish<IOddsChangeMessage>(
                         new OddsChangeMessage(
@@ -62,7 +62,7 @@
                             {
                         currentOdds
                             },
-                            message.MatchEvent));
+                            matchEvent));
                 }
             }
             catch (Exception ex)
