@@ -60,10 +60,24 @@
                     e.PrefetchCount = 16;
                     e.UseMessageRetry(RetryAndLogError(services));
 
-                    e.Consumer<MatchEndEventConsumer>(provider);
-                    e.Consumer<RedCardEventConsumer>(provider);
                     e.Consumer<ReceiveMatchEventConsumer>(provider);
                     e.Consumer<ProcessMatchEventConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents_MatchEnd", e =>
+                {
+                    e.PrefetchCount = 16;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<MatchEndEventConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents_RedCard", e =>
+                {
+                    e.PrefetchCount = 16;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<RedCardEventConsumer>(provider);
                 });
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents_Penalties", e =>
