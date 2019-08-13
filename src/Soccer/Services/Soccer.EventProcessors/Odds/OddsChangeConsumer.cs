@@ -19,7 +19,7 @@
 
     public class OddsChangeConsumer : IConsumer<IOddsChangeMessage>
     {
-        private const int cacheMatchMinutes = 0;
+        private const int cacheMatchSeconds = 10;
         private const int maxGetMatchDate = 10;
         private readonly IBus messageBus;
         private readonly IDynamicRepository dynamicRepository;
@@ -209,7 +209,7 @@
             var matches = await cacheService.GetOrSetAsync(
                 cacheKey,
                 () => GetMatch(utcTime),
-                new CacheItemOptions().SetAbsoluteExpiration(new TimeSpan(0, cacheMatchMinutes, 0)));
+                new CacheItemOptions().SetAbsoluteExpiration(new TimeSpan(0, 0, cacheMatchSeconds)));
 
             return matches;
         }
