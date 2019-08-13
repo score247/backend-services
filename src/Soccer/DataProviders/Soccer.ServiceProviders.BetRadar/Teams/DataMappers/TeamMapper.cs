@@ -23,7 +23,8 @@
                     CountryCode = competitor.country_code,
                     Name = competitor.name,
                     Abbreviation = competitor.abbreviation,
-                    IsHome = string.Compare(competitor.qualifier, Home, true, CultureInfo.InvariantCulture) == 0
+                    IsHome = string.Compare(competitor.qualifier, Home, true, CultureInfo.InvariantCulture) == 0,
+                    Statistic = new TeamStatistics()
                 });
             }
 
