@@ -61,8 +61,9 @@
 
             if (oddsList.Any())
             {
+                await InsertOdds(oddsList, matchOdds.MatchId);
+
                 await Task.WhenAll(
-                    InsertOdds(oddsList, matchOdds.MatchId),
                     PushOddsMovementEvent(match, oddsList, matchEvent),
                     PushOddsComparisonEvent(match, oddsList));
             }
@@ -73,27 +74,23 @@
             Match match,
             IEnumerable<BetTypeOdds> betTypeOddsList)
         {
-            var processedBetTypeOddsList = new List<BetTypeOdds>();
             var betTypeOddsListGroups = betTypeOddsList.GroupBy(bto => bto.Id);
             foreach (var betTypeOddsListGroup in betTypeOddsListGroups)
             {
                 var oddsByBookmakers = (await GetOddsData(match.Id, betTypeOddsListGroup.Key)).ToList();
 
-                if (oddsByBookmakers.Any())
+                foreach (var betTypeOddsBookmaker in betTypeOddsListGroup)
                 {
-                    foreach (var betTypeOddsBookmaker in betTypeOddsListGroup)
-                    {
-                        var openingOdds = oddsByBookmakers.LastOrDefault(o => o.Bookmaker?.Id == betTypeOddsBookmaker.Bookmaker?.Id);
-                        if (openingOdds != null)
-                        {
-                            betTypeOddsBookmaker.AssignOpeningData(openingOdds.BetOptions);
-                            processedBetTypeOddsList.Add(betTypeOddsBookmaker);
-                        }
-                    }
+                    var openingOdds = oddsByBookmakers.LastOrDefault(o => o.Bookmaker?.Id == betTypeOddsBookmaker.Bookmaker?.Id);
+
+                    betTypeOddsBookmaker.AssignOpeningData(
+                        openingOdds != null 
+                        ? openingOdds.BetOptions 
+                        : betTypeOddsBookmaker.BetOptions);
                 }
             }
 
-            var oddsComparisonMessage = new OddsComparisonMessage(match.Id, processedBetTypeOddsList);
+            var oddsComparisonMessage = new OddsComparisonMessage(match.Id, betTypeOddsList);
 
             await messageBus.Publish<IOddsComparisonMessage>(oddsComparisonMessage);
         }
