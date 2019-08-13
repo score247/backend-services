@@ -150,8 +150,15 @@
 
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ReceiveMatchEndEventConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ReceiveNormalEventConsumer>());
-                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ReceivePenaltyEventConsumer>());
                            e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ProcessMatchEventConsumer>());
+                       });
+
+                       cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents_Penalties", e =>
+                       {
+                           e.PrefetchCount = 1;
+                           e.UseMessageRetry(RetryAndLogError(services));
+
+                           e.Consumer(() => services.BuildServiceProvider().GetRequiredService<ReceivePenaltyEventConsumer>());
                        });
 
                        cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_Odds", e =>
