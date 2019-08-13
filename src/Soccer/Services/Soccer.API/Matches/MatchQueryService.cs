@@ -43,30 +43,9 @@
             if (match != null)
             {
                 await GetMatchTimelineEvents(id, match);
-
-                GetMatchFunctions(match);
             }
 
             return match;
-        }
-
-        // TODO: Bring to client
-        private static void GetMatchFunctions(Match match)
-        {
-            var functions = new List<MatchFunction>
-                {
-                    new MatchFunction { Abbreviation = "Odds", Name = "Odds" },
-                    new MatchFunction { Abbreviation = "Info", Name = "Match Info" },
-                    new MatchFunction { Abbreviation = "Tracker", Name = "Tracker" },
-                    new MatchFunction { Abbreviation = "Stats", Name = "Statistics" },
-                    new MatchFunction { Abbreviation = "Line-ups", Name = "Line-ups" },
-                    new MatchFunction { Abbreviation = "H2H", Name = "Head to Head" },
-                    new MatchFunction { Abbreviation = "Table", Name = "Table" },
-                    new MatchFunction { Abbreviation = "Social", Name = "Social" },
-                    new MatchFunction { Abbreviation = "TV", Name = "TV Schedule" }
-                };
-
-            match.Functions = functions;
         }
 
         private async Task GetMatchTimelineEvents(string id, Match match)

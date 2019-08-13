@@ -29,7 +29,5 @@
         public string Referee { get; set; }
 
         public string Region { get; set; }
-
-        public IEnumerable<MatchFunction> Functions { get; set; }
     }
 }
