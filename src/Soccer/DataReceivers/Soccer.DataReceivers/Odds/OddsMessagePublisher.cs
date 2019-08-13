@@ -8,6 +8,7 @@
     using MassTransit;
     using Newtonsoft.Json;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
+    using Soccer.Core.Odds;
     using Soccer.Core.Odds.Messages;
     using Soccer.Core.Odds.Models;
     using Soccer.DataProviders.Odds;
@@ -51,15 +52,18 @@
         {
             try
             {
-                var currentOdds = await oddsService.GetOdds(message.MatchEvent.MatchId, message.MatchEvent.Timeline.Time);
+                if (OddsMovementProcessor.IsTimelineNeedMapWithOddsData(message.MatchEvent.Timeline))
+                {
+                    var currentOdds = await oddsService.GetOdds(message.MatchEvent.MatchId, message.MatchEvent.Timeline.Time);
 
-                await messageBus.Publish<IOddsChangeMessage>(
-                    new OddsChangeMessage(
-                        new List<MatchOdds>
-                        {
+                    await messageBus.Publish<IOddsChangeMessage>(
+                        new OddsChangeMessage(
+                            new List<MatchOdds>
+                            {
                         currentOdds
-                        },
-                        message.MatchEvent));
+                            },
+                            message.MatchEvent));
+                }
             }
             catch(Exception ex)
             {
