@@ -7,7 +7,7 @@
     using MassTransit;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Soccer.Core._Shared.Configurations;
+    using Soccer.Core.Shared.Configurations;
     using Soccer.EventPublishers.Matches;
     using Soccer.EventPublishers.Odds;
 

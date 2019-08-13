@@ -1,4 +1,4 @@
-﻿namespace Soccer.Core._Shared.Configurations
+﻿namespace Soccer.Core.Shared.Configurations
 {
     public class MessageQueueSettings
     {

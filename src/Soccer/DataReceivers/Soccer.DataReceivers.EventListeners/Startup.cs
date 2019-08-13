@@ -17,7 +17,7 @@
     using Newtonsoft.Json;
     using Refit;
     using Sentry;
-    using Soccer.Core._Shared.Configurations;
+    using Soccer.Core.Shared.Configurations;
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataProviders.Odds;
     using Soccer.DataProviders.SportRadar.Matches.Services;

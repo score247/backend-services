@@ -7,5 +7,7 @@
         public int Fouls { get; }
 
         public int Injuries { get; }
+
+        public int RedCards { get; }
     }
 }

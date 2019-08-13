@@ -4,44 +4,36 @@
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Caching;
-    using Fanex.Data.Repository;
-    using Fanex.Logging;
     using MassTransit;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
 
-    public class ReceivePenaltyEventConsumer : BaseMatchEventConsumer, IConsumer<IPenaltyEventReceivedMessage>
+    public class PenaltyEventConsumer : IConsumer<IPenaltyEventMessage>
     {
         private static readonly CacheItemOptions MatchPenaltyCacheOptions = new CacheItemOptions
         {
             SlidingExpiration = TimeSpan.FromMinutes(10),
         };
 
-        private readonly ICacheService cacheService;
         private readonly IBus messageBus;
-        private readonly ILogger logger;
+        private readonly ICacheService cacheService;
 
-        public ReceivePenaltyEventConsumer(IBus messageBus, ICacheService cacheService, IDynamicRepository dynamicRepository, ILogger logger)
-            : base(cacheService, dynamicRepository)
+        public PenaltyEventConsumer(IBus messageBus, ICacheService cacheService)
+
         {
             this.messageBus = messageBus;
             this.cacheService = cacheService;
-            this.logger = logger;
         }
 
-        public async Task Consume(ConsumeContext<IPenaltyEventReceivedMessage> context)
+        public async Task Consume(ConsumeContext<IPenaltyEventMessage> context)
         {
             var matchEvent = context?.Message?.MatchEvent;
+            var isCompleted = await HandlePenalty(matchEvent);
 
-            if (await IsTimelineEventNotProcessed(matchEvent))
+            if (isCompleted)
             {
-                var isCompleted = await HandlePenalty(matchEvent);
-
-                if (isCompleted)
-                {
-                    await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
-                }
+                await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
             }
         }
 

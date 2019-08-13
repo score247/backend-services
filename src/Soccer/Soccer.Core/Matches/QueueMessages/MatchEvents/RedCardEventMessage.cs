@@ -2,14 +2,14 @@
 {
     using Soccer.Core.Matches.Models;
 
-    public interface IPenaltyEventReceivedMessage
+    public interface IRedCardEventMessage
     {
         MatchEvent MatchEvent { get; }
     }
 
-    public class PenaltyEventReceivedMessage : IPenaltyEventReceivedMessage
+    public class RedCardEventMessage : IRedCardEventMessage
     {
-        public PenaltyEventReceivedMessage(MatchEvent matchEvent)
+        public RedCardEventMessage(MatchEvent matchEvent)
         {
             MatchEvent = matchEvent;
         }

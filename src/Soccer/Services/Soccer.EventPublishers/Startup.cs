@@ -10,7 +10,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
-    using Soccer.Core._Shared.Configurations;
+    using Soccer.Core.Shared.Configurations;
     using Soccer.EventPublishers.Matches;
     using Soccer.EventPublishers.Matches.Hubs;
     using Soccer.EventPublishers.Odds;

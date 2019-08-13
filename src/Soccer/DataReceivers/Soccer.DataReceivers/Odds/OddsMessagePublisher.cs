@@ -17,7 +17,7 @@
     {
         Task PublishOdds(IEnumerable<MatchOdds> oddsList, int batchSize);
 
-        Task PublishOdds(INormalEventReceivedMessage message);
+        Task PublishOdds(MatchEvent matchEvent);
     }
 
     public class OddsMessagePublisher : IOddsMessagePublisher
@@ -48,7 +48,7 @@
             }
         }
 
-        public async Task PublishOdds(INormalEventReceivedMessage message)
+        public async Task PublishOdds(MatchEvent matchEvent)
         {
             try
             {
@@ -65,12 +65,12 @@
                             message.MatchEvent));
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await logger.ErrorAsync(
                             string.Join(
                             "\r\n",
-                            $"Match Event: {JsonConvert.SerializeObject(message)}",
+                            $"Match Event: {JsonConvert.SerializeObject(matchEvent)}",
                             $"Exception: {ex}"),
                             ex);
             }

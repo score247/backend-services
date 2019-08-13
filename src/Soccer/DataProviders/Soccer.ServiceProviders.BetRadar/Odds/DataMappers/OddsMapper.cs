@@ -3,7 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using Soccer.Core._Shared.Resources;
+    using Soccer.Core.Shared.Resources;
     using Soccer.Core.Odds.Models;
     using Soccer.DataProviders.SportRadar.Odds.Dtos;
 

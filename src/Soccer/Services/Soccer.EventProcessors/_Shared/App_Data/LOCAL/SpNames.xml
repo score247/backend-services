@@ -10,6 +10,7 @@
   <Function Name="LiveMatch">
     <Setting Key="LiveMatch_RemoveById" SpName="LiveMatch_RemoveById" DbName="DefaultConnection" />
     <Setting Key="LiveMatch_UpdateMatchResult" SpName="LiveMatch_UpdateMatchResult" DbName="DefaultConnection" />
+    <Setting Key="LiveMatch_UpdateTeamRedCards" SpName="LiveMatch_UpdateTeamRedCards" DbName="DefaultConnection" />
   </Function>
   <Function Name="Odds">
     <Setting Key="Odds_InsertOdds" SpName="Odds_InsertOdds" DbName="DefaultConnection" />

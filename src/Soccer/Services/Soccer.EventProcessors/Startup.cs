@@ -1,28 +1,12 @@
 ﻿namespace Soccer.EventProcessors
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using Fanex.Caching;
-    using Fanex.Data;
-    using Fanex.Data.MySql;
-    using Fanex.Data.Repository;
-    using Fanex.Logging;
-    using Fanex.Logging.Sentry;
-    using GreenPipes;
     using MassTransit;
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-    using Sentry;
-    using Soccer.Core._Shared.Configurations;
-    using Soccer.Database;
-    using Soccer.EventProcessors.Matches;
-    using Soccer.EventProcessors.Matches.MatchEvents;
-    using Soccer.EventProcessors.Odds;
     using Soccer.EventProcessors.Shared.Middlewares;
 
     public class Startup
@@ -37,12 +21,12 @@
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            RegisterCache(services);
-            RegisterLogging(services);
-            RegisterDatabase(services);
-            RegisterRabbitMq(services);
-            RegisterServices(services);
+            services.AddSingleton<ICacheService, CacheService>();
+            services.AddSingleton<Func<DateTime>>(() => DateTime.Now);
+            services.AddRabbitMq(Configuration);
             services.AddHealthCheck();
+            services.AddLogging();
+            services.AddDatabase();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -50,10 +34,10 @@
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+            app.UseCors(options => options.AllowAnyOrigin());
+            app.UseHealthCheck();
+            app.UseRabbitMq();
+            app.ConfigureExceptionHandler();
 
             app.UseMvc(routes =>
             {

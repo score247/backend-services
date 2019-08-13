@@ -51,24 +51,7 @@
                 {
                     var matchEvent = new MatchEvent(match.Id, match.MatchResult, timelineItem);
 
-                    if (timelineItem.IsScoreChangeInPenalty())
-                    {
-                        return;
-                    }
-
-                    if (timelineItem.IsShootOutInPenalty())
-                    {
-                        await messageBus.Publish<IPenaltyEventReceivedMessage>(new PenaltyEventReceivedMessage(matchEvent));
-                        return;
-                    }
-
-                    if (timelineItem.Type.IsMatchEnd())
-                    {
-                        await messageBus.Publish<IMatchEndEventReceivedMessage>(new MatchEndEventReceivedMessage(matchEvent));
-                        return;
-                    }
-
-                    await messageBus.Publish<INormalEventReceivedMessage>(new NormalEventReceivedMessage(matchEvent));
+                    await messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent));
                 }
             }
         }
