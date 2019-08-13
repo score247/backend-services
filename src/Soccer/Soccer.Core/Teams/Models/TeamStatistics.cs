@@ -16,7 +16,7 @@
 
         public int ShotsOffTarget { get; set; }
 
-        public int CornerKicks { get; set; }        
+        public int CornerKicks { get; set; }
 
         public int Fouls { get; set; }
 

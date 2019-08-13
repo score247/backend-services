@@ -3,25 +3,26 @@ CREATE DEFINER=`user`@`%` PROCEDURE `LiveMatch_UpdateMatchResult`(
     IN matchId VARCHAR(45), 
     IN matchResult TEXT)
 BEGIN
-	IF EXISTS (SELECT 1 FROM `Match` WHERE Id = matchId) THEN
-    BEGIN
-		 INSERT INTO `LiveMatch`
-		 SELECT 
-			Id, 
-			JSON_REPLACE(`Value`,  '$.MatchResult', JSON_EXTRACT(matchResult, '$')) as `Value`,
-			`Language`,
-			`SportId`,
-			LeagueId,
-			EventDate,
-			Region,
-			now(),
-			now()
-			FROM `Match` as M
-		 WHERE M.`SportId` = sportId AND M.Id = matchId
-		 ON DUPLICATE KEY UPDATE
-			`Value` = JSON_REPLACE(VALUES(`Value`),  '$.MatchResult', JSON_EXTRACT(matchResult, '$')),
-            EventDate = M.EventDate,
-			ModifiedTime = now();
-    END;
+	IF EXISTS (SELECT 1 FROM `Match` WHERE Id = matchId) 
+    THEN
+		 IF EXISTS (SELECT 1 FROM `LiveMatch` WHERE Id = matchId) 
+         THEN
+			UPDATE `LiveMatch` as LM
+			SET `Value` = JSON_SET(`Value`,  '$.MatchResult', JSON_EXTRACT(matchResult, '$'));
+		 ELSE
+			 INSERT INTO `LiveMatch`
+			 SELECT 
+				Id, 
+				JSON_SET(`Value`,  '$.MatchResult', JSON_EXTRACT(matchResult, '$')) as `Value`,
+				`Language`,
+				`SportId`,
+				LeagueId,
+				EventDate,
+				Region,
+				now(),
+				now()
+				FROM `Match` as M
+			 WHERE M.`SportId` = sportId AND M.Id = matchId;
+		 END IF;
     END IF;
 END

@@ -2,7 +2,7 @@
   <Function Name="Match">
     <Setting Key="Match_InsertMatches" SpName="Match_InsertMatches" DbName="DefaultConnection" />
     <Setting Key="Match_InsertTimeline" SpName="Match_InsertTimeline" DbName="DefaultConnection" />
-    <Setting Key="Match_UpdateMatchResult" SpName="Match_UpdateMatchResult" DbName="DefaultConnection" />
+    <Setting Key="Match_UpdateMatchResultAndMigrateLiveData" SpName="Match_UpdateMatchResultAndMigrateLiveData" DbName="DefaultConnection" />
     <Setting Key="Match_GetTimelineEvents" SpName="Match_GetTimelineEvents" DbName="DefaultConnection" />
     <Setting Key="Match_GetByDateRange" SpName="Match_GetByDateRange" DbName="DefaultConnection" />
     <Setting Key="Match_UpdateRefereeAndAttendance" SpName="Match_UpdateRefereeAndAttendance" DbName="DefaultConnection" />

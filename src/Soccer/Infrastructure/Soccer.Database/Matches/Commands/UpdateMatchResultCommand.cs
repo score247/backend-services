@@ -3,9 +3,9 @@
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
 
-    public class UpdateMatchResultCommand : BaseCommand
+    public class UpdateMatchResultAndMigrateLiveData : BaseCommand
     {
-        public UpdateMatchResultCommand(
+        public UpdateMatchResultAndMigrateLiveData(
             string matchId,
             MatchResult result)
         {
@@ -20,7 +20,7 @@
 
         public string MatchResult { get; }
 
-        public override string GetSettingKey() => "Match_UpdateMatchResult";
+        public override string GetSettingKey() => "Match_UpdateMatchResultAndMigrateLiveData";
 
         public override bool IsValid() =>
             !string.IsNullOrWhiteSpace(MatchId)
