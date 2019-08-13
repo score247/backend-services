@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.Logging;
+    using Newtonsoft.Json;
     using Refit;
     using Soccer.Core.Odds.Models;
     using Soccer.DataProviders.Odds;
@@ -84,7 +85,7 @@
         {
             var oddsByMatchDto = await oddsApi.GetOddsByMatch(matchId, oddsSetting.Key);
 
-            await logger.InfoAsync($"Get Odds API: {matchId} at {DateTime.Now}");
+            await logger.InfoAsync($"Get Odds API: {matchId} at {DateTime.Now} \r\n{JsonConvert.SerializeObject(oddsByMatchDto)}");
 
             var matchOdds = OddsMapper.MapToMatchOdds(
                 oddsByMatchDto.sport_event
