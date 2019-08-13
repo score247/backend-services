@@ -6,6 +6,7 @@
     using GreenPipes.Configurators;
     using MassTransit;
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Soccer.Core.Shared.Configurations;
@@ -42,6 +43,7 @@
                        {
                            h.Username(messageQueueSettings.Username);
                            h.Password(messageQueueSettings.Password);
+                           h.Heartbeat(300);
                        });
 
                 cfg.ReceiveEndpoint(host, messageQueueSettings.QueueName, e =>
@@ -102,11 +104,12 @@
             services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
         }
 
-        public static void UseRabbitMq(this IApplicationBuilder application)
+        public static void UseRabbitMq(this IApplicationBuilder application, IApplicationLifetime applicationLifetime)
         {
             var bus = application.ApplicationServices.GetService<IBusControl>();
 
-            bus.Start();
+            applicationLifetime.ApplicationStarted.Register(bus.Start);
+            applicationLifetime.ApplicationStopped.Register(bus.Stop);
         }
 
         private static Action<IRetryConfigurator> RetryAndLogError(IServiceCollection services)

@@ -46,8 +46,12 @@
             else
             {
                 var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(matchEvent.MatchId, Language.en_US));
-                var currentTeam = match.Teams.FirstOrDefault(t => t.IsHome == matchEvent.Timeline.IsHome);
-                redCards = currentTeam.Statistic.RedCards + 1;
+                var currentTeam = match?.Teams?.FirstOrDefault(t => t.IsHome == matchEvent.Timeline.IsHome);
+
+                if (currentTeam != null)
+                {
+                    redCards = currentTeam.Statistic.RedCards + 1;
+                }
             }
 
             await cacheService.SetAsync(cacheKey, redCards);
