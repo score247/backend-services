@@ -19,7 +19,7 @@
 
     public class OddsChangeConsumer : IConsumer<IOddsChangeMessage>
     {
-        private const int cacheMatchMinutes = 2;
+        private const int cacheMatchMinutes = 0;
         private const int maxGetMatchDate = 10;
         private readonly IBus messageBus;
         private readonly IDynamicRepository dynamicRepository;
