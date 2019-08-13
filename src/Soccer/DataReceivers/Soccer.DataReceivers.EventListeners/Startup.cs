@@ -29,6 +29,8 @@
 
     public class Startup
     {
+        private const int NumOfWorkers = 2;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -74,7 +76,10 @@
             app.UseHangfireDashboard(options: new DashboardOptions
             {
                 Authorization = Enumerable.Empty<IDashboardAuthorizationFilter>()
-            }).UseHangfireServer();
+            }).UseHangfireServer(options: new BackgroundJobServerOptions
+            {
+                WorkerCount = NumOfWorkers
+            });
 
             RunHangfireJobs();
 

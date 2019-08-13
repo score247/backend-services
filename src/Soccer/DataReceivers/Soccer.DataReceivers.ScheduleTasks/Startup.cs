@@ -28,6 +28,8 @@
 
     public class Startup
     {
+        private const int NumOfWorkers = 2;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -81,7 +83,10 @@
             {
                 Authorization = Enumerable.Empty<IDashboardAuthorizationFilter>(),
                 IgnoreAntiforgeryToken = true
-            }).UseHangfireServer();
+            }).UseHangfireServer(options: new BackgroundJobServerOptions
+            {
+                WorkerCount = NumOfWorkers
+            });
 
             RunHangfireJobs(appSettings);
 
