@@ -188,7 +188,7 @@
             {
                 var lastOddsByBookmaker = groupByBookmaker
                     .OrderBy(bto => bto.LastUpdatedTime)
-                    .FirstOrDefault();
+                    .LastOrDefault();
 
                 if (lastOddsByBookmaker != null)
                 {
