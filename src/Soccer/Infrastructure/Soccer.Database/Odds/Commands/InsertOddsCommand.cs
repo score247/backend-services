@@ -17,8 +17,6 @@
 
         public string MatchId { get; }
 
-        //public DateTimeOffset CreatedTime { get; } = DateTimeOffset.Now;
-
         public override string GetSettingKey()
             => "Odds_InsertOdds";
 

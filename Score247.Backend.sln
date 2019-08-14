@@ -47,7 +47,23 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccers.Experiment", "exper
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{A7A2B310-406C-42B4-91C4-23D27C2D124B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soccer.DateProviders.SportRadar", "src\Soccer\DataProviders\Tests\Soccer.DateProviders.SportRadar\Soccer.DateProviders.SportRadar.csproj", "{76462C0F-952F-4AA3-B8C0-E4D01D2A0A7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.DateProviders.SportRadar", "src\Soccer\DataProviders\Tests\Soccer.DateProviders.SportRadar\Soccer.DateProviders.SportRadar.csproj", "{76462C0F-952F-4AA3-B8C0-E4D01D2A0A7F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.EventProcessors.Tests", "src\Soccer\Services\Tests\Soccer.EventProcessors.Tests\Soccer.EventProcessors.Tests.csproj", "{D3BB9A0D-9B95-4ED3-8BA5-3BAD4E59161E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.EventPublishers.Tests", "src\Soccer\Services\Tests\Soccer.EventPublishers.Tests\Soccer.EventPublishers.Tests.csproj", "{50DC8A7F-D042-46C1-BEC8-AF08F8811B0F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{9642641C-9774-46DC-A39D-57CDDCE5F469}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.Core.Tests", "tests\Soccer.Core.Tests\Soccer.Core.Tests.csproj", "{15BECC9B-5D44-4CB1-BBF6-4C00EE4D6A30}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Score247.Shared.Tests", "tests\Score247.Shared.Tests\Score247.Shared.Tests.csproj", "{19D9915A-2C9E-4346-8BB1-275AEFD00FFA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{7F16B4BB-E9D5-465F-A765-5F6A839AB1F6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.DataReceivers.ScheduleTasks.Tests", "src\Soccer\DataReceivers\Tests\Soccer.DataReceivers.ScheduleTasks.Tests\Soccer.DataReceivers.ScheduleTasks.Tests.csproj", "{1C47918C-CE65-4B88-BF8E-72BD4F91D633}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.DataReceivers.EventListeners.Tests", "src\Soccer\DataReceivers\Tests\Soccer.DataReceivers.EventListeners.Tests\Soccer.DataReceivers.EventListeners.Tests.csproj", "{39C70C26-9323-4EA4-B57A-190C7066B359}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,6 +131,30 @@ Global
 		{76462C0F-952F-4AA3-B8C0-E4D01D2A0A7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76462C0F-952F-4AA3-B8C0-E4D01D2A0A7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76462C0F-952F-4AA3-B8C0-E4D01D2A0A7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3BB9A0D-9B95-4ED3-8BA5-3BAD4E59161E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3BB9A0D-9B95-4ED3-8BA5-3BAD4E59161E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3BB9A0D-9B95-4ED3-8BA5-3BAD4E59161E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3BB9A0D-9B95-4ED3-8BA5-3BAD4E59161E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50DC8A7F-D042-46C1-BEC8-AF08F8811B0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50DC8A7F-D042-46C1-BEC8-AF08F8811B0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50DC8A7F-D042-46C1-BEC8-AF08F8811B0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50DC8A7F-D042-46C1-BEC8-AF08F8811B0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15BECC9B-5D44-4CB1-BBF6-4C00EE4D6A30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15BECC9B-5D44-4CB1-BBF6-4C00EE4D6A30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15BECC9B-5D44-4CB1-BBF6-4C00EE4D6A30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15BECC9B-5D44-4CB1-BBF6-4C00EE4D6A30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19D9915A-2C9E-4346-8BB1-275AEFD00FFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19D9915A-2C9E-4346-8BB1-275AEFD00FFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19D9915A-2C9E-4346-8BB1-275AEFD00FFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19D9915A-2C9E-4346-8BB1-275AEFD00FFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C47918C-CE65-4B88-BF8E-72BD4F91D633}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C47918C-CE65-4B88-BF8E-72BD4F91D633}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C47918C-CE65-4B88-BF8E-72BD4F91D633}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C47918C-CE65-4B88-BF8E-72BD4F91D633}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39C70C26-9323-4EA4-B57A-190C7066B359}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39C70C26-9323-4EA4-B57A-190C7066B359}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39C70C26-9323-4EA4-B57A-190C7066B359}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39C70C26-9323-4EA4-B57A-190C7066B359}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -141,6 +181,14 @@ Global
 		{CA9C066D-3308-415D-B510-076B6FC59B59} = {30FA5FDA-77A7-480D-92F2-1C3C9956B791}
 		{A7A2B310-406C-42B4-91C4-23D27C2D124B} = {306F12AC-6FA4-45D5-BF8C-EDDF54E6CC9D}
 		{76462C0F-952F-4AA3-B8C0-E4D01D2A0A7F} = {A7A2B310-406C-42B4-91C4-23D27C2D124B}
+		{D3BB9A0D-9B95-4ED3-8BA5-3BAD4E59161E} = {1FAE0FD7-1B6A-4160-B837-1E5357494923}
+		{50DC8A7F-D042-46C1-BEC8-AF08F8811B0F} = {1FAE0FD7-1B6A-4160-B837-1E5357494923}
+		{9642641C-9774-46DC-A39D-57CDDCE5F469} = {198744D0-8880-4490-89C9-A5F37EDC427B}
+		{15BECC9B-5D44-4CB1-BBF6-4C00EE4D6A30} = {9642641C-9774-46DC-A39D-57CDDCE5F469}
+		{19D9915A-2C9E-4346-8BB1-275AEFD00FFA} = {9642641C-9774-46DC-A39D-57CDDCE5F469}
+		{7F16B4BB-E9D5-465F-A765-5F6A839AB1F6} = {523D929A-EC51-45C4-B349-179D63B981B7}
+		{1C47918C-CE65-4B88-BF8E-72BD4F91D633} = {7F16B4BB-E9D5-465F-A765-5F6A839AB1F6}
+		{39C70C26-9323-4EA4-B57A-190C7066B359} = {7F16B4BB-E9D5-465F-A765-5F6A839AB1F6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D13AD9D6-D937-45A2-AAA4-3EFA410C7411}
