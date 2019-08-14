@@ -5,6 +5,7 @@
     using Soccer.Core.Leagues.Models;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Odds.Models;
+    using Soccer.Core.Teams.Models;
 
     public static class SqlMappers
     {
@@ -14,6 +15,7 @@
             SqlMapper.AddTypeHandler(typeof(League), new JsonTypeHandler());
             SqlMapper.AddTypeHandler(typeof(BetTypeOdds), new JsonTypeHandler());
             SqlMapper.AddTypeHandler(typeof(TimelineEvent), new JsonTypeHandler());
+            SqlMapper.AddTypeHandler(typeof(TeamStatistics), new JsonTypeHandler());
         }
     }
 }
