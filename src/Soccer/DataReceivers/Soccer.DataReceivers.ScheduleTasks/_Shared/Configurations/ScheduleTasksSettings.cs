@@ -24,10 +24,10 @@
 
         public int FetchMatchScheduleDateSpan { get; set; }
 
-        public string FetchOddsScheduleJobCron { get; }
+        public string FetchOddsScheduleJobCron { get; set; }
 
-        public string FetchOddsChangeJobCron { get; }
+        public string FetchOddsChangeJobCron { get; set; }
 
-        public int FetchOddsChangeMinuteInterval { get; }
+        public int FetchOddsChangeMinuteInterval { get; set; }
     }
 }
