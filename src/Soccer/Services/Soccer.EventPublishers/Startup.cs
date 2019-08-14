@@ -15,6 +15,7 @@
     using Soccer.EventPublishers.Matches.Hubs;
     using Soccer.EventPublishers.Odds;
     using Soccer.EventPublishers.Shared.Middlewares;
+    using Soccer.EventPublishers.Teams.Hubs;
 
     public class Startup
     {
@@ -45,20 +46,18 @@
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
         {
             app.ConfigureExceptionHandler();
 
             app.UseSignalR(routes =>
             {
                 routes.MapHub<MatchEventHub>("/hubs/Soccer/MatchEventHub");
+                routes.MapHub<TeamStatisticHub>("/hubs/Soccer/TeamStatisticHub");
                 routes.MapHub<OddsEventHub>("/hubs/Soccer/OddsEventHub");
             });
 
-            var bus = app.ApplicationServices.GetService<IBusControl>();
-
-            bus.Start();
-
+            app.UseRabbitMq(applicationLifetime);
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

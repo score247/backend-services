@@ -15,7 +15,7 @@
             SqlMapper.AddTypeHandler(typeof(League), new JsonTypeHandler());
             SqlMapper.AddTypeHandler(typeof(BetTypeOdds), new JsonTypeHandler());
             SqlMapper.AddTypeHandler(typeof(TimelineEvent), new JsonTypeHandler());
-            SqlMapper.AddTypeHandler(typeof(TeamStatistics), new JsonTypeHandler());
+            SqlMapper.AddTypeHandler(typeof(TeamStatistic), new JsonTypeHandler());
         }
     }
 }

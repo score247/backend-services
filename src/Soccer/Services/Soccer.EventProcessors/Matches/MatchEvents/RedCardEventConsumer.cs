@@ -10,6 +10,7 @@
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.Models;
+    using Soccer.Core.Teams.QueueMessages;
     using Soccer.Database.Matches.Commands;
     using Soccer.Database.Matches.Criteria;
 
@@ -35,27 +36,39 @@
                 return;
             }
 
-            var cacheKey = $"RedCards_{matchEvent.MatchId}_{matchEvent.Timeline.Team}";
-            var redCards = 0;
+            var timeline = matchEvent.Timeline;
+            var cacheKey = $"{matchEvent.MatchId}_{matchEvent.Timeline.Team}_Statistic";
+            TeamStatistic teamStats;
 
             if (await cacheService.ContainAsync(cacheKey))
             {
-                var currentRedCards = await cacheService.GetAsync<int>(cacheKey);
-                redCards = currentRedCards + 1;
+                teamStats = await cacheService.GetAsync<TeamStatistic>(cacheKey);
+
+                IncreaseRedCardCount(timeline, teamStats);
             }
             else
             {
                 var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(matchEvent.MatchId, Language.en_US));
-                var currentTeam = match?.Teams?.FirstOrDefault(t => t.IsHome == matchEvent.Timeline.IsHome);
+                teamStats = match?.Teams?.FirstOrDefault(t => t.IsHome == matchEvent.Timeline.IsHome)?.Statistic;
 
-                redCards = (currentTeam?.Statistic?.RedCards ?? 0) + 1;
+                IncreaseRedCardCount(timeline, teamStats);
             }
 
-            await cacheService.SetAsync(cacheKey, redCards);
-            await dynamicRepository.ExecuteAsync(
-                new UpdateLiveMatchTeamRedCardsCommand(matchEvent.MatchId, matchEvent.Timeline.IsHome, redCards));
-
+            await cacheService.SetAsync(cacheKey, teamStats);
+            await messageBus.Publish<ITeamStatisticUpdatedMessage>(new TeamStatisticUpdatedMessage(matchEvent.MatchId, timeline.IsHome, teamStats));
             await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
+        }
+
+        private static void IncreaseRedCardCount(TimelineEvent timeline, TeamStatistic teamStats)
+        {
+            if (timeline.Type.IsRedCard())
+            {
+                teamStats.RedCards++;
+            }
+            else
+            {
+                teamStats.YellowRedCards++;
+            }
         }
     }
 }

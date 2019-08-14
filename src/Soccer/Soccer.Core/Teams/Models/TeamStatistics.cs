@@ -1,6 +1,6 @@
 ﻿namespace Soccer.Core.Teams.Models
 {
-    public class TeamStatistics
+    public class TeamStatistic
     {
         public int Possession { get; set; }
 

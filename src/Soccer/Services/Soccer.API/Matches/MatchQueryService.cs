@@ -33,7 +33,11 @@
 
         // TODO: Remove convert to client timezone, remember to move this business to front-end
         public async Task<IEnumerable<Match>> GetByDateRange(DateTime from, DateTime to, TimeSpan clientTimeOffset, Language language)
-            => await dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(from, to, language));
+        {
+            var matches = await dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(from, to, language));
+
+            return matches;
+        }
 
         // TODO: Remove convert to client timezone, remember to move this business to front-end
         public async Task<Match> GetMatch(string id, Language language)

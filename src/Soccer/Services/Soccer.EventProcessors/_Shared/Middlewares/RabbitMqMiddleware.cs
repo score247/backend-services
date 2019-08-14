@@ -13,6 +13,7 @@
     using Soccer.EventProcessors.Matches;
     using Soccer.EventProcessors.Matches.MatchEvents;
     using Soccer.EventProcessors.Odds;
+    using Soccer.EventProcessors.Teams;
 
     public static class RabbitMqMiddleware
     {
@@ -33,6 +34,7 @@
                 serviceCollectionConfigurator.AddConsumer<ProcessMatchEventConsumer>();
                 serviceCollectionConfigurator.AddConsumer<OddsChangeConsumer>();
                 serviceCollectionConfigurator.AddConsumer<UpdateMatchConditionsConsumer>();
+                serviceCollectionConfigurator.AddConsumer<UpdateTeamStatisticConsumer>();
             });
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -88,6 +90,14 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<PenaltyEventConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_TeamStatistic", e =>
+                {
+                    e.PrefetchCount = 16;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<UpdateTeamStatisticConsumer>(provider);
                 });
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_Odds", e =>

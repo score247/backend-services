@@ -5,9 +5,9 @@
 
     public static class StatisticMapper
     {
-        public static TeamStatistics MapStatistic(Statistics statisticsDto)
+        public static TeamStatistic MapStatistic(Statistics statisticsDto)
         {
-            return new TeamStatistics
+            return new TeamStatistic
             {
                 Possession = statisticsDto.ball_possession,
                 FreeKicks = statisticsDto.free_kicks,
