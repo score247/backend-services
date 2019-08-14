@@ -34,11 +34,12 @@ CREATE TABLE `Timeline` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `Odds` (
+    `Id` DOUBLE AUTO_INCREMENT,
     `CreatedTime` TIMESTAMP NOT NULL,
     `Value` JSON NOT NULL,
     `MatchId` VARCHAR(45) COLLATE utf8mb4_unicode_ci NOT NULL,
     `BetTypeId` INTEGER NOT NULL,
     `BookmakerId` VARCHAR(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-    CONSTRAINT `PK_Odds` PRIMARY KEY (`MatchId`, `BetTypeId`, `BookmakerId`, `CreatedTime`)
+    CONSTRAINT `PK_Odds` PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

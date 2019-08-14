@@ -47,7 +47,11 @@
         private async Task<IEnumerable<BetTypeOdds>> GetOddsData(string matchId, int betTypeId)
             => await dynamicRepository.FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId));
 
-        public async Task<MatchOddsMovement> GetOddsMovement(string matchId, int betTypeId, string bookmakerId, Language language)
+        public async Task<MatchOddsMovement> GetOddsMovement(
+            string matchId, 
+            int betTypeId, 
+            string bookmakerId, 
+            Language language)
         {
             var betTypeOddsList = await GetBookmakerOddsListByBetType(matchId, betTypeId, bookmakerId);
             var firstOdds = betTypeOddsList.FirstOrDefault();
@@ -65,7 +69,8 @@
         }
 
         private async Task<List<BetTypeOdds>> GetBookmakerOddsListByBetType(string matchId, int betTypeId, string bookmakerId)
-            => (await dynamicRepository.FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId, bookmakerId)))
+            => (await dynamicRepository
+                .FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId, bookmakerId)))
                 .OrderBy(bto => bto.LastUpdatedTime)
                 .ToList();
     }
