@@ -43,7 +43,7 @@
                 {
                     if (match.MatchResult.EventStatus.IsLive())
                     {
-                        await PublishLiveMatchMessage(match);
+                        await PublishLiveMatchResultUpdatedMessage(match);
                     }
                 }
 
@@ -54,8 +54,8 @@
         private async Task PublishClosedMatchMessage(Match match)
             => await messageBus.Publish<ILiveMatchClosedMessage>(new LiveMatchClosedMessage(match.Id, match.MatchResult));
 
-        private async Task PublishLiveMatchMessage(Match match)
-            => await messageBus.Publish<ILiveMatchUpdatedMessage>(new LiveMatchUpdatedMessage(match.Id, match.MatchResult));
+        private async Task PublishLiveMatchResultUpdatedMessage(Match match)
+            => await messageBus.Publish<ILiveMatchResultUpdatedMessage>(new LiveMatchResultUpdatedMessage(match.Id, match.MatchResult));
 
         private static void StartFetchTimelinesTask(string matchId, string region)
         {

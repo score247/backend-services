@@ -2,16 +2,16 @@
 {
     using Soccer.Core.Matches.Models;
 
-    public interface ILiveMatchUpdatedMessage
+    public interface ILiveMatchResultUpdatedMessage
     {
         string MatchId { get; }
 
         MatchResult MatchResult { get; }
     }
 
-    public class LiveMatchUpdatedMessage : ILiveMatchUpdatedMessage
+    public class LiveMatchResultUpdatedMessage : ILiveMatchResultUpdatedMessage
     {
-        public LiveMatchUpdatedMessage(string matchId, MatchResult matchResult)
+        public LiveMatchResultUpdatedMessage(string matchId, MatchResult matchResult)
         {
             MatchId = matchId;
             MatchResult = matchResult;

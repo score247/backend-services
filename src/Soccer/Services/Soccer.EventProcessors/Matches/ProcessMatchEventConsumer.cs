@@ -38,6 +38,7 @@
             if (matchEvent.MatchResult.EventStatus.IsLive())
             {
                 await dynamicRepository.ExecuteAsync(new UpdateLiveMatchResultCommand(matchEvent.MatchId, matchEvent.MatchResult));
+                await dynamicRepository.ExecuteAsync(new UpdateLiveMatchLastTimelineCommand(matchEvent.MatchId, matchEvent.Timeline));
             }
         }
 

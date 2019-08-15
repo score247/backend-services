@@ -6,16 +6,16 @@
     using Soccer.Core.Matches.Events;
     using Soccer.Database.Matches.Commands;
 
-    public class UpdateLiveMatchConsumer : IConsumer<ILiveMatchUpdatedMessage>
+    public class UpdateLiveMatchResultConsumer : IConsumer<ILiveMatchResultUpdatedMessage>
     {
         private readonly IDynamicRepository dynamicRepository;
 
-        public UpdateLiveMatchConsumer(IDynamicRepository dynamicRepository)
+        public UpdateLiveMatchResultConsumer(IDynamicRepository dynamicRepository)
         {
             this.dynamicRepository = dynamicRepository;
         }
 
-        public async Task Consume(ConsumeContext<ILiveMatchUpdatedMessage> context)
+        public async Task Consume(ConsumeContext<ILiveMatchResultUpdatedMessage> context)
         {
             var message = context.Message;
 
