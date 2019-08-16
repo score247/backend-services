@@ -80,8 +80,6 @@
                     {
                         await logger.ErrorAsync($"{ DateTime.Now } Error while listening feed for Soccer", exception);
                     }
-
-                    return;
                 }
 
                 await Task.Delay(MillisecondsTimeout);
@@ -100,7 +98,7 @@
 
                     var matchEvent = MatchMapper.MapMatchEvent(matchEventPayload);
 
-                    if(matchEvent == default(MatchEvent))
+                    if (matchEvent == default(MatchEvent))
                     {
                         continue;
                     }
@@ -109,7 +107,7 @@
 
                     await logger.InfoAsync($"{DateTime.Now} - region {region} Receiving: {matchEventPayload}");
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Debug.WriteLine($"Message: {ex}\r\nPayload: {matchEventPayload}");
                 }
