@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     public class OddsMovement
     {
@@ -33,21 +32,6 @@
         public bool IsMatchStarted { get; private set; }
 
         public DateTimeOffset UpdateTime { get; private set; }
-
-        public void CalculateOddsTrend(IEnumerable<BetOptionOdds> prevBetOptions)
-        {
-            if (prevBetOptions.Count() != BetOptions.Count())
-            {
-                return;
-            }
-
-            var totalBetOptions = prevBetOptions.Count();
-
-            for (int i = 0; i < totalBetOptions; i++)
-            {
-                BetOptions.ElementAt(i).CalculateOddsTrend(prevBetOptions.ElementAt(i).LiveOdds);
-            }
-        }
 
         public void ResetLiveOddsToOpeningOdds()
         {

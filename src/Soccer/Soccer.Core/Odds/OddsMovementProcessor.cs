@@ -1,44 +1,61 @@
 ﻿namespace Soccer.Core.Odds
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using Soccer.Core._Shared.Resources;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Odds.Models;
     using Soccer.Core.Shared.Enumerations;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
 
     public static class OddsMovementProcessor
     {
         private const int firstPeriod = 1;
         private const int secondPeriod = 2;
+        private const int twoItems = 2;
+        private const int secondItemIndex = 1;
         private const int startSecondHaft = 46;
         private const string pause = "pause";
 
         public static IEnumerable<OddsMovement> BuildOddsMovements(
             Match match,
-            List<BetTypeOdds> betTypeOddsList)
+            List<BetTypeOdds> betTypeOddsList,
+            int numOfDaysToShowOddsBeforeKickoffDate)
         {
-            if (match == null)
+            var firstBetTypeOdds = betTypeOddsList.FirstOrDefault();
+
+            if (match == null || firstBetTypeOdds == null)
             {
                 return Enumerable.Empty<OddsMovement>();
             }
 
-            var oddsMovements = BuildOddMovementBeforeMatchStart(betTypeOddsList, match)
-                .Concat(BuildOddMovementAfterMatchStarted(betTypeOddsList, match));
+            var minDate = match.EventDate.AddDays(-numOfDaysToShowOddsBeforeKickoffDate).Date;
+            var filteredBetTypeOddsList = betTypeOddsList.Where(
+                bto => bto.LastUpdatedTime == firstBetTypeOdds.LastUpdatedTime
+                        || bto.LastUpdatedTime >= minDate).ToList();
+
+            var oddsMovements = BuildOddMovementBeforeMatchStart(firstBetTypeOdds, filteredBetTypeOddsList, match)
+                .Concat(BuildOddMovementAfterMatchStarted(filteredBetTypeOddsList, match));
 
             CalculateOddsTrend(oddsMovements);
 
             return oddsMovements.Reverse();
         }
 
-        public static BetTypeOdds AssignOpeningOddsToFirstOdds(IGrouping<string, BetTypeOdds> group)
+        public static BetTypeOdds AssignOpeningOddsToFirstOdds(IEnumerable<BetTypeOdds> betTypeOddList)
         {
-            var orderedGroup = group.OrderByDescending(bto => bto.LastUpdatedTime);
-            var first = orderedGroup.First();
-            var last = orderedGroup.Last();
+            var orderedBetTypeOddsList = betTypeOddList.OrderByDescending(bto => bto.LastUpdatedTime);
+            var totalItems = orderedBetTypeOddsList.Count();
+            var first = orderedBetTypeOddsList.First();
+            var last = orderedBetTypeOddsList.Last();
 
             first.AssignOpeningData(last.BetOptions);
+
+            if (totalItems > twoItems)
+            {
+                var secondItem = orderedBetTypeOddsList.ElementAt(secondItemIndex);
+                CalculateOddsTrend(first.BetOptions, secondItem.BetOptions);
+            }
 
             return first;
         }
@@ -82,9 +99,26 @@
                 }
                 else
                 {
-                    oddsMovement.CalculateOddsTrend(prevOdds.BetOptions);
+                    CalculateOddsTrend(oddsMovement.BetOptions, prevOdds.BetOptions);
                     prevOdds = oddsMovement;
                 }
+            }
+        }
+
+        private static void CalculateOddsTrend(
+            IEnumerable<BetOptionOdds> currentBetOptions,
+            IEnumerable<BetOptionOdds> prevBetOptions)
+        {
+            if (prevBetOptions.Count() != currentBetOptions.Count())
+            {
+                return;
+            }
+
+            var totalBetOptions = prevBetOptions.Count();
+
+            for (int i = 0; i < totalBetOptions; i++)
+            {
+                currentBetOptions.ElementAt(i).CalculateOddsTrend(prevBetOptions.ElementAt(i).LiveOdds);
             }
         }
 
@@ -198,10 +232,10 @@
                 && timelineEvent.PeriodType == PeriodType.RegularPeriod;
 
         private static IEnumerable<OddsMovement> BuildOddMovementBeforeMatchStart(
+            BetTypeOdds firstBetTypeOdds,
             List<BetTypeOdds> betTypeOddsList,
             Match match)
         {
-            var firstBetTypeOdds = betTypeOddsList.FirstOrDefault();
             var oddsMovements = new List<OddsMovement>
             {
                 BuildOpeningOddsMovement(firstBetTypeOdds)
@@ -211,7 +245,10 @@
             return oddsMovements;
         }
 
-        private static IEnumerable<OddsMovement> BuildLiveOddsMovement(List<BetTypeOdds> betTypeOddsList, Match match, BetTypeOdds firstBetTypeOdds)
+        private static IEnumerable<OddsMovement> BuildLiveOddsMovement(
+            List<BetTypeOdds> betTypeOddsList, 
+            Match match, 
+            BetTypeOdds firstBetTypeOdds)
         {
             var liveOddsMovement = new List<OddsMovement>();
             var beforeLiveMatchOdds = betTypeOddsList.Where(
@@ -220,7 +257,10 @@
 
             foreach (var betTypeOdds in beforeLiveMatchOdds)
             {
-                var oddsMovement = new OddsMovement(betTypeOdds.BetOptions, AppResources.Live, betTypeOdds.LastUpdatedTime);
+                var oddsMovement = new OddsMovement(
+                    betTypeOdds.BetOptions, 
+                    AppResources.Live, 
+                    betTypeOdds.LastUpdatedTime);
 
                 liveOddsMovement.Add(oddsMovement);
             }

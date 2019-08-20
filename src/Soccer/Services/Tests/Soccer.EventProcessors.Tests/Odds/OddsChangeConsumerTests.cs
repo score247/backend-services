@@ -13,6 +13,7 @@
     using Soccer.Core.Odds.Models;
     using Soccer.Database.Odds.Criteria;
     using Soccer.EventProcessors.Odds;
+    using Soccer.EventProcessors.Shared.Configurations;
     using Xunit;
 
     [Trait("Soccer.EventProcessors", "Odds")]
@@ -23,6 +24,7 @@
         private readonly Func<DateTime> getCurrentTimeFunc;
         private readonly ICacheService cacheService;
         private readonly OddsChangeConsumer oddsChangeConsumer;
+        private readonly IAppSettings appSettings;
 
         public OddsChangeConsumerTests()
         {
@@ -30,11 +32,13 @@
             cacheService = Substitute.For<ICacheService>();
             messageBus = Substitute.For<IBus>();
             getCurrentTimeFunc = Substitute.For<Func<DateTime>>();
+            appSettings = Substitute.For<IAppSettings>();
             oddsChangeConsumer = new OddsChangeConsumer(
                 dynamicRepository,
                 getCurrentTimeFunc,
                 messageBus,
-                cacheService);
+                cacheService,
+                appSettings);
         }
 
         public async Task Consume_NoMatchExist_DoesNotExecuteGetOdds()

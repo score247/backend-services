@@ -23,6 +23,7 @@
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLogging(Configuration);
+            services.AddSettings(Configuration);
             services.AddSingleton<ICacheService, CacheService>();
             services.AddSingleton<Func<DateTime>>(() => DateTime.Now);
             services.AddRabbitMq(Configuration);

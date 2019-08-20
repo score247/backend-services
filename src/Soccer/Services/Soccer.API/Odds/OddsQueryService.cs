@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using Soccer.API.Matches;
+    using Soccer.API.Shared.Configurations;
     using Soccer.Core.Odds;
     using Soccer.Core.Odds.Models;
     using Soccer.Core.Shared.Enumerations;
@@ -21,13 +22,16 @@
     {
         private readonly IDynamicRepository dynamicRepository;
         private readonly IMatchQueryService matchQueryService;
+        private readonly IAppSettings appSettings;
 
         public OddsQueryService(
             IDynamicRepository dynamicRepository,
-            IMatchQueryService matchQueryService)
+            IMatchQueryService matchQueryService,
+            IAppSettings appSettings)
         {
             this.dynamicRepository = dynamicRepository;
             this.matchQueryService = matchQueryService;
+            this.appSettings = appSettings;
         }
 
         public async Task<MatchOdds> GetOdds(string matchId, int betTypeId, Language language)
@@ -63,7 +67,7 @@
 
             var match = await matchQueryService.GetMatch(matchId, language);
 
-            var oddsMovements = OddsMovementProcessor.BuildOddsMovements(match, betTypeOddsList);
+            var oddsMovements = OddsMovementProcessor.BuildOddsMovements(match, betTypeOddsList, appSettings.NumOfDaysToShowOddsBeforeKickoffDate);
 
             return new MatchOddsMovement(matchId, firstOdds.Bookmaker, oddsMovements);
         }

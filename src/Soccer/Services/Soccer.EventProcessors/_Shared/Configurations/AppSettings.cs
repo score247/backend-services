@@ -1,15 +1,11 @@
-﻿namespace Soccer.API.Shared.Configurations
+﻿namespace Soccer.EventProcessors.Shared.Configurations
 {
+    using Microsoft.Extensions.Configuration;
     using System;
     using System.ComponentModel;
-    using Microsoft.Extensions.Configuration;
 
     public interface IAppSettings
     {
-        bool EnabledDatabaseMigration { get; }
-
-        int NumberOfTopMatches { get; }
-
         int NumOfDaysToShowOddsBeforeKickoffDate { get; }
     }
 
@@ -22,19 +18,9 @@
         {
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
-            EnabledDatabaseMigration = GetValue<bool>(nameof(EnabledDatabaseMigration));
-            NumberOfTopMatches = GetValue<int>(nameof(NumberOfTopMatches));
             NumOfDaysToShowOddsBeforeKickoffDate = GetValue<int>(nameof(NumOfDaysToShowOddsBeforeKickoffDate));
-
-            if (NumberOfTopMatches <= 0)
-            {
-                NumberOfTopMatches = int.MaxValue;
-            }
         }
 
-        public bool EnabledDatabaseMigration { get; }
-
-        public int NumberOfTopMatches { get; }
 
         public int NumOfDaysToShowOddsBeforeKickoffDate { get; }
 

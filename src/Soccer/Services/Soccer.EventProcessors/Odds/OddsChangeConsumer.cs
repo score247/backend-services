@@ -1,9 +1,5 @@
 ﻿namespace Soccer.EventProcessors.Odds
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Fanex.Caching;
     using Fanex.Data.Repository;
     using MassTransit;
@@ -16,6 +12,11 @@
     using Soccer.Database.Matches.Criteria;
     using Soccer.Database.Odds.Commands;
     using Soccer.Database.Odds.Criteria;
+    using Soccer.EventProcessors.Shared.Configurations;
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public class OddsChangeConsumer : IConsumer<IOddsChangeMessage>
     {
@@ -25,17 +26,20 @@
         private readonly IDynamicRepository dynamicRepository;
         private readonly Func<DateTime> getCurrentTimeFunc;
         private readonly ICacheService cacheService;
+        private readonly IAppSettings appSettings;
 
         public OddsChangeConsumer(
             IDynamicRepository dynamicRepository,
             Func<DateTime> getCurrentTimeFunc,
             IBus messageBus,
-            ICacheService cacheService)
+            ICacheService cacheService,
+            IAppSettings appSettings)
         {
             this.dynamicRepository = dynamicRepository;
             this.getCurrentTimeFunc = getCurrentTimeFunc;
             this.messageBus = messageBus;
             this.cacheService = cacheService;
+            this.appSettings = appSettings;
         }
 
         public async Task Consume(ConsumeContext<IOddsChangeMessage> context)
@@ -54,15 +58,15 @@
 
         private async Task ProcessOdds(MatchOdds matchOdds, Match match, MatchEvent matchEvent)
         {
-            if(matchEvent != null 
+            if (matchEvent != null
                 && !OddsMovementProcessor.IsTimelineNeedMapWithOddsData(matchEvent.Timeline))
             {
                 return;
             }
 
             var isForceInsert = matchEvent != null;
-            var oddsList = isForceInsert && matchOdds.IsBetTypeOddsListEmpty() 
-                ? await BuildMatchOddsWithoutCurrentOddsInformation(matchOdds) 
+            var oddsList = isForceInsert && matchOdds.IsBetTypeOddsListEmpty()
+                ? await BuildMatchOddsWithoutCurrentOddsInformation(matchOdds)
                 : await BuildMatchOdds(matchOdds, isForceInsert);
 
             if (oddsList.Any())
@@ -75,23 +79,25 @@
             }
         }
 
-
         private async Task PushOddsComparisonEvent(
             Match match,
             IEnumerable<BetTypeOdds> betTypeOddsList)
         {
+            var minDate = match.EventDate.AddDays(-appSettings.NumOfDaysToShowOddsBeforeKickoffDate).Date;
+            betTypeOddsList = betTypeOddsList.Where(bto => bto.LastUpdatedTime >= minDate);
             var betTypeOddsListGroups = betTypeOddsList.GroupBy(bto => bto.Id);
+
             foreach (var betTypeOddsListGroup in betTypeOddsListGroups)
             {
-                var oddsByBookmakers = (await GetOddsData(match.Id, betTypeOddsListGroup.Key)).ToList();
+                var oddsByBookmakers = (await GetOddsDataAndFilterWithMinDate(match, betTypeOddsListGroup.Key)).ToList();
 
                 foreach (var betTypeOddsBookmaker in betTypeOddsListGroup)
                 {
-                    var openingOdds = oddsByBookmakers.LastOrDefault(o => o.Bookmaker?.Id == betTypeOddsBookmaker.Bookmaker?.Id);
+                    var openingOdds = oddsByBookmakers.FirstOrDefault(o => o.Bookmaker?.Id == betTypeOddsBookmaker.Bookmaker?.Id);
 
                     betTypeOddsBookmaker.AssignOpeningData(
-                        openingOdds != null 
-                        ? openingOdds.BetOptions 
+                        openingOdds != null
+                        ? openingOdds.BetOptions
                         : betTypeOddsBookmaker.BetOptions);
                 }
             }
@@ -103,7 +109,7 @@
 
         private async Task PushOddsMovementEvent(
             Match match,
-            IEnumerable<BetTypeOdds> betTypeOddsList,  
+            IEnumerable<BetTypeOdds> betTypeOddsList,
             MatchEvent matchEvent)
         {
             var oddsEvents = new List<OddsMovementEvent>();
@@ -115,7 +121,7 @@
                 var oddsByBookmaker = await GetBookmakerOddsListByBetType(match.Id, betTypeOdds.Id, betTypeOdds.Bookmaker.Id);
 
                 var oddsMovement = OddsMovementProcessor
-                    .BuildOddsMovements(match, oddsByBookmaker)
+                    .BuildOddsMovements(match, oddsByBookmaker, appSettings.NumOfDaysToShowOddsBeforeKickoffDate)
                     .FirstOrDefault();
 
                 if (oddsMovement != null)
@@ -136,7 +142,7 @@
                 .FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(matchId)))
                 .ToList();
 
-            if (matchEvent != null 
+            if (matchEvent != null
                 && !timelines.Any(tl => tl.Id == matchEvent.Timeline?.Id))
             {
                 timelines.Add(matchEvent.Timeline);
@@ -151,7 +157,7 @@
                 .ToList();
 
         private async Task<List<BetTypeOdds>> BuildMatchOdds(
-            MatchOdds matchOdds, 
+            MatchOdds matchOdds,
             bool forceInsert)
         {
             var insertOddsList = new List<BetTypeOdds>();
@@ -159,7 +165,7 @@
             foreach (var betTypeOdds in matchOdds.BetTypeOddsList)
             {
                 var lastOddsList = await GetOddsData(matchOdds.MatchId, betTypeOdds.Id);
-                var lastOdds = lastOddsList.FirstOrDefault(odds => odds.Bookmaker.Id == betTypeOdds.Bookmaker.Id);
+                var lastOdds = lastOddsList.LastOrDefault(odds => odds.Bookmaker.Id == betTypeOdds.Bookmaker.Id);
 
                 if (lastOdds == null
                     || forceInsert
@@ -178,8 +184,9 @@
         {
             var insertOddsList = new List<BetTypeOdds>();
             var lastOddsList = await GetOddsData(matchOdds.MatchId);
-            var groupByBookmakers = lastOddsList.GroupBy(bto 
-                => new {
+            var groupByBookmakers = lastOddsList.GroupBy(bto
+                => new
+                {
                     bookmakerId = bto.Bookmaker.Id,
                     bto.Id
                 });
@@ -221,16 +228,32 @@
                         utcTime.AddDays(maxGetMatchDate),
                         Language.en_US));
 
-        private async Task<IEnumerable<BetTypeOdds>> GetOddsData(string matchId, int betTypeId = 0)
+        private async Task<IEnumerable<BetTypeOdds>> GetOddsDataAndFilterWithMinDate(Match match, int betTypeId = 0)
+        {
+            var betTypeOddsList = await GetOddsData(match.Id, betTypeId);
+
+            if (!betTypeOddsList.Any())
+            {
+                return betTypeOddsList;
+            }
+
+            var firstOdds = betTypeOddsList.FirstOrDefault();
+            var minDate = match.EventDate.AddDays(-appSettings.NumOfDaysToShowOddsBeforeKickoffDate).Date;
+            var filteredBetTypeOddsList = betTypeOddsList.Where(
+                bto => bto.LastUpdatedTime == firstOdds.LastUpdatedTime
+                        || bto.LastUpdatedTime >= minDate);
+
+            return filteredBetTypeOddsList;
+        }
+
+        private async Task<IOrderedEnumerable<BetTypeOdds>> GetOddsData(string matchId, int betTypeId = 0)
             => (await dynamicRepository
-                .FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId)))
-                .OrderByDescending(bto => bto.LastUpdatedTime);
+                            .FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId)))
+                            .OrderBy(bto => bto.LastUpdatedTime);
 
         private async Task InsertOdds(
             IEnumerable<BetTypeOdds> betTypeOdds,
             string matchId)
-        {
-            await dynamicRepository.ExecuteAsync(new InsertOddsCommand(betTypeOdds, matchId));
-        }
+            => await dynamicRepository.ExecuteAsync(new InsertOddsCommand(betTypeOdds, matchId));
     }
 }

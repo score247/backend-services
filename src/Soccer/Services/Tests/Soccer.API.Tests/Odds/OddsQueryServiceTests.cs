@@ -8,6 +8,7 @@
     using NSubstitute;
     using Soccer.API.Matches;
     using Soccer.API.Odds;
+    using Soccer.API.Shared.Configurations;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Odds.Models;
     using Soccer.Core.Shared.Enumerations;
@@ -20,16 +21,19 @@
         private readonly OddsQueryService oddsServiceImpl;
         private readonly IDynamicRepository dynamicRepository;
         private readonly IMatchQueryService matchService;
+        private readonly IAppSettings appSettings;
 
         private const string globalMatchId = "matchId1";
         private const int globalBetTypeId = 1;
-        private DateTime eventDate = new DateTime(2019, 2, 3);
+        private readonly DateTime eventDate = new DateTime(2019, 2, 3);
 
         public OddsQueryServiceTests()
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
             matchService = Substitute.For<IMatchQueryService>();
-            oddsServiceImpl = new OddsQueryService(dynamicRepository, matchService);
+            appSettings = Substitute.For<IAppSettings>();
+            appSettings.NumOfDaysToShowOddsBeforeKickoffDate.Returns(356);
+            oddsServiceImpl = new OddsQueryService(dynamicRepository, matchService, appSettings);
         }
 
         [Fact]
