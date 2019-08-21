@@ -42,13 +42,16 @@
             return oddsMovements.Reverse();
         }
 
-        public static BetTypeOdds AssignOpeningOddsToFirstOdds(IEnumerable<BetTypeOdds> betTypeOddList)
+        public static BetTypeOdds AssignOpeningOddsToFirstOdds(IEnumerable<BetTypeOdds> betTypeOddList, DateTime minDate)
         {
-            var orderedBetTypeOddsList = betTypeOddList.OrderByDescending(bto => bto.LastUpdatedTime);
-            var totalItems = orderedBetTypeOddsList.Count();
-            var first = orderedBetTypeOddsList.First();
+            var orderedBetTypeOddsList = betTypeOddList.OrderByDescending(bto => bto.LastUpdatedTime).AsEnumerable();
             var last = orderedBetTypeOddsList.Last();
 
+            orderedBetTypeOddsList = orderedBetTypeOddsList.Where(bto => bto.LastUpdatedTime == last.LastUpdatedTime || bto.LastUpdatedTime >= minDate);
+
+            var totalItems = orderedBetTypeOddsList.Count();
+            var first = orderedBetTypeOddsList.First();
+            
             first.AssignOpeningData(last.BetOptions);
 
             if (totalItems > twoItems)
