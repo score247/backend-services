@@ -27,6 +27,7 @@
             AwayTeamName = awayTeam.Name;
             HomeScore = (byte)match.MatchResult.HomeScore;
             AwayScore = (byte)match.MatchResult.AwayScore;
+            WinnerId = match.MatchResult.WinnerId;
             AggregateWinnerId = match.MatchResult.AggregateWinnerId;
             HomeRedCards = (byte)homeTeam.Statistic.RedCards;
             HomeYellowRedCards = (byte)homeTeam.Statistic.YellowRedCards;
@@ -62,6 +63,8 @@
         public byte HomeScore { get; }
 
         public byte AwayScore { get; }
+
+        public string WinnerId { get; }
 
         public string AggregateWinnerId { get; }
 
