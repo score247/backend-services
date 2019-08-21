@@ -5,6 +5,7 @@
     using System.Threading.Tasks;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
+    using Soccer.API.Matches.Models;
     using Soccer.API.Matches.Requests;
     using Soccer.Core.Matches.Models;
 
@@ -22,15 +23,13 @@
         /// </summary>
         /// <param name="fd">2019-07-15T00:00:00+07:00</param>
         /// <param name="td">2019-07-16T23:59:59+07:00</param>
-        /// <param name="tz">07:00</param>
         /// <param name="language"></param>
         [HttpGet]
-        public async Task<IEnumerable<Match>> Get(
+        public async Task<IEnumerable<MatchSummary>> Get(
                 DateTime fd,
                 DateTime td,
-                TimeSpan tz,
                 string language = "en-US")
-            => await mediator.Send(new MatchesByDateRequest(fd, td, language, tz));
+            => await mediator.Send(new MatchesByDateRequest(fd, td, language));
 
         [HttpGet]
         [Route("{id}")]

@@ -5,13 +5,14 @@
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
+    using Soccer.API.Matches.Models;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Database.Matches.Criteria;
 
     public interface IMatchQueryService
     {
-        Task<IEnumerable<Match>> GetByDateRange(DateTime from, DateTime to, TimeSpan clientTimeOffset, Language language);
+        Task<IEnumerable<MatchSummary>> GetByDateRange(DateTime from, DateTime to, Language language);
 
         Task<Match> GetMatch(string id, Language language);
 
@@ -27,19 +28,16 @@
             this.dynamicRepository = dynamicRepository;
         }
 
-        // TODO: Remove convert to client timezone, remember to move this business to front-end
         public async Task<IEnumerable<Match>> GetLive(TimeSpan clientTimeOffset, Language language)
             => await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(language));
 
-        // TODO: Remove convert to client timezone, remember to move this business to front-end
-        public async Task<IEnumerable<Match>> GetByDateRange(DateTime from, DateTime to, TimeSpan clientTimeOffset, Language language)
+        public async Task<IEnumerable<MatchSummary>> GetByDateRange(DateTime from, DateTime to, Language language)
         {
             var matches = await dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(from, to, language));
 
-            return matches;
+            return matches.Select(m => new MatchSummary(m));
         }
 
-        // TODO: Remove convert to client timezone, remember to move this business to front-end
         public async Task<Match> GetMatch(string id, Language language)
         {
             var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language));
