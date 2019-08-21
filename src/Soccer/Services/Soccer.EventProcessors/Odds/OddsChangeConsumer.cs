@@ -2,6 +2,7 @@
 {
     using Fanex.Caching;
     using Fanex.Data.Repository;
+    using Fanex.Logging;
     using MassTransit;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Odds;
@@ -104,15 +105,18 @@
 
                     if (oddsByBookmaker.Count() > twoItems)
                     {
-                        var secondItem = oddsByBookmaker.ElementAt(oddsByBookmakers.Count - twoItems);
+                        var secondItem = oddsByBookmaker.ElementAt(oddsByBookmaker.Count() - twoItems);
                         OddsMovementProcessor.CalculateOddsTrend(betTypeOddsBookmaker.BetOptions, secondItem.BetOptions);
                     }
                 }
             }
 
-            var oddsComparisonMessage = new OddsComparisonMessage(match.Id, betTypeOddsList);
+            if (betTypeOddsList.Any())
+            {
+                var oddsComparisonMessage = new OddsComparisonMessage(match.Id, betTypeOddsList);
 
-            await messageBus.Publish<IOddsComparisonMessage>(oddsComparisonMessage);
+                await messageBus.Publish<IOddsComparisonMessage>(oddsComparisonMessage);
+            }
         }
 
         private async Task PushOddsMovementEvent(
