@@ -20,6 +20,7 @@
 
     public class OddsChangeConsumer : IConsumer<IOddsChangeMessage>
     {
+        private const int twoItems = 2;
         private const int cacheMatchSeconds = 10;
         private const int maxGetMatchDate = 10;
         private readonly IBus messageBus;
@@ -93,8 +94,10 @@
 
                 foreach (var betTypeOddsBookmaker in betTypeOddsListGroup)
                 {
-                    var openingOdds = oddsByBookmakers.FirstOrDefault(o => o.Bookmaker?.Id == betTypeOddsBookmaker.Bookmaker?.Id);
-
+                    var openingOdds = oddsByBookmakers.Count > twoItems 
+                        ? oddsByBookmakers.ElementAt(oddsByBookmakers.Count - twoItems)
+                        : oddsByBookmakers.FirstOrDefault(o => o.Bookmaker?.Id == betTypeOddsBookmaker.Bookmaker?.Id);
+                    
                     betTypeOddsBookmaker.AssignOpeningData(
                         openingOdds != null
                         ? openingOdds.BetOptions
