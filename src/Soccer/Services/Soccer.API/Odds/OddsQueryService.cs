@@ -39,9 +39,10 @@
 
         private async Task<IEnumerable<BetTypeOdds>> GetBookmakerComparisonOdds(string matchId, int betTypeId)
         {
-            var oddsByBookmaker = (await GetOddsData(matchId, betTypeId)).GroupBy(o => o.Bookmaker?.Id);
+            var oddsData = await GetOddsData(matchId, betTypeId);
 
-            var betTypeOdssList = oddsByBookmaker
+            var betTypeOdssList = oddsData
+                .GroupBy(o => o.Bookmaker?.Id)
                 .Select(group => OddsMovementProcessor.AssignOpeningOddsToFirstOdds(group))
                 .OrderBy(bto => bto.Bookmaker.Name);
 
@@ -49,7 +50,27 @@
         }
 
         private async Task<IEnumerable<BetTypeOdds>> GetOddsData(string matchId, int betTypeId)
-            => await dynamicRepository.FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId));
+        { 
+            var oddsData = (await dynamicRepository.FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId)))
+                            .OrderBy(o => o.LastUpdatedTime)
+                            .AsEnumerable();
+            var firstOdds = oddsData.FirstOrDefault();
+
+            if (firstOdds != null)
+            {
+                var match = await matchQueryService.GetMatch(matchId, Language.en_US);
+                if (match != null)
+                {
+                    var minDate = match.EventDate.AddDays(-appSettings.NumOfDaysToShowOddsBeforeKickoffDate).Date;
+
+                    oddsData = oddsData.Where(
+                        bto => bto.LastUpdatedTime == firstOdds.LastUpdatedTime
+                                || bto.LastUpdatedTime >= minDate);
+                }
+            }
+
+            return oddsData;
+        }
 
         public async Task<MatchOddsMovement> GetOddsMovement(
             string matchId, 
