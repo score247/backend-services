@@ -1,6 +1,7 @@
 ﻿namespace Soccer.API.Matches.Models
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
@@ -35,6 +36,7 @@
             StoppageTime = match.LatestTimeline?.StoppageTime;
             InjuryTimeAnnounced = (byte)(match.LatestTimeline?.InjuryTimeAnnounced ?? 0);
             LastTimelineType = match.LatestTimeline?.Type;
+            MatchPeriods = match.MatchResult.MatchPeriods;
         }
 
         public string Id { get; }
@@ -78,5 +80,7 @@
         public byte InjuryTimeAnnounced { get; }
 
         public EventType LastTimelineType { get; }
+
+        public IEnumerable<MatchPeriod> MatchPeriods { get; private set; }
     }
 }
