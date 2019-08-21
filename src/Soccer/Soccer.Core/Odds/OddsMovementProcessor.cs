@@ -105,7 +105,7 @@
             }
         }
 
-        private static void CalculateOddsTrend(
+        public static void CalculateOddsTrend(
             IEnumerable<BetOptionOdds> currentBetOptions,
             IEnumerable<BetOptionOdds> prevBetOptions)
         {

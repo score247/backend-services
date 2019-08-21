@@ -94,14 +94,19 @@
 
                 foreach (var betTypeOddsBookmaker in betTypeOddsListGroup)
                 {
-                    var openingOdds = oddsByBookmakers.Count > twoItems 
-                        ? oddsByBookmakers.ElementAt(oddsByBookmakers.Count - twoItems)
-                        : oddsByBookmakers.FirstOrDefault(o => o.Bookmaker?.Id == betTypeOddsBookmaker.Bookmaker?.Id);
+                    var oddsByBookmaker = oddsByBookmakers.Where(o => o.Bookmaker?.Id == betTypeOddsBookmaker.Bookmaker?.Id);
+                    var openingOdds = oddsByBookmaker.FirstOrDefault();
                     
                     betTypeOddsBookmaker.AssignOpeningData(
                         openingOdds != null
                         ? openingOdds.BetOptions
                         : betTypeOddsBookmaker.BetOptions);
+
+                    if (oddsByBookmaker.Count() > twoItems)
+                    {
+                        var secondItem = oddsByBookmaker.ElementAt(oddsByBookmakers.Count - twoItems);
+                        OddsMovementProcessor.CalculateOddsTrend(betTypeOddsBookmaker.BetOptions, secondItem.BetOptions);
+                    }
                 }
             }
 
