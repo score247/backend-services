@@ -7,15 +7,16 @@
     using Newtonsoft.Json;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Extensions;
+    using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
-    using Soccer.EventPublishers.Matches.Hubs;
+    using Soccer.EventPublishers.Hubs;
 
     public class ProcessMatchEventPublisher : IConsumer<IMatchEventProcessedMessage>
     {
-        private readonly IHubContext<MatchEventHub> hubContext;
+        private readonly IHubContext<SoccerHub> hubContext;
         private readonly ILogger logger;
 
-        public ProcessMatchEventPublisher(IHubContext<MatchEventHub> hubContext, ILogger logger)
+        public ProcessMatchEventPublisher(IHubContext<SoccerHub> hubContext, ILogger logger)
         {
             this.hubContext = hubContext;
             this.logger = logger;
@@ -27,9 +28,25 @@
 
             if (matchEvent?.Timeline?.IsBasicEvent() == true)
             {
-                await hubContext.Clients.All.SendAsync("MatchEvent", Sport.Soccer.Value, JsonConvert.SerializeObject(matchEvent));
-                await logger.InfoAsync("Send Match Event: \r\n" + JsonConvert.SerializeObject(matchEvent));
+                var message = JsonConvert.SerializeObject(new MatchEventSignalRMessage(Sport.Soccer.Value, matchEvent));
+
+                const string matchEventName = "MatchEvent";
+                await hubContext.Clients.All.SendAsync(matchEventName, message);
+                await logger.InfoAsync("Send Match Event: \r\n" + message);
             }
         }
+    }
+
+    internal class MatchEventSignalRMessage
+    {
+        public MatchEventSignalRMessage(byte sportId, MatchEvent matchEvent)
+        {
+            SportId = sportId;
+            MatchEvent = matchEvent;
+        }
+
+        public byte SportId { get; }
+
+        public MatchEvent MatchEvent { get; }
     }
 }

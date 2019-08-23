@@ -7,14 +7,15 @@
     using Newtonsoft.Json;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Odds.Messages;
+    using Soccer.EventPublishers.Hubs;
 
     public class OddsMovementPublisher : IConsumer<IOddsMovementMessage>
     {
-        private readonly IHubContext<OddsEventHub> hubContext;
+        private readonly IHubContext<SoccerHub> hubContext;
         private readonly ILogger logger;
 
         public OddsMovementPublisher(
-            IHubContext<OddsEventHub> hubContext, 
+            IHubContext<SoccerHub> hubContext,
             ILogger logger)
         {
             this.hubContext = hubContext;
@@ -27,9 +28,24 @@
 
             if (matchId != null)
             {
-                await hubContext.Clients.All.SendAsync("OddsMovement", Sport.Soccer.Value, JsonConvert.SerializeObject(context.Message));
-                await logger.InfoAsync("Send Odds Movement: \r\n" + JsonConvert.SerializeObject(context.Message));
+                var message = JsonConvert.SerializeObject(new OddsMovementSignalRMessage(Sport.Soccer.Value, context.Message));
+                const string OddsMovementName = "OddsMovement";
+                await hubContext.Clients.All.SendAsync(OddsMovementName, message);
+                await logger.InfoAsync("Send Odds Movement: \r\n" + message);
             }
         }
+    }
+
+    internal class OddsMovementSignalRMessage
+    {
+        public OddsMovementSignalRMessage(byte sportId, IOddsMovementMessage oddsMovement)
+        {
+            SportId = sportId;
+            OddsMovement = oddsMovement;
+        }
+
+        public byte SportId { get; }
+
+        public IOddsMovementMessage OddsMovement { get; }
     }
 }

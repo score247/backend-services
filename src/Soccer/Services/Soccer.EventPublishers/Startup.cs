@@ -1,21 +1,14 @@
 ﻿namespace Soccer.Services.EventPublishers
 {
-    using System;
-    using GreenPipes.Configurators;
     using JsonNet.ContractResolvers;
-    using MassTransit;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Newtonsoft.Json;
-    using Soccer.Core.Shared.Configurations;
-    using Soccer.EventPublishers.Matches;
-    using Soccer.EventPublishers.Matches.Hubs;
-    using Soccer.EventPublishers.Odds;
+    using Soccer.EventPublishers.Hubs;
     using Soccer.EventPublishers.Shared.Middlewares;
-    using Soccer.EventPublishers.Teams.Hubs;
 
     public class Startup
     {
@@ -52,9 +45,7 @@
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<MatchEventHub>("/hubs/Soccer/MatchEventHub");
-                routes.MapHub<TeamStatisticHub>("/hubs/Soccer/TeamStatisticHub");
-                routes.MapHub<OddsEventHub>("/hubs/Soccer/OddsEventHub");
+                routes.MapHub<SoccerHub>("/hubs/soccer/hub");
             });
 
             app.UseRabbitMq(applicationLifetime);

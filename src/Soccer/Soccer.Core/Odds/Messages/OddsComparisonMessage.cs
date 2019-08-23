@@ -10,7 +10,7 @@
         IEnumerable<BetTypeOdds> BetTypeOddsList { get; }
     }
 
-    public class OddsComparisonMessage
+    public class OddsComparisonMessage : IOddsComparisonMessage
     {
         public OddsComparisonMessage(
             string matchId,

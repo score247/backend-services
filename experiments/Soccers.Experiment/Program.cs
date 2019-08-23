@@ -34,9 +34,15 @@
                 Console.WriteLine($"OddsComparison \r\n: {data}\r\n ");
             });
 
-            connection.On<string>("TestEvent", (text) =>
+            connection.On<string>("OddsComparison", (data) =>
             {
-                Console.WriteLine(text);
+                //var pushEvents = JsonConvert.DeserializeObject<Dictionary<string, MatchPushEvent>>(data);
+                Console.WriteLine($"OddsComparison \r\n {data}");
+            });
+
+            connection.On<string>("TeamStatistic", (data) =>
+            {
+                Console.WriteLine($"TeamStatistic \r\n {data}");
             });
 
             connection.StartAsync().GetAwaiter().GetResult();

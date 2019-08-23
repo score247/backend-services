@@ -7,14 +7,14 @@
     using Newtonsoft.Json;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Teams.QueueMessages;
-    using Soccer.EventPublishers.Teams.Hubs;
+    using Soccer.EventPublishers.Hubs;
 
     public class UpdateTeamStatisticPublisher : IConsumer<ITeamStatisticUpdatedMessage>
     {
-        private readonly IHubContext<TeamStatisticHub> hubContext;
+        private readonly IHubContext<SoccerHub> hubContext;
         private readonly ILogger logger;
 
-        public UpdateTeamStatisticPublisher(IHubContext<TeamStatisticHub> hubContext, ILogger logger)
+        public UpdateTeamStatisticPublisher(IHubContext<SoccerHub> hubContext, ILogger logger)
         {
             this.hubContext = hubContext;
             this.logger = logger;
@@ -22,17 +22,34 @@
 
         public async Task Consume(ConsumeContext<ITeamStatisticUpdatedMessage> context)
         {
-            var message = context?.Message;
-
-            if (message == null)
+            if (context?.Message == null)
             {
                 return;
             }
 
-            await hubContext.Clients.All.SendAsync("TeamStatistic",
-                Sport.Soccer.Value, message.MatchId, message.IsHome, JsonConvert.SerializeObject(message.TeamStatistic));
+            var message = JsonConvert.SerializeObject(new TeamStatisticSignalRMessage(
+                Sport.Soccer.Value,
+                context.Message));
 
-            await logger.InfoAsync("Send Team Statistic: \r\n" + JsonConvert.SerializeObject(message));
+            const string TeamStatisticName = "TeamStatistic";
+            await hubContext.Clients.All.SendAsync(TeamStatisticName, message);
+
+            await logger.InfoAsync("Send Team Statistic: \r\n" + message);
         }
+    }
+
+    internal class TeamStatisticSignalRMessage
+    {
+        public TeamStatisticSignalRMessage(
+            byte sportId,
+            ITeamStatisticUpdatedMessage teamStatistic)
+        {
+            SportId = sportId;
+            TeamStatistic = teamStatistic;
+        }
+
+        public byte SportId { get; }
+
+        public ITeamStatisticUpdatedMessage TeamStatistic { get; }
     }
 }
