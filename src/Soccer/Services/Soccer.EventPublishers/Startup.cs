@@ -45,7 +45,7 @@
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<SoccerHub>("/hubs/soccer/hub");
+                routes.MapHub<SoccerHub>("/hubs/soccerhub");
             });
 
             app.UseRabbitMq(applicationLifetime);
