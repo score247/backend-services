@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.Caching;
     using Fanex.Logging;
     using MassTransit;
     using Newtonsoft.Json;
@@ -25,15 +26,18 @@
         private readonly IOddsService oddsService;
         private readonly IBus messageBus;
         private readonly ILogger logger;
+        private readonly ICacheService cacheService;
 
         public OddsMessagePublisher(
             IOddsService oddsService,
             IBus messageBus,
-            ILogger logger)
+            ILogger logger,
+            ICacheService cacheService)
         {
             this.oddsService = oddsService;
             this.messageBus = messageBus;
             this.logger = logger;
+            this.cacheService = cacheService;
         }
 
         public async Task PublishOdds(IEnumerable<MatchOdds> oddsList, int batchSize)
@@ -52,17 +56,15 @@
         {
             try
             {
-                if (OddsMovementProcessor.IsTimelineNeedMapWithOddsData(matchEvent.Timeline))
+                if (await IsEventBeHandled(matchEvent))
                 {
-                    var currentOdds = await oddsService.GetOdds(matchEvent.MatchId, matchEvent.Timeline.Time);
+                    return;
+                }
 
-                    await messageBus.Publish<IOddsChangeMessage>(
-                        new OddsChangeMessage(
-                            new List<MatchOdds>
-                            {
-                        currentOdds
-                            },
-                            matchEvent));
+                if (matchEvent.MatchResult.EventStatus.IsNotClosedAndNotEnded()
+                    && OddsMovementProcessor.IsTimelineNeedMapWithOddsData(matchEvent.Timeline))
+                {
+                    await GetEventOddsAndPublishOddsMessage(matchEvent);
                 }
             }
             catch (Exception ex)
@@ -74,6 +76,42 @@
                             $"Exception: {ex}"),
                             ex);
             }
+        }
+
+        private async Task<bool> IsEventBeHandled(MatchEvent matchEvent)
+        {
+            var cachedMatchEvents = await GetCachedEvents(matchEvent.MatchId);
+
+            return cachedMatchEvents.Any(me => me.Timeline.Id == matchEvent.Timeline.Id);
+        }
+
+        private async Task<IList<MatchEvent>> GetCachedEvents(string matchId)
+            => (await cacheService.GetAsync<IList<MatchEvent>>(BuildEventsCacheKey(matchId)))
+                ?? new List<MatchEvent>();
+
+        private static string BuildEventsCacheKey(string matchId)
+            => $"Odds_MatchEvent_{matchId}";
+
+        private async Task GetEventOddsAndPublishOddsMessage(MatchEvent matchEvent)
+        {
+            var currentOdds = await oddsService.GetOdds(matchEvent.MatchId, matchEvent.Timeline.Time);
+
+            await messageBus.Publish<IOddsChangeMessage>(
+                new OddsChangeMessage(
+                    new List<MatchOdds>
+                    {
+                        currentOdds
+                    },
+                    matchEvent));
+
+            await CacheNewEvent(matchEvent);
+        }
+
+        private async Task CacheNewEvent(MatchEvent matchEvent)
+        {
+            var cachedEvents = await GetCachedEvents(matchEvent.MatchId);
+            cachedEvents.Add(matchEvent);
+            await cacheService.SetAsync(BuildEventsCacheKey(matchEvent.MatchId), cachedEvents);
         }
     }
 }

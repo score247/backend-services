@@ -1,13 +1,9 @@
 ﻿namespace Soccer.DataReceivers.EventListeners
 {
     using System;
-    using System.Linq;
     using Fanex.Caching;
     using Fanex.Logging;
     using Fanex.Logging.Sentry;
-    using Hangfire;
-    using Hangfire.Dashboard;
-    using Hangfire.MySql.Core;
     using MassTransit;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
@@ -29,8 +25,6 @@
 
     public class Startup
     {
-        private const int NumOfWorkers = 2;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -55,7 +49,6 @@
             RegisterLogging(services);
             RegisterRabbitMq(services);
             RegisterSportRadarDataProvider(services);
-            RegisterHangfire(services);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -72,16 +65,6 @@
             }
 
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
-            app.UseHangfireDashboard(options: new DashboardOptions
-            {
-                Authorization = Enumerable.Empty<IDashboardAuthorizationFilter>()
-            }).UseHangfireServer(options: new BackgroundJobServerOptions
-            {
-                WorkerCount = NumOfWorkers
-            });
-
-            RunHangfireJobs();
 
             app.UseStaticFiles();
             app.UseMvc();
@@ -132,29 +115,12 @@
             services.AddSingleton<IMatchService, MatchService>();
             services.AddSingleton<IMatchEventListenerService, MatchEventListenerService>();
 
-            services.AddScoped<IMatchEventListener, MatchEventListener>();
-
             services.AddScoped<IOddsMessagePublisher, OddsMessagePublisher>();
             services.AddScoped<IOddsService, OddsService>();
             services.AddSingleton(RestService.For<IOddsApi>(sportRadarDataProviderSettings.ServiceUrl));
             services.AddSingleton<Func<DateTimeOffset>>(() => DateTimeOffset.Now);
-        }
 
-        private const int OneYearDays = 365;
-        private void RegisterHangfire(IServiceCollection services)
-        {
-            services.AddHangfire(x => x.UseStorage(
-                new MySqlStorage(
-                    Configuration.GetConnectionString("Hangfire"), 
-                new MySqlStorageOptions
-                    {
-                        InvisibilityTimeout = TimeSpan.FromDays(OneYearDays)
-                    })));
-        }
-
-        private static void RunHangfireJobs()
-        {
-            BackgroundJob.Enqueue<IMatchEventListener>(job => job.ListenMatchEvents());
+            services.AddHostedService<MatchEventListener>();
         }
     }
 }

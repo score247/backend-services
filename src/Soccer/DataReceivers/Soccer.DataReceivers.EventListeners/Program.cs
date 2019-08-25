@@ -8,6 +8,7 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Hosting.WindowsServices;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Hosting;
 
     public static class Program
     {
@@ -25,7 +26,7 @@
             var builder = CreateWebHostBuilder(args.Where(arg => arg != "--console").ToArray());
 
             var host = builder.Build();
-
+            
             if (isService)
             {
                 host.RunAsService();

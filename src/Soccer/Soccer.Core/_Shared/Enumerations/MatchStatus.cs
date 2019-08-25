@@ -97,6 +97,8 @@
 
         public bool IsClosed() => this == Closed;
 
+        public bool IsNotClosedAndNotEnded() => this != Closed && this != Ended;
+
         public bool IsFirstHalf() => this == FirstHaft;
 
         public bool IsSecondHalf() => this == SecondHaft;

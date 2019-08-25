@@ -1,20 +1,18 @@
 ﻿namespace Soccer.DataReceivers.EventListeners.Matches
 {
     using System;
+    using System.Threading;
     using System.Threading.Tasks;
     using Fanex.Logging;
     using MassTransit;
+    using Microsoft.Extensions.Hosting;
     using Newtonsoft.Json;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataReceivers.Odds;
 
-    public interface IMatchEventListener
-    {
-        Task ListenMatchEvents();
-    }
 
-    public class MatchEventListener : IMatchEventListener
+    public class MatchEventListener : BackgroundService
     {
         private readonly IBus messageBus;
         private readonly IMatchEventListenerService eventListenerService;
@@ -33,7 +31,7 @@
             this.logger = logger;
         }
 
-        public async Task ListenMatchEvents()
+        private async Task ListenMatchEvents()
         {
             await eventListenerService.ListenEvents(async (matchEvent) =>
             {
@@ -53,6 +51,28 @@
                             ex);
                 }
             });
+        }
+
+        public async override Task StartAsync(CancellationToken cancellationToken)
+        {
+            await logger.InfoAsync($"Started Match Event Listener at {DateTime.Now}");
+
+            await base.StartAsync(cancellationToken);
+        }
+
+        public async override Task StopAsync(CancellationToken cancellationToken)
+        {
+            await logger.InfoAsync($"Stop Match Event Listener at {DateTime.Now}");
+
+            await base.StopAsync(cancellationToken);
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                await ListenMatchEvents();
+            }
         }
     }
 }
