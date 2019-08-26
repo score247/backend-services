@@ -23,6 +23,11 @@
 
     public class OddsMessagePublisher : IOddsMessagePublisher
     {
+        private static readonly CacheItemOptions MatchEventCacheOption = new CacheItemOptions
+        {
+            SlidingExpiration = TimeSpan.FromMinutes(10),
+        };
+
         private readonly IOddsService oddsService;
         private readonly IBus messageBus;
         private readonly ILogger logger;
@@ -111,7 +116,7 @@
         {
             var cachedEvents = await GetCachedEvents(matchEvent.MatchId);
             cachedEvents.Add(matchEvent);
-            await cacheService.SetAsync(BuildEventsCacheKey(matchEvent.MatchId), cachedEvents);
+            await cacheService.SetAsync(BuildEventsCacheKey(matchEvent.MatchId), cachedEvents, MatchEventCacheOption);
         }
     }
 }
