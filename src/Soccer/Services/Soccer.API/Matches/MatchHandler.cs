@@ -10,7 +10,7 @@
 
     public class MatchHandler
         : IRequestHandler<MatchesByDateRequest, IEnumerable<MatchSummary>>,
-          IRequestHandler<MatchByIdRequest, Match>,
+          IRequestHandler<MatchInfoByIdRequest, MatchInfo>,
           IRequestHandler<LiveMatchesRequest, IEnumerable<Match>>
     {
         private readonly IMatchQueryService matchQueryService;
@@ -26,7 +26,7 @@
         public async Task<IEnumerable<Match>> Handle(LiveMatchesRequest request, CancellationToken cancellationToken)
             => await matchQueryService.GetLive(request.ClientTimeOffset, request.Language);
 
-        public async Task<Match> Handle(MatchByIdRequest request, CancellationToken cancellationToken)
-              => await matchQueryService.GetMatch(request.Id, request.Language);
+        public async Task<MatchInfo> Handle(MatchInfoByIdRequest request, CancellationToken cancellationToken)
+              => await matchQueryService.GetMatchInfo(request.Id, request.Language);
     }
 }

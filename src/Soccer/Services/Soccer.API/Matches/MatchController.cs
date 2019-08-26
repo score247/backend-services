@@ -33,8 +33,8 @@
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<Match> Get(string id, string language = "en-US")
-            => await mediator.Send(new MatchByIdRequest(id, language));
+        public async Task<MatchInfo> Get(string id, string language = "en-US")
+            => await mediator.Send(new MatchInfoByIdRequest(id, language));
 
         [HttpGet]
         [Route("live")]

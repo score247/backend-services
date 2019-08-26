@@ -7,11 +7,13 @@
     using Fanex.Data.Repository;
     using NSubstitute;
     using Soccer.API.Matches;
+    using Soccer.API.Matches.Models;
     using Soccer.API.Odds;
     using Soccer.API.Shared.Configurations;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Odds.Models;
     using Soccer.Core.Shared.Enumerations;
+    using Soccer.Database.Matches.Criteria;
     using Soccer.Database.Odds.Criteria;
     using Xunit;
 
@@ -20,7 +22,6 @@
     {
         private readonly OddsQueryService oddsServiceImpl;
         private readonly IDynamicRepository dynamicRepository;
-        private readonly IMatchQueryService matchService;
         private readonly IAppSettings appSettings;
 
         private const string globalMatchId = "matchId1";
@@ -30,10 +31,9 @@
         public OddsQueryServiceTests()
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
-            matchService = Substitute.For<IMatchQueryService>();
             appSettings = Substitute.For<IAppSettings>();
             appSettings.NumOfDaysToShowOddsBeforeKickoffDate.Returns(356);
-            oddsServiceImpl = new OddsQueryService(dynamicRepository, matchService, appSettings);
+            oddsServiceImpl = new OddsQueryService(dynamicRepository, appSettings);
         }
 
         [Fact]
@@ -164,7 +164,9 @@
         {
             var oddsMovementMatchId = "GetOddsMovement_MatchDoesNotExist_ReturnEmptyOddsMovement";
             StubBetTypeOdds(oddsMovementMatchId);
-            matchService.GetMatch(oddsMovementMatchId, Language.en_US).Returns(Task.FromResult<Match>(null));
+            dynamicRepository
+                .GetAsync<Match>(Arg.Is<GetMatchByIdCriteria>(c => c.Id == oddsMovementMatchId && c.Language == Language.en_US.DisplayName))
+                .Returns(Task.FromResult<Match>(null));
 
             var matchOddsMovement = await oddsServiceImpl.GetOddsMovement(oddsMovementMatchId, 1, "bookMakerId", Language.en_US);
 
@@ -437,10 +439,17 @@
                 EventDate = eventDate.HasValue
                     ? eventDate.Value
                     : new DateTime(2019, 2, 3),
-                TimeLines = timelines
             };
 
-            matchService.GetMatch(matchId, Language.en_US).Returns(Task.FromResult(match));
+            dynamicRepository
+                .GetAsync<Match>(Arg.Is<GetMatchByIdCriteria>(c => c.Id == matchId && c.Language == Language.en_US.DisplayName))
+                .Returns(Task.FromResult<Match>(match));
+
+            dynamicRepository
+                .FetchAsync<TimelineEvent>(Arg.Is<GetTimelineEventsCriteria>(c => c.MatchId == matchId))
+                .Returns(timelines);
+
+            match.TimeLines = timelines ?? Enumerable.Empty<TimelineEvent>();
 
             return match;
         }

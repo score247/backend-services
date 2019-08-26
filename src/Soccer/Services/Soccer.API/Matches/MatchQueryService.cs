@@ -14,7 +14,7 @@
     {
         Task<IEnumerable<MatchSummary>> GetByDateRange(DateTime from, DateTime to, Language language);
 
-        Task<Match> GetMatch(string id, Language language);
+        Task<MatchInfo> GetMatchInfo(string id, Language language);
 
         Task<IEnumerable<Match>> GetLive(TimeSpan clientTimeOffset, Language language);
     }
@@ -38,23 +38,18 @@
             return matches.Select(m => new MatchSummary(m));
         }
 
-        public async Task<Match> GetMatch(string id, Language language)
+        public async Task<MatchInfo> GetMatchInfo(string id, Language language)
         {
             var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language));
 
             if (match != null)
             {
-                await GetMatchTimelineEvents(id, match);
+                var timelineEvents = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
+
+                return new MatchInfo(match, timelineEvents);
             }
 
-            return match;
-        }
-
-        private async Task GetMatchTimelineEvents(string id, Match match)
-        {
-            var timelineEvent = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
-
-            match.TimeLines = timelineEvent.OrderBy(t => t.Time);
+            return null;
         }
     }
 }

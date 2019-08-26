@@ -2,12 +2,12 @@
 {
     using MediatR;
     using Score247.Shared.Enumerations;
-    using Soccer.Core.Matches.Models;
+    using Soccer.API.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
 
-    public class MatchByIdRequest : IRequest<Match>
+    public class MatchInfoByIdRequest : IRequest<MatchInfo>
     {
-        public MatchByIdRequest(string id, string language)
+        public MatchInfoByIdRequest(string id, string language)
         {
             Id = id;
             Language = Enumeration.FromDisplayName<Language>(language);
