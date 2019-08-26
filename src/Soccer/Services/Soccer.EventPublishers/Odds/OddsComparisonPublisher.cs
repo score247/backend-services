@@ -8,6 +8,7 @@
     using Score247.Shared.Enumerations;
     using Soccer.Core.Odds.Messages;
     using Soccer.EventPublishers.Hubs;
+    using Soccer.EventPublishers.Odds.SignalR;
 
     public class OddsComparisonPublisher : IConsumer<IOddsComparisonMessage>
     {
@@ -28,24 +29,12 @@
 
             if (matchId != null)
             {
-                var message = JsonConvert.SerializeObject(new OddsComparisonSignalRMessage(Sport.Soccer.Value, context.Message));
+                var message = JsonConvert.SerializeObject(
+                    new OddsComparisonSignalRMessage(Sport.Soccer.Value, context.Message.MatchId, context.Message.BetTypeOddsList));
                 const string OddsComparisonName = "OddsComparison";
                 await hubContext.Clients.All.SendAsync(OddsComparisonName, message);
                 await logger.InfoAsync("Send Odds Comparison: \r\n" + message);
             }
         }
-    }
-
-    internal class OddsComparisonSignalRMessage
-    {
-        public OddsComparisonSignalRMessage(byte sportId, IOddsComparisonMessage oddsComparison)
-        {
-            SportId = sportId;
-            OddsComparison = oddsComparison;
-        }
-
-        public byte SportId { get; }
-
-        public IOddsComparisonMessage OddsComparison { get; }
     }
 }

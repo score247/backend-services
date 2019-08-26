@@ -8,6 +8,7 @@
     using Score247.Shared.Enumerations;
     using Soccer.Core.Odds.Messages;
     using Soccer.EventPublishers.Hubs;
+    using Soccer.EventPublishers.Odds.SignalR;
 
     public class OddsMovementPublisher : IConsumer<IOddsMovementMessage>
     {
@@ -28,24 +29,12 @@
 
             if (matchId != null)
             {
-                var message = JsonConvert.SerializeObject(new OddsMovementSignalRMessage(Sport.Soccer.Value, context.Message));
+                var message = JsonConvert.SerializeObject(
+                    new OddsMovementSignalRMessage(Sport.Soccer.Value, context.Message.MatchId, context.Message.OddsEvents));
                 const string OddsMovementName = "OddsMovement";
                 await hubContext.Clients.All.SendAsync(OddsMovementName, message);
                 await logger.InfoAsync("Send Odds Movement: \r\n" + message);
             }
         }
-    }
-
-    internal class OddsMovementSignalRMessage
-    {
-        public OddsMovementSignalRMessage(byte sportId, IOddsMovementMessage oddsMovement)
-        {
-            SportId = sportId;
-            OddsMovement = oddsMovement;
-        }
-
-        public byte SportId { get; }
-
-        public IOddsMovementMessage OddsMovement { get; }
     }
 }

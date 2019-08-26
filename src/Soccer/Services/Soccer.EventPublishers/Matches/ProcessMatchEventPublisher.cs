@@ -7,9 +7,9 @@
     using Newtonsoft.Json;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Extensions;
-    using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.EventPublishers.Hubs;
+    using Soccer.EventPublishers.Matches.SignalR;
 
     public class ProcessMatchEventPublisher : IConsumer<IMatchEventProcessedMessage>
     {
@@ -35,18 +35,5 @@
                 await logger.InfoAsync("Send Match Event: \r\n" + message);
             }
         }
-    }
-
-    internal class MatchEventSignalRMessage
-    {
-        public MatchEventSignalRMessage(byte sportId, MatchEvent matchEvent)
-        {
-            SportId = sportId;
-            MatchEvent = matchEvent;
-        }
-
-        public byte SportId { get; }
-
-        public MatchEvent MatchEvent { get; }
     }
 }

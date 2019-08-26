@@ -8,16 +8,15 @@
     using Newtonsoft.Json;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
-    using Soccer.Core.Odds.Messages;
     using Soccer.Core.Odds.Models;
     using Soccer.Core.Odds.SignalREvents;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.Models;
-    using Soccer.Core.Teams.QueueMessages;
     using Soccer.EventPublishers.Hubs;
-    using Soccer.EventPublishers.Matches;
+    using Soccer.EventPublishers.Matches.SignalR;
     using Soccer.EventPublishers.Odds;
-    using Soccer.EventPublishers.Teams;
+    using Soccer.EventPublishers.Odds.SignalR;
+    using Soccer.EventPublishers.Teams.SignalR;
 
     public class HomeController : ControllerBase
     {
@@ -76,21 +75,20 @@
         private async Task MockPushOddsComparisonEvent()
         {
             var oddsComparisonMessage = new OddsComparisonSignalRMessage(
-                Sport.Soccer.Value,
-                new OddsComparisonMessage(
-                    "1111", 
+                    Sport.Soccer.Value,
+                    "1111",
                     new List<BetTypeOdds>
                     {
                         new BetTypeOdds(
-                            1, 
-                            "1x2", 
-                            new Bookmaker("1", "Bookmarker"), 
-                            DateTime.Now, 
+                            1,
+                            "1x2",
+                            new Bookmaker("1", "Bookmarker"),
+                            DateTime.Now,
                             new List<BetOptionOdds>
                             {
                                 new BetOptionOdds("Home", 1m, 1m, "1", "3")
                             })
-                    }));
+                    });
 
             await hubContext.Clients.All.SendAsync("OddsComparison", JsonConvert.SerializeObject(oddsComparisonMessage));
         }
@@ -98,8 +96,7 @@
         private async Task MockPushOddsMovementEvent()
         {
             var oddsMovementMessage = new OddsMovementSignalRMessage(
-                Sport.Soccer.Value,
-                new OddsMovementMessage(
+                    Sport.Soccer.Value,
                     "1111",
                     new List<OddsMovementEvent>
                     {
@@ -112,7 +109,7 @@
                             },
                             "Live",
                             DateTimeOffset.Now))
-                    }));
+                    });
 
             await hubContext.Clients.All.SendAsync("OddsMovement", JsonConvert.SerializeObject(oddsMovementMessage));
         }
@@ -120,13 +117,13 @@
         private async Task MockPushTeamStatisticEvent()
         {
             var teamStatisticMessage = new TeamStatisticSignalRMessage(
-                Sport.Soccer.Value,
-                new TeamStatisticUpdatedMessage(
+                    Sport.Soccer.Value,
                     "1111",
                     true,
-                    new TeamStatistic {
+                    new TeamStatistic
+                    {
                         RedCards = 2
-                    }));
+                    });
 
             await hubContext.Clients.All.SendAsync("TeamStatistic", JsonConvert.SerializeObject(teamStatisticMessage));
         }
