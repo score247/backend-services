@@ -5,21 +5,21 @@
 
     public class UpdateLiveMatchCurrentPeriodStartTimeCommand : BaseCommand
     {
-        public UpdateLiveMatchCurrentPeriodStartTimeCommand(string matchId, DateTime currentPeriodStartTime)
+        public UpdateLiveMatchCurrentPeriodStartTimeCommand(string matchId, DateTimeOffset currentPeriodStartTime)
         {
             SportId = Sport.Soccer.Value;
             MatchId = matchId;
-            CurrentPeriodStartTime = currentPeriodStartTime.ToUniversalTime();
+            CurrentPeriodStartTime = ToJsonString(currentPeriodStartTime);
         }
 
         public byte SportId { get; }
 
         public string MatchId { get; }
 
-        public DateTime CurrentPeriodStartTime { get; }
+        public string CurrentPeriodStartTime { get; }
 
         public override string GetSettingKey() => "LiveMatch_UpdateCurrentPeriodStartTime";
 
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(MatchId) && CurrentPeriodStartTime != DateTime.MinValue;
+        public override bool IsValid() => !string.IsNullOrWhiteSpace(MatchId) && !string.IsNullOrWhiteSpace(CurrentPeriodStartTime);
     }
 }

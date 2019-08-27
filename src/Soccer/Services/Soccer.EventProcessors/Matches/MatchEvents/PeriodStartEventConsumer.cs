@@ -23,7 +23,7 @@
         {
             var matchEvent = context?.Message?.MatchEvent;
             var command = new UpdateLiveMatchCurrentPeriodStartTimeCommand(
-                    matchEvent?.MatchId, matchEvent?.Timeline?.Time ?? DateTime.Now);
+                    matchEvent?.MatchId, matchEvent?.Timeline?.Time ?? DateTimeOffset.Now);
             await dynamicRepository.ExecuteAsync(command);
 
             await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
