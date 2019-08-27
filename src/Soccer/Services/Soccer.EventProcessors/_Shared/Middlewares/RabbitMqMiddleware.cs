@@ -30,6 +30,7 @@
                 serviceCollectionConfigurator.AddConsumer<MatchEndEventConsumer>();
                 serviceCollectionConfigurator.AddConsumer<RedCardEventConsumer>();
                 serviceCollectionConfigurator.AddConsumer<PenaltyEventConsumer>();
+                serviceCollectionConfigurator.AddConsumer<PeriodStartEventConsumer>();
                 serviceCollectionConfigurator.AddConsumer<ReceiveMatchEventConsumer>();
                 serviceCollectionConfigurator.AddConsumer<ProcessMatchEventConsumer>();
                 serviceCollectionConfigurator.AddConsumer<OddsChangeConsumer>();
@@ -66,6 +67,14 @@
 
                     e.Consumer<ReceiveMatchEventConsumer>(provider);
                     e.Consumer<ProcessMatchEventConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents_PeriodStart", e =>
+                {
+                    e.PrefetchCount = 16;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<PeriodStartEventConsumer>(provider);
                 });
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents_MatchEnd", e =>

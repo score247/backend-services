@@ -10,6 +10,8 @@
     {
         public DateTimeOffset EventDate { get; set; }
 
+        public DateTimeOffset CurrentPeriodStartTime { get; set; }
+
         public IEnumerable<Team> Teams { get; set; }
 
         public MatchResult MatchResult { get; set; }

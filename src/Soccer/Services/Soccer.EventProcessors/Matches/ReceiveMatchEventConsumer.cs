@@ -11,25 +11,14 @@
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
-    using Soccer.Core.Shared.Enumerations;
     using Soccer.Database.Matches.Criteria;
 
     public class ReceiveMatchEventConsumer : IConsumer<IMatchEventReceivedMessage>
     {
-        private static readonly CacheItemOptions EventCacheOptions =
-            new CacheItemOptions
-            {
-                SlidingExpiration = TimeSpan.FromMinutes(10),
-            };
-
-        private static readonly IDictionary<int, int> PeriodStartTimeMapper =
-            new Dictionary<int, int>
-            {
-                { MatchStatus.FirstHaft.Value, 1 },
-                { MatchStatus.SecondHaft.Value, 46 },
-                { MatchStatus.FirstHaftExtra.Value, 91 },
-                { MatchStatus.SecondHaftExtra.Value, 106 }
-            };
+        private static readonly CacheItemOptions EventCacheOptions = new CacheItemOptions
+        {
+            SlidingExpiration = TimeSpan.FromMinutes(10),
+        };
 
         private readonly ICacheService cacheService;
         private readonly IDynamicRepository dynamicRepository;
@@ -53,7 +42,11 @@
                     return;
                 }
 
-                GenerateMatchTime(matchEvent);
+                if (matchEvent.Timeline.Type.IsPeriodStart())
+                {
+                    await messageBus.Publish<IPeriodStartEventMessage>(new PeriodStartEventMessage(matchEvent));
+                    return;
+                }
 
                 if (matchEvent.Timeline.IsShootOutInPenalty())
                 {
@@ -106,30 +99,5 @@
 
         private async Task<bool> IsTimelineEventNotProcessed(MatchEvent matchEvent)
             => !await IsTimelineEventProcessed(matchEvent);
-
-        private static void GenerateMatchTime(MatchEvent matchEvent)
-        {
-            if (matchEvent.MatchResult.EventStatus.IsLive())
-            {
-                var timeline = matchEvent.Timeline;
-                var matchTime = timeline.MatchTime;
-                var matchStatus = matchEvent.MatchResult.MatchStatus.Value;
-
-                if (timeline.Type.IsPeriodStart() && PeriodStartTimeMapper.ContainsKey(matchStatus))
-                {
-                    matchTime = PeriodStartTimeMapper[matchStatus];
-                }
-
-                if (!string.IsNullOrEmpty(timeline.StoppageTime))
-                {
-                    matchTime += int.Parse(timeline.StoppageTime);
-                }
-
-                if (matchTime > 0)
-                {
-                    matchEvent.MatchResult.MatchTime = matchTime;
-                }
-            }
-        }
     }
 }
