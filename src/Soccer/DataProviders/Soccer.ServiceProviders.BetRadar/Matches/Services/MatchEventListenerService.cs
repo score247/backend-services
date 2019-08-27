@@ -109,7 +109,7 @@
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine($"Message: {ex}\r\nPayload: {matchEventPayload}");
+                    await logger.ErrorAsync($"Message: {ex}\r\nPayload: {matchEventPayload}");
                 }
             }
         }

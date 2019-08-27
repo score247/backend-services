@@ -141,11 +141,12 @@
             var timelineEvents = GetMainEvents(match);
             var oddsMovements = new List<OddsMovement>();
             var matchLiveOdds = betTypeOddsList.Where(o => o.LastUpdatedTime >= match.EventDate);
+            var currentMatchTime = DateTime.MinValue;
 
             foreach (var betTypeOdds in matchLiveOdds)
             {
                 var timelineEvent = timelineEvents.FirstOrDefault(e => e.Time == betTypeOdds.LastUpdatedTime);
-                var oddsMovement = BuildOddsMovementEvent(ref homeScore, ref awayScore, ref currentEvent, timelineEvent, betTypeOdds);
+                var oddsMovement = BuildOddsMovementEvent(ref homeScore, ref awayScore, ref currentEvent, ref currentMatchTime, timelineEvent, betTypeOdds);
 
                 oddsMovements.Add(oddsMovement);
             }
@@ -157,6 +158,7 @@
             ref int homeScore,
             ref int awayScore,
             ref TimelineEvent currentEvent,
+            ref DateTime currentMatchTime,
             TimelineEvent timelineEvent,
             BetTypeOdds betTypeOdds)
         {
@@ -181,12 +183,13 @@
                 {
                     currentEvent = timelineEvent;
                     matchTime = AppResources.KO;
+                    currentMatchTime = timelineEvent.Time;
                 }
 
                 if (IsSecondPeriodStart(timelineEvent))
                 {
                     currentEvent = timelineEvent;
-                    currentEvent.Time = currentEvent.Time.AddMinutes(-startSecondHaft);
+                    currentMatchTime = timelineEvent.Time.AddMinutes(-startSecondHaft);
                 }
             }
 
@@ -199,7 +202,7 @@
                 }
                 else
                 {
-                    var totalMinutes = (betTypeOdds.LastUpdatedTime - currentEvent.Time).TotalMinutes;
+                    var totalMinutes = (betTypeOdds.LastUpdatedTime - currentMatchTime).TotalMinutes;
                     matchTime = totalMinutes.ToString("0") + "'";
                 }
             }

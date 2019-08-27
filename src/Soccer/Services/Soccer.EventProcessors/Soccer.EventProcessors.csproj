@@ -16,6 +16,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="appsettings.ricky.json" />
     <None Remove="_Shared\App_Data\LOCAL\SpNames.xml" />
   </ItemGroup>
 
@@ -57,6 +58,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="appsettings.ricky.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

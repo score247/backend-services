@@ -21,9 +21,13 @@
     <None Remove="appsettings.local-dev.json" />
     <None Remove="appsettings.local-main.json" />
     <None Remove="appsettings.local-test.json" />
+    <None Remove="appsettings.ricky.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="appsettings.ricky.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
