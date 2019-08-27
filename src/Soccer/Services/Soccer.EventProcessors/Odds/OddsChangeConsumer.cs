@@ -2,7 +2,9 @@
 {
     using Fanex.Caching;
     using Fanex.Data.Repository;
+    using Fanex.Logging;
     using MassTransit;
+    using Newtonsoft.Json;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Odds;
     using Soccer.Core.Odds.Messages;
@@ -28,19 +30,22 @@
         private readonly Func<DateTime> getCurrentTimeFunc;
         private readonly ICacheService cacheService;
         private readonly IAppSettings appSettings;
+        private readonly ILogger logger;
 
         public OddsChangeConsumer(
             IDynamicRepository dynamicRepository,
             Func<DateTime> getCurrentTimeFunc,
             IBus messageBus,
             ICacheService cacheService,
-            IAppSettings appSettings)
+            IAppSettings appSettings,
+            ILogger logger)
         {
             this.dynamicRepository = dynamicRepository;
             this.getCurrentTimeFunc = getCurrentTimeFunc;
             this.messageBus = messageBus;
             this.cacheService = cacheService;
             this.appSettings = appSettings;
+            this.logger = logger;
         }
 
         public async Task Consume(ConsumeContext<IOddsChangeMessage> context)
@@ -123,9 +128,13 @@
 
             match.TimeLines = await GetMatchTimelines(match.Id, matchEvent);
 
+            logger.Info($"{match.Id}, timeline: {JsonConvert.SerializeObject(match.TimeLines)}");
+
             foreach (var betTypeOdds in betTypeOddsList)
             {
                 var oddsByBookmaker = await GetBookmakerOddsListByBetType(match.Id, betTypeOdds.Id, betTypeOdds.Bookmaker.Id);
+
+                logger.Info($"{match.Id}, oddsByBookmaker: {JsonConvert.SerializeObject(oddsByBookmaker)}");
 
                 var oddsMovement = OddsMovementProcessor
                     .BuildOddsMovements(match, oddsByBookmaker, appSettings.NumOfDaysToShowOddsBeforeKickoffDate)
@@ -133,6 +142,8 @@
 
                 if (oddsMovement != null)
                 {
+                    logger.Info($"{match.Id}, oddsMovement: {JsonConvert.SerializeObject(oddsMovement)}");
+
                     oddsEvents.Add(new OddsMovementEvent(betTypeOdds.Id, betTypeOdds.Bookmaker, oddsMovement));
                 }
             }
