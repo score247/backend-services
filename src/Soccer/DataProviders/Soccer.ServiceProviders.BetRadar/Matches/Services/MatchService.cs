@@ -17,14 +17,14 @@
 
     public interface IMatchApi
     {
-        [Get("/soccer-t3/{region}/{language}/schedules/{date}/schedule.json?api_key={apiKey}")]
-        Task<MatchScheduleDto> GetSchedule(string region, string language, string date, string apiKey);
+        [Get("/soccer-{accessLevel}{version}/{region}/{language}/schedules/{date}/schedule.json?api_key={apiKey}")]
+        Task<MatchScheduleDto> GetSchedule(string accessLevel, string version, string region, string language, string date, string apiKey);
 
-        [Get("/soccer-t3/{region}/{language}/schedules/{date}/results.json?api_key={apiKey}")]
-        Task<Dtos.MatchResultDto> GetResult(string region, string language, string date, string apiKey);
+        [Get("/soccer-{accessLevel}{version}/{region}/{language}/schedules/{date}/results.json?api_key={apiKey}")]
+        Task<Dtos.MatchResultDto> GetResult(string accessLevel, string version, string region, string language, string date, string apiKey);
 
-        [Get("/soccer-t3/{region}/{language}/schedules/live/results.json?api_key={apiKey}")]
-        Task<Dtos.MatchResultDto> GetLiveResult(string region, string language, string apiKey);
+        [Get("/soccer-{accessLevel}{version}/{region}/{language}/schedules/live/results.json?api_key={apiKey}")]
+        Task<Dtos.MatchResultDto> GetLiveResult(string accessLevel, string version, string region, string language, string apiKey);
     }
 
     public class MatchService : IMatchService
@@ -49,7 +49,7 @@
             {
                 try
                 {
-                    var matchResult = await matchApi.GetResult(region.Name, sportRadarLanguage, date.ToSportRadarFormat(), region.Key);
+                    var matchResult = await matchApi.GetResult(soccerSettings.AccessLevel, soccerSettings.Version, region.Name, sportRadarLanguage, date.ToSportRadarFormat(), region.Key);
 
                     if (matchResult?.results?.Any() == true)
                     {
@@ -74,7 +74,7 @@
             {
                 try
                 {
-                    var matchSchedule = await matchApi.GetSchedule(region.Name, sportRadarLanguage, date.ToSportRadarFormat(), region.Key);
+                    var matchSchedule = await matchApi.GetSchedule(soccerSettings.AccessLevel, soccerSettings.Version, region.Name, sportRadarLanguage, date.ToSportRadarFormat(), region.Key);
 
                     if (matchSchedule?.sport_events?.Any() == true)
                     {
@@ -99,7 +99,7 @@
             {
                 try
                 {
-                    var liveResult = await matchApi.GetLiveResult(region.Name, sportRadarLanguage, region.Key);
+                    var liveResult = await matchApi.GetLiveResult(soccerSettings.AccessLevel, soccerSettings.Version, region.Name, sportRadarLanguage, region.Key);
 
                     if (liveResult?.results?.Any() == true)
                     {

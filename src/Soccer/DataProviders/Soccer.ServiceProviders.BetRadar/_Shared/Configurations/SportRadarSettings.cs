@@ -47,6 +47,10 @@
 
         public string Name { get; set; }
 
+        public string AccessLevel { get; set; }
+
+        public string Version { get; set; }
+
         public IEnumerable<Region> Regions { get; set; }
 
         public OddsSetting OddsSetting { get; set; }

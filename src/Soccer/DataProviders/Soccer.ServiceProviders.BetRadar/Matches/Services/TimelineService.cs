@@ -1,9 +1,5 @@
 ﻿namespace Soccer.DataProviders.SportRadar.Matches.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Fanex.Logging;
     using Refit;
     using Score247.Shared.Enumerations;
@@ -13,11 +9,14 @@
     using Soccer.DataProviders.SportRadar.Matches.DataMappers;
     using Soccer.DataProviders.SportRadar.Shared.Configurations;
     using Soccer.DataProviders.SportRadar.Shared.Extensions;
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public interface ITimelineApi
     {
-        [Get("/soccer-t3/{region}/{language}/matches/{matchId}/timeline.json?api_key={apiKey}")]
-        Task<Dtos.MatchTimelineDto> GetTimelines(string matchId, string region, string language, string apiKey);
+        [Get("/soccer-{accessLevel}{version}/{region}/{language}/matches/{matchId}/timeline.json?api_key={apiKey}")]
+        Task<Dtos.MatchTimelineDto> GetTimelines(string accessLevel, string version, string matchId, string region, string language, string apiKey);
     }
 
     public class TimelineService : ITimelineService
@@ -45,7 +44,7 @@
             {
                 var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == region).Key;
                
-                var timelineDto = await timelineApi.GetTimelines(matchId, region, sportRadarLanguage, apiKey);
+                var timelineDto = await timelineApi.GetTimelines(soccerSettings.AccessLevel, soccerSettings.Version, matchId, region, sportRadarLanguage, apiKey);
                 match = MatchMapper.MapMatch(timelineDto.sport_event, timelineDto.sport_event_status, timelineDto.sport_event_conditions, region);             
 
                 if (timelineDto?.timeline?.Any() == true)
