@@ -51,7 +51,7 @@
 
             var totalItems = orderedBetTypeOddsList.Count();
             var first = orderedBetTypeOddsList.First();
-            
+
             first.AssignOpeningData(last.BetOptions);
 
             if (totalItems > twoItems)
@@ -141,7 +141,7 @@
             var timelineEvents = GetMainEvents(match);
             var oddsMovements = new List<OddsMovement>();
             var matchLiveOdds = betTypeOddsList.Where(o => o.LastUpdatedTime >= match.EventDate);
-            var currentMatchTime = DateTime.MinValue;
+            var currentMatchTime = DateTimeOffset.MinValue;
 
             foreach (var betTypeOdds in matchLiveOdds)
             {
@@ -158,7 +158,7 @@
             ref int homeScore,
             ref int awayScore,
             ref TimelineEvent currentEvent,
-            ref DateTime currentMatchTime,
+            ref DateTimeOffset currentMatchTime,
             TimelineEvent timelineEvent,
             BetTypeOdds betTypeOdds)
         {
@@ -252,8 +252,8 @@
         }
 
         private static IEnumerable<OddsMovement> BuildLiveOddsMovement(
-            List<BetTypeOdds> betTypeOddsList, 
-            Match match, 
+            List<BetTypeOdds> betTypeOddsList,
+            Match match,
             BetTypeOdds firstBetTypeOdds)
         {
             var liveOddsMovement = new List<OddsMovement>();
@@ -264,8 +264,8 @@
             foreach (var betTypeOdds in beforeLiveMatchOdds)
             {
                 var oddsMovement = new OddsMovement(
-                    betTypeOdds.BetOptions, 
-                    AppResources.Live, 
+                    betTypeOdds.BetOptions,
+                    AppResources.Live,
                     betTypeOdds.LastUpdatedTime);
 
                 liveOddsMovement.Add(oddsMovement);
