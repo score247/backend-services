@@ -12,77 +12,116 @@
         {
             Id = match.Id;
             EventDate = match.EventDate;
-            LeagueId = match.League.Id;
-            LeagueName = match.League.Name;
-            EventStatus = match.MatchResult.EventStatus;
-            MatchStatus = match.MatchResult.MatchStatus;
 
-            var teams = match.Teams.ToList();
-            var homeTeam = teams.FirstOrDefault(t => t.IsHome);
-            var awayTeam = teams.FirstOrDefault(t => !t.IsHome);
+            if (match.League != null)
+            {
+                LeagueId = match.League.Id;
+                LeagueName = match.League.Name;
+            }
 
-            HomeTeamId = homeTeam.Id;
-            HomeTeamName = homeTeam.Name;
-            AwayTeamId = awayTeam.Name;
-            AwayTeamName = awayTeam.Name;
-            HomeScore = (byte)match.MatchResult.HomeScore;
-            AwayScore = (byte)match.MatchResult.AwayScore;
-            WinnerId = match.MatchResult.WinnerId;
-            AggregateWinnerId = match.MatchResult.AggregateWinnerId;
-            HomeRedCards = (byte)homeTeam.Statistic.RedCards;
-            HomeYellowRedCards = (byte)homeTeam.Statistic.YellowRedCards;
-            AwayRedCards = (byte)awayTeam.Statistic.RedCards;
-            AwayYellowRedCards = (byte)awayTeam.Statistic.YellowRedCards;
-            MatchTime = (byte)match.MatchResult.MatchTime;
-            StoppageTime = match.LatestTimeline?.StoppageTime;
-            InjuryTimeAnnounced = (byte)(match.LatestTimeline?.InjuryTimeAnnounced ?? 0);
-            LastTimelineType = match.LatestTimeline?.Type;
-            MatchPeriods = match.MatchResult.MatchPeriods;
+            AssignMatchResult(match);
+            AssignTeamInformation(match);
+            AssignLatestTimeline(match);
         }
 
-        public string Id { get; }
+        private void AssignLatestTimeline(Match match)
+        {
+            if (match.LatestTimeline != null)
+            {
+                StoppageTime = match.LatestTimeline.StoppageTime;
+                InjuryTimeAnnounced = (byte)match.LatestTimeline.InjuryTimeAnnounced;
+                LastTimelineType = match.LatestTimeline.Type;
+            }
+        }
 
-        public DateTimeOffset EventDate { get; }
+        private void AssignMatchResult(Match match)
+        {
+            if (match.MatchResult != null)
+            {
+                EventStatus = match.MatchResult.EventStatus;
+                MatchStatus = match.MatchResult.MatchStatus;
+                HomeScore = (byte)match.MatchResult.HomeScore;
+                AwayScore = (byte)match.MatchResult.AwayScore;
+                WinnerId = match.MatchResult.WinnerId;
+                AggregateWinnerId = match.MatchResult.AggregateWinnerId;
+                MatchTime = (byte)match.MatchResult.MatchTime;
+                MatchPeriods = match.MatchResult.MatchPeriods;
+            }
+        }
 
-        public string LeagueId { get; }
+        private void AssignTeamInformation(Match match)
+        {
+            if (match.Teams != null)
+            {
+                var homeTeam = match.Teams.FirstOrDefault(t => t.IsHome);
+                var awayTeam = match.Teams.FirstOrDefault(t => t.Id != homeTeam.Id);
 
-        public string LeagueName { get; }
+                HomeTeamId = homeTeam.Id;
+                HomeTeamName = homeTeam.Name;
 
-        public string HomeTeamId { get; }
+                if (homeTeam.Statistic != null)
+                {
+                    HomeRedCards = (byte)homeTeam.Statistic.RedCards;
+                    HomeYellowRedCards = (byte)homeTeam.Statistic.YellowRedCards;
+                }
 
-        public string HomeTeamName { get; }
+                if (awayTeam != null)
+                {
+                    AwayTeamId = awayTeam.Name;
+                    AwayTeamName = awayTeam.Name;
 
-        public string AwayTeamId { get; }
+                    if (awayTeam.Statistic != null)
+                    {
+                        AwayRedCards = (byte)awayTeam.Statistic.RedCards;
+                        AwayYellowRedCards = (byte)awayTeam.Statistic.YellowRedCards;
+                    }
+                }
+            }
+        }
 
-        public string AwayTeamName { get; }
+        public string Id { get; private set; }
 
-        public MatchStatus EventStatus { get; }
+        public DateTimeOffset EventDate { get; private set; }
 
-        public MatchStatus MatchStatus { get; }
+        public string LeagueId { get; private set; }
 
-        public byte HomeScore { get; }
+        public string LeagueName { get; private set; }
 
-        public byte AwayScore { get; }
+        public string HomeTeamId { get; private set; }
 
-        public string WinnerId { get; }
+        public string HomeTeamName { get; private set; }
 
-        public string AggregateWinnerId { get; }
+        public string AwayTeamId { get; private set; }
 
-        public byte HomeRedCards { get; }
+        public string AwayTeamName { get; private set; }
 
-        public byte HomeYellowRedCards { get; }
+        public MatchStatus EventStatus { get; private set; }
 
-        public byte AwayRedCards { get; }
+        public MatchStatus MatchStatus { get; private set; }
 
-        public byte AwayYellowRedCards { get; }
+        public byte HomeScore { get; private set; }
 
-        public byte MatchTime { get; }
+        public byte AwayScore { get; private set; }
 
-        public string StoppageTime { get; }
+        public string WinnerId { get; private set; }
 
-        public byte InjuryTimeAnnounced { get; }
+        public string AggregateWinnerId { get; private set; }
 
-        public EventType LastTimelineType { get; }
+        public byte HomeRedCards { get; private set; }
+
+        public byte HomeYellowRedCards { get; private set; }
+
+        public byte AwayRedCards { get; private set; }
+
+        public byte AwayYellowRedCards { get; private set; }
+
+        public byte MatchTime { get; private set; }
+
+        public string StoppageTime { get; private set; }
+
+        public byte InjuryTimeAnnounced { get; private set; }
+
+        public EventType LastTimelineType { get; private set; }
 
         public IEnumerable<MatchPeriod> MatchPeriods { get; private set; }
     }
