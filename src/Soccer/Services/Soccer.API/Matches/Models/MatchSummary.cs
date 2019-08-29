@@ -12,6 +12,7 @@
         {
             Id = match.Id;
             EventDate = match.EventDate;
+            CurrentPeriodStartTime = match.CurrentPeriodStartTime;
 
             if (match.League != null)
             {
@@ -52,6 +53,7 @@
         private void AssignTeamInformation(Match match)
         {
             const int twoTeams = 2;
+
             if (match.Teams != null && match.Teams.Count() >= twoTeams)
             {
                 var homeTeam = match.Teams.FirstOrDefault(t => t.IsHome);
@@ -71,7 +73,7 @@
 
                 if (awayTeam != null)
                 {
-                    AwayTeamId = awayTeam.Name;
+                    AwayTeamId = awayTeam.Id;
                     AwayTeamName = awayTeam.Name;
 
                     if (awayTeam.Statistic != null)
@@ -86,6 +88,8 @@
         public string Id { get; private set; }
 
         public DateTimeOffset EventDate { get; private set; }
+
+        public DateTimeOffset CurrentPeriodStartTime { get; private set; }
 
         public string LeagueId { get; private set; }
 
