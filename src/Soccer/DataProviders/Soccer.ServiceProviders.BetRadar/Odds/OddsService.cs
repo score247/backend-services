@@ -16,14 +16,14 @@
 
     public interface IOddsApi
     {
-        [Get("/oddscomparison-rowt1/{language}/{oddsType}/sports/sr:sport:1/{date}/schedule.json?api_key={apiKey}")]
-        Task<OddsScheduleDto> GetOddsSchedule(string date, string apiKey, string language = "en", string oddsType = "eu");
+        [Get("/oddscomparison-row{accessLevel}{version}/{language}/{oddsType}/sports/sr:sport:1/{date}/schedule.json?api_key={apiKey}")]
+        Task<OddsScheduleDto> GetOddsSchedule(string accessLevel, string version, string date, string apiKey, string language = "en", string oddsType = "eu");
 
-        [Get("/oddscomparison-rowt1/{language}/{oddsType}/sport_events/{unixTimeStamp}/changelog.json?api_key={apiKey}")]
-        Task<OddsScheduleDto> GetOddsChangeLog(long unixTimeStamp, string apiKey, string language = "en", string oddsType = "eu");
+        [Get("/oddscomparison-row{accessLevel}{version}/{language}/{oddsType}/sport_events/{unixTimeStamp}/changelog.json?api_key={apiKey}")]
+        Task<OddsScheduleDto> GetOddsChangeLog(string accessLevel, string version, long unixTimeStamp, string apiKey, string language = "en", string oddsType = "eu");
 
-        [Get("/oddscomparison-rowt1/{language}/{oddsType}/sport_events/{matchId}/markets.json?api_key={apiKey}")]
-        Task<OddsByMatchDto> GetOddsByMatch(string matchId, string apiKey, string language = "en", string oddsType = "eu");
+        [Get("/oddscomparison-row{accessLevel}{version}/{language}/{oddsType}/sport_events/{matchId}/markets.json?api_key={apiKey}")]
+        Task<OddsByMatchDto> GetOddsByMatch(string accessLevel, string version, string matchId, string apiKey, string language = "en", string oddsType = "eu");
     }
 
     public class OddsService : IOddsService
@@ -56,7 +56,7 @@
             {
                 try
                 {
-                    var oddsScheduleDto = await oddsApi.GetOddsSchedule(date.ToSportRadarFormat(), oddsSetting.Key);
+                    var oddsScheduleDto = await oddsApi.GetOddsSchedule(oddsSetting.AccessLevel, oddsSetting.Version, date.ToSportRadarFormat(), oddsSetting.Key);
                     matchOddsList.AddRange(BuildMatchOddsList(oddsScheduleDto));
                 }
                 catch (Exception ex)
@@ -76,14 +76,14 @@
         public async Task<IEnumerable<MatchOdds>> GetOddsChange(int minuteInterval)
         {
             var unixTimeStamp = getCurrentTimeFunc().AddMinutes(-minuteInterval).ToUnixTimeSeconds();
-            var oddsChangeDto = await oddsApi.GetOddsChangeLog(unixTimeStamp, oddsSetting.Key);
+            var oddsChangeDto = await oddsApi.GetOddsChangeLog(oddsSetting.AccessLevel, oddsSetting.Version, unixTimeStamp, oddsSetting.Key);
 
             return BuildMatchOddsList(oddsChangeDto);
         }
 
-        public async Task<MatchOdds> GetOdds(string matchId, DateTime lastUpdated)
+        public async Task<MatchOdds> GetOdds(string matchId, DateTimeOffset lastUpdated)
         {
-            var oddsByMatchDto = await oddsApi.GetOddsByMatch(matchId, oddsSetting.Key);
+            var oddsByMatchDto = await oddsApi.GetOddsByMatch(oddsSetting.AccessLevel, oddsSetting.Version, matchId, oddsSetting.Key);
 
             await logger.InfoAsync($"Get Odds API: {matchId} at {DateTime.Now} \r\n{JsonConvert.SerializeObject(oddsByMatchDto)}");
 

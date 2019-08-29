@@ -30,6 +30,10 @@
     {
         public string Key { get; set; }
 
+        public string AccessLevel { get; set; }
+
+        public string Version { get; set; }
+
         public bool EnabledOddsJobs { get; set; } = true;
 
         public string GetOddsScheduleCron { get; set; }
