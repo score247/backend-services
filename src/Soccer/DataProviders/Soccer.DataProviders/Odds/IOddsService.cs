@@ -11,6 +11,6 @@
 
         Task<IEnumerable<MatchOdds>> GetOddsChange(int minuteInterval);
 
-        Task<MatchOdds> GetOdds(string matchId, DateTimeOffset lastUpdated);
+        Task<MatchOdds> GetOdds(string matchId, DateTime lastUpdated);
     }
 }

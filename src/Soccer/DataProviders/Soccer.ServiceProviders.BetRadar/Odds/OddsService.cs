@@ -81,7 +81,7 @@
             return BuildMatchOddsList(oddsChangeDto);
         }
 
-        public async Task<MatchOdds> GetOdds(string matchId, DateTimeOffset lastUpdated)
+        public async Task<MatchOdds> GetOdds(string matchId, DateTime lastUpdated)
         {
             var oddsByMatchDto = await oddsApi.GetOddsByMatch(oddsSetting.AccessLevel, oddsSetting.Version, matchId, oddsSetting.Key);
 
