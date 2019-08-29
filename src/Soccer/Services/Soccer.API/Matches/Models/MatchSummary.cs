@@ -51,18 +51,22 @@
 
         private void AssignTeamInformation(Match match)
         {
-            if (match.Teams != null)
+            const int twoTeams = 2;
+            if (match.Teams != null && match.Teams.Count() >= twoTeams)
             {
-                var homeTeam = match.Teams.FirstOrDefault(t => t.IsHome);
-                var awayTeam = match.Teams.FirstOrDefault(t => t.Id != homeTeam.Id);
+                var awayTeam = match.Teams.FirstOrDefault(t => !t.IsHome);
+                var homeTeam = match.Teams.FirstOrDefault(t => t.Id != awayTeam.Id);
 
-                HomeTeamId = homeTeam.Id;
-                HomeTeamName = homeTeam.Name;
-
-                if (homeTeam.Statistic != null)
+                if (homeTeam != null)
                 {
-                    HomeRedCards = (byte)homeTeam.Statistic.RedCards;
-                    HomeYellowRedCards = (byte)homeTeam.Statistic.YellowRedCards;
+                    HomeTeamId = homeTeam.Id;
+                    HomeTeamName = homeTeam.Name;
+
+                    if (homeTeam.Statistic != null)
+                    {
+                        HomeRedCards = (byte)homeTeam.Statistic.RedCards;
+                        HomeYellowRedCards = (byte)homeTeam.Statistic.YellowRedCards;
+                    }
                 }
 
                 if (awayTeam != null)
