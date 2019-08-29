@@ -54,8 +54,8 @@
             const int twoTeams = 2;
             if (match.Teams != null && match.Teams.Count() >= twoTeams)
             {
+                var homeTeam = match.Teams.FirstOrDefault(t => t.IsHome);
                 var awayTeam = match.Teams.FirstOrDefault(t => !t.IsHome);
-                var homeTeam = match.Teams.FirstOrDefault(t => t.Id != awayTeam.Id);
 
                 if (homeTeam != null)
                 {
