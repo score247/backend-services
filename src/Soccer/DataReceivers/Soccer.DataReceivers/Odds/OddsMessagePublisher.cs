@@ -99,7 +99,7 @@
 
         private async Task GetEventOddsAndPublishOddsMessage(MatchEvent matchEvent)
         {
-            var currentOdds = await oddsService.GetOdds(matchEvent.MatchId, matchEvent.Timeline.Time);
+            var currentOdds = await oddsService.GetOdds(matchEvent.MatchId, matchEvent.Timeline.Time.DateTime);
 
             await messageBus.Publish<IOddsChangeMessage>(
                 new OddsChangeMessage(
