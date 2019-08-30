@@ -19,12 +19,20 @@
     <None Remove="appsettings.json" />
     <None Remove="appsettings.local-acceptance-test.json" />
     <None Remove="appsettings.local-dev.json" />
+    <None Remove="appsettings.local-dev1.json" />
+    <None Remove="appsettings.local-dev2.json" />
     <None Remove="appsettings.local-main.json" />
     <None Remove="appsettings.local-test.json" />
     <None Remove="appsettings.ricky.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="appsettings.local-dev2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.local-dev1.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="appsettings.ricky.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

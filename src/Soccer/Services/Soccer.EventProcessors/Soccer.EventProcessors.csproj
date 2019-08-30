@@ -16,6 +16,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="appsettings.local-dev1.json" />
+    <None Remove="appsettings.local-dev2.json" />
     <None Remove="appsettings.ricky.json" />
     <None Remove="_Shared\App_Data\LOCAL\SpNames.xml" />
   </ItemGroup>
@@ -58,6 +60,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="appsettings.local-dev2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.local-dev1.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="appsettings.ricky.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
