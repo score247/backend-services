@@ -30,19 +30,22 @@
         private readonly Func<DateTime> getCurrentTimeFunc;
         private readonly ICacheService cacheService;
         private readonly IAppSettings appSettings;
+        private readonly ILogger logger;
 
         public OddsChangeConsumer(
             IDynamicRepository dynamicRepository,
             Func<DateTime> getCurrentTimeFunc,
             IBus messageBus,
             ICacheService cacheService,
-            IAppSettings appSettings)
+            IAppSettings appSettings,
+            ILogger logger)
         {
             this.dynamicRepository = dynamicRepository;
             this.getCurrentTimeFunc = getCurrentTimeFunc;
             this.messageBus = messageBus;
             this.cacheService = cacheService;
             this.appSettings = appSettings;
+            this.logger = logger;
         }
 
         public async Task Consume(ConsumeContext<IOddsChangeMessage> context)
@@ -54,7 +57,20 @@
                 var availableMatch = availableMatches.FirstOrDefault(match => match.Id == matchOdds.MatchId);
                 if (availableMatch != null)
                 {
-                    await ProcessOdds(matchOdds, availableMatch, message.MatchEvent);
+                    try
+                    {
+                        await ProcessOdds(matchOdds, availableMatch, message.MatchEvent);
+                    }
+                    catch(Exception ex)
+                    {
+                        await logger.ErrorAsync(string.Join(
+                            "\r\n",
+                            ex.Message,
+                            $"MatchOdds: {JsonConvert.SerializeObject(matchOdds)}",
+                            $"Match: {JsonConvert.SerializeObject(availableMatch)}",
+                            $"MatchEvent: {JsonConvert.SerializeObject(message.MatchEvent)}"),
+                            ex);
+                    }
                 }
             }
         }
