@@ -25,13 +25,13 @@
             connection.On<byte, string>("OddsMovement", (sportId, data) =>
             {
                 //var pushEvents = JsonConvert.DeserializeObject<Dictionary<string, MatchPushEvent>>(data);
-                Console.WriteLine($"OddsMovement \r\n {sportId}: {data}\r\n ");
+                Console.WriteLine($"OddsMovement {data}\r\n ");
             });
 
             connection.On<byte, string>("OddsComparison", (sportId, data) =>
             {
                 //var pushEvents = JsonConvert.DeserializeObject<Dictionary<string, MatchPushEvent>>(data);
-                Console.WriteLine($"OddsComparison \r\n {sportId}: {data}\r\n ");
+                Console.WriteLine($"OddsComparison {data}\r\n ");
             });
 
             connection.On<string>("TestEvent", (text) =>

@@ -7,6 +7,7 @@
     using System.Threading.Tasks;
     using Fanex.Caching;
     using Fanex.Data.Repository;
+    using Fanex.Logging;
     using MassTransit;
     using NSubstitute;
     using Soccer.Core.Matches.Models;
@@ -25,6 +26,7 @@
         private readonly ICacheService cacheService;
         private readonly OddsChangeConsumer oddsChangeConsumer;
         private readonly IAppSettings appSettings;
+        private readonly ILogger logger;
 
         public OddsChangeConsumerTests()
         {
@@ -33,12 +35,14 @@
             messageBus = Substitute.For<IBus>();
             getCurrentTimeFunc = Substitute.For<Func<DateTime>>();
             appSettings = Substitute.For<IAppSettings>();
+            logger = Substitute.For<ILogger>();
             oddsChangeConsumer = new OddsChangeConsumer(
                 dynamicRepository,
                 getCurrentTimeFunc,
                 messageBus,
                 cacheService,
-                appSettings);
+                appSettings,
+                logger);
         }
 
         public async Task Consume_NoMatchExist_DoesNotExecuteGetOdds()
