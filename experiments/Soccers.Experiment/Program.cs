@@ -11,7 +11,7 @@
         private static void Main(string[] args)
         {
             connection = new HubConnectionBuilder()
-                .WithUrl("https://score247-api2.nexdev.net/test/hubs/Soccer/OddsEventHub")
+                .WithUrl("https://score247-api2.nexdev.net/dev1/hubs/soccerhub")
                 //.WithUrl("http://localhost:57321/hubs/Soccer/OddsEventHub")
                 //.WithUrl("https://score247-api2.nexdev.net/dev/hubs/Soccer/OddsEventHub")
                 .Build();
@@ -22,16 +22,16 @@
                 await connection.StartAsync();
             };
 
-            connection.On<byte, string>("OddsMovement", (sportId, data) =>
+            connection.On<string>("OddsMovement", (data) =>
             {
                 //var pushEvents = JsonConvert.DeserializeObject<Dictionary<string, MatchPushEvent>>(data);
-                Console.WriteLine($"OddsMovement {data}\r\n ");
+                Console.WriteLine($"OddsMovement \r\n : {data}\r\n ");
             });
 
-            connection.On<byte, string>("OddsComparison", (sportId, data) =>
+            connection.On<string>("OddsComparison", (data) =>
             {
                 //var pushEvents = JsonConvert.DeserializeObject<Dictionary<string, MatchPushEvent>>(data);
-                Console.WriteLine($"OddsComparison {data}\r\n ");
+                Console.WriteLine($"OddsComparison \r\n: {data}\r\n ");
             });
 
             connection.On<string>("TestEvent", (text) =>
