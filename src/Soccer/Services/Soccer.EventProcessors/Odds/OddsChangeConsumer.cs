@@ -94,8 +94,8 @@
 
                 var publishOdds = oddsList.Where(o => o.Item1).Select(o => o.Item2);
                 await Task.WhenAll(
-                    PushOddsMovementEvent(match, publishOdds, matchEvent),
-                    PushOddsComparisonEvent(match, publishOdds));
+                    PushOddsMovementEvent(match, publishOdds.ToList(), matchEvent),
+                    PushOddsComparisonEvent(match, publishOdds.ToList()));
             }
         }
 
