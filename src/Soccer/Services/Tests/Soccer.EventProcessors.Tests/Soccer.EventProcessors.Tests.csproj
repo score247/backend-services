@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Soccer.Core\Soccer.Core.csproj" />
     <ProjectReference Include="..\..\Soccer.EventProcessors\Soccer.EventProcessors.csproj" />
   </ItemGroup>
 
