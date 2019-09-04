@@ -5,6 +5,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Soccer.API.Matches;
     using Soccer.API.Odds;
+    using Soccer.API.Shared.Services;
 
     public static class ServiceMiddleware
     {
@@ -13,8 +14,10 @@
             services.AddSingleton<IDynamicRepository, DynamicRepository>();
 
             services.AddSingleton<ICacheService, CacheService>();
+            services.AddSingleton<IDateCacheService, DateCacheService>();
             services.AddScoped<IMatchQueryService, MatchQueryService>();
             services.AddScoped<IOddsQueryService, OddsQueryService>();
+            
         }
     }
 }

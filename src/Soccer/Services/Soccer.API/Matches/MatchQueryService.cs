@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using Soccer.API.Matches.Models;
+    using Soccer.API.Shared.Services;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Database.Matches.Criteria;
@@ -22,10 +23,14 @@
     public class MatchQueryService : IMatchQueryService
     {
         private readonly IDynamicRepository dynamicRepository;
+        private readonly IDateCacheService dateCacheService;
 
-        public MatchQueryService(IDynamicRepository dynamicRepository)
+        public MatchQueryService(
+            IDynamicRepository dynamicRepository,
+            IDateCacheService dateCacheService)
         {
             this.dynamicRepository = dynamicRepository;
+            this.dateCacheService = dateCacheService;
         }
 
         public async Task<IEnumerable<Match>> GetLive(TimeSpan clientTimeOffset, Language language)
@@ -33,9 +38,18 @@
 
         public async Task<IEnumerable<MatchSummary>> GetByDateRange(DateTime from, DateTime to, Language language)
         {
-            var matches = await dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(from, to, language));
+            var cachedMatches = await dateCacheService.GetOrSetAsync(
+                nameof(GetByDateRange),
+                from,
+                to,
+                () =>
+                {
+                    var matches = dynamicRepository.Fetch<Match>(new GetMatchesByDateRangeCriteria(from, to, language));
 
-            return matches.Select(m => new MatchSummary(m));
+                    return matches.Select(m => new MatchSummary(m));
+                });
+
+            return cachedMatches;
         }
 
         public async Task<MatchInfo> GetMatchInfo(string id, Language language)
