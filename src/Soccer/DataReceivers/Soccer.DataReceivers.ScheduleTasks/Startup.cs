@@ -167,7 +167,7 @@
                 "FetchPostMatch", job => job.FetchPostMatches(taskSettings.FetchMatchScheduleDateSpan), " 0 0/6 * * *");
 
             RecurringJob.AddOrUpdate<IFetchLiveMatchesTask>(
-                "FetchLiveMatch", job => job.FetchLiveMatches(), "*/45 * * * *");
+                "FetchLiveMatch", job => job.FetchLiveMatches(), "*/5 * * * *");
 
             if (!string.IsNullOrWhiteSpace(taskSettings.FetchOddsScheduleJobCron))
             {
