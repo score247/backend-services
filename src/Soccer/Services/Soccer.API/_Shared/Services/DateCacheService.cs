@@ -41,7 +41,7 @@
 
     public enum CacheDuration
     {
-        Short = 30, // seconds
-        Long = 3600
+        Short = 3, // seconds
+        Long = 5
     }
 }

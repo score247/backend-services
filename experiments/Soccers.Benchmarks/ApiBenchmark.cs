@@ -10,24 +10,24 @@
     {
         private static Dictionary<string, string> Urls = new Dictionary<string, string>
         {
-            { "New Api", "http://10.19.10.52:51147/api" },
-            { "Old Api", "http://10.19.10.52:51145/api" }
+            { "New Api", "https://score247-api1.nexdev.net/dev2/api" },
+            { "Old Api", "https://score247-api1.nexdev.net/dev1/api" }
         };
 
         public IEnumerable<object[]> GetMatchesBenchmarkParams()
         {
             yield return new object[] { "New Api", new DateTime(2019, 08, 28, 0, 0, 0, DateTimeKind.Utc) };
-            yield return new object[] { "Old Api", new DateTime(2019, 08, 28, 0, 0, 0, DateTimeKind.Utc) };
+            //yield return new object[] { "Old Api", new DateTime(2019, 08, 28, 0, 0, 0, DateTimeKind.Utc) };
             yield return new object[] { "New Api", new DateTime(2019, 08, 29, 0, 0, 0, DateTimeKind.Utc) };
-            yield return new object[] { "Old Api", new DateTime(2019, 08, 29, 0, 0, 0, DateTimeKind.Utc) };
+            //yield return new object[] { "Old Api", new DateTime(2019, 08, 29, 0, 0, 0, DateTimeKind.Utc) };
             yield return new object[] { "New Api", new DateTime(2019, 08, 30, 0, 0, 0, DateTimeKind.Utc) };
-            yield return new object[] { "Old Api", new DateTime(2019, 08, 30, 0, 0, 0, DateTimeKind.Utc) };
+            //yield return new object[] { "Old Api", new DateTime(2019, 08, 30, 0, 0, 0, DateTimeKind.Utc) };
             yield return new object[] { "New Api", new DateTime(2019, 08, 31, 0, 0, 0, DateTimeKind.Utc) };
-            yield return new object[] { "Old Api", new DateTime(2019, 08, 31, 0, 0, 0, DateTimeKind.Utc) };
+            //yield return new object[] { "Old Api", new DateTime(2019, 08, 31, 0, 0, 0, DateTimeKind.Utc) };
             yield return new object[] { "New Api", new DateTime(2019, 09, 01, 0, 0, 0, DateTimeKind.Utc) };
-            yield return new object[] { "Old Api", new DateTime(2019, 09, 01, 0, 0, 0, DateTimeKind.Utc) };
+            //yield return new object[] { "Old Api", new DateTime(2019, 09, 01, 0, 0, 0, DateTimeKind.Utc) };
             yield return new object[] { "New Api", new DateTime(2019, 09, 02, 0, 0, 0, DateTimeKind.Utc) };
-            yield return new object[] { "Old Api", new DateTime(2019, 09, 02, 0, 0, 0, DateTimeKind.Utc) };
+            //yield return new object[] { "Old Api", new DateTime(2019, 09, 02, 0, 0, 0, DateTimeKind.Utc) };
         }
 
         [Benchmark]
