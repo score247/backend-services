@@ -11,7 +11,7 @@
         public static readonly PeriodType AwaitingExtraTime = new PeriodType(5, "awaiting_extra");
         public static readonly PeriodType ExtraTimeHalfTime = new PeriodType(6, "extra_time_halftime");
         public static readonly PeriodType AwaitingPenalties = new PeriodType(7, "awaiting_penalties");
-        public static readonly PeriodType Interrupted = new PeriodType(8, "Interrupted");
+        public static readonly PeriodType Interrupted = new PeriodType(8, "interrupted");
 
         public PeriodType()
         {
