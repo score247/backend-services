@@ -72,26 +72,34 @@
 
             var sportRadarSettings = new SportRadarSettings
             {
-                //ServiceUrl = "http://ha.nexdev.net:7206/V0/api/",
-                //PushEventEndpoint = "soccer-t3/{0}/stream/events/subscribe?format=json&api_key={1}",
-                ServiceUrl = "https://api.sportradar.us/",
+                ServiceUrl = "http://ha.nexdev.net:7206/V0/api/",
                 PushEventEndpoint = "soccer-t3/{0}/stream/events/subscribe?format=json&api_key={1}",
+                //ServiceUrl = "https://api.sportradar.us/",
+                //PushEventEndpoint = "soccer-t3/{0}/stream/events/subscribe?format=json&api_key={1}",
                 Sports = new List<SportSettings> {
                     new SportSettings {
                         Id= 1,
                         Name= "Soccer",
                         AccessLevel= "t",
                         Version= "3",
-                        Regions= new List<Region>{ new Region
+                        Regions= new List<Region>
                         {
-
-                              Name= "other",
-                              Key= "npc9md73nrwhykuepets3nqf",
-                              PushKey= "npc9md73nrwhykuepets3nqf"
+                            new Region
+                            {
+                                  Name= "other",
+                                  Key= "npc9md73nrwhykuepets3nqf",
+                                  PushKey= "npc9md73nrwhykuepets3nqf"
+                            },
+                            new Region
+                            {
+                                  Name= "as",
+                                  Key= "x3zffh29jgzbgz74nf6apvvy",
+                                  PushKey= "x3zffh29jgzbgz74nf6apvvy"
+                            }
                         }
                     }
                 }
-            }};
+            };
 
             LogManager
                    .SetDefaultLogCategory("Score247-Event-Listeners-Demo-DEV-MACHINE")
@@ -106,7 +114,7 @@
             {
                 try
                 {
-                    Console.WriteLine(JsonConvert.SerializeObject(matchEvent));                   
+                    Console.WriteLine(JsonConvert.SerializeObject(matchEvent));
                 }
                 catch (Exception ex)
                 {
@@ -117,7 +125,7 @@
                             $"Exception: {ex}"),
                             ex);
                 }
-            }).GetAwaiter().GetResult();
+            });
 
             Console.ReadLine();
         }

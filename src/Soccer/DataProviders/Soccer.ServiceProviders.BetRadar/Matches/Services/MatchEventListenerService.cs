@@ -1,12 +1,5 @@
 ﻿namespace Soccer.DataProviders.SportRadar.Matches.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Diagnostics;
-    using System.IO;
-    using System.Linq;
-    using System.Net;
-    using System.Threading.Tasks;
     using Fanex.Logging;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
@@ -14,6 +7,12 @@
     using Soccer.DataProviders.SportRadar.Matches.DataMappers;
     using Soccer.DataProviders.SportRadar.Shared.Configurations;
     using Soccer.DataProviders.SportRadar.Shared.Extensions;
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Net;
+    using System.Threading.Tasks;
 
     public class MatchEventListenerService : IMatchEventListenerService
     {
@@ -32,67 +31,66 @@
             regionStreams = new Dictionary<string, StreamReader>();
         }
 
-        public async Task ListenEvents(Action<MatchEvent> handler)
+        public void ListenEvents(Action<MatchEvent> handler)
         {
             if (soccerSettings.Regions?.Any() == false)
             {
                 return;
             }
 
+            Parallel.ForEach(soccerSettings.Regions, async (region) => { await ListeningEventForRegion(region.Name, region.PushKey, handler); });
+        }
+
+        public async Task ListeningEventForRegion(string regionName, string key, Action<MatchEvent> handler)
+        {
             while (true)
             {
-                regionStreams.Clear();
+                if (!regionStreams.ContainsKey(regionName))
+                {
+                    var regionStream = await GenerateStreamRegion(regionName, key);
 
-                await ListenRegions(await GenerateStreamRegions(), handler);
+                    regionStreams.Add(regionStream.Key, regionStream.Value);
+
+                    try
+                    {
+                        await ProcessStream(regionStream, handler);
+                    }
+                    catch (Exception ex)
+                    {
+                        await logger.ErrorAsync($"Error while processing stream for region {regionName}. {ex}");
+                    }
+                    finally
+                    {
+                        regionStreams.Remove(regionName);
+                    }                   
+                }
 
                 await Task.Delay(MillisecondsTimeout);
-            }            
+            }
         }
 
-        private async Task<Dictionary<string, StreamReader>> GenerateStreamRegions()
+        private async Task<KeyValuePair<string, StreamReader>> GenerateStreamRegion(string regionName, string key)
         {
-            foreach (var region in soccerSettings.Regions)
-            {
-                if (!regionStreams.ContainsKey(region.Name))
-                {
-                    var formattedEndpoint = $"{sportRadarSettings.ServiceUrl}/" +
-                        $"{string.Format(sportRadarSettings.PushEventEndpoint, region.Name, region.PushKey)}";
-                    await logger.InfoAsync($"listen {formattedEndpoint}");
-                    var endpoint = new Uri(formattedEndpoint);
+            var formattedEndpoint = $"{sportRadarSettings.ServiceUrl}/" +
+                $"{string.Format(sportRadarSettings.PushEventEndpoint, regionName, key)}";
 
-                    var req = endpoint.CreateListenRequest();
-                    var reply = (HttpWebResponse)req.GetResponse();
-                    var stream = reply.GetResponseStream();
-                    var reader = new StreamReader(stream);
+            await logger.InfoAsync($"listen {formattedEndpoint}");
 
-                    regionStreams.Add(region.Name, reader);
-                }
-            }
+            var endpoint = new Uri(formattedEndpoint);
 
-            return regionStreams;
+            var req = endpoint.CreateListenRequest();
+            var reply = (HttpWebResponse)req.GetResponse();
+            var stream = reply.GetResponseStream();
+            var reader = new StreamReader(stream);
+
+            return new KeyValuePair<string, StreamReader>(regionName, reader);
         }
 
-        private async Task ListenRegions(Dictionary<string, StreamReader> regionStreams, Action<MatchEvent> handler)
-        {
-            var tasks = regionStreams.Select(stream =>
-                    Task.Factory.StartNew(async () => await ListenRegion(stream.Value, stream.Key, handler)));
-            try
-            {
-                //TODO seperate task for each region stream
-                await Task.WhenAll(tasks);
-            }
-            catch (AggregateException exception)
-            {
-                foreach (var e in exception.InnerExceptions)
-                {
-                    await logger.ErrorAsync($"{ DateTime.Now } Error while listening feed for Soccer", exception);
-                }
-            }
-        }
-
-        private async Task ListenRegion(StreamReader reader, string region, Action<MatchEvent> handler)
+        private async Task<string> ProcessStream(KeyValuePair<string, StreamReader> regionStream, Action<MatchEvent> handler)
         {
             var matchEventPayload = string.Empty;
+
+            var reader = regionStream.Value;
 
             while (!reader.EndOfStream)
             {
@@ -109,13 +107,15 @@
 
                     handler.Invoke(matchEvent);
 
-                    await logger.InfoAsync($"{DateTime.Now} - region {region} Receiving: {matchEventPayload}");
+                    await logger.InfoAsync($"{DateTime.Now} - region {regionStream.Key} Receiving: {matchEventPayload}");
                 }
                 catch (Exception ex)
                 {
                     await logger.ErrorAsync($"Message: {ex}\r\nPayload: {matchEventPayload}");
                 }
             }
+
+            return regionStream.Key;
         }
     }
 }

@@ -31,9 +31,9 @@
             this.logger = logger;
         }
 
-        private async Task ListenMatchEvents()
+        private void ListenMatchEvents()
         {
-            await eventListenerService.ListenEvents(async (matchEvent) =>
+            eventListenerService.ListenEvents(async (matchEvent) =>
             {
                 try
                 {
@@ -69,9 +69,11 @@
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            await logger.InfoAsync("MatchEventListener ExecuteAsync");
+
             while (!stoppingToken.IsCancellationRequested)
             {
-                await ListenMatchEvents();
+                ListenMatchEvents();
             }
         }
     }
