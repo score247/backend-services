@@ -22,11 +22,14 @@
         private readonly ISportRadarSettings sportRadarSettings;
         private readonly ILogger logger;
 
+        private readonly Dictionary<string, StreamReader> regionStreams;
+
         public MatchEventListenerService(ISportRadarSettings sportRadarSettings, ILogger logger)
         {
             this.logger = logger;
             this.sportRadarSettings = sportRadarSettings;
             soccerSettings = sportRadarSettings.Sports.FirstOrDefault(s => s.Id == Sport.Soccer.Value);
+            regionStreams = new Dictionary<string, StreamReader>();
         }
 
         public async Task ListenEvents(Action<MatchEvent> handler)
@@ -36,13 +39,18 @@
                 return;
             }
 
-            await ListenRegions(await GenerateStreamRegions(), handler);
+            while (true)
+            {
+                regionStreams.Clear();
+
+                await ListenRegions(await GenerateStreamRegions(), handler);
+
+                await Task.Delay(MillisecondsTimeout);
+            }            
         }
 
         private async Task<Dictionary<string, StreamReader>> GenerateStreamRegions()
         {
-            var regionStreams = new Dictionary<string, StreamReader>();
-
             foreach (var region in soccerSettings.Regions)
             {
                 if (!regionStreams.ContainsKey(region.Name))
@@ -66,23 +74,19 @@
 
         private async Task ListenRegions(Dictionary<string, StreamReader> regionStreams, Action<MatchEvent> handler)
         {
-            while (true)
+            var tasks = regionStreams.Select(stream =>
+                    Task.Factory.StartNew(async () => await ListenRegion(stream.Value, stream.Key, handler)));
+            try
             {
-                var tasks = regionStreams.Select(stream =>
-                        Task.Factory.StartNew(async () => await ListenRegion(stream.Value, stream.Key, handler)));
-                try
+                //TODO seperate task for each region stream
+                await Task.WhenAll(tasks);
+            }
+            catch (AggregateException exception)
+            {
+                foreach (var e in exception.InnerExceptions)
                 {
-                    await Task.WhenAll(tasks);
+                    await logger.ErrorAsync($"{ DateTime.Now } Error while listening feed for Soccer", exception);
                 }
-                catch (AggregateException exception)
-                {
-                    foreach (var e in exception.InnerExceptions)
-                    {
-                        await logger.ErrorAsync($"{ DateTime.Now } Error while listening feed for Soccer", exception);
-                    }
-                }
-
-                await Task.Delay(MillisecondsTimeout);
             }
         }
 

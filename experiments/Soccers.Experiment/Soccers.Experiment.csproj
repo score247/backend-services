@@ -17,4 +17,9 @@
     <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="1.1.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Soccer\DataProviders\Soccer.ServiceProviders.BetRadar\Soccer.DataProviders.SportRadar.csproj" />
+    <ProjectReference Include="..\..\src\Soccer\DataReceivers\Soccer.DataReceivers.EventListeners\Soccer.DataReceivers.EventListeners.csproj" />
+  </ItemGroup>
+
 </Project>
