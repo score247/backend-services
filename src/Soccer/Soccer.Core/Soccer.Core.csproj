@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="Ardalis.GuardClauses" Version="1.2.9" />
+    <PackageReference Include="MessagePack" Version="1.7.3.7" />
+    <PackageReference Include="MessagePackAnalyzer" Version="1.7.3.7" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
     <PackageReference Include="SonarAnalyzer.CSharp" Version="7.15.0.8572">
       <PrivateAssets>all</PrivateAssets>

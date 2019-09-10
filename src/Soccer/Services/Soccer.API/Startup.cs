@@ -4,6 +4,8 @@
     using System.Reflection;
     using Fanex.Logging;
     using MediatR;
+    using MessagePack.AspNetCoreMvcFormatter;
+    using MessagePack.Resolvers;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
@@ -34,6 +36,13 @@
                 services.AddHealthCheck();
                 services.AddSwagger();
                 services.AddMvc()
+                    .AddMvcOptions(option =>
+                    {
+                        option.OutputFormatters.Clear();
+                        option.OutputFormatters.Add(new MessagePackOutputFormatter(ContractlessStandardResolver.Instance));
+                        option.InputFormatters.Clear();
+                        option.InputFormatters.Add(new MessagePackInputFormatter(ContractlessStandardResolver.Instance));
+                    })
                     .AddJsonOptions(options =>
                     {
                         options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Unspecified;

@@ -1,21 +1,29 @@
-﻿namespace Score247.Shared.Base
+﻿using MessagePack;
+
+namespace Score247.Shared.Base
 {
     using System;
+    using MessagePack;
 
     /// <summary>
     /// <![CDATA[https://enterprisecraftsmanship.com/2014/11/08/domain-object-base-class/]]>
     /// </summary>
+    [MessagePackObject]
     public abstract class BaseEntity
     {
         protected BaseEntity()
         { }
 
+        [Key(0)]
         public string Id { get; set; }
 
+        [IgnoreMember]
         public DateTimeOffset CreatedTime { get; set; }
 
+        [IgnoreMember]
         public DateTimeOffset ModifiedTime { get; set; }
 
+        [IgnoreMember]
         protected virtual object Actual => this;
 
         public override bool Equals(object obj)
