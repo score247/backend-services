@@ -22,9 +22,9 @@ namespace Soccer.Core.Odds.Models
             BetTypeOddsList = betTypeOddsList;
         }
 
-        public string MatchId { get; }
+        public string MatchId { get; private set; }
 
-        public IEnumerable<BetTypeOdds> BetTypeOddsList { get; }
+        public IEnumerable<BetTypeOdds> BetTypeOddsList { get; private set; }
 
         [IgnoreMember]
         public DateTime? LastUpdated { get; private set; }

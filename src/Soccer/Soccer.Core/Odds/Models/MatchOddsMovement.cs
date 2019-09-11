@@ -19,10 +19,10 @@
             OddsMovements = oddsMovements;
         }
 
-        public string MatchId { get; }
+        public string MatchId { get; private set; }
 
-        public Bookmaker Bookmaker { get; }
+        public Bookmaker Bookmaker { get; private set; }
 
-        public IEnumerable<OddsMovement> OddsMovements { get; }
+        public IEnumerable<OddsMovement> OddsMovements { get; private set; }
     }
 }

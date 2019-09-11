@@ -26,11 +26,11 @@ namespace Soccer.Core.Odds.Models
             BetOptions = betOptions;
         }
 
-        public byte Id { get; }
+        public byte Id { get; private set; }
 
-        public string Name { get; }
+        public string Name { get; private set; }
 
-        public Bookmaker Bookmaker { get; }
+        public Bookmaker Bookmaker { get; private set; }
 
         [IgnoreMember]
         public DateTime LastUpdatedTime { get; private set; }

@@ -49,7 +49,7 @@
 
             var betTypeOdssList = oddsByBookmaker
                 .Select(group => OddsMovementProcessor.AssignOpeningOddsToFirstOdds(group, minDate))
-                .OrderBy(bto => bto.Bookmaker.Name);
+                .OrderBy(bto => bto.Bookmaker?.Name);
 
             return betTypeOdssList;
         }
