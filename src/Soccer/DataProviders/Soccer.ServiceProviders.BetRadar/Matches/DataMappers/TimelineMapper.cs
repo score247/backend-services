@@ -38,9 +38,9 @@
                 timeline.StoppageTime = timelineDto.stoppage_time;
                 timeline.Commentaries = timelineDto.commentaries?.Select(x => new Commentary { Text = x.text });
 
-                timeline.MatchTime = timelineDto.match_time == 0
+                timeline.MatchTime = (byte)(timelineDto.match_time == 0
                     ? ParseMatchClock(timelineDto.match_clock)
-                    : timelineDto.match_time;
+                    : timelineDto.match_time);
 
                 timeline.GoalScorer = timelineDto.goal_scorer == null
                     ? null
