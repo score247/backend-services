@@ -1,11 +1,14 @@
 ﻿namespace Soccer.Core.Odds.Models
 {
     using System.Collections.Generic;
+    using MessagePack;
 
+    [MessagePackObject(keyAsPropertyName: true)]
     public class MatchOddsMovement
     {
         public MatchOddsMovement() { }
 
+        [SerializationConstructor]
         public MatchOddsMovement(
             string matchId, 
             Bookmaker bookmaker, 

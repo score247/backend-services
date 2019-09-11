@@ -1,7 +1,9 @@
 ﻿namespace Soccer.Core.Odds.Models
 {
+    using MessagePack;
     using Score247.Shared.Enumerations;
 
+    [MessagePackObject(keyAsPropertyName: true)]
     public class OddsTrend : Enumeration
     {
         public static readonly OddsTrend Neutral = new OddsTrend(1, "neutral");

@@ -1,7 +1,15 @@
 ﻿namespace Soccer.Core.Odds.Models
 {
+    using MessagePack;
+
+    [MessagePackObject(keyAsPropertyName: true)]
     public class BetOptionOdds
     {
+        /// <summary>
+        /// Constructor for message pack
+        /// </summary>
+        public BetOptionOdds() { }
+
         public BetOptionOdds(
             string type,
             decimal liveOdds,

@@ -1,11 +1,17 @@
-﻿namespace Soccer.Core.Odds.Models
+﻿using MessagePack;
+
+namespace Soccer.Core.Odds.Models
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using MessagePack;
 
+    [MessagePackObject(keyAsPropertyName: true)]
     public class BetTypeOdds
     {
+        public BetTypeOdds() { }
+
         public BetTypeOdds(
             int id,
             string name,
@@ -13,19 +19,20 @@
             DateTime lastUpdatedTime,
             IEnumerable<BetOptionOdds> betOptions)
         {
-            Id = id;
+            Id = (byte)id;
             Name = name;
             Bookmaker = bookmaker;
             LastUpdatedTime = lastUpdatedTime;
             BetOptions = betOptions;
         }
 
-        public int Id { get; }
+        public byte Id { get; }
 
         public string Name { get; }
 
         public Bookmaker Bookmaker { get; }
 
+        [IgnoreMember]
         public DateTime LastUpdatedTime { get; private set; }
 
         public IEnumerable<BetOptionOdds> BetOptions { get; private set; }

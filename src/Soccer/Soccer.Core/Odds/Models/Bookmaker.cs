@@ -1,5 +1,8 @@
 ﻿namespace Soccer.Core.Odds.Models
 {
+    using MessagePack;
+
+    [MessagePackObject(keyAsPropertyName: true)]
     public class Bookmaker
     {
         public Bookmaker(string id, string name)

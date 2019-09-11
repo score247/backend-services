@@ -2,9 +2,13 @@
 {
     using System;
     using System.Collections.Generic;
+    using MessagePack;
 
+    [MessagePackObject(keyAsPropertyName: true)]
     public class OddsMovement
     {
+        public OddsMovement() { }
+
         public OddsMovement(
             IEnumerable<BetOptionOdds> betOptions,
             string matchTime,
@@ -25,13 +29,13 @@
 
         public string MatchTime { get; private set; }
 
-        public int HomeScore { get; private set; }
-
-        public int AwayScore { get; private set; }
+        public DateTimeOffset UpdateTime { get; private set; }
 
         public bool IsMatchStarted { get; private set; }
 
-        public DateTimeOffset UpdateTime { get; private set; }
+        public int HomeScore { get; private set; }
+
+        public int AwayScore { get; private set; }
 
         public void ResetLiveOddsToOpeningOdds()
         {
