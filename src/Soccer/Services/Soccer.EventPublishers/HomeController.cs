@@ -14,7 +14,6 @@
     using Soccer.Core.Teams.Models;
     using Soccer.EventPublishers.Hubs;
     using Soccer.EventPublishers.Matches.SignalR;
-    using Soccer.EventPublishers.Odds;
     using Soccer.EventPublishers.Odds.SignalR;
     using Soccer.EventPublishers.Teams.SignalR;
 

@@ -6,8 +6,6 @@
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using NSubstitute;
-    using Soccer.API.Matches;
-    using Soccer.API.Matches.Models;
     using Soccer.API.Odds;
     using Soccer.API.Shared.Configurations;
     using Soccer.Core.Matches.Models;

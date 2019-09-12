@@ -12,9 +12,9 @@
     public static class MatchMapper
     {
         public static Match MapMatch(
-            SportEventDto sportEvent, 
-            SportEventStatusDto sportEventStatus, 
-            SportEventConditions sportEventConditions, 
+            SportEventDto sportEvent,
+            SportEventStatusDto sportEventStatus,
+            SportEventConditions sportEventConditions,
             string region)
         {
             var match = new Match
@@ -107,7 +107,7 @@
         {
             var matchEventDto = JsonConvert.DeserializeObject<MatchEventDto>(matchEventPayload);
 
-            if(matchEventDto.payload == null)
+            if (matchEventDto.payload == null)
             {
                 return default;
             }

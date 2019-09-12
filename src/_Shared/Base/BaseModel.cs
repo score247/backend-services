@@ -1,6 +1,4 @@
-﻿using MessagePack;
-
-namespace Score247.Shared.Base
+﻿namespace Score247.Shared.Base
 {
     using MessagePack;
 

@@ -17,7 +17,7 @@
             services.AddSingleton<IDateCacheService, DateCacheService>();
             services.AddScoped<IMatchQueryService, MatchQueryService>();
             services.AddScoped<IOddsQueryService, OddsQueryService>();
-            
+
         }
     }
 }

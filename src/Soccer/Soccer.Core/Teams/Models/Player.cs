@@ -1,6 +1,4 @@
-﻿using MessagePack;
-
-namespace Soccer.Core.Teams.Models
+﻿namespace Soccer.Core.Teams.Models
 {
     using MessagePack;
     using Score247.Shared.Base;

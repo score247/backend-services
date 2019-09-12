@@ -2,6 +2,12 @@
 
 namespace Soccer.DataProviders.SportRadar.Matches.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Net;
+    using System.Threading.Tasks;
     using Fanex.Logging;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
@@ -9,12 +15,6 @@ namespace Soccer.DataProviders.SportRadar.Matches.Services
     using Soccer.DataProviders.SportRadar.Matches.DataMappers;
     using Soccer.DataProviders.SportRadar.Shared.Configurations;
     using Soccer.DataProviders.SportRadar.Shared.Extensions;
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Net;
-    using System.Threading.Tasks;
 
     public class MatchEventListenerService : IMatchEventListenerService
     {

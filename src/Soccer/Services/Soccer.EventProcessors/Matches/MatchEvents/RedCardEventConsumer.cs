@@ -11,7 +11,6 @@
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.Models;
     using Soccer.Core.Teams.QueueMessages;
-    using Soccer.Database.Matches.Commands;
     using Soccer.Database.Matches.Criteria;
 
     public class RedCardEventConsumer : IConsumer<IRedCardEventMessage>

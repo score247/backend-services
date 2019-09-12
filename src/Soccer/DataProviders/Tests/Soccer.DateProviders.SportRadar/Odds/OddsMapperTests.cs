@@ -1,9 +1,7 @@
 ﻿namespace Soccer.DateProviders.SportRadar.Odds
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
     using Newtonsoft.Json;
     using Soccer.DataProviders.SportRadar.Odds.DataMappers;
     using Soccer.DataProviders.SportRadar.Odds.Dtos;

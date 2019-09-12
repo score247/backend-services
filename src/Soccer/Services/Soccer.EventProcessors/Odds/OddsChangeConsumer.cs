@@ -1,5 +1,9 @@
 ﻿namespace Soccer.EventProcessors.Odds
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Threading.Tasks;
     using Fanex.Caching;
     using Fanex.Data.Repository;
     using Fanex.Logging;
@@ -15,10 +19,6 @@
     using Soccer.Database.Odds.Commands;
     using Soccer.Database.Odds.Criteria;
     using Soccer.EventProcessors.Shared.Configurations;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     public class OddsChangeConsumer : IConsumer<IOddsChangeMessage>
     {
@@ -61,7 +61,7 @@
                     {
                         await ProcessOdds(matchOdds, availableMatch, message.MatchEvent);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         await logger.ErrorAsync(string.Join(
                             "\r\n",

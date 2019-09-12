@@ -1,12 +1,12 @@
 ﻿namespace Soccer.Core.Odds
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using Soccer.Core._Shared.Resources;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Odds.Models;
     using Soccer.Core.Shared.Enumerations;
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
 
     public static class OddsMovementProcessor
     {

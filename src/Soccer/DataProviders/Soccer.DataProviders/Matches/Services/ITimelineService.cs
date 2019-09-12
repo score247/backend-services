@@ -1,8 +1,8 @@
 ﻿namespace Soccer.DataProviders.Matches.Services
 {
+    using System.Threading.Tasks;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
-    using System.Threading.Tasks;
 
     public interface ITimelineService
     {

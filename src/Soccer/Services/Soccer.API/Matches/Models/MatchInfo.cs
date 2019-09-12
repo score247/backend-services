@@ -1,6 +1,4 @@
-﻿using MessagePack;
-
-namespace Soccer.API.Matches.Models
+﻿namespace Soccer.API.Matches.Models
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -12,9 +10,9 @@ namespace Soccer.API.Matches.Models
     {
         public MatchInfo(
             MatchSummary match,
-            IEnumerable<TimelineEvent> timelineEvents, 
-            Venue venue, 
-            string referee, 
+            IEnumerable<TimelineEvent> timelineEvents,
+            Venue venue,
+            string referee,
             int attendance)
         {
             Match = match;

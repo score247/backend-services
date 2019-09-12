@@ -4,10 +4,8 @@
     using Hangfire;
     using MassTransit;
     using Score247.Shared.Enumerations;
-    using Soccer.Core.Matches.Extensions;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
-    using Soccer.Core.Matches.QueueMessages.MatchEvents;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.DataProviders.Matches.Services;
 

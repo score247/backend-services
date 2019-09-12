@@ -1,10 +1,10 @@
 ﻿namespace Soccer.EventProcessors.Matches
 {
+    using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using MassTransit;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Database.Matches.Commands;
-    using System.Threading.Tasks;
 
     public class UpdateMatchConditionsConsumer : IConsumer<IMatchUpdatedConditionsMessage>
     {

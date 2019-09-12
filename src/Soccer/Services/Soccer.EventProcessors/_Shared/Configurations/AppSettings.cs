@@ -1,8 +1,8 @@
 ﻿namespace Soccer.EventProcessors.Shared.Configurations
 {
-    using Microsoft.Extensions.Configuration;
     using System;
     using System.ComponentModel;
+    using Microsoft.Extensions.Configuration;
 
     public interface IAppSettings
     {

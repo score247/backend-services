@@ -1,6 +1,4 @@
-﻿using MessagePack;
-
-namespace Score247.Shared.Enumerations
+﻿namespace Score247.Shared.Enumerations
 {
     using System;
     using System.Collections;

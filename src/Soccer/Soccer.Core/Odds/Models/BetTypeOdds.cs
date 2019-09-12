@@ -1,6 +1,4 @@
-﻿using MessagePack;
-
-namespace Soccer.Core.Odds.Models
+﻿namespace Soccer.Core.Odds.Models
 {
     using System;
     using System.Collections.Generic;

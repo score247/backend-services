@@ -1,7 +1,8 @@
-﻿using System.Threading;
-
-namespace Soccers.Experiment
+﻿namespace Soccers.Experiment
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Fanex.Logging;
     using Fanex.Logging.Sentry;
     using Microsoft.AspNetCore.SignalR.Client;
@@ -9,9 +10,6 @@ namespace Soccers.Experiment
     using Sentry;
     using Soccer.DataProviders.SportRadar.Matches.Services;
     using Soccer.DataProviders.SportRadar.Shared.Configurations;
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
 
     internal class Program
     {

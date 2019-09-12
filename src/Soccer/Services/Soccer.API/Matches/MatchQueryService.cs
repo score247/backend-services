@@ -7,10 +7,8 @@
     using Fanex.Data.Repository;
     using Soccer.API.Matches.Models;
     using Soccer.API.Shared.Services;
-    using Soccer.Core.Leagues.Models;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
-    using Soccer.Core.Teams.Models;
     using Soccer.Database.Matches.Criteria;
 
     public interface IMatchQueryService
@@ -68,6 +66,6 @@
             return null;
         }
 
-        
+
     }
 }

@@ -1,6 +1,4 @@
-﻿using MessagePack;
-
-namespace Soccer.API.Matches.Models
+﻿namespace Soccer.API.Matches.Models
 {
     using System;
     using System.Collections.Generic;
