@@ -1,4 +1,6 @@
-﻿namespace Soccers.Experiment
+﻿using System.Threading;
+
+namespace Soccers.Experiment
 {
     using Fanex.Logging;
     using Fanex.Logging.Sentry;
@@ -110,7 +112,7 @@
 
             var eventListenerService = new MatchEventListenerService(sportRadarSettings, Logger.Log);
 
-            eventListenerService.ListenEvents((matchEvent) =>
+            Task.Run(() => eventListenerService.ListenEvents((matchEvent) =>
             {
                 try
                 {
@@ -125,7 +127,7 @@
                             $"Exception: {ex}"),
                             ex);
                 }
-            });
+            }, default));
 
             Console.ReadLine();
         }
