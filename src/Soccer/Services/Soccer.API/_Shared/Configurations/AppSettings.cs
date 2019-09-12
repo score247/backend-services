@@ -11,6 +11,14 @@
         int NumberOfTopMatches { get; }
 
         int NumOfDaysToShowOddsBeforeKickoffDate { get; }
+
+        int MatchShortCacheTimeDuration { get; }
+
+        int MatchLongCacheTimeDuration { get; }
+
+        int OddsShortCacheTimeDuration { get; }
+
+        int OddsLongCacheTimeDuration { get; }
     }
 
     public class AppSettings : IAppSettings
@@ -25,6 +33,10 @@
             EnabledDatabaseMigration = GetValue<bool>(nameof(EnabledDatabaseMigration));
             NumberOfTopMatches = GetValue<int>(nameof(NumberOfTopMatches));
             NumOfDaysToShowOddsBeforeKickoffDate = GetValue<int>(nameof(NumOfDaysToShowOddsBeforeKickoffDate));
+            MatchShortCacheTimeDuration = GetValue<int>(nameof(MatchShortCacheTimeDuration));
+            MatchLongCacheTimeDuration = GetValue<int>(nameof(MatchLongCacheTimeDuration));
+            OddsShortCacheTimeDuration = GetValue<int>(nameof(OddsShortCacheTimeDuration));
+            OddsLongCacheTimeDuration = GetValue<int>(nameof(OddsLongCacheTimeDuration));
 
             if (NumberOfTopMatches <= 0)
             {
@@ -37,6 +49,14 @@
         public int NumberOfTopMatches { get; }
 
         public int NumOfDaysToShowOddsBeforeKickoffDate { get; }
+
+        public int MatchShortCacheTimeDuration { get; }
+
+        public int MatchLongCacheTimeDuration { get; }
+
+        public int OddsShortCacheTimeDuration { get; }
+
+        public int OddsLongCacheTimeDuration { get; }
 
         public T GetValue<T>(string key)
         {

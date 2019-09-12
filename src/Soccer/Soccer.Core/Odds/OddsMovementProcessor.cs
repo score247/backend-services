@@ -112,7 +112,7 @@
             IEnumerable<BetOptionOdds> currentBetOptions,
             IEnumerable<BetOptionOdds> prevBetOptions)
         {
-            if (prevBetOptions.Count() != currentBetOptions.Count())
+            if (prevBetOptions?.Count() != currentBetOptions?.Count())
             {
                 return;
             }
@@ -121,7 +121,7 @@
 
             for (int i = 0; i < totalBetOptions; i++)
             {
-                currentBetOptions.ElementAt(i).CalculateOddsTrend(prevBetOptions.ElementAt(i).LiveOdds);
+                currentBetOptions.ElementAt(i)?.CalculateOddsTrend(prevBetOptions.ElementAt(i).LiveOdds);
             }
         }
 

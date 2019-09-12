@@ -4,9 +4,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.Caching;
     using Fanex.Data.Repository;
     using Soccer.API.Matches.Models;
-    using Soccer.API.Shared.Services;
+    using Soccer.API.Shared.Configurations;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Database.Matches.Criteria;
@@ -22,15 +23,21 @@
 
     public class MatchQueryService : IMatchQueryService
     {
+        private const string MatchInfoCacheKey = "MatchQuery_MatchInfoCacheKey";
+        private const string MatchListCacheKey = "MatchQuery_MatchListCacheKey";
+        private const string FormatDate = "yyyyMMdd-hhmmss";
         private readonly IDynamicRepository dynamicRepository;
-        private readonly IDateCacheService dateCacheService;
+        private readonly ICacheService cacheService;
+        private readonly IAppSettings appSettings;
 
         public MatchQueryService(
             IDynamicRepository dynamicRepository,
-            IDateCacheService dateCacheService)
+            ICacheService cacheService,
+            IAppSettings appSettings)
         {
             this.dynamicRepository = dynamicRepository;
-            this.dateCacheService = dateCacheService;
+            this.cacheService = cacheService;
+            this.appSettings = appSettings;
         }
 
         public async Task<IEnumerable<Match>> GetLive(TimeSpan clientTimeOffset, Language language)
@@ -38,8 +45,8 @@
 
         public async Task<IEnumerable<MatchSummary>> GetByDateRange(DateTime from, DateTime to, Language language)
         {
-            var cachedMatches = await dateCacheService.GetOrSetAsync(
-                nameof(GetByDateRange),
+            var cachedMatches = await GetOrSetAsync(
+                MatchListCacheKey,
                 from,
                 to,
                 () =>
@@ -54,18 +61,60 @@
 
         public async Task<MatchInfo> GetMatchInfo(string id, Language language)
         {
+            var cacheMatch = await cacheService.GetAsync<MatchInfo>(BuildMatchInfoCacheKey(id));
+
+            if (cacheMatch == null)
+            {
+                return await GetAndCacheMatchInfo(id, language);
+            }
+
+            return cacheMatch;
+        }
+
+        private async Task<MatchInfo> GetAndCacheMatchInfo(string id, Language language)
+        {
             var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language));
 
             if (match != null)
             {
                 var timelineEvents = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
 
-                return new MatchInfo(new MatchSummary(match), timelineEvents, match.Venue, match.Referee, match.Attendance);
+                var matchInfo = new MatchInfo(new MatchSummary(match), timelineEvents, match.Venue, match.Referee, match.Attendance);
+
+                await cacheService.SetAsync(BuildMatchInfoCacheKey(id), matchInfo, BuildCacheOptions(match.EventDate.DateTime));
+
+                return matchInfo;
             }
 
-            return null;
+            return default;
         }
 
+        private static string BuildMatchInfoCacheKey(string matchId)
+            => $"{MatchInfoCacheKey}_{matchId}";
 
+        private async Task<T> GetOrSetAsync<T>(string key, DateTime from, DateTime to, Func<T> factory)
+        {
+            var cacheItemOptions = BuildCacheOptions(from);
+            var cacheKey = BuildCacheKey(key, from, to);
+
+            return await cacheService
+                .GetOrSetAsync(cacheKey, factory, cacheItemOptions);
+        }
+
+        private CacheItemOptions BuildCacheOptions(DateTime date)
+        {
+            var cacheDuration = ShouldCacheWithShortDuration(date)
+                            ? appSettings.MatchShortCacheTimeDuration
+                            : appSettings.MatchLongCacheTimeDuration;
+
+            return new CacheItemOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(cacheDuration));
+        }
+
+        private static bool ShouldCacheWithShortDuration(DateTime date)
+            => date.ToUniversalTime().Date == DateTime.UtcNow.Date
+                || date.ToUniversalTime().Date == DateTime.UtcNow.Date.AddDays(-1);
+
+        private static string BuildCacheKey(string key, DateTime from, DateTime to)
+            => $"{key}_{from.ToString(FormatDate)}_{to.ToString(FormatDate)}";
     }
 }

@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.Caching;
     using Fanex.Data.Repository;
     using NSubstitute;
     using Soccer.API.Odds;
@@ -21,6 +22,7 @@
         private readonly OddsQueryService oddsServiceImpl;
         private readonly IDynamicRepository dynamicRepository;
         private readonly IAppSettings appSettings;
+        private readonly ICacheService cacheService;
 
         private const string globalMatchId = "matchId1";
         private const int globalBetTypeId = 1;
@@ -30,8 +32,9 @@
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
             appSettings = Substitute.For<IAppSettings>();
+            cacheService = Substitute.For<ICacheService>();
             appSettings.NumOfDaysToShowOddsBeforeKickoffDate.Returns(356);
-            oddsServiceImpl = new OddsQueryService(dynamicRepository, appSettings);
+            oddsServiceImpl = new OddsQueryService(dynamicRepository, appSettings, cacheService);
         }
 
         [Fact]
