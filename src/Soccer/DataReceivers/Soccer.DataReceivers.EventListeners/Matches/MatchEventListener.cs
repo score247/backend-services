@@ -11,7 +11,6 @@
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataReceivers.Odds;
 
-
     public class MatchEventListener : BackgroundService
     {
         private readonly IBus messageBus;
@@ -31,26 +30,11 @@
             this.logger = logger;
         }
 
-        private void ListenMatchEvents()
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            eventListenerService.ListenEvents(async (matchEvent) =>
-            {
-                try
-                {
-                    await Task.WhenAll(
-                            messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent)),
-                            oddsMessagePublisher.PublishOdds(matchEvent));
-                }
-                catch (Exception ex)
-                {
-                    await logger.ErrorAsync(
-                            string.Join(
-                            "\r\n",
-                            $"Match Event: {JsonConvert.SerializeObject(matchEvent)}",
-                            $"Exception: {ex}"),
-                            ex);
-                }
-            });
+            await logger.InfoAsync("MatchEventListener ExecuteAsync");
+
+            await ListenMatchEvents(stoppingToken);
         }
 
         public async override Task StartAsync(CancellationToken cancellationToken)
@@ -67,14 +51,26 @@
             await base.StopAsync(cancellationToken);
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        private async Task ListenMatchEvents(CancellationToken stoppingToken)
         {
-            await logger.InfoAsync("MatchEventListener ExecuteAsync");
-
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                ListenMatchEvents();
-            }
+            await eventListenerService.ListenEvents(async (matchEvent) =>
+             {
+                 try
+                 {
+                     await Task.WhenAll(
+                         messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent), stoppingToken),
+                         oddsMessagePublisher.PublishOdds(matchEvent));
+                 }
+                 catch (Exception ex)
+                 {
+                     await logger.ErrorAsync(
+                         string.Join(
+                             "\r\n",
+                             $"Match Event: {JsonConvert.SerializeObject(matchEvent)}",
+                             $"Exception: {ex}"),
+                         ex);
+                 }
+             }, stoppingToken);
         }
     }
 }

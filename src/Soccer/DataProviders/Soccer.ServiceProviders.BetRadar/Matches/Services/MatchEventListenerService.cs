@@ -1,4 +1,6 @@
-﻿namespace Soccer.DataProviders.SportRadar.Matches.Services
+﻿using System.Threading;
+
+namespace Soccer.DataProviders.SportRadar.Matches.Services
 {
     using Fanex.Logging;
     using Score247.Shared.Enumerations;
@@ -20,7 +22,6 @@
         private readonly SportSettings soccerSettings;
         private readonly ISportRadarSettings sportRadarSettings;
         private readonly ILogger logger;
-
         private readonly Dictionary<string, StreamReader> regionStreams;
 
         public MatchEventListenerService(ISportRadarSettings sportRadarSettings, ILogger logger)
@@ -31,19 +32,24 @@
             regionStreams = new Dictionary<string, StreamReader>();
         }
 
-        public void ListenEvents(Action<MatchEvent> handler)
+        public async Task ListenEvents(Action<MatchEvent> handler, CancellationToken cancellationToken)
         {
-            if (soccerSettings.Regions?.Any() == false)
+            if (soccerSettings?.Regions?.Any() == false)
             {
                 return;
             }
 
-            Parallel.ForEach(soccerSettings.Regions, async (region) => { await ListeningEventForRegion(region.Name, region.PushKey, handler); });
+            var tasks = soccerSettings?.Regions?.Select(region =>
+                Task.Factory.StartNew(
+                    () => ListeningEventForRegion(region.Name, region.PushKey, handler, cancellationToken),
+                    cancellationToken));
+
+            await Task.WhenAll(tasks);
         }
 
-        public async Task ListeningEventForRegion(string regionName, string key, Action<MatchEvent> handler)
+        public async Task ListeningEventForRegion(string regionName, string key, Action<MatchEvent> handler, CancellationToken cancellationToken)
         {
-            while (true)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 if (!regionStreams.ContainsKey(regionName))
                 {
@@ -55,6 +61,10 @@
                     {
                         await ProcessStream(regionStream, handler);
                     }
+                    catch (OperationCanceledException)
+                    {
+                        await logger.ErrorAsync($"Stream region '{regionName}' has been cancelled");
+                    }
                     catch (Exception ex)
                     {
                         await logger.ErrorAsync($"Error while processing stream for region {regionName}. {ex}");
@@ -62,10 +72,10 @@
                     finally
                     {
                         regionStreams.Remove(regionName);
-                    }                   
+                    }
                 }
 
-                await Task.Delay(MillisecondsTimeout);
+                await Task.Delay(MillisecondsTimeout, cancellationToken);
             }
         }
 
