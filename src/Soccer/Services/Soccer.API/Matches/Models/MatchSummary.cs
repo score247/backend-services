@@ -8,6 +8,7 @@
     using Soccer.Core.Shared.Enumerations;
 
     [MessagePackObject]
+#pragma warning disable S109 // Magic numbers should not be used
     public class MatchSummary
     {
         public MatchSummary() { }
@@ -180,4 +181,5 @@
         [Key(26)]
         public string CountryCode { get; private set; }
     }
+#pragma warning restore S109 // Magic numbers should not be used
 }

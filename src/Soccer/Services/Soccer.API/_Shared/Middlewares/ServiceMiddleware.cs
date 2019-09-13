@@ -3,6 +3,7 @@
     using Fanex.Caching;
     using Fanex.Data.Repository;
     using Microsoft.Extensions.DependencyInjection;
+    using Soccer.API._Shared;
     using Soccer.API.Matches;
     using Soccer.API.Odds;
 
@@ -15,7 +16,7 @@
             services.AddSingleton<ICacheService, CacheService>();
             services.AddScoped<IMatchQueryService, MatchQueryService>();
             services.AddScoped<IOddsQueryService, OddsQueryService>();
-
+            services.AddScoped<ICacheManager, CacheManager>();
         }
     }
 }

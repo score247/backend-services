@@ -2,7 +2,7 @@
 {
     using MessagePack;
     using Score247.Shared.Base;
-
+#pragma warning disable S109 // Magic numbers should not be used
     [MessagePackObject]
     public class Venue : BaseModel
     {
@@ -18,4 +18,5 @@
         [Key(5)]
         public string CountryCode { get; set; }
     }
+#pragma warning restore S109 // Magic numbers should not be used
 }

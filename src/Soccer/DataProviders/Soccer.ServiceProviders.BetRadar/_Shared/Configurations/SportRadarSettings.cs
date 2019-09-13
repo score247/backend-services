@@ -39,10 +39,11 @@
         public string GetOddsScheduleCron { get; set; }
 
         public string GetOddsChangeScheduleCron { get; set; }
-
+#pragma warning disable S109 // Magic numbers should not be used
         public int GetOddsChangeMinuteInterval { get; set; } = 5;
 
         public int FetchScheduleDateSpan { get; set; } = 3;
+#pragma warning restore S109 // Magic numbers should not be used
     }
 
     public class SportSettings

@@ -17,6 +17,8 @@
 
     public static class RabbitMqMiddleware
     {
+        private const int PrefetchCount = 16;
+
         public static void AddRabbitMq(this IServiceCollection services, IConfiguration configuration)
         {
             var messageQueueSettings = new MessageQueueSettings();
@@ -51,7 +53,7 @@
 
                 cfg.ReceiveEndpoint(host, messageQueueSettings.QueueName, e =>
                 {
-                    e.PrefetchCount = 16;
+                    e.PrefetchCount = PrefetchCount;
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<FetchPreMatchesConsumer>(provider);
@@ -62,7 +64,7 @@
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents", e =>
                 {
-                    e.PrefetchCount = 16;
+                    e.PrefetchCount = PrefetchCount;
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<ReceiveMatchEventConsumer>(provider);
@@ -71,7 +73,7 @@
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents_PeriodStart", e =>
                 {
-                    e.PrefetchCount = 16;
+                    e.PrefetchCount = PrefetchCount;
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<PeriodStartEventConsumer>(provider);
@@ -79,7 +81,7 @@
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents_MatchEnd", e =>
                 {
-                    e.PrefetchCount = 16;
+                    e.PrefetchCount = PrefetchCount;
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<MatchEndEventConsumer>(provider);
@@ -87,7 +89,7 @@
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents_RedCard", e =>
                 {
-                    e.PrefetchCount = 16;
+                    e.PrefetchCount = PrefetchCount;
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<RedCardEventConsumer>(provider);
@@ -103,7 +105,7 @@
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_TeamStatistic", e =>
                 {
-                    e.PrefetchCount = 16;
+                    e.PrefetchCount = PrefetchCount;
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<UpdateTeamStatisticConsumer>(provider);
@@ -111,7 +113,7 @@
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_Odds", e =>
                 {
-                    e.PrefetchCount = 16;
+                    e.PrefetchCount = PrefetchCount;
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<OddsChangeConsumer>(provider);

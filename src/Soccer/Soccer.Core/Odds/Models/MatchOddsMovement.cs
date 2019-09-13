@@ -1,12 +1,13 @@
 ﻿namespace Soccer.Core.Odds.Models
 {
     using System.Collections.Generic;
+    using System.Linq;
     using MessagePack;
 
     [MessagePackObject(keyAsPropertyName: true)]
     public class MatchOddsMovement
     {
-        public MatchOddsMovement() { }
+        public MatchOddsMovement() { OddsMovements = Enumerable.Empty<OddsMovement>(); }
 
         [SerializationConstructor]
         public MatchOddsMovement(

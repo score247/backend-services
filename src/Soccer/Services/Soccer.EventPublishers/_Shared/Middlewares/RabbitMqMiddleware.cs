@@ -68,7 +68,7 @@
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_Odds", e =>
                 {
-                    e.PrefetchCount = 16;
+                    e.PrefetchCount = prefetCount;
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<UpdateTeamStatisticPublisher>(provider);

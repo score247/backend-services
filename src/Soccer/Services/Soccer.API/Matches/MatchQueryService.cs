@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using Fanex.Caching;
     using Fanex.Data.Repository;
+    using Soccer.API._Shared;
     using Soccer.API.Matches.Models;
     using Soccer.API.Shared.Configurations;
     using Soccer.Core.Matches.Models;
@@ -27,16 +28,16 @@
         private const string MatchListCacheKey = "MatchQuery_MatchListCacheKey";
         private const string FormatDate = "yyyyMMdd-hhmmss";
         private readonly IDynamicRepository dynamicRepository;
-        private readonly ICacheService cacheService;
+        private readonly ICacheManager cacheManager;
         private readonly IAppSettings appSettings;
 
         public MatchQueryService(
             IDynamicRepository dynamicRepository,
-            ICacheService cacheService,
+            ICacheManager cacheManager,
             IAppSettings appSettings)
         {
             this.dynamicRepository = dynamicRepository;
-            this.cacheService = cacheService;
+            this.cacheManager = cacheManager;
             this.appSettings = appSettings;
         }
 
@@ -49,9 +50,9 @@
                 MatchListCacheKey,
                 from,
                 to,
-                () =>
+                async () =>
                 {
-                    var matches = dynamicRepository.Fetch<Match>(new GetMatchesByDateRangeCriteria(from, to, language));
+                    var matches = await dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(from, to, language));
 
                     return matches.Select(m => new MatchSummary(m));
                 });
@@ -61,7 +62,7 @@
 
         public async Task<MatchInfo> GetMatchInfo(string id, Language language)
         {
-            var cacheMatch = await cacheService.GetAsync<MatchInfo>(BuildMatchInfoCacheKey(id));
+            var cacheMatch = await cacheManager.GetAsync<MatchInfo>(BuildMatchInfoCacheKey(id));
 
             if (cacheMatch == null)
             {
@@ -77,13 +78,17 @@
 
             if (match != null)
             {
-                var timelineEvents = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
+                return await cacheManager.GetOrSetAsync(
+                    BuildMatchInfoCacheKey(id), 
+                    async () =>
+                    {
+                        var timelineEvents = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
 
-                var matchInfo = new MatchInfo(new MatchSummary(match), timelineEvents, match.Venue, match.Referee, match.Attendance);
+                        var matchInfo = new MatchInfo(new MatchSummary(match), timelineEvents, match.Venue, match.Referee, match.Attendance);
 
-                await cacheService.SetAsync(BuildMatchInfoCacheKey(id), matchInfo, BuildCacheOptions(match.EventDate.DateTime));
-
-                return matchInfo;
+                        return matchInfo;
+                    }, 
+                    BuildCacheOptions(match.EventDate.DateTime));
             }
 
             ////TODO: Should fix here
@@ -93,12 +98,12 @@
         private static string BuildMatchInfoCacheKey(string matchId)
             => $"{MatchInfoCacheKey}_{matchId}";
 
-        private async Task<T> GetOrSetAsync<T>(string key, DateTime from, DateTime to, Func<T> factory)
+        private async Task<T> GetOrSetAsync<T>(string key, DateTime from, DateTime to, Func<Task<T>> factory)
         {
             var cacheItemOptions = BuildCacheOptions(from);
             var cacheKey = BuildCacheKey(key, from, to);
 
-            return await cacheService
+            return await cacheManager
                 .GetOrSetAsync(cacheKey, factory, cacheItemOptions);
         }
 

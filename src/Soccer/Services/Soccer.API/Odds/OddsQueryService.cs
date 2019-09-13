@@ -6,6 +6,7 @@
     using System.Threading.Tasks;
     using Fanex.Caching;
     using Fanex.Data.Repository;
+    using Soccer.API._Shared;
     using Soccer.API.Shared.Configurations;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Odds;
@@ -25,16 +26,16 @@
     {
         private readonly IDynamicRepository dynamicRepository;
         private readonly IAppSettings appSettings;
-        private readonly ICacheService cacheService;
+        private readonly ICacheManager cacheManager;
 
         public OddsQueryService(
             IDynamicRepository dynamicRepository,
             IAppSettings appSettings,
-            ICacheService cacheService)
+            ICacheManager cacheManager)
         {
             this.dynamicRepository = dynamicRepository;
             this.appSettings = appSettings;
-            this.cacheService = cacheService;
+            this.cacheManager = cacheManager;
         }
 
         public async Task<MatchOdds> GetOdds(string matchId, int betTypeId, Language language)
@@ -49,15 +50,15 @@
                 return Enumerable.Empty<BetTypeOdds>();
             }
 
-            return await cacheService.GetOrSetAsync(
+            return await cacheManager.GetOrSetAsync(
                     $"OddsComparisonCacheKey_{matchId}_{betTypeId}",
-                    () => GetBetTypeOddsComparisons(matchId, betTypeId, match.EventDate),
+                    async () => await GetBetTypeOddsComparisons(matchId, betTypeId, match.EventDate),
                     BuildCacheOptions(match.EventDate.DateTime));
         }
 
-        private IOrderedEnumerable<BetTypeOdds> GetBetTypeOddsComparisons(string matchId, int betTypeId, DateTimeOffset eventDate)
+        public async Task<IOrderedEnumerable<BetTypeOdds>> GetBetTypeOddsComparisons(string matchId, int betTypeId, DateTimeOffset eventDate)
         {
-            var oddsByBookmaker = GetOddsData(matchId, betTypeId).GroupBy(o => o.Bookmaker?.Id);
+            var oddsByBookmaker = (await GetOddsData(matchId, betTypeId)).GroupBy(o => o.Bookmaker?.Id);
             var minDate = eventDate.AddDays(-appSettings.NumOfDaysToShowOddsBeforeKickoffDate).Date;
 
             var betTypeOdssList = oddsByBookmaker
@@ -67,8 +68,8 @@
             return betTypeOdssList;
         }
 
-        private IEnumerable<BetTypeOdds> GetOddsData(string matchId, int betTypeId)
-            => dynamicRepository.Fetch<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId));
+        private Task<IEnumerable<BetTypeOdds>> GetOddsData(string matchId, int betTypeId)
+            => dynamicRepository.FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId));
 
         public async Task<MatchOddsMovement> GetOddsMovement(
             string matchId,
@@ -83,15 +84,15 @@
                 return new MatchOddsMovement();
             }
 
-            return await cacheService.GetOrSetAsync(
+            return await cacheManager.GetOrSetAsync(
                    $"OddsMovementCacheKey_{matchId}_{betTypeId}_{bookmakerId}_{language.Value}",
-                   () => GetBookmakerOddsMovement(matchId, betTypeId, bookmakerId, match),
+                   async () => await GetBookmakerOddsMovement(matchId, betTypeId, bookmakerId, match),
                    BuildCacheOptions(match.EventDate.DateTime));
         }
 
-        private MatchOddsMovement GetBookmakerOddsMovement(string matchId, int betTypeId, string bookmakerId, Match match)
+        public async Task<MatchOddsMovement> GetBookmakerOddsMovement(string matchId, int betTypeId, string bookmakerId, Match match)
         {
-            var betTypeOddsList = GetBookmakerOddsListByBetType(matchId, betTypeId, bookmakerId);
+            var betTypeOddsList = await GetBookmakerOddsListByBetType(matchId, betTypeId, bookmakerId);
             var firstOdds = betTypeOddsList.FirstOrDefault();
 
             if (firstOdds == null)
@@ -104,17 +105,17 @@
             return new MatchOddsMovement(matchId, firstOdds.Bookmaker, oddsMovements);
         }
 
-        private List<BetTypeOdds> GetBookmakerOddsListByBetType(string matchId, int betTypeId, string bookmakerId)
-            => dynamicRepository
-                .Fetch<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId, bookmakerId))
+        private async Task<List<BetTypeOdds>> GetBookmakerOddsListByBetType(string matchId, int betTypeId, string bookmakerId)
+            => (await dynamicRepository
+                .FetchAsync<BetTypeOdds>(new GetOddsCriteria(matchId, betTypeId, bookmakerId)))
                 .OrderBy(bto => bto.LastUpdatedTime)
                 .ToList();
 
-        private async Task<Match> GetMatch(string matchId, Language language, bool isGetTimeline = true)
+        public async Task<Match> GetMatch(string matchId, Language language, bool isGetTimeline = true)
         {
-            var match = await cacheService.GetOrSetAsync(
+            var match = await cacheManager.GetOrSetAsync(
                    $"MatchOddsCacheKey_{matchId}_{language.Value}",
-                   () => dynamicRepository.Get<Match>(new GetMatchByIdCriteria(matchId, language)),
+                   async () => await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(matchId, language)),
                    new CacheItemOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(3600)));
 
             if (match != null && isGetTimeline)

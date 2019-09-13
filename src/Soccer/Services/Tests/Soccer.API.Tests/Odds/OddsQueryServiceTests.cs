@@ -7,6 +7,7 @@
     using Fanex.Caching;
     using Fanex.Data.Repository;
     using NSubstitute;
+    using Soccer.API._Shared;
     using Soccer.API.Odds;
     using Soccer.API.Shared.Configurations;
     using Soccer.Core.Matches.Models;
@@ -22,7 +23,7 @@
         private readonly OddsQueryService oddsServiceImpl;
         private readonly IDynamicRepository dynamicRepository;
         private readonly IAppSettings appSettings;
-        private readonly ICacheService cacheService;
+        private readonly ICacheManager cacheManager;
 
         private const string globalMatchId = "matchId1";
         private const int globalBetTypeId = 1;
@@ -32,28 +33,33 @@
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
             appSettings = Substitute.For<IAppSettings>();
-            cacheService = Substitute.For<ICacheService>();
+            cacheManager = Substitute.For<ICacheManager>();
             appSettings.NumOfDaysToShowOddsBeforeKickoffDate.Returns(356);
-            oddsServiceImpl = new OddsQueryService(dynamicRepository, appSettings, cacheService);
+            oddsServiceImpl = new OddsQueryService(dynamicRepository, appSettings, cacheManager);
         }
 
         [Fact]
         public async Task GetOdds_Always_ReturnMatchId()
         {
             StubBetTypeOdds();
+            StubMatch(globalMatchId);
 
             var matchOdds = await oddsServiceImpl.GetOdds(globalMatchId, globalBetTypeId, Language.en_US);
 
             Assert.Equal(globalMatchId, matchOdds.MatchId);
         }
 
-        private IEnumerable<BetTypeOdds> StubBetTypeOdds(
+        private void StubBetTypeOdds(
             string stubMatchId = null,
             IEnumerable<BetTypeOdds> betTypeOddsList = null,
-            string bookmakerId = null)
+            string bookmakerId = null,
+            DateTimeOffset? eventDate = null)
         {
             betTypeOddsList = betTypeOddsList ?? StubMatchOdds().BetTypeOddsList;
             stubMatchId = stubMatchId ?? globalMatchId;
+            eventDate = eventDate.HasValue
+                            ? eventDate.Value
+                            : new DateTimeOffset(new DateTime(2019, 2, 3));
 
             dynamicRepository
                 .FetchAsync<BetTypeOdds>(
@@ -62,13 +68,34 @@
                             && criteria.MatchId == stubMatchId))
                 .Returns(betTypeOddsList.Where(bto => bookmakerId == null || bto.Bookmaker.Id == bookmakerId));
 
-            return betTypeOddsList;
+            var oddsComparison = oddsServiceImpl.GetBetTypeOddsComparisons(
+                           stubMatchId,
+                           globalBetTypeId,
+                           eventDate.Value).GetAwaiter().GetResult();
+
+            cacheManager.GetOrSetAsync(
+                   $"OddsComparisonCacheKey_{stubMatchId}_{globalBetTypeId}",
+                   Arg.Any<Func<Task<IOrderedEnumerable<BetTypeOdds>>>>(),
+                   Arg.Any<CacheItemOptions>())
+                       .Returns(oddsComparison);
+        }
+
+        private void StubOddsMovements(string stubMatchId, string bookmakerId, Match match)
+        {
+            var oddsMovements = oddsServiceImpl.GetBookmakerOddsMovement(stubMatchId, globalBetTypeId, bookmakerId, match);
+
+            cacheManager.GetOrSetAsync(
+                   $"OddsMovementCacheKey_{stubMatchId}_{globalBetTypeId}_{bookmakerId}_{Language.en_US.Value}",
+                   Arg.Any<Func<Task<MatchOddsMovement>>>(),
+                   Arg.Any<CacheItemOptions>())
+                       .Returns(oddsMovements);
         }
 
         [Fact]
         public async Task GetOdds_Always_ReturnBetTypeOddsList()
         {
             StubBetTypeOdds();
+            StubMatch(globalMatchId);
 
             var actualBetTypeOddsList = await oddsServiceImpl.GetOdds(globalMatchId, globalBetTypeId, Language.en_US);
 
@@ -122,6 +149,7 @@
                     StubOneXTwoBetTypeOdds("sr:book:201", "bookmakername 1", new DateTime(2019, 3, 1), 0.3m, 0.3m)
                 };
             StubBetTypeOdds(betTypeOddsList: betTypeOddsList);
+            StubMatch(globalMatchId);
 
             var actualBetTypeOddsList = await oddsServiceImpl.GetOdds(globalMatchId, globalBetTypeId, Language.en_US);
 
@@ -139,7 +167,7 @@
             var matchOddsMovement = await oddsServiceImpl.GetOddsMovement("matchIdNoBookmaker", 1, "bookmarker", Language.en_US);
 
             Assert.Null(matchOddsMovement.Bookmaker);
-            Assert.Null(matchOddsMovement.OddsMovements);
+            Assert.Empty(matchOddsMovement.OddsMovements);
         }
 
         [Fact]
@@ -153,6 +181,8 @@
                     StubOneXTwoBetTypeOdds(bookmakerId, "bookmakername 1", new DateTime(2019, 3, 1), 0.3m, 0.3m)
                 };
             StubBetTypeOdds(oddsMovementMatchId, betTypeOddsList);
+            var match = StubMatch(oddsMovementMatchId);
+            StubOddsMovements(oddsMovementMatchId, bookmakerId, match);
 
             var matchOddsMovement = await oddsServiceImpl.GetOddsMovement(oddsMovementMatchId, 1, bookmakerId, Language.en_US);
 
@@ -165,9 +195,11 @@
         {
             var oddsMovementMatchId = "GetOddsMovement_MatchDoesNotExist_ReturnEmptyOddsMovement";
             StubBetTypeOdds(oddsMovementMatchId);
-            dynamicRepository
-                .GetAsync<Match>(Arg.Is<GetMatchByIdCriteria>(c => c.Id == oddsMovementMatchId && c.Language == Language.en_US.DisplayName))
-                .Returns(Task.FromResult<Match>(null));
+            cacheManager.GetOrSetAsync(
+                $"MatchOddsCacheKey_{oddsMovementMatchId}_{Language.en_US.Value}",
+                Arg.Any<Func<Task<Match>>>(),
+                Arg.Any<CacheItemOptions>())
+                .Returns(default(Match));
 
             var matchOddsMovement = await oddsServiceImpl.GetOddsMovement(oddsMovementMatchId, 1, "bookMakerId", Language.en_US);
 
@@ -182,8 +214,8 @@
             var bookmakerId = "bookMakerId";
             var betTypeOddsList = StubBetTypeOddsListForOddsMovement();
             StubBetTypeOdds(matchId, betTypeOddsList);
-
-            StubMatch(matchId);
+            var match = StubMatch(matchId);
+            StubOddsMovements(matchId, bookmakerId, match);
 
             // Act
             var matchOddsMovement = await oddsServiceImpl.GetOddsMovement(matchId, 1, bookmakerId, Language.en_US);
@@ -224,6 +256,7 @@
                 StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.DateTime, 0.16m)
             };
             StubBetTypeOdds(matchId, betTypeOddsList);
+            StubOddsMovements(matchId, bookMakerId, match);
 
             // Act
             var matchOddsMovement = await oddsServiceImpl.GetOddsMovement(matchId, 1, bookMakerId, Language.en_US);
@@ -260,6 +293,7 @@
                 StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.AddMinutes(20).DateTime, 0.14m)
             };
             StubBetTypeOdds(matchId, betTypeOddsList, bookMakerId);
+            StubOddsMovements(matchId, bookMakerId, match);
 
             // Act
             var matchOddsMovement = await oddsServiceImpl.GetOddsMovement(matchId, 1, bookMakerId, Language.en_US);
@@ -295,6 +329,7 @@
                 StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.AddMinutes(55).DateTime, 0.474m)
             };
             StubBetTypeOdds(matchId, betTypeOddsList, bookMakerId);
+            StubOddsMovements(matchId, bookMakerId, match);
 
             // Act
             var matchOddsMovement = await oddsServiceImpl.GetOddsMovement(matchId, 1, bookMakerId, Language.en_US);
@@ -334,6 +369,7 @@
                 StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.AddMinutes(70).DateTime, 0.574m)
             };
             StubBetTypeOdds(matchId, betTypeOddsList, bookMakerId);
+            StubOddsMovements(matchId, bookMakerId, match);
 
             // Act
             var matchOddsMovement = await oddsServiceImpl.GetOddsMovement(matchId, 1, bookMakerId, Language.en_US);
@@ -373,6 +409,7 @@
                 StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.AddMinutes(80).DateTime, 0.14m),
             };
             StubBetTypeOdds(matchId, betTypeOddsList, bookMakerId);
+            StubOddsMovements(matchId, bookMakerId, match);
 
             // Act
             var matchOddsMovement = await oddsServiceImpl.GetOddsMovement(matchId, 1, bookMakerId, Language.en_US);
@@ -413,6 +450,7 @@
                 StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.AddMinutes(90).DateTime, 0.12m),
             };
             StubBetTypeOdds(matchId, betTypeOddsList, bookMakerId);
+            StubOddsMovements(matchId, bookMakerId, match);
 
             // Act
             var matchOddsMovement = await oddsServiceImpl.GetOddsMovement(matchId, 1, bookMakerId, Language.en_US);
@@ -444,7 +482,13 @@
 
             dynamicRepository
                 .GetAsync<Match>(Arg.Is<GetMatchByIdCriteria>(c => c.Id == matchId && c.Language == Language.en_US.DisplayName))
-                .Returns(Task.FromResult<Match>(match));
+                .Returns(match);
+
+            cacheManager.GetOrSetAsync(
+                $"MatchOddsCacheKey_{matchId}_{Language.en_US.Value}",
+                Arg.Any<Func<Task<Match>>>(),
+                Arg.Any<CacheItemOptions>())
+                .Returns(match);
 
             dynamicRepository
                 .FetchAsync<TimelineEvent>(Arg.Is<GetTimelineEventsCriteria>(c => c.MatchId == matchId))
