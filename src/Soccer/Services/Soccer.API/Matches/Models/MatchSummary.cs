@@ -22,6 +22,7 @@
             {
                 LeagueId = match.League.Id;
                 LeagueName = match.League.Name;
+                CountryCode = match.League.Category?.CountryCode;
             }
 
             AssignMatchResult(match);
@@ -175,5 +176,8 @@
 
         [Key(25)]
         public IEnumerable<MatchPeriod> MatchPeriods { get; private set; }
+
+        [Key(26)]
+        public string CountryCode { get; private set; }
     }
 }
