@@ -276,7 +276,10 @@
 
         private static OddsMovement BuildOpeningOddsMovement(BetTypeOdds firstBetTypeOdds)
         {
-            var openingOddsMovement = new OddsMovement(firstBetTypeOdds.BetOptions, AppResources.Opening, firstBetTypeOdds.LastUpdatedTime);
+            var openingOddsMovement = new OddsMovement(
+                firstBetTypeOdds.BetOptions.Select(op => op.Clone()).ToList(), 
+                AppResources.Opening, 
+                firstBetTypeOdds.LastUpdatedTime);
 
             openingOddsMovement.ResetLiveOddsToOpeningOdds();
 

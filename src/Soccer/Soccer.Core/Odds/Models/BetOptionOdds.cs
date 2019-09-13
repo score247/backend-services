@@ -88,5 +88,8 @@
                     : OddsTrend.Up;
 #pragma warning restore S3358 // Ternary operators should not be nested
         }
+
+        public BetOptionOdds Clone()
+            => new BetOptionOdds(Type, LiveOdds, OpeningOdds, OptionValue, OpeningOptionValue);
     }
 }
