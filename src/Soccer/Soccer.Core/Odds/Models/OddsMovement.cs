@@ -39,9 +39,12 @@
 
         public void ResetLiveOddsToOpeningOdds()
         {
-            foreach (var betOption in BetOptions)
+            if (BetOptions != null)
             {
-                betOption.ResetLiveOddsToOpeningOdds();
+                foreach (var betOption in BetOptions)
+                {
+                    betOption.ResetLiveOddsToOpeningOdds();
+                }
             }
         }
     }
