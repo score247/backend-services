@@ -39,7 +39,7 @@
 
             CalculateOddsTrend(oddsMovements);
 
-            return oddsMovements.Reverse();
+            return oddsMovements.Where(odds => odds.BetOptions != null).Reverse();
         }
 
         public static BetTypeOdds AssignOpeningOddsToFirstOdds(IEnumerable<BetTypeOdds> betTypeOddList, DateTime minDate)
