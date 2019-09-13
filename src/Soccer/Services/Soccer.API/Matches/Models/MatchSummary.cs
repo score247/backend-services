@@ -22,7 +22,7 @@
             {
                 LeagueId = match.League.Id;
                 LeagueName = match.League.Name;
-                CountryCode = match.League.Category?.Name; //TODO rename CountryCode to Name later
+                CountryCode = match.League.Category?.Name?.ToUpperInvariant(); //TODO rename CountryCode to Name later, remove Upper case
             }
 
             AssignMatchResult(match);
