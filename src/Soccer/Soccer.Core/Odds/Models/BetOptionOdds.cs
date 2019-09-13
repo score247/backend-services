@@ -34,7 +34,7 @@
 
         public string OpeningOptionValue { get; private set; }
 
-        public OddsTrend OddsTrend { get; private set; }
+        public OddsTrend OddsTrend { get; private set; } = OddsTrend.Neutral;
 
         public void AssginOpeningData(BetOptionOdds openingBetOption)
         {
