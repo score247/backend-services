@@ -86,7 +86,8 @@
                 return matchInfo;
             }
 
-            return default;
+            ////TODO: Should fix here
+            return null;
         }
 
         private static string BuildMatchInfoCacheKey(string matchId)
