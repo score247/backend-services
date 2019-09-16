@@ -47,7 +47,9 @@
         }
 
         [Fact]
+#pragma warning disable S2699 // Tests should include assertions
         public async Task Consume_NoMatchExist_DoesNotExecuteGetOdds()
+#pragma warning restore S2699 // Tests should include assertions
         {
             cacheService.GetOrSetAsync(
                 Arg.Any<string>(),

@@ -45,9 +45,7 @@
                     .Build();
 
             return WebHost.CreateDefaultBuilder(args)
-               .ConfigureLogging((hostingContext, logging) =>
-               {
-               })
+               .ConfigureLogging((hostingContext, logging) => { })
                .UseConfiguration(configuration)
                .UseStartup<Startup>()
                .UseUrls($"http://0.0.0.0:{configuration["Port"]}");

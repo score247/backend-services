@@ -31,7 +31,9 @@
             {
                 services.AddLogging(Configuration);
                 services.AddSettings(Configuration);
+#pragma warning disable S3902 // "Assembly.GetExecutingAssembly" should not be called
                 services.AddMediatR(Assembly.GetExecutingAssembly());
+#pragma warning restore S3902 // "Assembly.GetExecutingAssembly" should not be called
                 services.AddServices();
                 services.AddHealthCheck();
                 services.AddSwagger();

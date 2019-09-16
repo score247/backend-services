@@ -32,9 +32,11 @@
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await logger.InfoAsync("MatchEventListener ExecuteAsync");
+            await logger.InfoAsync($"MatchEventListener is starting at {DateTime.Now}");
 
             await ListenMatchEvents(stoppingToken);
+
+            await logger.InfoAsync($"MatchEventListener is stopping at {DateTime.Now}");
         }
 
         public async override Task StartAsync(CancellationToken cancellationToken)
@@ -54,7 +56,7 @@
         private async Task ListenMatchEvents(CancellationToken stoppingToken)
         {
             await eventListenerService.ListenEvents(async (matchEvent) =>
-             {
+            {
                  try
                  {
                      await Task.WhenAll(
@@ -70,7 +72,7 @@
                              $"Exception: {ex}"),
                          ex);
                  }
-             }, stoppingToken);
+            }, stoppingToken);
         }
     }
 }

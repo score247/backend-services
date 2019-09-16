@@ -6,7 +6,9 @@
 
     public interface ISportRadarSettings
     {
+#pragma warning disable S3996 // URI properties should not be strings
         string ServiceUrl { get; set; }
+#pragma warning restore S3996 // URI properties should not be strings
 
         string PushEventEndpoint { get; set; }
 
@@ -17,7 +19,9 @@
 
     public class SportRadarSettings : ISportRadarSettings
     {
+#pragma warning disable S3996 // URI properties should not be strings
         public string ServiceUrl { get; set; }
+#pragma warning restore S3996 // URI properties should not be strings
 
         public string PushEventEndpoint { get; set; }
 
