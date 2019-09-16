@@ -11,7 +11,9 @@
 #pragma warning disable S109 // Magic numbers should not be used
     public class MatchSummary
     {
-        public MatchSummary() { }
+        public MatchSummary()
+        {
+        }
 
         public MatchSummary(Match match)
         {
@@ -23,7 +25,8 @@
             {
                 LeagueId = match.League.Id;
                 LeagueName = match.League.Name;
-                CountryCode = match.League.Category?.Name?.ToUpperInvariant(); //TODO rename CountryCode to Name later, remove Upper case
+                CountryCode = match.League.Category?.CountryCode;
+                CountryName = match.League.Category?.Name;
             }
 
             AssignMatchResult(match);
@@ -51,6 +54,8 @@
                 AwayScore = (byte)match.MatchResult.AwayScore;
                 WinnerId = match.MatchResult.WinnerId;
                 AggregateWinnerId = match.MatchResult.AggregateWinnerId;
+                AggregateHomeScore = (byte)match.MatchResult.AggregateHomeScore;
+                AggregateAwayScore = (byte)match.MatchResult.AggregateAwayScore;
                 MatchTime = (byte)match.MatchResult.MatchTime;
                 MatchPeriods = match.MatchResult.MatchPeriods;
             }
@@ -142,44 +147,39 @@
         [Key(16)]
         public byte AggregateAwayScore { get; private set; }
 
-
         [Key(17)]
         public byte HomeRedCards { get; private set; }
-
 
         [Key(18)]
         public byte HomeYellowRedCards { get; private set; }
 
-
         [Key(19)]
         public byte AwayRedCards { get; private set; }
-
 
         [Key(20)]
         public byte AwayYellowRedCards { get; private set; }
 
-
         [Key(21)]
         public byte MatchTime { get; private set; }
-
 
         [Key(22)]
         public string StoppageTime { get; private set; }
 
-
         [Key(23)]
         public byte InjuryTimeAnnounced { get; private set; }
 
-
         [Key(24)]
         public EventType LastTimelineType { get; private set; }
-
 
         [Key(25)]
         public IEnumerable<MatchPeriod> MatchPeriods { get; private set; }
 
         [Key(26)]
         public string CountryCode { get; private set; }
+
+        [Key(27)]
+        public string CountryName { get; private set; }
     }
+
 #pragma warning restore S109 // Magic numbers should not be used
 }
