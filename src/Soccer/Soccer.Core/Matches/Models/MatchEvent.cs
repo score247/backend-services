@@ -7,6 +7,7 @@
             MatchId = matchId;
             MatchResult = matchResult;
             Timeline = timeline;
+            Timeline.UpdateScore(matchResult.HomeScore, matchResult.AwayScore);
         }
 
         public string MatchId { get; }

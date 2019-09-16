@@ -5,7 +5,7 @@
     using MessagePack;
     using Newtonsoft.Json;
     using Score247.Shared.Base;
-    using Soccer.Core.Shared.Enumerations;
+    using Shared.Enumerations;
     using Soccer.Core.Teams.Models;
 
     [MessagePackObject(keyAsPropertyName: true)]
@@ -86,5 +86,11 @@
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         [IgnoreMember]
         public Player PlayerIn { get; set; }
+
+        public void UpdateScore(int homeScore, int awayScore)
+        {
+            HomeScore = homeScore;
+            AwayScore = awayScore;
+        }
     }
 }
