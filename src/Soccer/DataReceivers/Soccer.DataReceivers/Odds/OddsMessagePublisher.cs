@@ -61,6 +61,8 @@
         {
             try
             {
+                await logger.InfoAsync($"Odds - Match Event: {JsonConvert.SerializeObject(matchEvent)}");
+
                 if (await IsEventBeHandled(matchEvent))
                 {
                     return;
