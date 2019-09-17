@@ -23,11 +23,9 @@
     {
         private readonly IMatchService matchService;
         private readonly IBus messageBus;
-        private readonly IAppSettings appSettings;
 
-        public FetchPostMatchesTask(IBus messageBus, IAppSettings appSettings, IMatchService matchService)
-        {
-            this.appSettings = appSettings;
+        public FetchPostMatchesTask(IBus messageBus, IMatchService matchService)
+        {            
             this.messageBus = messageBus;
             this.matchService = matchService;
         }
@@ -48,23 +46,12 @@
 
         public async Task FetchPostMatchesForDate(DateTime date, Language language)
         {
-            int batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
-            var matches = await matchService.GetPostMatches(date, language);
+            var matches = (await matchService.GetPostMatches(date, language)).Where(x => x.MatchResult.EventStatus != MatchStatus.NotStarted);
 
-            //TODO update match result only
             foreach (var match in matches)
             {
                 await messageBus.Publish<IPostMatchFetchedMessage>(new PostMatchUpdatedResultMessage(match.Id, language.DisplayName, match.MatchResult));
             }
-
-            //TODO close live matches
-
-            //for (var i = 0; i * batchSize < matches.Count; i++)
-            //{
-            //    var matchesBatch = matches.Skip(i * batchSize).Take(batchSize);
-
-            //    await messageBus.Publish<IPostMatchFetchedMessage>(new PostMatchFetchedMessage(matchesBatch, language.DisplayName));
-            //}
         }
     }
 }
