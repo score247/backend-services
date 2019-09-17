@@ -7,6 +7,7 @@
     using MassTransit;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Events;
+    using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
@@ -50,12 +51,20 @@
             int batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
             var matches = await matchService.GetPostMatches(date, language);
 
-            for (var i = 0; i * batchSize < matches.Count; i++)
+            //TODO update match result only
+            foreach (var match in matches)
             {
-                var matchesBatch = matches.Skip(i * batchSize).Take(batchSize);
-
-                await messageBus.Publish<IPostMatchFetchedMessage>(new PostMatchFetchedMessage(matchesBatch, language.DisplayName));
+                await messageBus.Publish<IPostMatchFetchedMessage>(new PostMatchUpdatedResultMessage(match.Id, language.DisplayName, match.MatchResult));
             }
+
+            //TODO close live matches
+
+            //for (var i = 0; i * batchSize < matches.Count; i++)
+            //{
+            //    var matchesBatch = matches.Skip(i * batchSize).Take(batchSize);
+
+            //    await messageBus.Publish<IPostMatchFetchedMessage>(new PostMatchFetchedMessage(matchesBatch, language.DisplayName));
+            //}
         }
     }
 }
