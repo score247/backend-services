@@ -119,7 +119,7 @@
                         ? openingOdds.BetOptions
                         : betTypeOddsBookmaker.BetOptions);
 
-                    if (oddsByBookmaker.Count() > twoItems)
+                    if (oddsByBookmaker.Count() >= twoItems)
                     {
                         var secondItem = oddsByBookmaker.ElementAt(oddsByBookmaker.Count() - twoItems);
                         OddsMovementProcessor.CalculateOddsTrend(betTypeOddsBookmaker.BetOptions, secondItem.BetOptions);
