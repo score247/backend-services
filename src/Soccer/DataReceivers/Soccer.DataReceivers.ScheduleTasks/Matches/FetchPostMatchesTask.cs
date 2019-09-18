@@ -1,8 +1,5 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
     using Hangfire;
     using MassTransit;
     using Score247.Shared.Enumerations;
@@ -10,6 +7,9 @@
     using Soccer.Core.Shared.Enumerations;
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
 
     public interface IFetchPostMatchesTask
     {
@@ -56,6 +56,13 @@
 
                 await messageBus.Publish<IPostMatchFetchedMessage>(new PostMatchFetchedMessage(matchesBatch, language.DisplayName));
             }
+
+            //var matches = (await matchService.GetPostMatches(date, language)).Where(x => x.MatchResult.EventStatus != MatchStatus.NotStarted);
+
+            //foreach (var match in matches)
+            //{
+            //    await messageBus.Publish<IPostMatchFetchedMessage>(new PostMatchUpdatedResultMessage(match.Id, language.DisplayName, match.MatchResult));
+            //}
         }
     }
 }
