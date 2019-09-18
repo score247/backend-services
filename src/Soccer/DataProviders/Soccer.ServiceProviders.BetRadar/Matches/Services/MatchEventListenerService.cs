@@ -64,10 +64,7 @@
 
                 await Task.Delay(MillisecondsTimeout, cancellationToken);
 
-                if(DateTime.Now.Minute % FiveMinutes == 0)
-                {
-                    await logger.InfoAsync($"Event Listener Heartbeat at {DateTime.Now}");
-                }
+                await logger.InfoAsync($"{DateTime.Now} - Region {regionName} reconnect after end of stream");
             }
         }
 
@@ -125,6 +122,11 @@
                     matchEventPayload = reader.ReadLine();
 
                     var matchEvent = MatchMapper.MapMatchEvent(matchEventPayload);
+
+                    if (DateTime.Now.Minute % FiveMinutes == 0 && DateTime.Now.Second % 45 == 0)
+                    {
+                        await logger.InfoAsync($"Event Listener Heartbeat at {DateTime.Now}");
+                    }
 
                     if (matchEvent == default(MatchEvent))
                     {
