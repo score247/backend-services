@@ -20,6 +20,7 @@
             Id = match.Id;
             EventDate = match.EventDate;
             CurrentPeriodStartTime = match.CurrentPeriodStartTime;
+            ModifiedTime = match.ModifiedTime;
 
             if (match.League != null)
             {
@@ -179,6 +180,9 @@
 
         [Key(27)]
         public string CountryName { get; private set; }
+
+        [Key(28)]
+        public DateTimeOffset ModifiedTime { get; private set; }
     }
 
 #pragma warning restore S109 // Magic numbers should not be used
