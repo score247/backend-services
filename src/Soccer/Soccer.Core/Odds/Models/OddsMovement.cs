@@ -25,17 +25,17 @@
             AwayScore = awayScore;
         }
 
-        public IEnumerable<BetOptionOdds> BetOptions { get; private set; }
+        public IEnumerable<BetOptionOdds> BetOptions { get; set; }
 
-        public string MatchTime { get; private set; }
+        public string MatchTime { get; set; }
 
-        public DateTimeOffset UpdateTime { get; private set; }
+        public DateTimeOffset UpdateTime { get; set; }
 
-        public bool IsMatchStarted { get; private set; }
+        public bool IsMatchStarted { get; set; }
 
-        public int HomeScore { get; private set; }
+        public int HomeScore { get; set; }
 
-        public int AwayScore { get; private set; }
+        public int AwayScore { get; set; }
 
         public void ResetLiveOddsToOpeningOdds()
         {

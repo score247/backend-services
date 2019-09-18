@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using Soccer.Core.Odds.Models;
 
-    internal class OddsComparisonSignalRMessage
+    public class OddsComparisonSignalRMessage
     {
         public OddsComparisonSignalRMessage(byte sportId, string matchId, IEnumerable<BetTypeOdds> betTypeOddsList)
         {

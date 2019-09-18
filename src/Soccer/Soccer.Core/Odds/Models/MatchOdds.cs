@@ -8,16 +8,20 @@
     [MessagePackObject(keyAsPropertyName: true)]
     public class MatchOdds
     {
-        public MatchOdds() { }
+        public MatchOdds(
+            string matchId,
+            IEnumerable<BetTypeOdds> betTypeOddsList)
+            : this(matchId, betTypeOddsList, null)
+        { }
 
         public MatchOdds(
             string matchId,
             IEnumerable<BetTypeOdds> betTypeOddsList,
-            DateTime? lastUpdated = null)
+            DateTime? lastUpdated)
         {
             MatchId = matchId;
-            LastUpdated = lastUpdated;
             BetTypeOddsList = betTypeOddsList;
+            LastUpdated = lastUpdated;
         }
 
         public string MatchId { get; private set; }

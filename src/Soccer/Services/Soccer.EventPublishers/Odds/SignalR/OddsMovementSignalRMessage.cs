@@ -3,7 +3,7 @@
     using System.Collections.Generic;
     using Soccer.Core.Odds.SignalREvents;
 
-    internal class OddsMovementSignalRMessage
+    public class OddsMovementSignalRMessage
     {
         public OddsMovementSignalRMessage(byte sportId, string matchId, IEnumerable<OddsMovementEvent> oddsEvents)
         {

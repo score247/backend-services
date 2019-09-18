@@ -10,6 +10,16 @@
     {
         public BetTypeOdds() { }
 
+        [SerializationConstructor]
+        public BetTypeOdds(
+            byte id,
+            string name,
+            Bookmaker bookmaker,
+            IEnumerable<BetOptionOdds> betOptions)
+            : this(id, name, bookmaker, DateTime.Now, betOptions)
+        {
+        }
+
         public BetTypeOdds(
             int id,
             string name,

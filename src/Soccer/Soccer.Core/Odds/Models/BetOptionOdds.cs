@@ -5,9 +5,6 @@
     [MessagePackObject(keyAsPropertyName: true)]
     public class BetOptionOdds
     {
-        /// <summary>
-        /// Constructor for message pack
-        /// </summary>
         public BetOptionOdds() { }
 
         public BetOptionOdds(
@@ -22,6 +19,19 @@
             OpeningOdds = openingOdds;
             OptionValue = optionValue;
             OpeningOptionValue = openingOptionValue;
+        }
+
+        [SerializationConstructor]
+        public BetOptionOdds(
+            string type,
+            decimal liveOdds,
+            decimal openingOdds,
+            string optionValue,
+            string openingOptionValue,
+            OddsTrend oddsTrend)
+            : this(type, liveOdds, openingOdds, optionValue, openingOptionValue)
+        {
+            OddsTrend = oddsTrend;
         }
 
         public string Type { get; private set; }
