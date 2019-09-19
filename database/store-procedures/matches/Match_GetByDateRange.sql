@@ -1,7 +1,7 @@
 CREATE DEFINER=`user`@`%` PROCEDURE `Match_GetByDateRange`(IN sportId INT, IN fromDate DATETIME, IN toDate DATETIME, IN language TEXT)
 BEGIN
 	CREATE TEMPORARY TABLE IF NOT EXISTS temp_match AS
-    (SELECT NonLiveMatch.`Value`, NonLiveMatch.EventDate, NonLiveMatch.LeagueId, NonLiveMatch.Id 
+    (SELECT NonLiveMatch.`Value`, NonLiveMatch.EventDate, NonLiveMatch.LeagueId, NonLiveMatch.Id, NonLiveMatch.ModifiedTime 
 		FROM `Match` as NonLiveMatch 
 		INNER JOIN `League` as League ON NonLiveMatch.LeagueId = League.Id
 		WHERE NonLiveMatch.Id NOT IN
@@ -14,13 +14,13 @@ BEGIN
 			AND NonLiveMatch.EventDate <=  toDate
 			AND NonLiveMatch.`Language` = language)
 		UNION ALL 
-		(SELECT Value, EventDate, LeagueId, Id FROM `LiveMatch` as LM
+		(SELECT Value, EventDate, LeagueId, Id, ModifiedTime FROM `LiveMatch` as LM
 		 WHERE LM.SportId = sportId
 			AND  LM.EventDate >=  fromDate
 			AND LM.EventDate <=  toDate
 			AND LM.`Language` = language);
     
-    SELECT `Match`.Value AS Value, `Match`.EventDate AS EventDate, `Match`.LeagueId AS LeagueId, `Match`.Id AS Id
+    SELECT JSON_REPLACE(`Match`.Value,  '$.ModifiedTime', `Match`.ModifiedTime) as `Value`, `Match`.EventDate AS EventDate, `Match`.LeagueId AS LeagueId, `Match`.Id AS Id
     FROM temp_match AS `Match`
 	INNER JOIN `League` as League ON `Match`.LeagueId = League.Id
 	ORDER BY League.Order, `Match`.EventDate, `Match`.LeagueId, `Match`.Id;
