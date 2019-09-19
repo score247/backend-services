@@ -22,6 +22,7 @@
         private readonly ISportRadarSettings sportRadarSettings;
         private readonly ILogger logger;
         private readonly Dictionary<string, StreamReader> regionStreams;
+        private bool isWroteHeartbeatLog = false;
 
         public MatchEventListenerService(ISportRadarSettings sportRadarSettings, ILogger logger)
         {
@@ -123,10 +124,7 @@
 
                     var matchEvent = MatchMapper.MapMatchEvent(matchEventPayload);
 
-                    if (DateTime.Now.Minute % FiveMinutes == 0 && DateTime.Now.Second % 45 == 0)
-                    {
-                        await logger.InfoAsync($"Event Listener Heartbeat at {DateTime.Now}");
-                    }
+                    await WriteHeartbeatLog();
 
                     if (matchEvent == default(MatchEvent))
                     {
@@ -141,6 +139,20 @@
             catch (Exception ex)
             {
                 await logger.ErrorAsync($"Message: {ex}\r\nPayload: {matchEventPayload}");
+            }
+        }
+
+        private async Task WriteHeartbeatLog()
+        {
+            if (DateTime.Now.Minute % FiveMinutes == 0 && !isWroteHeartbeatLog)
+            {
+                await logger.InfoAsync($"Event Listener Heartbeat at {DateTime.Now}");
+                isWroteHeartbeatLog = true;
+            }
+
+            if (DateTime.Now.Minute % FiveMinutes != 0)
+            {
+                isWroteHeartbeatLog = false;
             }
         }
     }
