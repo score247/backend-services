@@ -67,6 +67,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.DataReceivers.EventL
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccers.Benchmarks", "experiments\Soccers.Benchmarks\Soccers.Benchmarks.csproj", "{AEEE020E-37E7-4AC4-80AD-FDB1C1147985}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBUp.Deployment", "experiments\DBUp.Deployment\DBUp.Deployment.csproj", "{70B25CAB-3040-4C9B-8871-462A69EE2C9D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -161,6 +163,10 @@ Global
 		{AEEE020E-37E7-4AC4-80AD-FDB1C1147985}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{AEEE020E-37E7-4AC4-80AD-FDB1C1147985}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEEE020E-37E7-4AC4-80AD-FDB1C1147985}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70B25CAB-3040-4C9B-8871-462A69EE2C9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70B25CAB-3040-4C9B-8871-462A69EE2C9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70B25CAB-3040-4C9B-8871-462A69EE2C9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70B25CAB-3040-4C9B-8871-462A69EE2C9D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -196,6 +202,7 @@ Global
 		{1C47918C-CE65-4B88-BF8E-72BD4F91D633} = {7F16B4BB-E9D5-465F-A765-5F6A839AB1F6}
 		{39C70C26-9323-4EA4-B57A-190C7066B359} = {7F16B4BB-E9D5-465F-A765-5F6A839AB1F6}
 		{AEEE020E-37E7-4AC4-80AD-FDB1C1147985} = {30FA5FDA-77A7-480D-92F2-1C3C9956B791}
+		{70B25CAB-3040-4C9B-8871-462A69EE2C9D} = {30FA5FDA-77A7-480D-92F2-1C3C9956B791}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D13AD9D6-D937-45A2-AAA4-3EFA410C7411}
