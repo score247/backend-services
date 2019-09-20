@@ -6,10 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Scripts\Match_InsertMatches.sql" />
     <None Remove="Scripts\Match_InsertOrUpdatePostMatches.sql" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Scripts\Match_InsertMatches.sql" />
     <EmbeddedResource Include="Scripts\Match_InsertOrUpdatePostMatches.sql" />
   </ItemGroup>
 

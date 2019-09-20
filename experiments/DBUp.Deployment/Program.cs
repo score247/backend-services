@@ -1,4 +1,6 @@
 ﻿using DbUp;
+using DbUp.Helpers;
+using DBUp.Deployment.PreProcessors;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -11,13 +13,15 @@ namespace DBUp.Deployment
         {
             var connectionString =
                 args.FirstOrDefault()
-                ?? "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_dev1;Persist Security Info=True;User ID=user;Password=1234aa";
+                ?? "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_dev1;Persist Security Info=True;User ID=user;Password=1234aa;Allow User Variables=True;";
 
             var upgrader =
                 DeployChanges.To
                     .MySqlDatabase(connectionString)
+                    .WithPreprocessor(new DelimiterPreProcessor())
                     .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly())
                     .LogToConsole()
+                    .JournalTo(new NullJournal())
                     .Build();
 
             var result = upgrader.PerformUpgrade();
