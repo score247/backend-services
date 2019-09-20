@@ -8,10 +8,10 @@ BEGIN
         
 			SET @Id = JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].Id')));
             
-			IF(NOT EXISTS (SELECT 1 FROM  `Match` WHERE Id = Id AND LANGUAGE = language))
+			IF(NOT EXISTS (SELECT 1 FROM  `Match` WHERE Id = @IdId AND LANGUAGE = language))
 			THEN
 				INSERT INTO `Match` VALUES (
-					JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].Id'))),
+					@Id,
 					JSON_EXTRACT(matches, CONCAT('$[', i, ']')),
 					language, 
 					sportId, 

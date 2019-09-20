@@ -55,6 +55,12 @@
                 var matchesBatch = matches.Skip(i * batchSize).Take(batchSize);
 
                 await messageBus.Publish<IPostMatchFetchedMessage>(new PostMatchFetchedMessage(matchesBatch, language.DisplayName));
+                
+                //TODO duplicated messages in case multiple languages
+                foreach (var match in matchesBatch)
+                {                    
+                    await messageBus.Publish<ILiveMatchClosedMessage>(new LiveMatchClosedMessage(match.Id, match.MatchResult));
+                }
             }
         }
     }
