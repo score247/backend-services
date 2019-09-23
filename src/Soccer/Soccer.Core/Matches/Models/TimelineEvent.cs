@@ -64,8 +64,6 @@
 
         public bool IsHome => Team?.ToLowerInvariant() == "home";
 
-        public string TestString { get; set; }
-
         [IgnoreMember]
         public string Description { get; set; }
 
