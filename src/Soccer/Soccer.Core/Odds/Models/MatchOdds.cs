@@ -8,6 +8,12 @@
     [MessagePackObject(keyAsPropertyName: true)]
     public class MatchOdds
     {
+        /// <summary>
+        /// For JsonConvert
+        /// </summary>
+        public MatchOdds() { }
+
+        [SerializationConstructor]
         public MatchOdds(
             string matchId,
             IEnumerable<BetTypeOdds> betTypeOddsList)
