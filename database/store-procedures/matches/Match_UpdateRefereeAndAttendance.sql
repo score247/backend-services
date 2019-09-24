@@ -1,3 +1,5 @@
+DROP procedure IF EXISTS `Match_UpdateRefereeAndAttendance`;
+
 CREATE DEFINER=`user`@`%` PROCEDURE `Match_UpdateRefereeAndAttendance`(
 	IN sportId INT, 
     IN matchId VARCHAR(45), 

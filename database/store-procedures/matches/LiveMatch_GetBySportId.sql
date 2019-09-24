@@ -1,3 +1,5 @@
+DROP procedure IF EXISTS `LiveMatch_GetBySportId`;
+
 CREATE DEFINER=`user`@`%` PROCEDURE `LiveMatch_GetBySportId`(IN sportId INT, IN language TEXT)
 BEGIN
 	SELECT `Value` 

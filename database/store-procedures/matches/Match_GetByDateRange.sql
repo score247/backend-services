@@ -1,3 +1,5 @@
+DROP procedure IF EXISTS `Match_GetByDateRange`;
+
 CREATE DEFINER=`user`@`%` PROCEDURE `Match_GetByDateRange`(IN sportId INT, IN fromDate DATETIME, IN toDate DATETIME, IN language TEXT)
 BEGIN
 	CREATE TEMPORARY TABLE IF NOT EXISTS temp_match AS

@@ -1,3 +1,5 @@
+DROP procedure IF EXISTS `LiveMatch_UpdateTeamRedCards`;
+
 CREATE DEFINER=`user`@`%` PROCEDURE `LiveMatch_UpdateTeamRedCards`(IN sportId INT, IN matchId VARCHAR(45), IN teamIndex INT, IN redCards INT)
 BEGIN
 	UPDATE `LiveMatch` as LM

@@ -1,3 +1,5 @@
+DROP procedure IF EXISTS `Match_InsertTimeline`;
+
 CREATE DEFINER=`user`@`%` PROCEDURE `Match_InsertTimeline`(IN matchId TEXT, IN timeline TEXT)
 BEGIN
 	 INSERT INTO `Timeline` VALUES (

@@ -1,3 +1,5 @@
+DROP procedure IF EXISTS `Odds_GetOdds`;
+
 CREATE DEFINER=`user`@`%` PROCEDURE `Odds_GetOdds`(
 	IN matchId VARCHAR(45), 
     IN betTypeId INT,

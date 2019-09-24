@@ -1,3 +1,5 @@
+DROP procedure IF EXISTS `Odds_InsertOdds`;
+
 CREATE DEFINER=`user`@`%` PROCEDURE `Odds_InsertOdds`(
 		IN matchId VARCHAR(45), 
         IN oddsList TEXT)

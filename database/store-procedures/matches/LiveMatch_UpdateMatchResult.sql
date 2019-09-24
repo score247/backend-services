@@ -1,3 +1,5 @@
+DROP procedure IF EXISTS `LiveMatch_UpdateMatchResult`;
+
 CREATE DEFINER=`user`@`%` PROCEDURE `LiveMatch_UpdateMatchResult`(
 	IN sportId INT(11), 
     IN matchId VARCHAR(45), 

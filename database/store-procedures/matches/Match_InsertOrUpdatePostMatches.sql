@@ -1,3 +1,5 @@
+DROP procedure IF EXISTS `Match_InsertOrUpdatePostMatches`;
+
 CREATE DEFINER=`root`@`%` PROCEDURE `Match_InsertOrUpdatePostMatches`(IN sportId INT, IN matches MEDIUMTEXT, IN language TEXT)
 BEGIN
 	DECLARE i INT DEFAULT 0;                                                                                                                                                    

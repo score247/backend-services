@@ -1,3 +1,5 @@
+DROP procedure IF EXISTS `Match_GetById`;
+
 CREATE DEFINER=`user`@`%` PROCEDURE `Match_GetById`(IN Id VARCHAR(45), IN language TEXT)
 BEGIN
 	IF EXISTS (SELECT 1 FROM `LiveMatch` as LM WHERE LM.Id = Id AND LM.`Language` = language) 
