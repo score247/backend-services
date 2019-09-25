@@ -98,7 +98,8 @@
     public class CoverageInfoDto
     {
         public string level { get; set; }
-        public string live_coverage { get; set; }
+
+        public bool live_coverage { get; set; }
 
         public CoverageDto coverage { get; set; }
     }

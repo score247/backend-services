@@ -52,6 +52,10 @@
                     await messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent));
                 }
             }
+
+            //TODO process coverage info
+
+            //TODO process statistic info
         }
     }
 }
