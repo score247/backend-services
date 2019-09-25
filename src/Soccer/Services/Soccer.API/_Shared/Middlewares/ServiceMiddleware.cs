@@ -1,5 +1,6 @@
 ﻿namespace Soccer.API.Shared.Middlewares
 {
+    using System;
     using Fanex.Caching;
     using Fanex.Data.Repository;
     using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +18,7 @@
             services.AddScoped<IMatchQueryService, MatchQueryService>();
             services.AddScoped<IOddsQueryService, OddsQueryService>();
             services.AddScoped<ICacheManager, CacheManager>();
+            services.AddSingleton<Func<DateTimeOffset>>(() => DateTimeOffset.Now);
         }
     }
 }

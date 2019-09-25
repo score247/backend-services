@@ -8,10 +8,11 @@
     using Soccer.API.Matches.Requests;
     using Soccer.Core.Matches.Models;
 
-    public class MatchHandler
-        : IRequestHandler<MatchesByDateRequest, IEnumerable<MatchSummary>>,
-          IRequestHandler<MatchInfoByIdRequest, MatchInfo>,
-          IRequestHandler<LiveMatchesRequest, IEnumerable<Match>>
+    public class MatchHandler :   
+        IRequestHandler<MatchesByDateRequest, IEnumerable<MatchSummary>>,
+        IRequestHandler<MatchInfoByIdRequest, MatchInfo>,
+        IRequestHandler<LiveMatchesRequest, IEnumerable<MatchSummary>>,
+        IRequestHandler<LiveMatchCountRequest, int>
     {
         private readonly IMatchQueryService matchQueryService;
 
@@ -23,10 +24,13 @@
         public async Task<IEnumerable<MatchSummary>> Handle(MatchesByDateRequest request, CancellationToken cancellationToken)
             => await matchQueryService.GetByDateRange(request.From, request.To, request.Language);
 
-        public async Task<IEnumerable<Match>> Handle(LiveMatchesRequest request, CancellationToken cancellationToken)
-            => await matchQueryService.GetLive(request.ClientTimeOffset, request.Language);
+        public async Task<IEnumerable<MatchSummary>> Handle(LiveMatchesRequest request, CancellationToken cancellationToken)
+            => await matchQueryService.GetLive(request.Language);
 
         public async Task<MatchInfo> Handle(MatchInfoByIdRequest request, CancellationToken cancellationToken)
-              => await matchQueryService.GetMatchInfo(request.Id, request.Language);
+            => await matchQueryService.GetMatchInfo(request.Id, request.Language);
+
+        public async Task<int> Handle(LiveMatchCountRequest request, CancellationToken cancellationToken)
+            => await matchQueryService.GetLiveMatchCount(request.Language);
     }
 }

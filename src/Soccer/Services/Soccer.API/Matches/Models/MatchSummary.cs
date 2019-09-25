@@ -11,6 +11,71 @@
 #pragma warning disable S109 // Magic numbers should not be used
     public class MatchSummary
     {
+#pragma warning disable S107 // Methods should not have too many parameters
+        [SerializationConstructor]
+        public MatchSummary(
+            string id,
+            DateTimeOffset eventDate,
+            DateTimeOffset currentPeriodStartTime,
+            string leagueId,
+            string leagueName,
+            string homeTeamId,
+            string homeTeamName,
+            string awayTeamId,
+            string awayTeamName,
+            MatchStatus matchStatus,
+            MatchStatus eventStatus,
+            byte homeScore,
+            byte awayScore,
+            string winnerId,
+            string aggregateWinnerId,
+            byte aggregateHomeScore,
+            byte aggregateAwayScore,
+            byte homeRedCards,
+            byte homeYellowRedCards,
+            byte awayRedCards,
+            byte awayYellowRedCards,
+            byte matchTime,
+            string stoppageTime,
+            byte injuryTimeAnnounced,
+            EventType lastTimelineType,
+            IEnumerable<MatchPeriod> matchPeriods,
+            string countryCode,
+            string countryName,
+            DateTimeOffset modifiedTime)
+#pragma warning restore S107 // Methods should not have too many parameters
+        {
+            Id = id;
+            EventDate = eventDate;
+            CurrentPeriodStartTime = currentPeriodStartTime;
+            LeagueId = leagueId;
+            LeagueName = leagueName;
+            HomeTeamId = homeTeamId;
+            HomeTeamName = homeTeamName;
+            AwayTeamId = awayTeamId;
+            AwayTeamName = awayTeamName;
+            MatchStatus = matchStatus;
+            EventStatus = eventStatus;
+            HomeScore = homeScore;
+            AwayScore = awayScore;
+            WinnerId = winnerId;
+            AggregateWinnerId = aggregateWinnerId;
+            AggregateHomeScore = aggregateHomeScore;
+            AggregateAwayScore = aggregateAwayScore;
+            HomeRedCards = homeRedCards;
+            HomeYellowRedCards = homeYellowRedCards;
+            AwayRedCards = awayRedCards;
+            AwayYellowRedCards = awayYellowRedCards;
+            MatchTime = matchTime;
+            StoppageTime = stoppageTime;
+            InjuryTimeAnnounced = injuryTimeAnnounced;
+            LastTimelineType = lastTimelineType;
+            MatchPeriods = matchPeriods;
+            CountryCode = countryCode;
+            CountryName = countryName;
+            ModifiedTime = modifiedTime;
+        }
+
         public MatchSummary()
         {
         }

@@ -38,7 +38,12 @@
 
         [HttpGet]
         [Route("live")]
-        public async Task<IEnumerable<Match>> Get(TimeSpan tz, string language = "en-US")
-          => await mediator.Send(new LiveMatchesRequest(tz, language));
+        public async Task<IEnumerable<MatchSummary>> Get(string language = "en-US")
+          => await mediator.Send(new LiveMatchesRequest(language));
+
+        [HttpGet]
+        [Route("live/count")]
+        public async Task<int> GetLiveMatchCount()
+          => await mediator.Send(new LiveMatchCountRequest());
     }
 }

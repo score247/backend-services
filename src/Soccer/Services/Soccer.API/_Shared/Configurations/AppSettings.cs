@@ -19,6 +19,8 @@
         int OddsShortCacheTimeDuration { get; }
 
         int OddsLongCacheTimeDuration { get; }
+
+        int NumOfMinutesToLoadClosedMatch { get; }
     }
 
     public class AppSettings : IAppSettings
@@ -57,6 +59,8 @@
         public int OddsShortCacheTimeDuration { get; }
 
         public int OddsLongCacheTimeDuration { get; }
+
+        public int NumOfMinutesToLoadClosedMatch { get; }
 
         public T GetValue<T>(string key)
         {

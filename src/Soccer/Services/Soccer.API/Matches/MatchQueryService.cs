@@ -19,7 +19,9 @@
 
         Task<MatchInfo> GetMatchInfo(string id, Language language);
 
-        Task<IEnumerable<Match>> GetLive(TimeSpan clientTimeOffset, Language language);
+        Task<IEnumerable<MatchSummary>> GetLive(Language language);
+
+        Task<int> GetLiveMatchCount(Language language);
     }
 
     public class MatchQueryService : IMatchQueryService
@@ -30,19 +32,40 @@
         private readonly IDynamicRepository dynamicRepository;
         private readonly ICacheManager cacheManager;
         private readonly IAppSettings appSettings;
+        private readonly Func<DateTimeOffset> dateTimeNowFunc;
+
 
         public MatchQueryService(
             IDynamicRepository dynamicRepository,
             ICacheManager cacheManager,
-            IAppSettings appSettings)
+            IAppSettings appSettings,
+            Func<DateTimeOffset> dateTimeNowFunc)
         {
             this.dynamicRepository = dynamicRepository;
             this.cacheManager = cacheManager;
             this.appSettings = appSettings;
+            this.dateTimeNowFunc = dateTimeNowFunc;
         }
 
-        public async Task<IEnumerable<Match>> GetLive(TimeSpan clientTimeOffset, Language language)
-            => await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(language));
+        public async Task<IEnumerable<MatchSummary>> GetLive(Language language)
+        {
+            var liveMatches = await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(language, dateTimeNowFunc().AddDays(-1).DateTime));
+
+            return liveMatches
+                .Where(match => IsMatchRunning(match))
+                .Select(m => new MatchSummary(m));
+        }
+
+        private bool IsMatchRunning(Match match)
+        {
+            if (match.LatestTimeline.Type.IsMatchEnd()
+                && match.LatestTimeline.Time.ToUniversalTime().AddMinutes(appSettings.NumOfMinutesToLoadClosedMatch) < dateTimeNowFunc().ToUniversalTime())
+            {
+                return false;
+            }
+
+            return true;
+        }
 
         public async Task<IEnumerable<MatchSummary>> GetByDateRange(DateTime from, DateTime to, Language language)
         {
@@ -116,11 +139,14 @@
             return new CacheItemOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(cacheDuration));
         }
 
-        private static bool ShouldCacheWithShortDuration(DateTime date)
-            => date.ToUniversalTime().Date == DateTime.UtcNow.Date
-                || date.ToUniversalTime().Date == DateTime.UtcNow.Date.AddDays(-1);
+        private bool ShouldCacheWithShortDuration(DateTime date)
+            => date.ToUniversalTime().Date == dateTimeNowFunc().UtcDateTime.Date
+                || date.ToUniversalTime().Date == dateTimeNowFunc().UtcDateTime.Date.AddDays(-1);
 
         private static string BuildCacheKey(string key, DateTime from, DateTime to)
             => $"{key}_{from.ToString(FormatDate)}_{to.ToString(FormatDate)}";
+
+        public async Task<int> GetLiveMatchCount(Language language)
+            => (await GetLive(language)).Count();
     }
 }

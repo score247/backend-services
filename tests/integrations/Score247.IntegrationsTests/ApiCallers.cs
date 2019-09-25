@@ -68,6 +68,12 @@
 
         [Get("/soccer/{language}/matches/{matchId}")]
         Task<MatchInfo> GetMatchInfo(string matchId, string language);
+
+        [Get("/soccer/{language}/matches/live")]
+        Task<IEnumerable<MatchSummary>> GetLiveMatches(string language);
+
+        [Get("/soccer/{language}/matches/live/count")]
+        Task<int> GetLiveMatchCount(string language);
     }
 
     public interface ISoccerOddsApi
