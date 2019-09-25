@@ -35,24 +35,11 @@
 
             foreach (var match in matches)
             {
-                if (match.MatchResult.EventStatus.IsClosed())
-                {
-                    await PublishClosedMatchMessage(match);
-                }
-                else
-                {
-                    if (match.MatchResult.EventStatus.IsLive())
-                    {
-                        await PublishLiveMatchResultUpdatedMessage(match);
-                    }
-                }
+                await PublishLiveMatchResultUpdatedMessage(match);
 
                 StartFetchTimelinesTask(match.Id, match.Region);
             }
         }
-
-        private async Task PublishClosedMatchMessage(Match match)
-            => await messageBus.Publish<ILiveMatchClosedMessage>(new LiveMatchClosedMessage(match.Id, match.MatchResult));
 
         private async Task PublishLiveMatchResultUpdatedMessage(Match match)
             => await messageBus.Publish<ILiveMatchResultUpdatedMessage>(new LiveMatchResultUpdatedMessage(match.Id, match.MatchResult));
