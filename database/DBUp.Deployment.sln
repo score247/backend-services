@@ -5,32 +5,6 @@ VisualStudioVersion = 16.0.29215.179
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DBUp.Deployment", "DBUp.Deployment\DBUp.Deployment.csproj", "{81F8113A-9F1A-49B3-9D61-1A07ADDCB254}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "store-procedures", "store-procedures", "{545F4094-1C21-4530-802F-8610D1FC1E5B}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "matches", "matches", "{30B4908A-5C9A-4FC9-8262-DC0A3B7BF313}"
-	ProjectSection(SolutionItems) = preProject
-		store-procedures\matches\LiveMatch_GetBySportId.sql = store-procedures\matches\LiveMatch_GetBySportId.sql
-		store-procedures\matches\LiveMatch_RemoveById.sql = store-procedures\matches\LiveMatch_RemoveById.sql
-		store-procedures\matches\LiveMatch_UpdateCurrentPeriodStartTime.sql = store-procedures\matches\LiveMatch_UpdateCurrentPeriodStartTime.sql
-		store-procedures\matches\LiveMatch_UpdateMatchResult.sql = store-procedures\matches\LiveMatch_UpdateMatchResult.sql
-		store-procedures\matches\LiveMatch_UpdateTeamRedCards.sql = store-procedures\matches\LiveMatch_UpdateTeamRedCards.sql
-		store-procedures\matches\Match_GetByDateRange.sql = store-procedures\matches\Match_GetByDateRange.sql
-		store-procedures\matches\Match_GetById.sql = store-procedures\matches\Match_GetById.sql
-		store-procedures\matches\Match_GetTimeline.sql = store-procedures\matches\Match_GetTimeline.sql
-		store-procedures\matches\Match_InsertMatches.sql = store-procedures\matches\Match_InsertMatches.sql
-		store-procedures\matches\Match_InsertOrUpdatePostMatches.sql = store-procedures\matches\Match_InsertOrUpdatePostMatches.sql
-		store-procedures\matches\Match_InsertTimeline.sql = store-procedures\matches\Match_InsertTimeline.sql
-		store-procedures\matches\Match_UpdateMatchResultAndMigrateLiveData.sql = store-procedures\matches\Match_UpdateMatchResultAndMigrateLiveData.sql
-		store-procedures\matches\Match_UpdateRefereeAndAttendance.sql = store-procedures\matches\Match_UpdateRefereeAndAttendance.sql
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "odds", "odds", "{79C9553B-765F-4EB5-909F-FD7B6889A9AF}"
-	ProjectSection(SolutionItems) = preProject
-		store-procedures\odds\Odds_GetOdds.sql = store-procedures\odds\Odds_GetOdds.sql
-		store-procedures\odds\Odds_InsertOdds.sql = store-procedures\odds\Odds_InsertOdds.sql
-		store-procedures\odds\Score247_Odds_InsertOdds.sql = store-procedures\odds\Score247_Odds_InsertOdds.sql
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,10 +18,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{30B4908A-5C9A-4FC9-8262-DC0A3B7BF313} = {545F4094-1C21-4530-802F-8610D1FC1E5B}
-		{79C9553B-765F-4EB5-909F-FD7B6889A9AF} = {545F4094-1C21-4530-802F-8610D1FC1E5B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4B9A40DB-F5B1-48D9-A522-3387B4ED0B94}
