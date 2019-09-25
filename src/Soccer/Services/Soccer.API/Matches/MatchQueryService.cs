@@ -140,7 +140,7 @@
         private bool IsMatchRunning(Match match)
         {
             if (match.LatestTimeline.Type.IsMatchEnd()
-                && match.LatestTimeline.Time.ToUniversalTime().AddMinutes(appSettings.NumOfMinutesToLoadClosedMatch) < dateTimeNowFunc().ToUniversalTime())
+                && match.LatestTimeline.Time.ToUniversalTime().AddMinutes(appSettings.NumOfMinutesToExpireClosedMatch) < dateTimeNowFunc().ToUniversalTime())
             {
                 return false;
             }

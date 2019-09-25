@@ -19,7 +19,7 @@
             {
                 ContentSerializer = new MessagePackContentSerializer()
             };
-            soccerMatchApi = RestService.For<ISoccerMatchApi>("http://localhost:57392/api/", messagePackRefitSettings);
+            soccerMatchApi = RestService.For<ISoccerMatchApi>("https://score247-api1.nexdev.net/main/api/", messagePackRefitSettings);
         }
 
         [Fact]

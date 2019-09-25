@@ -20,7 +20,7 @@
 
         int OddsLongCacheTimeDuration { get; }
 
-        int NumOfMinutesToLoadClosedMatch { get; }
+        int NumOfMinutesToExpireClosedMatch { get; }
     }
 
     public class AppSettings : IAppSettings
@@ -60,7 +60,7 @@
 
         public int OddsLongCacheTimeDuration { get; }
 
-        public int NumOfMinutesToLoadClosedMatch { get; }
+        public int NumOfMinutesToExpireClosedMatch { get; }
 
         public T GetValue<T>(string key)
         {
