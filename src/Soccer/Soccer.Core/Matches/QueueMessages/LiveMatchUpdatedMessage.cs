@@ -1,24 +1,20 @@
 ﻿namespace Soccer.Core.Matches.Events
 {
     using Soccer.Core.Matches.Models;
+    using System.Collections.Generic;
 
     public interface ILiveMatchResultUpdatedMessage
     {
-        string MatchId { get; }
-
-        MatchResult MatchResult { get; }
+        IEnumerable<Match> Matches { get; }
     }
 
     public class LiveMatchResultUpdatedMessage : ILiveMatchResultUpdatedMessage
     {
-        public LiveMatchResultUpdatedMessage(string matchId, MatchResult matchResult)
-        {
-            MatchId = matchId;
-            MatchResult = matchResult;
+        public LiveMatchResultUpdatedMessage(IEnumerable<Match> matches)
+        {            
+            Matches = matches;
         }
 
-        public string MatchId { get; }
-
-        public MatchResult MatchResult { get; }
+        public IEnumerable<Match> Matches { get; }
     }
 }

@@ -1,27 +1,24 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
+    using Hangfire;
     using MassTransit;
-    using Soccer.Core.Matches.Events;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.DataProviders.Matches.Services;
-    using System.Linq;
     using System.Threading.Tasks;
 
-    public interface IFetchLiveMatchesTask
+    public interface IFetchLiveMatchesTimelineTask
     {
         Task FetchLiveMatches();
     }
 
-    public class FetchLiveMatchesTask : IFetchLiveMatchesTask
+    public class FetchLiveMatchesTimelineTask : IFetchLiveMatchesTimelineTask
     {
-        private readonly IMatchService matchService;
-        private readonly IBus messageBus;
+        private readonly IMatchService matchService;        
 
-        public FetchLiveMatchesTask(
+        public FetchLiveMatchesTimelineTask(
             IBus messageBus,
             IMatchService matchService)
-        {
-            this.messageBus = messageBus;
+        {            
             this.matchService = matchService;
         }
 
@@ -29,7 +26,10 @@
         {
             var matches = await matchService.GetLiveMatches(Language.en_US);
 
-            await messageBus.Publish<ILiveMatchResultUpdatedMessage>(new LiveMatchResultUpdatedMessage(matches));
+            foreach (var match in matches)
+            {
+                BackgroundJob.Enqueue<IFetchTimelineTask>(t => t.FetchTimelines(match.Id, match.Region));
+            }
         }
     }
 }
