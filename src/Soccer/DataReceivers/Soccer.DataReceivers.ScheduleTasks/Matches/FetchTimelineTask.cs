@@ -7,6 +7,7 @@
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Shared.Enumerations;
+    using Soccer.Core.Teams.QueueMessages;
     using Soccer.DataProviders.Matches.Services;
 
     public interface IFetchTimelineTask
@@ -40,8 +41,15 @@
         public async Task FetchTimelines(string matchId, string region, Language language)
         {
             var match = await timelineService.GetTimelines(matchId, region, language);
-
+                        
             await messageBus.Publish<IMatchUpdatedConditionsMessage>(new MatchUpdatedConditionsMessage(matchId, match.Referee, match.Attendance, language));
+
+            await messageBus.Publish<IMatchUpdatedCoverageInfo>(new MatchUpdatedCoverageInfo(matchId, language, match.Coverage));
+
+            foreach (var team in match.Teams)
+            {
+                await messageBus.Publish<ITeamStatisticUpdatedMessage>(new TeamStatisticUpdatedMessage(matchId, team.IsHome, team.Statistic));
+            }
 
             if (match.TimeLines != null)
             {
@@ -52,10 +60,6 @@
                     await messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent));
                 }
             }
-
-            //TODO process coverage info
-
-            //TODO process statistic info
         }
     }
 }
