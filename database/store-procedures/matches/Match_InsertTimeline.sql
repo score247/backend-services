@@ -6,6 +6,7 @@ BEGIN
 			JSON_UNQUOTE(JSON_EXTRACT(timeline, '$.Id')),
 			matchId,
 			JSON_UNQUOTE(JSON_EXTRACT(timeline, '$')),
+            'en-US',
             now(),
             now())
 	 ON DUPLICATE KEY UPDATE
