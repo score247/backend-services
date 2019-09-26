@@ -1,10 +1,8 @@
 DROP procedure IF EXISTS `LiveMatch_GetBySportId`;
 
-CREATE DEFINER=`user`@`%` PROCEDURE `LiveMatch_GetBySportId`(IN sportId INT, IN language TEXT, IN fromDate DATETIME)
+CREATE DEFINER=`user`@`%` PROCEDURE `LiveMatch_GetBySportId`(IN sportId INT, IN language TEXT)
 BEGIN
 	SELECT `Value`
     FROM LiveMatch as LM
-	WHERE LM.SportId = sportId
-		AND LM.`Language` = language
-        AND LM.EventDate >= fromDate;
+	WHERE LM.SportId = sportId AND LM.`Language` = language;
 END
