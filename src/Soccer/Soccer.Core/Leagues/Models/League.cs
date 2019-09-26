@@ -7,6 +7,7 @@
         public int Order { get; set; }
 
         public string Flag { get; set; }
+        public string CountryCode { get; set; }
 
         public LeagueCategory Category { get; set; }
     }

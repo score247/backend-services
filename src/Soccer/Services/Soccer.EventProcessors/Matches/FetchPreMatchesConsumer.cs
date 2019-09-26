@@ -23,9 +23,10 @@
         }
 
         public async Task Consume(ConsumeContext<IPreMatchesFetchedMessage> context)
-        {            
-            var message = context.Message;                 
-            var command = new InsertOrUpdateMatchesCommand(leagueFilter.Filter(message.Matches), message.Language);
+        {
+            var message = context.Message;
+            var filterdMatches = await leagueFilter.FilterAsync(message.Matches);
+            var command = new InsertOrUpdateMatchesCommand(filterdMatches, message.Language);
 
             await dynamicRepository.ExecuteAsync(command);
         }

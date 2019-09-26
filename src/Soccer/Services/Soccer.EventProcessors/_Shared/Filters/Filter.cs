@@ -1,7 +1,9 @@
-﻿namespace Soccer.EventProcessors._Shared.Filters
+﻿using System.Threading.Tasks;
+
+namespace Soccer.EventProcessors._Shared.Filters
 {
     public interface IFilter<T>
     {
-        T Filter(T data);
+        Task<T> FilterAsync(T data);
     }
 }

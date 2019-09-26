@@ -1,6 +1,8 @@
 ﻿namespace Soccer.EventProcessors
 {
     using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
     using Fanex.Caching;
     using MassTransit;
     using Microsoft.AspNetCore.Builder;
@@ -8,6 +10,9 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Soccer.Core.Matches.Models;
+    using Soccer.EventProcessors._Shared.Filters;
+    using Soccer.EventProcessors.Leagues;
     using Soccer.EventProcessors.Shared.Middlewares;
 
     public class Startup
@@ -29,6 +34,8 @@
             services.AddRabbitMq(Configuration);
             services.AddHealthCheck();
             services.AddDatabase();
+
+            RegisterFilters(services);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
@@ -52,6 +59,12 @@
 
             app.UseHealthCheck();
             app.UseDatabase(Configuration);
+        }
+
+        private static void RegisterFilters(IServiceCollection services)
+        {
+            services.AddSingleton<IFilter<IEnumerable<Match>>, LeagueFilter>();
+            services.AddSingleton<IFilter<Match>, LeagueFilter>();
         }
     }
 }
