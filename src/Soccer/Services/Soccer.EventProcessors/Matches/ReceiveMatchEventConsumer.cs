@@ -12,6 +12,7 @@
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
     using Soccer.Database.Matches.Criteria;
+    using Soccer.EventProcessors._Shared.Filters;
 
     public class ReceiveMatchEventConsumer : IConsumer<IMatchEventReceivedMessage>
     {
@@ -23,18 +24,19 @@
         private readonly ICacheService cacheService;
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
+        private readonly IFilter<MatchEvent> matchEventFilter;
 
-        public ReceiveMatchEventConsumer(ICacheService cacheService, IDynamicRepository dynamicRepository, IBus messageBus)
+        public ReceiveMatchEventConsumer(ICacheService cacheService, IDynamicRepository dynamicRepository, IBus messageBus, IFilter<MatchEvent> matchEventFilter)
         {
             this.cacheService = cacheService;
             this.dynamicRepository = dynamicRepository;
             this.messageBus = messageBus;
+            this.matchEventFilter = matchEventFilter;
         }
 
         public async Task Consume(ConsumeContext<IMatchEventReceivedMessage> context)
         {
-            var matchEvent = context.Message?.MatchEvent;
-
+            var matchEvent = await matchEventFilter.FilterAsync(context.Message?.MatchEvent);
             if (matchEvent != null && await IsTimelineEventNotProcessed(matchEvent))
             {
                 if (matchEvent.Timeline.IsScoreChangeInPenalty())

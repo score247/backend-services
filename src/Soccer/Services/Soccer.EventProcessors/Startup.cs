@@ -65,6 +65,7 @@
         {
             services.AddSingleton<IFilter<IEnumerable<Match>>, LeagueFilter>();
             services.AddSingleton<IFilter<Match>, LeagueFilter>();
+            services.AddSingleton<IFilter<MatchEvent>, MatchEventFilter>();
         }
     }
 }

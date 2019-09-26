@@ -5,7 +5,6 @@ using Soccer.Database.Leagues.Criteria;
 using Soccer.EventProcessors._Shared.Filters;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using System.Linq;
 
 namespace Soccer.EventProcessors.Leagues
