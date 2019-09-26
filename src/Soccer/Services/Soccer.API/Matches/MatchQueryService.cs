@@ -51,7 +51,7 @@
             var liveMatches = await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(language, dateTimeNowFunc().AddDays(-1).DateTime));
 
             return liveMatches
-                .Where(match => IsMatchRunning(match))
+                .Where(IsMatchRunning)
                 .Select(m => new MatchSummary(m));
         }
 
