@@ -14,6 +14,7 @@ BEGIN
 		   AND NonLiveMatch.SportId = sportId
 			AND NonLiveMatch.EventDate >=  fromDate
 			AND NonLiveMatch.EventDate <=  toDate
+			AND League.IsActive =  '1'
 			AND NonLiveMatch.`Language` = language)
 		UNION ALL 
 		(SELECT Value, EventDate, LeagueId, Id, ModifiedTime FROM `LiveMatch` as LM
