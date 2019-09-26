@@ -153,7 +153,6 @@
             services.AddScoped<IFetchPostMatchesTask, FetchPostMatchesTask>();
             services.AddScoped<IFetchLiveMatchesTask, FetchLiveMatchesTask>();
             services.AddScoped<IFetchOddsScheduleTask, FetchOddsScheduleTask>();
-            services.AddScoped<IFetchLiveMatchesTimelineTask, FetchLiveMatchesTimelineTask>();
             services.AddScoped<IFetchTimelineTask, FetchTimelineTask>();
         }
 
@@ -168,10 +167,7 @@
                 "FetchPostMatch", job => job.FetchPostMatches(taskSettings.FetchMatchScheduleDateSpan), " 0 0/6 * * *");
 
             RecurringJob.AddOrUpdate<IFetchLiveMatchesTask>(
-                "FetchLiveMatch", job => job.FetchLiveMatches(), "*/5 * * * *");
-
-            RecurringJob.AddOrUpdate<IFetchLiveMatchesTimelineTask>(
-                "FetchLiveMatchTimeline", job => job.FetchLiveMatches(), "*/5 * * * *");
+                "FetchLiveMatch", job => job.FetchLiveMatches(), "*/1 * * * *");            
 
             if (!string.IsNullOrWhiteSpace(taskSettings.FetchOddsScheduleJobCron))
             {

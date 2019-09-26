@@ -1,20 +1,31 @@
-﻿namespace Soccer.Core.Matches.Events
-{
-    using Soccer.Core.Matches.Models;
-    using System.Collections.Generic;
+﻿using Soccer.Core.Matches.Models;
+using Soccer.Core.Shared.Enumerations;
+using System.Collections.Generic;
 
-    public interface ILiveMatchResultUpdatedMessage
+namespace Soccer.Core.Matches.QueueMessages
+{
+    public interface ILiveMatchUpdatedMessage
     {
-        IEnumerable<Match> Matches { get; }
+        Language Language { get; }
+
+        IEnumerable<Match> NewMatches { get; }
+
+        IEnumerable<Match> RemovedMatches { get; }
     }
 
-    public class LiveMatchResultUpdatedMessage : ILiveMatchResultUpdatedMessage
+    public class LiveMatchUpdatedMessage : ILiveMatchUpdatedMessage
     {
-        public LiveMatchResultUpdatedMessage(IEnumerable<Match> matches)
-        {            
-            Matches = matches;
+        public LiveMatchUpdatedMessage(Language language, IEnumerable<Match> newMatches, IEnumerable<Match> removedMatches)
+        {
+            Language = language;
+            NewMatches = newMatches;
+            RemovedMatches = removedMatches;
         }
 
-        public IEnumerable<Match> Matches { get; }
+        public Language Language { get; }
+
+        public IEnumerable<Match> NewMatches { get; }
+
+        public IEnumerable<Match> RemovedMatches { get; }
     }
 }

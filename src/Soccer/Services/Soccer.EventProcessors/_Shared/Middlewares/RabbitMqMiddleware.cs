@@ -39,6 +39,7 @@
                 serviceCollectionConfigurator.AddConsumer<UpdateMatchConditionsConsumer>();
                 serviceCollectionConfigurator.AddConsumer<UpdateTeamStatisticConsumer>();
                 serviceCollectionConfigurator.AddConsumer<UpdateMatchCoverageCosumer>();
+                serviceCollectionConfigurator.AddConsumer<FetchedLiveMatchConsumer>();
             });
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -62,6 +63,7 @@
                     e.Consumer<CloseLiveMatchConsumer>(provider);
                     e.Consumer<UpdateMatchConditionsConsumer>(provider);
                     e.Consumer<UpdateMatchCoverageCosumer>(provider);
+                    e.Consumer<FetchedLiveMatchConsumer>(provider);
                 });
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents", e =>

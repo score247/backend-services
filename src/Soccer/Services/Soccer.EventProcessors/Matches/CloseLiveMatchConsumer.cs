@@ -20,20 +20,11 @@
             var message = context.Message;
 
             await UpdateMatchResultAndMigrateLiveData(message);
-
-            await RemoveLiveMatch(message);
         }
 
         private async Task UpdateMatchResultAndMigrateLiveData(ILiveMatchClosedMessage message)
         {
             var command = new UpdateMatchResultAndMigrateLiveData(message.MatchId, message.MatchResult);
-
-            await dynamicRepository.ExecuteAsync(command);
-        }
-
-        private async Task RemoveLiveMatch(ILiveMatchClosedMessage message)
-        {
-            var command = new RemoveLiveMatchCommand(message.MatchId);
 
             await dynamicRepository.ExecuteAsync(command);
         }

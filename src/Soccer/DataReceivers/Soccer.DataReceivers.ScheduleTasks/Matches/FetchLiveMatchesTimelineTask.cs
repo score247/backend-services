@@ -24,6 +24,7 @@
 
         public async Task FetchLiveMatches()
         {
+            //TODO should support multiple languages
             var matches = await matchService.GetLiveMatches(Language.en_US);
 
             foreach (var match in matches)

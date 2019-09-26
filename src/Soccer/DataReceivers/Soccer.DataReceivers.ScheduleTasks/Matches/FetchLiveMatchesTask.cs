@@ -1,10 +1,10 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     using MassTransit;
+    using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Events;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.DataProviders.Matches.Services;
-    using System.Linq;
     using System.Threading.Tasks;
 
     public interface IFetchLiveMatchesTask
@@ -15,7 +15,7 @@
     public class FetchLiveMatchesTask : IFetchLiveMatchesTask
     {
         private readonly IMatchService matchService;
-        private readonly IBus messageBus;
+        private readonly IBus messageBus;        
 
         public FetchLiveMatchesTask(
             IBus messageBus,
@@ -27,9 +27,12 @@
 
         public async Task FetchLiveMatches()
         {
-            var matches = await matchService.GetLiveMatches(Language.en_US);
+            foreach (var language in Enumeration.GetAll<Language>())
+            {
+                var matches = await matchService.GetLiveMatches(language);
 
-            await messageBus.Publish<ILiveMatchResultUpdatedMessage>(new LiveMatchResultUpdatedMessage(matches));
+                await messageBus.Publish<ILiveMatchFetchedMessage>(new LiveMatchFetchedMessage(language, matches));
+            }                
         }
     }
 }
