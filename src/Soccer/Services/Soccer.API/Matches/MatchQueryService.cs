@@ -48,10 +48,9 @@
 
         public async Task<IEnumerable<MatchSummary>> GetLive(Language language)
         {
-            var liveMatches = await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(language, dateTimeNowFunc().AddDays(-1).DateTime));
+            var liveMatches = await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(language));
 
-            return liveMatches
-                .Where(IsMatchRunning)
+            return liveMatches                
                 .Select(m => new MatchSummary(m));
         }
 
@@ -136,16 +135,5 @@
 
         private static string BuildCacheKey(string key, DateTime from, DateTime to)
             => $"{key}_{from.ToString(FormatDate)}_{to.ToString(FormatDate)}";
-
-        private bool IsMatchRunning(Match match)
-        {
-            if (match.LatestTimeline.Type.IsMatchEnd()
-                && match.LatestTimeline.Time.ToUniversalTime().AddMinutes(appSettings.NumOfMinutesToExpireClosedMatch) < dateTimeNowFunc().ToUniversalTime())
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }

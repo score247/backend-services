@@ -30,7 +30,7 @@ namespace Soccer.EventProcessors.Matches
                 return;
             }
 
-            var liveMatchesInDb = await dynamicRepository.FetchAsync<Match>(new GetAllLiveMatchesCriteria(message.Language));
+            var liveMatchesInDb = await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(message.Language));
             var removedMatches = liveMatchesInDb.Except(message.Matches);
             var newLiveMatches = message.Matches.Except(liveMatchesInDb);
 

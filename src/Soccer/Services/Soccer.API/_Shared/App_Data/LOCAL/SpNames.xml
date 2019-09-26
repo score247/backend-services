@@ -3,7 +3,6 @@
     <Setting Key="Match_GetByDateRange" SpName="Match_GetByDateRange" DbName="DefaultConnection" />
     <Setting Key="Match_GetById" SpName="Match_GetById" DbName="DefaultConnection" />
     <Setting Key="Match_GetTimelineEvents" SpName="Match_GetTimelineEvents" DbName="DefaultConnection" />
-
     <Setting Key="LiveMatch_GetBySportId" SpName="LiveMatch_GetBySportId" DbName="DefaultConnection" />
   </Function>
   <Function Name="Odds">
