@@ -34,7 +34,6 @@
         private readonly IAppSettings appSettings;
         private readonly Func<DateTimeOffset> dateTimeNowFunc;
 
-
         public MatchQueryService(
             IDynamicRepository dynamicRepository,
             ICacheManager cacheManager,
@@ -56,16 +55,8 @@
                 .Select(m => new MatchSummary(m));
         }
 
-        private bool IsMatchRunning(Match match)
-        {
-            if (match.LatestTimeline.Type.IsMatchEnd()
-                && match.LatestTimeline.Time.ToUniversalTime().AddMinutes(appSettings.NumOfMinutesToLoadClosedMatch) < dateTimeNowFunc().ToUniversalTime())
-            {
-                return false;
-            }
-
-            return true;
-        }
+        public async Task<int> GetLiveMatchCount(Language language)
+            => (await GetLive(language)).Count();
 
         public async Task<IEnumerable<MatchSummary>> GetByDateRange(DateTime from, DateTime to, Language language)
         {
@@ -102,7 +93,7 @@
             if (match != null)
             {
                 return await cacheManager.GetOrSetAsync(
-                    BuildMatchInfoCacheKey(id), 
+                    BuildMatchInfoCacheKey(id),
                     async () =>
                     {
                         var timelineEvents = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
@@ -110,7 +101,7 @@
                         var matchInfo = new MatchInfo(new MatchSummary(match), timelineEvents, match.Venue, match.Referee, match.Attendance);
 
                         return matchInfo;
-                    }, 
+                    },
                     BuildCacheOptions(match.EventDate.DateTime));
             }
 
@@ -146,7 +137,15 @@
         private static string BuildCacheKey(string key, DateTime from, DateTime to)
             => $"{key}_{from.ToString(FormatDate)}_{to.ToString(FormatDate)}";
 
-        public async Task<int> GetLiveMatchCount(Language language)
-            => (await GetLive(language)).Count();
+        private bool IsMatchRunning(Match match)
+        {
+            if (match.LatestTimeline.Type.IsMatchEnd()
+                && match.LatestTimeline.Time.ToUniversalTime().AddMinutes(appSettings.NumOfMinutesToLoadClosedMatch) < dateTimeNowFunc().ToUniversalTime())
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
