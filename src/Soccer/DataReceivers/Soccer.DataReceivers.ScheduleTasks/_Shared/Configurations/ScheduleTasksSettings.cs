@@ -8,7 +8,11 @@
             int fetchMatchScheduleDateSpan = 0,
             string fetchOddsScheduleJobCron = "0 0/6 * * *",
             string fetchOddsChangeJobCron = "*/5 * * * *",
-            int fetchOddsChangeMinuteInterval = 5)
+            int fetchOddsChangeMinuteInterval = 5,
+            string fetchLiveMatchCron = "*/1 * * * *",
+            string fetchLiveMatchesTimelineCron = "*/5 * * * *",
+            string fetchPostMatchesCron = " 0 0/6 * * *",
+            string fetchPreMatchesCron = " 0 0/6 * * *")
         {
             QueueBatchSize = queueBatchSize;
             FetchMatchResultDateSpan = fetchMatchResultDateSpan;
@@ -16,6 +20,10 @@
             FetchOddsScheduleJobCron = fetchOddsScheduleJobCron;
             FetchOddsChangeJobCron = fetchOddsChangeJobCron;
             FetchOddsChangeMinuteInterval = fetchOddsChangeMinuteInterval;
+            FetchLiveMatchesCron = fetchLiveMatchCron;
+            FetchLiveMatchesTimelineCron = fetchLiveMatchesTimelineCron;
+            FetchPostMatchesCron = fetchPostMatchesCron;
+            FetchPreMatchesCron = fetchPreMatchesCron;
         }
 
         public int QueueBatchSize { get; set; }
@@ -29,5 +37,13 @@
         public string FetchOddsChangeJobCron { get; set; }
 
         public int FetchOddsChangeMinuteInterval { get; set; }
+
+        public string FetchLiveMatchesCron { get; set; }
+
+        public string FetchLiveMatchesTimelineCron { get; set; }
+
+        public string FetchPostMatchesCron { get; set; }
+
+        public string FetchPreMatchesCron { get; set; }
     }
 }

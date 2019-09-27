@@ -13,9 +13,9 @@ using Soccer.EventProcessors._Shared.Filters;
 
 namespace Soccer.EventProcessors.Leagues
 {
-    public class LeagueFilter : 
-        IFilter<IEnumerable<Match>, IEnumerable<Match>>, 
-        IFilter<Match, bool>, 
+    public class LeagueFilter :
+        IFilter<IEnumerable<Match>, IEnumerable<Match>>,
+        IFilter<Match, bool>,
         IFilter<MatchEvent, bool>
     {
         private const string MajorLeaguesCacheKey = "Major_Leagues";
