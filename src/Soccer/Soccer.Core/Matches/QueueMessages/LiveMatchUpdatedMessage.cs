@@ -1,6 +1,6 @@
-﻿using Soccer.Core.Matches.Models;
+﻿using System.Collections.Generic;
+using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
-using System.Collections.Generic;
 
 namespace Soccer.Core.Matches.QueueMessages
 {

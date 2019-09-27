@@ -8,10 +8,8 @@
     using Fanex.Data.Repository;
     using Fanex.Logging;
     using MassTransit;
-    using Newtonsoft.Json;
     using NSubstitute;
     using Soccer.Core.Matches.Models;
-    using Soccer.Core.Odds;
     using Soccer.Core.Odds.Models;
     using Soccer.Database.Odds.Criteria;
     using Soccer.EventProcessors.Odds;

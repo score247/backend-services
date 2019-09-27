@@ -1,7 +1,7 @@
 ﻿namespace Soccer.Core.Matches.Models
 {
     public class Coverage
-    {       
+    {
         public Coverage(bool live, bool basicScore = false, bool keyEvents = false, bool detailedEvents = false, bool lineups = false, bool commentary = false)
         {
             Live = live;

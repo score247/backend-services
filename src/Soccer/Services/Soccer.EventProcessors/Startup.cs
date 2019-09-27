@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Threading.Tasks;
     using Fanex.Caching;
     using MassTransit;
     using Microsoft.AspNetCore.Builder;

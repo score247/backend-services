@@ -1,9 +1,9 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
+    using System.Threading.Tasks;
     using Hangfire;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.DataProviders.Matches.Services;
-    using System.Threading.Tasks;
 
     public interface IFetchLiveMatchesTimelineTask
     {

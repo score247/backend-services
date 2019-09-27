@@ -1,17 +1,17 @@
-﻿namespace Soccer.API.Matches.Models
+﻿namespace Soccer.Core.Matches.Models
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using MessagePack;
-    using Soccer.Core.Matches.Models;
-    using Soccer.Core.Shared.Enumerations;
+    using Shared.Enumerations;
 
     [MessagePackObject]
 #pragma warning disable S109 // Magic numbers should not be used
     public class MatchSummary
     {
 #pragma warning disable S107 // Methods should not have too many parameters
+
         [SerializationConstructor]
         public MatchSummary(
             string id,

@@ -8,7 +8,7 @@
 
     public class JsonTypeHandler : SqlMapper.ITypeHandler
     {
-        private static JsonSerializerSettings settings = new JsonSerializerSettings
+        private static readonly JsonSerializerSettings settings = new JsonSerializerSettings
         {
             ContractResolver = new PrivateSetterContractResolver()
         };

@@ -1,8 +1,8 @@
 ﻿namespace Soccer.Core.Matches.Events
 {
+    using System.Collections.Generic;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
-    using System.Collections.Generic;
 
     public interface ILiveMatchFetchedMessage
     {

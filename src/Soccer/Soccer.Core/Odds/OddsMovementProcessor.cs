@@ -277,8 +277,8 @@
         private static OddsMovement BuildOpeningOddsMovement(BetTypeOdds firstBetTypeOdds)
         {
             var openingOddsMovement = new OddsMovement(
-                (firstBetTypeOdds.BetOptions ?? Enumerable.Empty<BetOptionOdds>()).Select(op => op.Clone()).ToList(), 
-                AppResources.Opening, 
+                (firstBetTypeOdds.BetOptions ?? Enumerable.Empty<BetOptionOdds>()).Select(op => op.Clone()).ToList(),
+                AppResources.Opening,
                 firstBetTypeOdds.LastUpdatedTime);
 
             openingOddsMovement.ResetLiveOddsToOpeningOdds();

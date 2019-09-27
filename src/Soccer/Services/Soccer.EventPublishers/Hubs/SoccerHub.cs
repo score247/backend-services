@@ -8,7 +8,7 @@
 
     public class SoccerHub : Hub
     {
-        private static HashSet<string> CurrentConnections = new HashSet<string>();
+        private static readonly HashSet<string> CurrentConnections = new HashSet<string>();
 
         public override Task OnConnectedAsync()
         {

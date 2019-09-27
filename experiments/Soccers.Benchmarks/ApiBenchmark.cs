@@ -8,7 +8,7 @@
     [InProcessAttribute, MinColumn, MaxColumn]
     public class ApiBenchmark
     {
-        private static Dictionary<string, string> Urls = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> Urls = new Dictionary<string, string>
         {
             { "New Api", "https://score247-api1.nexdev.net/dev2/api" },
             { "Old Api", "https://score247-api1.nexdev.net/dev1/api" }

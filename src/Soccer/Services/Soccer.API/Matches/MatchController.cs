@@ -1,14 +1,14 @@
-﻿namespace Soccer.API.Controllers
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using MediatR;
-    using Microsoft.AspNetCore.Mvc;
-    using Soccer.API.Matches.Models;
-    using Soccer.API.Matches.Requests;
-    using Soccer.Core.Matches.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Soccer.API.Matches.Models;
+using Soccer.API.Matches.Requests;
+using Soccer.Core.Matches.Models;
 
+namespace Soccer.API.Matches
+{
     [Route("api/soccer/{language}/matches")]
     [ApiController]
     public class MatchController : ControllerBase

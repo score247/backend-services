@@ -2,7 +2,6 @@
 {
     using Dapper;
     using Score247.Shared.Extensions;
-    using Soccer.Core.Leagues.Models;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Odds.Models;
     using Soccer.Core.Teams.Models;

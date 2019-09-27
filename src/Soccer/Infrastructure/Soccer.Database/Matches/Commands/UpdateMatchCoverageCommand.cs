@@ -8,14 +8,14 @@
         public UpdateMatchCoverageCommand(string matchId, string language, Coverage coverage)
         {
             SportId = Sport.Soccer.Value;
-            MatchId = matchId;          
+            MatchId = matchId;
             Language = language;
             Coverage = ToJsonString(coverage);
         }
 
         public byte SportId { get; }
 
-        public string MatchId { get; }        
+        public string MatchId { get; }
 
         public string Language { get; }
 
@@ -23,8 +23,8 @@
 
         public override string GetSettingKey() => "Match_UpdateCoverage";
 
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(MatchId) 
-            && !string.IsNullOrWhiteSpace(Language) 
+        public override bool IsValid() => !string.IsNullOrWhiteSpace(MatchId)
+            && !string.IsNullOrWhiteSpace(Language)
             && !string.IsNullOrWhiteSpace(Coverage);
     }
 }

@@ -1,15 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Fanex.Caching;
 using Fanex.Data.Repository;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
-using Soccer.Database.Leagues.Criteria;
-using Soccer.EventProcessors._Shared.Filters;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
-using Fanex.Caching;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.Database.Leagues.Criteria;
 using Soccer.Database.Matches.Criteria;
+using Soccer.EventProcessors._Shared.Filters;
 
 namespace Soccer.EventProcessors.Leagues
 {

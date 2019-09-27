@@ -25,7 +25,6 @@
         public async Task Consume(ConsumeContext<IPostMatchFetchedMessage> context)
         {
             var message = context.Message;
-
             var filteredMatches = await leagueFilter.FilterAsync(message.Matches);
             var command = new InsertOrUpdatePostMatchesCommand(filteredMatches, message.Language);
 

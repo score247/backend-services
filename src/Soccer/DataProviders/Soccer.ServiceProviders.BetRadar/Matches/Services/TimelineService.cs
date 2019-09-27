@@ -51,7 +51,7 @@
                 {
                     match.TimeLines = timelineDto.timeline.Select(t => TimelineMapper.MapTimeline(t)).ToList();
                 }
-                                
+
                 if (timelineDto.coverage_info != null)
                 {
                     match.Coverage = CoverageMapper.MapCoverage(timelineDto.coverage_info);
@@ -61,7 +61,7 @@
                 {
                     foreach (var team in timelineDto.statistics.teams)
                     {
-                        match.Teams.FirstOrDefault(x=> x.Id == team.id).Statistic = StatisticMapper.MapStatistic(team.statistics);
+                        match.Teams.FirstOrDefault(x => x.Id == team.id).Statistic = StatisticMapper.MapStatistic(team.statistics);
                     }
                 }
             }

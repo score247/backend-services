@@ -4,11 +4,11 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using _Shared;
     using Fanex.Caching;
     using Fanex.Data.Repository;
-    using Soccer.API._Shared;
-    using Soccer.API.Matches.Models;
-    using Soccer.API.Shared.Configurations;
+    using Models;
+    using Shared.Configurations;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Database.Matches.Criteria;

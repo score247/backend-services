@@ -50,7 +50,7 @@
             int batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
 
             var matches = (await matchService.GetPreMatches(date, language))
-                                .Where(x => x.MatchResult.EventStatus != MatchStatus.Live && 
+                                .Where(x => x.MatchResult.EventStatus != MatchStatus.Live &&
                                             x.MatchResult.EventStatus != MatchStatus.Closed).ToList();
 
             for (var i = 0; i * batchSize < matches.Count; i++)

@@ -57,21 +57,21 @@
         {
             await eventListenerService.ListenEvents(async (matchEvent) =>
             {
-                 try
-                 {
-                     await Task.WhenAll(
-                         messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent), stoppingToken),
-                         oddsMessagePublisher.PublishOdds(matchEvent));
-                 }
-                 catch (Exception ex)
-                 {
-                     await logger.ErrorAsync(
-                         string.Join(
-                             "\r\n",
-                             $"Match Event: {JsonConvert.SerializeObject(matchEvent)}",
-                             $"Exception: {ex}"),
-                         ex);
-                 }
+                try
+                {
+                    await Task.WhenAll(
+                        messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent), stoppingToken),
+                        oddsMessagePublisher.PublishOdds(matchEvent));
+                }
+                catch (Exception ex)
+                {
+                    await logger.ErrorAsync(
+                        string.Join(
+                            "\r\n",
+                            $"Match Event: {JsonConvert.SerializeObject(matchEvent)}",
+                            $"Exception: {ex}"),
+                        ex);
+                }
             }, stoppingToken);
         }
     }

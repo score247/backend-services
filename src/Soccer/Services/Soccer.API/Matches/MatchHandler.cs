@@ -4,11 +4,11 @@
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
-    using Soccer.API.Matches.Models;
-    using Soccer.API.Matches.Requests;
+    using Models;
+    using Requests;
     using Soccer.Core.Matches.Models;
 
-    public class MatchHandler :   
+    public class MatchHandler :
         IRequestHandler<MatchesByDateRequest, IEnumerable<MatchSummary>>,
         IRequestHandler<MatchInfoByIdRequest, MatchInfo>,
         IRequestHandler<LiveMatchesRequest, IEnumerable<MatchSummary>>,

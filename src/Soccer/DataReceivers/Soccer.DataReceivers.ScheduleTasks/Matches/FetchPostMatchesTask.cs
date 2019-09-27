@@ -1,5 +1,8 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
     using Hangfire;
     using MassTransit;
     using Score247.Shared.Enumerations;
@@ -7,9 +10,6 @@
     using Soccer.Core.Shared.Enumerations;
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
 
     public interface IFetchPostMatchesTask
     {

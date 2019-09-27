@@ -11,20 +11,20 @@ namespace DBUp.Deployment
 {
     public static class Program
     {
-        static int Main(string[] args)
+        private static int Main(string[] args)
         {
             //LOCAL DEV
-            //var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_dev;Persist Security Info=True;User ID=user;Password=1234aa;Allow User Variables=True;";
-            //var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_dev1;Persist Security Info=True;User ID=user;Password=1234aa;Allow User Variables=True;";
-            //var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_dev2;Persist Security Info=True;User ID=user;Password=1234aa;Allow User Variables=True;";
+            // var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_dev;Persist Security Info=True;User ID=user;Password=1234aa;Allow User Variables=True;";
+            var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_dev1;Persist Security Info=True;User ID=user;Password=1234aa;Allow User Variables=True;";
+            // var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_dev2;Persist Security Info=True;User ID=user;Password=1234aa;Allow User Variables=True;";
 
             //LOCAL TEST
-            //var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_test;Persist Security Info=True;User ID=user;Password=1234aa;Allow User Variables=True;";
+            // var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_test;Persist Security Info=True;User ID=user;Password=1234aa;Allow User Variables=True;";
 
             //LOCAL MAIN
-            var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_main;Persist Security Info=True;User ID=user;Password=1234aa;Allow User Variables=True;";
-           
-            var dir = new DirectoryInfo("../../../../store-procedures").FullName;            
+            // var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_main;Persist Security Info=True;User ID=user;Password=1234aa;Allow User Variables=True;";
+
+            var dir = new DirectoryInfo("../../../../store-procedures").FullName;
 
             var subDirs = Directory.GetDirectories(dir);
 
