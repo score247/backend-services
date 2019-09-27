@@ -20,7 +20,7 @@ namespace Soccer.DataReceivers.ScheduleTasks
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddLogging();
+            services.AddLogging(Configuration);
 
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
@@ -38,6 +38,7 @@ namespace Soccer.DataReceivers.ScheduleTasks
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.ConfigureExceptionHandler();
             app.UseHangfire(Configuration);
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseStaticFiles();
