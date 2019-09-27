@@ -128,7 +128,7 @@
             var apiException = (ApiException)ex;
             var content = apiException.Content;
 
-            if (IgnoreMessages.Any(m => content.Contains(m)))
+            if (IgnoreMessages.All(m => !content.Contains(m)))
             {
                 var message = $"Response: {content} \r\nRequest URL: {apiException.RequestMessage.RequestUri}";
                 await logger.ErrorAsync(message, ex);
