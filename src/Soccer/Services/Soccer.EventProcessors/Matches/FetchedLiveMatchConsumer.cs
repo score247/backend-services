@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Data.Repository;
 using MassTransit;
 using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
+using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Matches.Commands;
 using Soccer.Database.Matches.Criteria;
 
@@ -38,12 +40,26 @@ namespace Soccer.EventProcessors.Matches
 
             if (removedMatches.Count > 0 || newLiveMatches.Count > 0)
             {
-                var command = new InsertOrRemoveLiveMatchesCommand(message.Language, newLiveMatches, removedMatches);
+                var tasks = new List<Task>
+                {
+                    InsertOrRemoveLiveMatches(message.Language, newLiveMatches, removedMatches),
+                    PublishLiveMatchUpdatedMessage(message.Language, newLiveMatches, removedMatches)
+                };
 
-                await dynamicRepository.ExecuteAsync(command);
-
-                await messageBus.Publish<ILiveMatchUpdatedMessage>(new LiveMatchUpdatedMessage(message.Language, newLiveMatches, removedMatches));
+                await Task.WhenAll(tasks);
             }
+        }
+
+        private async Task InsertOrRemoveLiveMatches(Language language, IEnumerable<Match> newLiveMatches, IEnumerable<Match> removedMatches)
+        {
+            var command = new InsertOrRemoveLiveMatchesCommand(language, newLiveMatches, removedMatches);
+
+            await dynamicRepository.ExecuteAsync(command);
+        }
+
+        private async Task PublishLiveMatchUpdatedMessage(Language language, IEnumerable<Match> newLiveMatches, IEnumerable<Match> removedMatches)
+        {
+            await messageBus.Publish<ILiveMatchUpdatedMessage>(new LiveMatchUpdatedMessage(language, newLiveMatches, removedMatches));
         }
     }
 }
