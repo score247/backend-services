@@ -40,9 +40,15 @@
         {
             var match = await timelineService.GetTimelines(matchId, region, language);
 
-            await messageBus.Publish<IMatchUpdatedConditionsMessage>(new MatchUpdatedConditionsMessage(matchId, match.Referee, match.Attendance, language));
+            if (!string.IsNullOrWhiteSpace(match.Referee) || match.Attendance > 0)
+            {
+                await messageBus.Publish<IMatchUpdatedConditionsMessage>(new MatchUpdatedConditionsMessage(matchId, match.Referee, match.Attendance, language));
+            }
 
-            await messageBus.Publish<IMatchUpdatedCoverageInfo>(new MatchUpdatedCoverageInfo(matchId, language, match.Coverage));
+            if (match.Coverage != null)
+            {
+                await messageBus.Publish<IMatchUpdatedCoverageInfo>(new MatchUpdatedCoverageInfo(matchId, language, match.Coverage));
+            }
 
             foreach (var team in match.Teams)
             {
