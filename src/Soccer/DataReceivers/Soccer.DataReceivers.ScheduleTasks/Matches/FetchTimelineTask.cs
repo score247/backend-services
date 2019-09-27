@@ -13,8 +13,6 @@
     public interface IFetchTimelineTask
     {
         void FetchTimelines(string matchId, string regionName);
-
-        Task FetchTimelines(string matchId, string region, Language language);
     }
 
     public class FetchTimelineTask : IFetchTimelineTask
@@ -41,7 +39,7 @@
         public async Task FetchTimelines(string matchId, string region, Language language)
         {
             var match = await timelineService.GetTimelines(matchId, region, language);
-                        
+
             await messageBus.Publish<IMatchUpdatedConditionsMessage>(new MatchUpdatedConditionsMessage(matchId, match.Referee, match.Attendance, language));
 
             await messageBus.Publish<IMatchUpdatedCoverageInfo>(new MatchUpdatedCoverageInfo(matchId, language, match.Coverage));

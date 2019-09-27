@@ -1,7 +1,6 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     using Hangfire;
-    using MassTransit;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.DataProviders.Matches.Services;
     using System.Threading.Tasks;
@@ -13,12 +12,11 @@
 
     public class FetchLiveMatchesTimelineTask : IFetchLiveMatchesTimelineTask
     {
-        private readonly IMatchService matchService;        
+        private readonly IMatchService matchService;
 
         public FetchLiveMatchesTimelineTask(
-            IBus messageBus,
             IMatchService matchService)
-        {            
+        {
             this.matchService = matchService;
         }
 

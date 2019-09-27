@@ -63,9 +63,9 @@
 
         private static void RegisterFilters(IServiceCollection services)
         {
-            services.AddSingleton<IFilter<IEnumerable<Match>>, LeagueFilter>();
-            services.AddSingleton<IFilter<Match>, LeagueFilter>();
-            services.AddSingleton<IFilter<MatchEvent>, MatchEventFilter>();
+            services.AddSingleton<IFilter<IEnumerable<Match>, IEnumerable<Match>>, LeagueFilter>();
+            services.AddSingleton<IFilter<Match, bool>, LeagueFilter>();
+            services.AddSingleton<IFilter<MatchEvent, bool>, LeagueFilter>();
         }
     }
 }

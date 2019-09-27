@@ -154,6 +154,7 @@
             services.AddScoped<IFetchLiveMatchesTask, FetchLiveMatchesTask>();
             services.AddScoped<IFetchOddsScheduleTask, FetchOddsScheduleTask>();
             services.AddScoped<IFetchTimelineTask, FetchTimelineTask>();
+            services.AddScoped<IFetchLiveMatchesTimelineTask, FetchLiveMatchesTimelineTask>();
         }
 
         private static void RunHangfireJobs(IAppSettings appSettings)
@@ -167,7 +168,10 @@
                 "FetchPostMatch", job => job.FetchPostMatches(taskSettings.FetchMatchScheduleDateSpan), " 0 0/6 * * *");
 
             RecurringJob.AddOrUpdate<IFetchLiveMatchesTask>(
-                "FetchLiveMatch", job => job.FetchLiveMatches(), "*/1 * * * *");            
+                "FetchLiveMatch", job => job.FetchLiveMatches(), "*/1 * * * *");
+
+            RecurringJob.AddOrUpdate<IFetchLiveMatchesTimelineTask>(
+                "FetchLiveMatchTimeline", job => job.FetchLiveMatches(), "*/10 * * * *");
 
             if (!string.IsNullOrWhiteSpace(taskSettings.FetchOddsScheduleJobCron))
             {

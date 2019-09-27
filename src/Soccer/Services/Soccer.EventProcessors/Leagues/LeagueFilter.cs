@@ -6,10 +6,12 @@ using Soccer.EventProcessors._Shared.Filters;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using Soccer.Core.Shared.Enumerations;
+using Soccer.Database.Matches.Criteria;
 
 namespace Soccer.EventProcessors.Leagues
 {
-    public class LeagueFilter : IFilter<IEnumerable<Match>>, IFilter<Match>
+    public class LeagueFilter : IFilter<IEnumerable<Match>, IEnumerable<Match>>, IFilter<Match, bool>, IFilter<MatchEvent, bool>
     {
         private readonly IDynamicRepository dynamicRepository;
 
@@ -25,9 +27,23 @@ namespace Soccer.EventProcessors.Leagues
             return data.Where(x => activeLeagues.Any(al => al.Id == x.League.Id));
         }
 
-        public async Task<Match> FilterAsync(Match data)
+        public Task<bool> FilterAsync(Match data)
         {
-            return data;
+            // TODO: Implement later
+            return Task.FromResult(true);
+        }
+
+        public async Task<bool> FilterAsync(MatchEvent data)
+        {
+            if (data == null)
+            {
+                return false;
+            }
+
+            var activeLeagues = await dynamicRepository.FetchAsync<League>(new GetActiveLeagueCriteria());
+            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(data.MatchId, Language.en_US));
+
+            return activeLeagues.Any(x => x.Id == match?.League?.Id);
         }
     }
 }

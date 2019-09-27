@@ -24,9 +24,12 @@
         private readonly ICacheService cacheService;
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
-        private readonly IFilter<MatchEvent> matchEventFilter;
+        private readonly IFilter<MatchEvent, bool> matchEventFilter;
 
-        public ReceiveMatchEventConsumer(ICacheService cacheService, IDynamicRepository dynamicRepository, IBus messageBus, IFilter<MatchEvent> matchEventFilter)
+        public ReceiveMatchEventConsumer(ICacheService cacheService,
+            IDynamicRepository dynamicRepository,
+            IBus messageBus,
+            IFilter<MatchEvent, bool> matchEventFilter)
         {
             this.cacheService = cacheService;
             this.dynamicRepository = dynamicRepository;
@@ -36,8 +39,11 @@
 
         public async Task Consume(ConsumeContext<IMatchEventReceivedMessage> context)
         {
-            var matchEvent = await matchEventFilter.FilterAsync(context.Message?.MatchEvent);
-            if (matchEvent != null && await IsTimelineEventNotProcessed(matchEvent))
+            var matchEvent = context.Message?.MatchEvent;
+            var isValidMatchEvent = matchEvent != null
+                                    && await IsTimelineEventNotProcessed(matchEvent)
+                                    && await matchEventFilter.FilterAsync(matchEvent);
+            if (isValidMatchEvent)
             {
                 if (matchEvent.Timeline.IsScoreChangeInPenalty())
                 {

@@ -12,9 +12,11 @@
     public class FetchPreMatchesConsumer : IConsumer<IPreMatchesFetchedMessage>
     {
         private readonly IDynamicRepository dynamicRepository;
-        private readonly IFilter<IEnumerable<Match>> leagueFilter;
+        private readonly IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
 
-        public FetchPreMatchesConsumer(IDynamicRepository dynamicRepository, IFilter<IEnumerable<Match>> leagueFilter)
+        public FetchPreMatchesConsumer(
+            IDynamicRepository dynamicRepository,
+            IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter)
         {
             this.dynamicRepository = dynamicRepository;
             this.leagueFilter = leagueFilter;
@@ -23,8 +25,8 @@
         public async Task Consume(ConsumeContext<IPreMatchesFetchedMessage> context)
         {
             var message = context.Message;
-            var filterdMatches = await leagueFilter.FilterAsync(message.Matches);
-            var command = new InsertOrUpdateMatchesCommand(filterdMatches, message.Language);
+            var filteredMatches = await leagueFilter.FilterAsync(message.Matches);
+            var command = new InsertOrUpdateMatchesCommand(filteredMatches, message.Language);
 
             await dynamicRepository.ExecuteAsync(command);
         }

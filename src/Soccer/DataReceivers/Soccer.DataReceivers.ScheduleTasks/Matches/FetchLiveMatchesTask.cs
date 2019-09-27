@@ -15,7 +15,7 @@
     public class FetchLiveMatchesTask : IFetchLiveMatchesTask
     {
         private readonly IMatchService matchService;
-        private readonly IBus messageBus;        
+        private readonly IBus messageBus;
 
         public FetchLiveMatchesTask(
             IBus messageBus,
@@ -32,7 +32,7 @@
                 var matches = await matchService.GetLiveMatches(language);
 
                 await messageBus.Publish<ILiveMatchFetchedMessage>(new LiveMatchFetchedMessage(language, matches));
-            }                
+            }
         }
     }
 }
