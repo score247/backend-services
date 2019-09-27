@@ -9,6 +9,7 @@ using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Matches.Commands;
 using Soccer.Database.Matches.Criteria;
+using Soccer.EventProcessors._Shared.Filters;
 
 namespace Soccer.EventProcessors.Matches
 {
@@ -16,11 +17,16 @@ namespace Soccer.EventProcessors.Matches
     {
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
+        private readonly IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
 
-        public FetchedLiveMatchConsumer(IBus messageBus, IDynamicRepository dynamicRepository)
+        public FetchedLiveMatchConsumer(
+            IBus messageBus, 
+            IDynamicRepository dynamicRepository, 
+            IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter)
         {
             this.messageBus = messageBus;
             this.dynamicRepository = dynamicRepository;
+            this.leagueFilter = leagueFilter;
         }
 
         public async Task Consume(ConsumeContext<ILiveMatchFetchedMessage> context)
@@ -32,11 +38,13 @@ namespace Soccer.EventProcessors.Matches
                 return;
             }
 
+            var filteredMatches = await leagueFilter.FilterAsync(message.Matches);
+
             var currentLiveMatches = (await dynamicRepository
                     .FetchAsync<Match>(new GetLiveMatchesCriteria(message.Language)))
                     .ToList();
-            var removedMatches = currentLiveMatches.Except(message.Matches).ToList();
-            var newLiveMatches = message.Matches.Except(currentLiveMatches).ToList();
+            var removedMatches = currentLiveMatches.Except(filteredMatches).ToList();
+            var newLiveMatches = filteredMatches.Except(currentLiveMatches).ToList();
 
             if (removedMatches.Count > 0 || newLiveMatches.Count > 0)
             {
