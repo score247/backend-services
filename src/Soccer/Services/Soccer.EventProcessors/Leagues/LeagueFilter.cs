@@ -13,7 +13,10 @@ using Soccer.EventProcessors._Shared.Filters;
 
 namespace Soccer.EventProcessors.Leagues
 {
-    public class LeagueFilter : IFilter<IEnumerable<Match>, IEnumerable<Match>>, IFilter<Match, bool>, IFilter<MatchEvent, bool>
+    public class LeagueFilter : 
+        IFilter<IEnumerable<Match>, IEnumerable<Match>>, 
+        IFilter<Match, bool>, 
+        IFilter<MatchEvent, bool>
     {
         private const string MajorLeaguesCacheKey = "Major_Leagues";
         private readonly IDynamicRepository dynamicRepository;
@@ -27,7 +30,7 @@ namespace Soccer.EventProcessors.Leagues
 
         public async Task<IEnumerable<Match>> FilterAsync(IEnumerable<Match> data)
         {
-            var majorLeagues = (await GetMajorLeagues());
+            var majorLeagues = await GetMajorLeagues();
 
             return data.Where(match => majorLeagues?.Any(league => league.Id == match.League.Id) == true);
         }

@@ -112,12 +112,14 @@
             IEnumerable<BetOptionOdds> currentBetOptions,
             IEnumerable<BetOptionOdds> prevBetOptions)
         {
-            if (prevBetOptions?.Count() != currentBetOptions?.Count())
+            if (prevBetOptions == null
+                || currentBetOptions == null
+                || prevBetOptions.Count() != currentBetOptions.Count())
             {
                 return;
             }
 
-            var totalBetOptions = prevBetOptions.Count();
+            var totalBetOptions = prevBetOptions?.Count();
 
             for (int i = 0; i < totalBetOptions; i++)
             {
