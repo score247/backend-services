@@ -20,6 +20,8 @@ namespace Soccer.DataReceivers.ScheduleTasks
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLogging();
+
             JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
                 DateTimeZoneHandling = DateTimeZoneHandling.Utc
@@ -27,7 +29,6 @@ namespace Soccer.DataReceivers.ScheduleTasks
 
             var appSettings = new AppSettings(Configuration);
             services.AddSingleton<IAppSettings>(appSettings);
-            services.AddLogging();
             services.AddServices(Configuration);
             services.AddRabbitMq(Configuration);
             services.RegisterHangfire(Configuration);
