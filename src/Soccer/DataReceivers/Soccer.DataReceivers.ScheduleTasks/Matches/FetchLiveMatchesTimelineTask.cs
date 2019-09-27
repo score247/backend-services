@@ -7,7 +7,7 @@
 
     public interface IFetchLiveMatchesTimelineTask
     {
-        Task FetchLiveMatches();
+        Task FetchLiveMatchesTimeline();
     }
 
     public class FetchLiveMatchesTimelineTask : IFetchLiveMatchesTimelineTask
@@ -20,9 +20,8 @@
             this.matchService = matchService;
         }
 
-        public async Task FetchLiveMatches()
+        public async Task FetchLiveMatchesTimeline()
         {
-            //TODO should support multiple languages
             var matches = await matchService.GetLiveMatches(Language.en_US);
 
             foreach (var match in matches)

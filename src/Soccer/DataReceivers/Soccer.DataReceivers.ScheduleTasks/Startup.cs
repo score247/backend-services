@@ -171,7 +171,7 @@
                 "FetchLiveMatch", job => job.FetchLiveMatches(), "*/1 * * * *");
 
             RecurringJob.AddOrUpdate<IFetchLiveMatchesTimelineTask>(
-                "FetchLiveMatchTimeline", job => job.FetchLiveMatches(), "*/10 * * * *");
+                "FetchLiveMatchTimeline", job => job.FetchLiveMatchesTimeline(), "*/5 * * * *");
 
             if (!string.IsNullOrWhiteSpace(taskSettings.FetchOddsScheduleJobCron))
             {

@@ -6,6 +6,7 @@
     using MassTransit;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.Database.Matches.Commands;
 
     public class ProcessMatchEventConsumer : IConsumer<IMatchEventProcessedMessage>
@@ -42,7 +43,8 @@
             }
         }
 
+        //TODO should support multiple languages
         private async Task InsertTimeline(MatchEvent matchEvent)
-            => await dynamicRepository.ExecuteAsync(new InsertTimelineCommand(matchEvent.MatchId, matchEvent.Timeline));
+            => await dynamicRepository.ExecuteAsync(new InsertTimelineCommand(matchEvent.MatchId, matchEvent.Timeline, Language.en_US));
     }
 }

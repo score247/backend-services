@@ -45,21 +45,22 @@
                 var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == region).Key;
 
                 var timelineDto = await timelineApi.GetTimelines(soccerSettings.AccessLevel, soccerSettings.Version, matchId, region, sportRadarLanguage, apiKey);
-                match = MatchMapper.MapMatch(timelineDto.sport_event, timelineDto.sport_event_status, timelineDto.sport_event_conditions, region);
 
-                if (timelineDto?.timeline?.Any() == true)
+                if (timelineDto.sport_event.competitors != null)
                 {
-                    match.TimeLines = timelineDto.timeline.Select(t => TimelineMapper.MapTimeline(t)).ToList();
-                }
+                    match = MatchMapper.MapMatch(timelineDto.sport_event, timelineDto.sport_event_status, timelineDto.sport_event_conditions, region);
 
-                if (timelineDto.coverage_info != null)
-                {
-                    match.Coverage = CoverageMapper.MapCoverage(timelineDto.coverage_info);
-                }
+                    if (timelineDto?.timeline?.Any() == true)
+                    {
+                        match.TimeLines = timelineDto.timeline.Select(t => TimelineMapper.MapTimeline(t)).ToList();
+                    }
 
-                if (timelineDto.statistics != null)
-                {
-                    foreach (var team in timelineDto.statistics.teams)
+                    if (timelineDto.coverage_info != null)
+                    {
+                        match.Coverage = CoverageMapper.MapCoverage(timelineDto.coverage_info);
+                    }
+
+                    foreach (var team in timelineDto.statistics?.teams)
                     {
                         match.Teams.FirstOrDefault(x => x.Id == team.id).Statistic = StatisticMapper.MapStatistic(team.statistics);
                     }
