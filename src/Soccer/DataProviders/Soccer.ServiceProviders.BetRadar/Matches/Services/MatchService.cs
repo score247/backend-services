@@ -29,7 +29,9 @@
 
     public class MatchService : IMatchService
     {
+        private readonly string[] IgnoreMessages = new[] { "No results", "No events" };
         private readonly IMatchApi matchApi;
+
         private readonly SportSettings soccerSettings;
         private readonly ILogger logger;
 
@@ -126,7 +128,7 @@
             var apiException = (ApiException)ex;
             var content = apiException.Content;
 
-            if (!content.Contains("No results") || !content.Contains("No events"))
+            if (IgnoreMessages.Any(m => content.Contains(m)))
             {
                 var message = $"Response: {content} \r\nRequest URL: {apiException.RequestMessage.RequestUri}";
                 await logger.ErrorAsync(message, ex);
