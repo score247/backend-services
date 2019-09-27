@@ -14,7 +14,7 @@ BEGIN
     
     -- Insert new live matches
     WHILE ni < ne DO          
-		SET @Id = JSON_UNQUOTE(JSON_EXTRACT(newMatches, CONCAT('$[', ni, '].Id')));
+		SET @Id = JSON_UNQUOTE(JSON_EXTRACT(newMatches, CONCAT('$[', ni, '].MatchId')));
     
 		IF NOT EXISTS (SELECT 1 FROM `LiveMatch` WHERE Id = @Id AND Language = language) 
         THEN			

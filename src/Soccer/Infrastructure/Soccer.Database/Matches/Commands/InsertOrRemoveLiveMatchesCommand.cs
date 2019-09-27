@@ -16,7 +16,7 @@ namespace Soccer.Database.Matches.Commands
         {
             SportId = Sport.Soccer.Value;
             Language = language.DisplayName;
-            NewMatches = ToJsonString(newMatches);
+            NewMatches = ToJsonString(newMatches.Select(x => new { MatchId = x.Id, x.MatchResult }));
             RemovedMatchIds = ToJsonString(removedMatches.Select(x => new { MatchId = x.Id }));            
         }
 
