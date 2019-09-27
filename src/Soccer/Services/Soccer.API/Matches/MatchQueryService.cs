@@ -50,8 +50,7 @@
         {
             var liveMatches = await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(language));
 
-            return liveMatches                
-                .Select(m => new MatchSummary(m));
+            return liveMatches.Select(m => new MatchSummary(m));
         }
 
         public async Task<int> GetLiveMatchCount(Language language)

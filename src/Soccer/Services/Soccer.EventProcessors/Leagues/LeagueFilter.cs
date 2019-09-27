@@ -1,4 +1,5 @@
-﻿using Fanex.Data.Repository;
+﻿using System;
+using Fanex.Data.Repository;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
 using Soccer.Database.Leagues.Criteria;
@@ -59,6 +60,10 @@ namespace Soccer.EventProcessors.Leagues
             if (majorLeagues?.Any() != true)
             {
                 majorLeagues = await dynamicRepository.FetchAsync<League>(new GetActiveLeagueCriteria());
+                await cacheService.SetAsync(
+                    MajorLeaguesCacheKey,
+                    majorLeagues,
+                    new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
             }
 
             return majorLeagues;

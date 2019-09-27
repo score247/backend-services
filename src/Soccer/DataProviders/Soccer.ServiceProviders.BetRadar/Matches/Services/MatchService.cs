@@ -74,7 +74,13 @@
             {
                 try
                 {
-                    var matchSchedule = await matchApi.GetSchedule(soccerSettings.AccessLevel, soccerSettings.Version, region.Name, sportRadarLanguage, date.ToSportRadarFormat(), region.Key);
+                    var matchSchedule = await matchApi.GetSchedule(
+                            soccerSettings.AccessLevel,
+                            soccerSettings.Version,
+                            region.Name,
+                            sportRadarLanguage,
+                            date.ToSportRadarFormat(),
+                            region.Key);
 
                     if (matchSchedule?.sport_events?.Any() == true)
                     {
@@ -118,8 +124,12 @@
         private async Task LogApiException(Exception ex)
         {
             var apiException = (ApiException)ex;
-            var message = $"Response: {apiException.Content} \r\nRequest URL: {apiException.RequestMessage.RequestUri}";
-            await logger.ErrorAsync(message, ex);
+
+            if (!apiException.Content.Contains("No results"))
+            {
+                var message = $"Response: {apiException.Content} \r\nRequest URL: {apiException.RequestMessage.RequestUri}";
+                await logger.ErrorAsync(message, ex);
+            }
         }
     }
 }
