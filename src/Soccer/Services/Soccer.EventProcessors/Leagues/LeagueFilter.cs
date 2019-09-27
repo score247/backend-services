@@ -6,6 +6,7 @@ using Soccer.EventProcessors._Shared.Filters;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+using Fanex.Caching;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Matches.Criteria;
 
@@ -13,18 +14,21 @@ namespace Soccer.EventProcessors.Leagues
 {
     public class LeagueFilter : IFilter<IEnumerable<Match>, IEnumerable<Match>>, IFilter<Match, bool>, IFilter<MatchEvent, bool>
     {
+        private const string MajorLeaguesCacheKey = "Major_Leagues";
         private readonly IDynamicRepository dynamicRepository;
+        private readonly ICacheService cacheService;
 
-        public LeagueFilter(IDynamicRepository dynamicRepository)
+        public LeagueFilter(IDynamicRepository dynamicRepository, ICacheService cacheService)
         {
             this.dynamicRepository = dynamicRepository;
+            this.cacheService = cacheService;
         }
 
         public async Task<IEnumerable<Match>> FilterAsync(IEnumerable<Match> data)
         {
-            var activeLeagues = await dynamicRepository.FetchAsync<League>(new GetActiveLeagueCriteria());
+            var majorLeagues = (await GetMajorLeagues());
 
-            return data.Where(x => activeLeagues.Any(al => al.Id == x.League.Id));
+            return data.Where(match => majorLeagues?.Any(league => league.Id == match.League.Id) == true);
         }
 
         public Task<bool> FilterAsync(Match data)
@@ -40,10 +44,24 @@ namespace Soccer.EventProcessors.Leagues
                 return false;
             }
 
-            var activeLeagues = await dynamicRepository.FetchAsync<League>(new GetActiveLeagueCriteria());
+            var majorLeagues = await GetMajorLeagues();
             var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(data.MatchId, Language.en_US));
 
-            return activeLeagues.Any(x => x.Id == match?.League?.Id);
+            return majorLeagues?.Any(league => league.Id == match?.League?.Id) == true;
+        }
+
+        private async Task<IEnumerable<League>> GetMajorLeagues()
+        {
+            IEnumerable<League> majorLeagues = (await cacheService
+                    .GetAsync<IEnumerable<League>>(MajorLeaguesCacheKey))?
+                    .ToList();
+
+            if (majorLeagues?.Any() != true)
+            {
+                majorLeagues = await dynamicRepository.FetchAsync<League>(new GetActiveLeagueCriteria());
+            }
+
+            return majorLeagues;
         }
     }
 }
