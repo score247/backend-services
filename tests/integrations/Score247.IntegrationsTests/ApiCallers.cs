@@ -7,6 +7,7 @@
     using MessagePack;
     using Refit;
     using Soccer.API.Matches.Models;
+    using Soccer.Core.Matches.Models;
     using Soccer.Core.Odds.Models;
     using Soccer.DataProviders.SportRadar.Odds.Dtos;
 
