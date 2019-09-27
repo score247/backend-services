@@ -6,11 +6,17 @@
 
     public class LiveMatchSignalRMessage
     {
-        public LiveMatchSignalRMessage(IEnumerable<MatchSummary> newMatches, IEnumerable<MatchSummary> removedMatches)
+        public LiveMatchSignalRMessage(
+            byte sportId,
+            IEnumerable<MatchSummary> newMatches,
+            IEnumerable<MatchSummary> removedMatches)
         {
+            SportId = sportId;
             NewMatches = newMatches;
             RemoveMatchIds = removedMatches.Select(m => m.Id).ToArray();
         }
+
+        public byte SportId { get; }
 
         public IEnumerable<MatchSummary> NewMatches { get; }
 

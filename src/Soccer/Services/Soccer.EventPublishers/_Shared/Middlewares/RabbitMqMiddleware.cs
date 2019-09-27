@@ -29,6 +29,7 @@
                 serviceCollectionConfigurator.AddConsumer<UpdateTeamStatisticPublisher>();
                 serviceCollectionConfigurator.AddConsumer<OddsMovementPublisher>();
                 serviceCollectionConfigurator.AddConsumer<OddsComparisonPublisher>();
+                serviceCollectionConfigurator.AddConsumer<UpdateLiveMatchPublisher>();
             });
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -72,6 +73,14 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<UpdateTeamStatisticPublisher>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_LiveMatches", e =>
+                {
+                    e.PrefetchCount = prefetCount;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<UpdateLiveMatchPublisher>(provider);
                 });
             }));
 

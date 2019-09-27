@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 
@@ -8,9 +9,9 @@ namespace Soccer.Core.Matches.QueueMessages
     {
         Language Language { get; }
 
-        IEnumerable<Match> NewMatches { get; }
+        IEnumerable<MatchSummary> NewMatches { get; }
 
-        IEnumerable<Match> RemovedMatches { get; }
+        IEnumerable<MatchSummary> RemovedMatches { get; }
     }
 
     public class LiveMatchUpdatedMessage : ILiveMatchUpdatedMessage
@@ -18,14 +19,14 @@ namespace Soccer.Core.Matches.QueueMessages
         public LiveMatchUpdatedMessage(Language language, IEnumerable<Match> newMatches, IEnumerable<Match> removedMatches)
         {
             Language = language;
-            NewMatches = newMatches;
-            RemovedMatches = removedMatches;
+            NewMatches = newMatches.Select(m => new MatchSummary(m));
+            RemovedMatches = removedMatches.Select(m => new MatchSummary(m));
         }
 
         public Language Language { get; }
 
-        public IEnumerable<Match> NewMatches { get; }
+        public IEnumerable<MatchSummary> NewMatches { get; }
 
-        public IEnumerable<Match> RemovedMatches { get; }
+        public IEnumerable<MatchSummary> RemovedMatches { get; }
     }
 }

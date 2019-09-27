@@ -14,12 +14,13 @@
   "$schema": "http://json.schemastore.org/launchsettings.json",
   "profiles": {
     "IIS Express": {
-      "commandName": "IIS",
+      "commandName": "IISExpress",
       "launchBrowser": true,
       "launchUrl": "home/index",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "nativeDebugging": false
     },
     "Soccer.Services.EventPublishers": {
       "commandName": "Project",
