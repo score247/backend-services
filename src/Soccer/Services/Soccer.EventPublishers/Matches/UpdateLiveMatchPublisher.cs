@@ -33,7 +33,7 @@ namespace Soccer.EventPublishers.Matches
                     new LiveMatchSignalRMessage(Sport.Soccer.Value, newMatches, removedMatches));
 
                 await hubContext.Clients.All.SendAsync("LiveMatches", signalRMessage);
-                await logger.InfoAsync("Send Live Matches: \r\n" + message);
+                await logger.InfoAsync("Send Live Matches: \r\n" + signalRMessage);
             }
         }
     }
