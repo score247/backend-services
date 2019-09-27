@@ -124,10 +124,11 @@
         private async Task LogApiException(Exception ex)
         {
             var apiException = (ApiException)ex;
+            var content = apiException.Content;
 
-            if (!apiException.Content.Contains("No results"))
+            if (!content.Contains("No results") || !content.Contains("No events"))
             {
-                var message = $"Response: {apiException.Content} \r\nRequest URL: {apiException.RequestMessage.RequestUri}";
+                var message = $"Response: {content} \r\nRequest URL: {apiException.RequestMessage.RequestUri}";
                 await logger.ErrorAsync(message, ex);
             }
         }
