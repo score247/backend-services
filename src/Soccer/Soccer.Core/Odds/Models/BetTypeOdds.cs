@@ -52,7 +52,9 @@
 
         public void AssignOpeningData(IEnumerable<BetOptionOdds> openingBetOptions)
         {
-            if (openingBetOptions?.Count() != BetOptions?.Count())
+            if(openingBetOptions != null
+                && BetOptions != null
+                && openingBetOptions.Count() != BetOptions.Count())
             {
                 return;
             }
