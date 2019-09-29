@@ -60,9 +60,12 @@
                         match.Coverage = CoverageMapper.MapCoverage(timelineDto.coverage_info);
                     }
 
-                    foreach (var team in timelineDto.statistics?.teams)
+                    if (timelineDto.statistics != null)
                     {
-                        match.Teams.FirstOrDefault(x => x.Id == team.id).Statistic = StatisticMapper.MapStatistic(team.statistics);
+                        foreach (var team in timelineDto.statistics?.teams)
+                        {
+                            match.Teams.FirstOrDefault(x => x.Id == team.id).Statistic = StatisticMapper.MapStatistic(team.statistics);
+                        }
                     }
                 }
             }
