@@ -63,7 +63,6 @@
                     e.Consumer<CloseLiveMatchConsumer>(provider);
                     e.Consumer<UpdateMatchConditionsConsumer>(provider);
                     e.Consumer<UpdateMatchCoverageCosumer>(provider);
-                    e.Consumer<FetchedLiveMatchConsumer>(provider);
                 });
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents", e =>
@@ -105,6 +104,14 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<PenaltyEventConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_LiveMatches", e =>
+                {
+                    e.PrefetchCount = PrefetchCount;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<FetchedLiveMatchConsumer>(provider);
                 });
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_TeamStatistic", e =>

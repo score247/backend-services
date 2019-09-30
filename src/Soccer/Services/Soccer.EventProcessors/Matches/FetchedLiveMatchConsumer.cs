@@ -33,7 +33,7 @@ namespace Soccer.EventProcessors.Matches
         {
             var message = context.Message;
 
-            if (!message.Matches.Any())
+            if (message.Matches == null)
             {
                 return;
             }
