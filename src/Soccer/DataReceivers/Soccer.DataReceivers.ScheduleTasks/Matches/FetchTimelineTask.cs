@@ -59,7 +59,7 @@
             {
                 foreach (var timelineItem in match.TimeLines)
                 {
-                    var matchEvent = new MatchEvent(match.Id, match.MatchResult, timelineItem);
+                    var matchEvent = new MatchEvent(match.League.Id, match.Id, match.MatchResult, timelineItem);
 
                     await messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent));
                 }

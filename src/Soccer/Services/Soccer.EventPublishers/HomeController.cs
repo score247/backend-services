@@ -55,18 +55,18 @@
         private async Task MockPushMatchEvent()
         {
             var matchEventMessage = new MatchEventSignalRMessage(
-                            Sport.Soccer.Value,
-                            new MatchEvent("matchId", new MatchResult
-                            {
-                                EventStatus = MatchStatus.Closed,
-                                HomeScore = 1,
-                                AwayScore = 1
-                            },
-                            new TimelineEvent
-                            {
-                                Id = "121212112",
-                                MatchClock = "11:11"
-                            }));
+                Sport.Soccer.Value,
+                new MatchEvent("leagueId", "matchId", new MatchResult
+                {
+                    EventStatus = MatchStatus.Closed,
+                    HomeScore = 1,
+                    AwayScore = 1
+                },
+                new TimelineEvent
+                {
+                    Id = "121212112",
+                    MatchClock = "11:11"
+                }));
 
             await hubContext.Clients.All.SendAsync("MatchEvent", JsonConvert.SerializeObject(matchEventMessage));
         }

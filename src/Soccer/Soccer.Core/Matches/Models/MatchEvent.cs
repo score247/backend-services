@@ -2,13 +2,16 @@
 {
     public class MatchEvent
     {
-        public MatchEvent(string matchId, MatchResult matchResult, TimelineEvent timeline)
+        public MatchEvent(string leagueId, string matchId, MatchResult matchResult, TimelineEvent timeline)
         {
+            LeagueId = leagueId;
             MatchId = matchId;
             MatchResult = matchResult;
             Timeline = timeline;
             Timeline.UpdateScore(matchResult.HomeScore, matchResult.AwayScore);
         }
+
+        public string LeagueId { get; }
 
         public string MatchId { get; }
 
