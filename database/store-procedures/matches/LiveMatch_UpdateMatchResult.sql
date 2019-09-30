@@ -10,7 +10,8 @@ BEGIN
 		 IF EXISTS (SELECT * FROM `LiveMatch` AS LM WHERE LM.Id = matchId FOR SHARE) 
          THEN
 			UPDATE `LiveMatch` as LM
-			SET `Value` = JSON_SET(`Value`,  '$.MatchResult', JSON_EXTRACT(matchResult, '$'));
+			SET `Value` = JSON_SET(`Value`,  '$.MatchResult', JSON_EXTRACT(matchResult, '$'))
+			WHERE LM.`SportId` = sportId AND LM.Id = matchId;
 		 ELSE
 			 INSERT INTO `LiveMatch`
 			 SELECT 
