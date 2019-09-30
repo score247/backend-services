@@ -49,9 +49,8 @@ namespace Soccer.EventProcessors.Leagues
             }
 
             var majorLeagues = await GetMajorLeagues();
-            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(data.MatchId, Language.en_US));
 
-            return majorLeagues?.Any(league => league.Id == match?.League?.Id) == true;
+            return majorLeagues?.Any(league => league.Id == data.LeagueId) == true;
         }
 
         private async Task<IEnumerable<League>> GetMajorLeagues()
