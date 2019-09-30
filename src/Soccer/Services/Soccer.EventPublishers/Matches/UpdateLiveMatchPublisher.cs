@@ -30,7 +30,7 @@ namespace Soccer.EventPublishers.Matches
                 var newMatches = message.NewMatches;
                 var removedMatches = message.RemovedMatches;
                 var signalRMessage = JsonConvert.SerializeObject(
-                    new LiveMatchSignalRMessage(Sport.Soccer.Value, newMatches, removedMatches));
+                    new LiveMatchSignalRMessage(Sport.Soccer.Value, newMatches, removedMatches, message.LiveMatchCount));
 
                 await hubContext.Clients.All.SendAsync("LiveMatches", signalRMessage);
                 await logger.InfoAsync("Send Live Matches: \r\n" + signalRMessage);
