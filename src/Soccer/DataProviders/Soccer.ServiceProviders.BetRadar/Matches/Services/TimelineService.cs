@@ -63,7 +63,7 @@
                     if (timelineDto.statistics != null 
                         && timelineDto.statistics.teams != null)
                     {
-                        foreach (var team in timelineDto.statistics?.teams)
+                        foreach (var team in timelineDto.statistics.teams)
                         {
                             var currentTeam = match.Teams?.FirstOrDefault(x => x.Id == team?.id);
                             if (currentTeam != null && team.statistics != null)

@@ -40,6 +40,11 @@
         {
             var match = await timelineService.GetTimelines(matchId, region, language);
 
+            if (match.Teams == null)
+            {
+                return;
+            }
+
             if (!string.IsNullOrWhiteSpace(match.Referee) || match.Attendance > 0)
             {
                 await messageBus.Publish<IMatchUpdatedConditionsMessage>(new MatchUpdatedConditionsMessage(matchId, match.Referee, match.Attendance, language));
