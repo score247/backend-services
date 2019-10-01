@@ -69,6 +69,8 @@
                     await messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent));
                 }
             }
+
+            // TODO: Add update match kick off time
         }
     }
 }
