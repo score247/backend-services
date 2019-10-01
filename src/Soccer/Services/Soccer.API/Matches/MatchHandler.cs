@@ -12,7 +12,8 @@
         IRequestHandler<MatchesByDateRequest, IEnumerable<MatchSummary>>,
         IRequestHandler<MatchInfoByIdRequest, MatchInfo>,
         IRequestHandler<LiveMatchesRequest, IEnumerable<MatchSummary>>,
-        IRequestHandler<LiveMatchCountRequest, int>
+        IRequestHandler<LiveMatchCountRequest, int>,
+        IRequestHandler<MatchCoverageByIdRequest, MatchCoverage>
     {
         private readonly IMatchQueryService matchQueryService;
 
@@ -32,5 +33,8 @@
 
         public async Task<int> Handle(LiveMatchCountRequest request, CancellationToken cancellationToken)
             => await matchQueryService.GetLiveMatchCount(request.Language);
+
+        public async Task<MatchCoverage> Handle(MatchCoverageByIdRequest request, CancellationToken cancellationToken)
+            => await matchQueryService.GetMatchCoverage(request.Id, request.Language);
     }
 }

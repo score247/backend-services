@@ -22,6 +22,8 @@
         Task<IEnumerable<MatchSummary>> GetLive(Language language);
 
         Task<int> GetLiveMatchCount(Language language);
+
+        Task<MatchCoverage> GetMatchCoverage(string id, Language language);
     }
 
     public class MatchQueryService : IMatchQueryService
@@ -134,5 +136,12 @@
 
         private static string BuildCacheKey(string key, DateTime from, DateTime to)
             => $"{key}_{from.ToString(FormatDate)}_{to.ToString(FormatDate)}";
+
+        public async Task<MatchCoverage> GetMatchCoverage(string id, Language language)
+        {
+            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language));
+
+            return new MatchCoverage(match.Id, match.Coverage);
+        }
     }
 }

@@ -1,5 +1,8 @@
-﻿namespace Soccer.Core.Matches.Models
+﻿using MessagePack;
+
+namespace Soccer.Core.Matches.Models
 {
+    [MessagePackObject(keyAsPropertyName: true)]
     public class Coverage
     {
         public Coverage(bool live, bool basicScore = false, bool keyEvents = false, bool detailedEvents = false, bool lineups = false, bool commentary = false)

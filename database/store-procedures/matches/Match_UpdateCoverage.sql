@@ -13,4 +13,12 @@ BEGIN
 	WHERE M.SportId = sportId
 		AND M.Id = matchId
         AND M.Language = language;
+        
+    UPDATE LiveMatch as LM
+    SET 
+		Value = JSON_SET(Value,  '$.Coverage', JSON_EXTRACT(coverage, '$')),
+        ModifiedTime = now()
+	WHERE LM.SportId = sportId
+		AND LM.Id = matchId
+        AND LM.Language = language;    
 END
