@@ -30,9 +30,7 @@ namespace Soccer.EventProcessors.Leagues
 
         public async Task<IEnumerable<Match>> FilterAsync(IEnumerable<Match> data)
         {
-            var majorLeagues = await GetMajorLeagues();
-
-            return data.Where(match => majorLeagues?.Any(league => league.Id == match.League.Id) == true);
+            return await FilterMatchesFromLeague(data);
         }
 
         public Task<bool> FilterAsync(Match data)
@@ -69,6 +67,20 @@ namespace Soccer.EventProcessors.Leagues
             }
 
             return majorLeagues;
+        }
+
+        private async Task<IEnumerable<Match>> FilterMatchesFromLeague(IEnumerable<Match> data)
+        {
+            var majorLeagues = await GetMajorLeagues();
+
+            var filteredMatches = data.Where(match => majorLeagues?.Any(league => league.Id == match.League.Id) == true);
+
+            foreach (var match in filteredMatches)
+            {
+                match.League = majorLeagues.FirstOrDefault(league => league.Id == match.League.Id);
+            }
+
+            return filteredMatches;
         }
     }
 }
