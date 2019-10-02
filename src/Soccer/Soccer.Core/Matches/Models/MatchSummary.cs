@@ -102,7 +102,7 @@
                 LeagueId = match.League.Id;
                 LeagueName = match.League.Name;
                 CountryCode = match.League.CountryCode;
-                CountryName = match.League.Name;
+                CountryName = match.League.CountryName;
                 IsInternationalLeague = match.League.IsInternational;
             }
         }
