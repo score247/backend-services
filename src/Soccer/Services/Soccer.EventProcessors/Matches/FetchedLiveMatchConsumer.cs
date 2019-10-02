@@ -10,6 +10,7 @@ using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Matches.Commands;
 using Soccer.Database.Matches.Criteria;
 using Soccer.EventProcessors._Shared.Filters;
+using Soccer.EventProcessors.Leagues;
 
 namespace Soccer.EventProcessors.Matches
 {
@@ -18,15 +19,18 @@ namespace Soccer.EventProcessors.Matches
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
         private readonly IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
+        private readonly ILeagueGenerator leagueGenerator;
 
         public FetchedLiveMatchConsumer(
             IBus messageBus,
             IDynamicRepository dynamicRepository,
-            IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter)
+            IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter,
+            ILeagueGenerator leagueGenerator)
         {
             this.messageBus = messageBus;
             this.dynamicRepository = dynamicRepository;
             this.leagueFilter = leagueFilter;
+            this.leagueGenerator = leagueGenerator;
         }
 
         public async Task Consume(ConsumeContext<ILiveMatchFetchedMessage> context)
@@ -38,7 +42,9 @@ namespace Soccer.EventProcessors.Matches
                 return;
             }
 
-            var filteredMatches = (await leagueFilter.FilterAsync(message.Matches)).ToList();
+            var filteredMatches = (await leagueFilter.FilterAsync(message.Matches))
+                                    .Select(match => leagueGenerator.GenerateInternationalCode(match))
+                                    .ToList();
 
             var currentLiveMatches = (await dynamicRepository
                     .FetchAsync<Match>(new GetLiveMatchesCriteria(message.Language)))

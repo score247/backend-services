@@ -10,6 +10,7 @@ using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Leagues.Criteria;
 using Soccer.Database.Matches.Criteria;
 using Soccer.EventProcessors._Shared.Filters;
+using Soccer.EventProcessors.Shared.Configurations;
 
 namespace Soccer.EventProcessors.Leagues
 {
@@ -30,7 +31,7 @@ namespace Soccer.EventProcessors.Leagues
 
         public async Task<IEnumerable<Match>> FilterAsync(IEnumerable<Match> data)
         {
-            return await FilterMatchesFromLeague(data);
+            return await FilterMatchesFromLeagues(data);
         }
 
         public Task<bool> FilterAsync(Match data)
@@ -69,18 +70,11 @@ namespace Soccer.EventProcessors.Leagues
             return majorLeagues;
         }
 
-        private async Task<IEnumerable<Match>> FilterMatchesFromLeague(IEnumerable<Match> data)
+        private async Task<IEnumerable<Match>> FilterMatchesFromLeagues(IEnumerable<Match> data)
         {
             var majorLeagues = await GetMajorLeagues();
 
-            var filteredMatches = data.Where(match => majorLeagues?.Any(league => league.Id == match.League.Id) == true);
-
-            foreach (var match in filteredMatches)
-            {
-                match.League = majorLeagues.FirstOrDefault(league => league.Id == match.League.Id);
-            }
-
-            return filteredMatches;
+            return data.Where(match => majorLeagues?.Any(league => league.Id == match.League.Id) == true);
         }
     }
 }

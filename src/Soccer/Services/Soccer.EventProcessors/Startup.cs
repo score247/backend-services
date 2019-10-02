@@ -16,9 +16,14 @@
 
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IHostingEnvironment env)
         {
-            Configuration = configuration;
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"international-leagues.json", optional: true, reloadOnChange: true);
+
+            Configuration = builder.Build();
         }
 
         public IConfiguration Configuration { get; }
@@ -34,6 +39,7 @@
             services.AddHealthCheck();
             services.AddDatabase();
 
+            RegisterGenerators(services);
             RegisterFilters(services);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -65,6 +71,11 @@
             services.AddSingleton<IFilter<IEnumerable<Match>, IEnumerable<Match>>, LeagueFilter>();
             services.AddSingleton<IFilter<Match, bool>, LeagueFilter>();
             services.AddSingleton<IFilter<MatchEvent, bool>, LeagueFilter>();
+        }
+
+        private static void RegisterGenerators(IServiceCollection services)
+        {
+            services.AddSingleton<ILeagueGenerator, LeagueGenerator>();
         }
     }
 }

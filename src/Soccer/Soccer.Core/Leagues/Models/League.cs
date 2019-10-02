@@ -49,5 +49,11 @@ namespace Soccer.Core.Leagues.Models
 
         [Key(6)]
         public bool IsInternational { get; private set; }
+
+        public void SetInternationalLeagueCode(string countryCode)
+        {
+            CountryCode = countryCode;
+            IsInternational = true;
+        }
     }
 }
