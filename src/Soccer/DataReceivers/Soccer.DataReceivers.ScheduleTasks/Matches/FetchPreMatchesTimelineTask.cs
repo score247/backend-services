@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Hangfire;
 using MassTransit;
-using Score247.Shared.Enumerations;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
