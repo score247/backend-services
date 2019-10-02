@@ -19,7 +19,7 @@
         {
             var message = context.Message;
 
-            var command = new UpdateMatchCoverageCommand(message.MatchId, message.Language.DisplayName, message.Coverage);
+            var command = new UpdateMatchCoverageCommand(message.MatchId, message.Coverage);
 
             await dynamicRepository.ExecuteAsync(command);
         }

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Hangfire;
 using MassTransit;
+using Score247.Shared.Enumerations;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
@@ -11,7 +12,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     public interface IFetchPreMatchesTimelineTask
     {
-        void FetchPreMatchTimeline(IList<Match> matches);       
+        void FetchPreMatchTimeline(IList<Match> matches);
+
+        Task FetchPreMatchTimeline(string matchId, string region);
     }
 
     public class FetchPreMatchesTimelineTask : IFetchPreMatchesTimelineTask
@@ -25,28 +28,29 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         {
             this.messageBus = messageBus;
             this.timelineService = timelineService;
-        }       
+        }
 
         public void FetchPreMatchTimeline(IList<Match> matches)
         {
             foreach (var match in matches)
-            {
-                BackgroundJob.Enqueue<IFetchTimelineTask>(t => t.FetchTimelines(match.Id, match.Region));
+            {                
+                BackgroundJob.Enqueue<IFetchPreMatchesTimelineTask>(t => t.FetchPreMatchTimeline(match.Id, match.Region));
             }
         }
 
-        public async Task FetchTimelines(string matchId, string region, Language language)
+        public async Task FetchPreMatchTimeline(string matchId, string region)
         {
-            var match = await timelineService.GetTimelines(matchId, region, language);
+            //Note: since we only need coverage_info which does not have language
+            var match = await timelineService.GetTimelines(matchId, region, Language.en_US);
 
             if (match.Teams == null)
             {
                 return;
             }
-           
+
             if (match.Coverage != null)
             {
-                await messageBus.Publish<IMatchUpdatedCoverageInfo>(new MatchUpdatedCoverageInfo(matchId, language, match.Coverage));
+                await messageBus.Publish<IMatchUpdatedCoverageInfo>(new MatchUpdatedCoverageInfo(matchId, match.Coverage));
             }
         }
     }
