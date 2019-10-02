@@ -58,7 +58,6 @@ CREATE TABLE IF NOT EXISTS `TeamStatistic` (
  CREATE TABLE `League` (
   `Id` VARCHAR(45) NOT NULL,
   `Name` VARCHAR(255) NULL,
-  `Leaguecol` VARCHAR(45) NULL,
   `Order` INT NULL,
   `CategoryId` VARCHAR(45) NULL,
   `Country` VARCHAR(255) NULL,
@@ -67,4 +66,6 @@ CREATE TABLE IF NOT EXISTS `TeamStatistic` (
   `CountryCode` VARCHAR(45) NULL,
   `Language` VARCHAR(45) NOT NULL DEFAULT 'en-US',
   PRIMARY KEY (`Id`, `Language`));
+ 
+ 
 
