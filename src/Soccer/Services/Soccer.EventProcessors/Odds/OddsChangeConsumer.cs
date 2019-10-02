@@ -63,13 +63,22 @@
                     }
                     catch (Exception ex)
                     {
-                        await logger.ErrorAsync(string.Join(
+                        var errorMessage = string.Join(
                             "\r\n",
                             ex.Message,
                             $"MatchOdds: {JsonConvert.SerializeObject(matchOdds)}",
                             $"Match: {JsonConvert.SerializeObject(availableMatch)}",
-                            $"MatchEvent: {JsonConvert.SerializeObject(message.MatchEvent)}"),
-                            ex);
+                            $"MatchEvent: {JsonConvert.SerializeObject(message.MatchEvent)}");
+
+                        //TODO: temporary log info for future trace
+                        if (ex.Message.Contains("Value cannot be null", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            await logger.InfoAsync(errorMessage);
+                        }
+                        else
+                        {
+                            await logger.ErrorAsync(errorMessage, ex);
+                        }
                     }
                 }
             }
