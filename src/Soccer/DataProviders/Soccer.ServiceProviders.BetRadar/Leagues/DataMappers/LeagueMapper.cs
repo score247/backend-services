@@ -8,17 +8,23 @@
     public static class LeagueMapper
     {
         public static League MapLeague(TournamentDto tournament)
-            => new League
+        {
+            if (tournament == null)
             {
-                Id = tournament?.id,
-                Name = tournament?.name,
-                Category = new LeagueCategory
-                {
-                    Id = tournament?.category?.id,
-                    Name = tournament?.category?.name,
-                    CountryCode = tournament?.category?.country_code
-                }
-            };
+                return null;
+            }
+
+            var isInternationalLeague = string.IsNullOrWhiteSpace(tournament.category?.country_code);
+
+            return new League(
+                tournament.id,
+                tournament.name,
+                0,
+                tournament.category?.id,
+                tournament.category?.name,
+                tournament.category?.country_code,
+                isInternationalLeague);
+        }
 
         public static LeagueRound MapLeagueRound(TournamentRoundDto tournamentRound)
         {

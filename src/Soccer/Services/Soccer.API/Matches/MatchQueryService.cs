@@ -78,35 +78,24 @@
         {
             var cacheMatch = await cacheManager.GetAsync<MatchInfo>(BuildMatchInfoCacheKey(id));
 
-            if (cacheMatch == null)
-            {
-                return await GetAndCacheMatchInfo(id, language);
-            }
-
-            return cacheMatch;
+            return cacheMatch ?? await GetAndCacheMatchInfo(id, language);
         }
 
         private async Task<MatchInfo> GetAndCacheMatchInfo(string id, Language language)
         {
             var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language));
 
-            if (match != null)
+            if (match == null)
             {
-                return await cacheManager.GetOrSetAsync(
-                    BuildMatchInfoCacheKey(id),
-                    async () =>
-                    {
-                        var timelineEvents = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
-
-                        var matchInfo = new MatchInfo(new MatchSummary(match), timelineEvents, match.Venue, match.Referee, match.Attendance);
-
-                        return matchInfo;
-                    },
-                    BuildCacheOptions(match.EventDate.DateTime));
+                // TODO: Should fix here
+                return null;
             }
+            var timelineEvents = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
+            var matchInfo = new MatchInfo(new MatchSummary(match), timelineEvents, match.Venue, match.Referee, match.Attendance);
+            await cacheManager.SetAsync(
+                BuildMatchInfoCacheKey(id), matchInfo, BuildCacheOptions(match.EventDate.DateTime));
 
-            ////TODO: Should fix here
-            return null;
+            return matchInfo;
         }
 
         private static string BuildMatchInfoCacheKey(string matchId)

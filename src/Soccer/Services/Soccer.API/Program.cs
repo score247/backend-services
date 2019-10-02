@@ -1,4 +1,4 @@
-﻿namespace Soccer.Services.Commands
+﻿namespace Soccer.API
 {
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;

@@ -9,6 +9,8 @@
         Task<T> GetOrSetAsync<T>(string key, Func<Task<T>> factory, CacheItemOptions options);
 
         Task<T> GetAsync<T>(string key);
+
+        Task SetAsync<T>(string key, T value, CacheItemOptions options);
     }
 
     public class CacheManager : ICacheManager
@@ -22,6 +24,9 @@
 
         public Task<T> GetAsync<T>(string key)
             => cacheService.GetAsync<T>(key);
+
+        public Task SetAsync<T>(string key, T value, CacheItemOptions options)
+            => cacheService.SetAsync(key, value, options);
 
         public async Task<T> GetOrSetAsync<T>(string key, Func<Task<T>> factory, CacheItemOptions options)
         {

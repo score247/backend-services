@@ -42,7 +42,8 @@
             IEnumerable<MatchPeriod> matchPeriods,
             string countryCode,
             string countryName,
-            DateTimeOffset modifiedTime)
+            DateTimeOffset modifiedTime,
+            bool isInternationalLeague)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             Id = id;
@@ -74,6 +75,7 @@
             CountryCode = countryCode;
             CountryName = countryName;
             ModifiedTime = modifiedTime;
+            IsInternationalLeague = isInternationalLeague;
         }
 
         public MatchSummary()
@@ -87,17 +89,22 @@
             CurrentPeriodStartTime = match.CurrentPeriodStartTime;
             ModifiedTime = match.ModifiedTime;
 
+            AssignLeague(match);
+            AssignMatchResult(match);
+            AssignTeamInformation(match);
+            AssignLatestTimeline(match);
+        }
+
+        private void AssignLeague(Match match)
+        {
             if (match.League != null)
             {
                 LeagueId = match.League.Id;
                 LeagueName = match.League.Name;
-                CountryCode = match.League.Category?.CountryCode;
-                CountryName = match.League.Category?.Name;
+                CountryCode = match.League.CountryCode;
+                CountryName = match.League.Name;
+                IsInternationalLeague = match.League.IsInternational;
             }
-
-            AssignMatchResult(match);
-            AssignTeamInformation(match);
-            AssignLatestTimeline(match);
         }
 
         private void AssignLatestTimeline(Match match)
@@ -248,6 +255,9 @@
 
         [Key(28)]
         public DateTimeOffset ModifiedTime { get; private set; }
+
+        [Key(29)]
+        public bool IsInternationalLeague { get; private set; }
     }
 
 #pragma warning restore S109 // Magic numbers should not be used

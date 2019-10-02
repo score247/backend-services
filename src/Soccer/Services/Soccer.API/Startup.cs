@@ -1,20 +1,20 @@
-﻿namespace Soccer.Services.Commands
-{
-    using System;
-    using System.Reflection;
-    using Fanex.Logging;
-    using MediatR;
-    using MessagePack.AspNetCoreMvcFormatter;
-    using MessagePack.Resolvers;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Newtonsoft.Json;
-    using Soccer.API.Shared.Middlewares;
-    using Soccer.Database;
+﻿using System;
+using System.Reflection;
+using Fanex.Logging;
+using MediatR;
+using MessagePack.AspNetCoreMvcFormatter;
+using MessagePack.Resolvers;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Soccer.API.Shared.Middlewares;
+using Soccer.Database;
 
+namespace Soccer.API
+{
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -24,16 +24,15 @@
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+#pragma warning disable S3902 // "Assembly.GetExecutingAssembly" should not be called
+
         public void ConfigureServices(IServiceCollection services)
         {
             try
             {
                 services.AddLogging(Configuration);
                 services.AddSettings(Configuration);
-#pragma warning disable S3902 // "Assembly.GetExecutingAssembly" should not be called
                 services.AddMediatR(Assembly.GetExecutingAssembly());
-#pragma warning restore S3902 // "Assembly.GetExecutingAssembly" should not be called
                 services.AddServices();
                 services.AddHealthCheck();
                 services.AddSwagger();
@@ -57,7 +56,8 @@
             }
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+#pragma warning restore S3902 // "Assembly.GetExecutingAssembly" should not be called
+
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             try
