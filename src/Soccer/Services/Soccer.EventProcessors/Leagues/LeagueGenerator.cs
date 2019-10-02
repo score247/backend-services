@@ -20,9 +20,12 @@ namespace Soccer.EventProcessors.Leagues
 
         public Match GenerateInternationalCode(Match match)
         {
-            match.League.SetInternationalLeagueCode(
-                appSettings.InternationalLeagues
-                    .FirstOrDefault(league => league.Id == match.League.Id)?.CountryCode ?? match.League.CountryCode);
+            var internationalCode = appSettings.InternationalLeagues
+                                        .FirstOrDefault(league => league.Id == match.League.Id)?.CountryCode;
+            if (!string.IsNullOrWhiteSpace(internationalCode))
+            {
+                match.League.SetInternationalLeagueCode(internationalCode);
+            }
 
             return match;
         }
