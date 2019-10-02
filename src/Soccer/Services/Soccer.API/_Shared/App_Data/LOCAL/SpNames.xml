@@ -8,4 +8,7 @@
   <Function Name="Odds">
     <Setting Key="Odds_GetOdds" SpName="Odds_GetOdds" DbName="DefaultConnection" />
   </Function>
+  <Function Name="League">
+    <Setting Key="League_GetActive" SpName="League_GetActive" DbName="DefaultConnection" />
+  </Function>
 </Functions>

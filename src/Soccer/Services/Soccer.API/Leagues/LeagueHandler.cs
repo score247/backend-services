@@ -11,7 +11,7 @@ namespace Soccer.API.Leagues
     {
         private readonly ILeagueQueryService leagueQueryService;
 
-        public LeagueHandler(LeagueQueryService leagueQueryService)
+        public LeagueHandler(ILeagueQueryService leagueQueryService)
         {
             this.leagueQueryService = leagueQueryService;
         }

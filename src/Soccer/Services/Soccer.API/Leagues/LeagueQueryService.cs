@@ -31,9 +31,9 @@ namespace Soccer.API.Leagues
         public async Task<IEnumerable<League>> GetMajorLeagues()
         {
             var majorLeagues = await cacheManager.GetOrSetAsync(
-                MajorLeagueCacheKey,
-                () => dynamicRepository.FetchAsync<League>(new GetActiveLeagueCriteria()),
-                new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
+                    MajorLeagueCacheKey,
+                    () => dynamicRepository.FetchAsync<League>(new GetActiveLeagueCriteria()),
+                    new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
 
             return majorLeagues;
         }
