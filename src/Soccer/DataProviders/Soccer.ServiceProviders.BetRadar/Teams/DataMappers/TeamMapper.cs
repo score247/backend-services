@@ -30,7 +30,5 @@
 
             return teams.OrderBy(team => team.IsHome ? 0 : 1).ToList();
         }
-
-
     }
 }

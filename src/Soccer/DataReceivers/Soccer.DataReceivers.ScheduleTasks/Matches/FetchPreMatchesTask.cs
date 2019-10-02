@@ -58,6 +58,8 @@
                 var matchesBatch = matches.Skip(i * batchSize).Take(batchSize);
 
                 await messageBus.Publish<IPreMatchesFetchedMessage>(new PreMatchesFetchedMessage(matchesBatch, language.DisplayName));
+
+                BackgroundJob.Enqueue<IFetchPreMatchesTimelineTask>(t => t.FetchPreMatchTimeline(matchesBatch.ToList()));
             }
         }
     }

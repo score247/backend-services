@@ -48,12 +48,7 @@
             if (!string.IsNullOrWhiteSpace(match.Referee) || match.Attendance > 0)
             {
                 await messageBus.Publish<IMatchUpdatedConditionsMessage>(new MatchUpdatedConditionsMessage(matchId, match.Referee, match.Attendance, language));
-            }
-
-            if (match.Coverage != null)
-            {
-                await messageBus.Publish<IMatchUpdatedCoverageInfo>(new MatchUpdatedCoverageInfo(matchId, language, match.Coverage));
-            }
+            }       
 
             foreach (var team in match.Teams)
             {

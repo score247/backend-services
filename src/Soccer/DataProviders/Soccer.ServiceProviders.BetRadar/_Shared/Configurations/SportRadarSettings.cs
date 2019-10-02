@@ -63,6 +63,8 @@
         public IEnumerable<Region> Regions { get; set; }
 
         public OddsSetting OddsSetting { get; set; }
+
+        public string TrackerWidgetLink { get; set; }
     }
 
     public class Region

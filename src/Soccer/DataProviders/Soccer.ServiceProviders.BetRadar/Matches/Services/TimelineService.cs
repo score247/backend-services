@@ -1,6 +1,7 @@
 ﻿namespace Soccer.DataProviders.SportRadar.Matches.Services
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.Logging;
@@ -8,8 +9,10 @@
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
+    using Soccer.Core.Teams.Models;
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataProviders.SportRadar.Matches.DataMappers;
+    using Soccer.DataProviders.SportRadar.Matches.Dtos;
     using Soccer.DataProviders.SportRadar.Shared.Configurations;
     using Soccer.DataProviders.SportRadar.Shared.Extensions;
 
@@ -50,27 +53,12 @@
                 {
                     match = MatchMapper.MapMatch(timelineDto.sport_event, timelineDto.sport_event_status, timelineDto.sport_event_conditions, region);
 
-                    if (timelineDto?.timeline?.Any() == true)
-                    {
-                        match.TimeLines = timelineDto.timeline.Select(t => TimelineMapper.MapTimeline(t)).ToList();
-                    }
+                    match.TimeLines = GetTimelines(timelineDto);
+                    match.Coverage = GetCoverageInfo(timelineDto);
 
-                    if (timelineDto.coverage_info != null)
+                    foreach (var team in match.Teams)
                     {
-                        match.Coverage = CoverageMapper.MapCoverage(timelineDto.coverage_info);
-                    }
-
-                    if (timelineDto.statistics != null 
-                        && timelineDto.statistics.teams != null)
-                    {
-                        foreach (var team in timelineDto.statistics.teams)
-                        {
-                            var currentTeam = match.Teams?.FirstOrDefault(x => x.Id == team?.id);
-                            if (currentTeam != null && team.statistics != null)
-                            {
-                                currentTeam.Statistic = StatisticMapper.MapStatistic(team.statistics);
-                            }
-                        }
+                        team.Statistic = GetStatistic(team.Id, timelineDto.statistics);
                     }
                 }
             }
@@ -80,6 +68,31 @@
             }
 
             return match;
+        }
+
+        private static IEnumerable<TimelineEvent> GetTimelines(Dtos.MatchTimelineDto timelineDto)
+        {
+            if (timelineDto?.timeline?.Any() == true)
+            {
+                return timelineDto.timeline.Select(t => TimelineMapper.MapTimeline(t)).ToList();
+            }
+
+            return Enumerable.Empty<TimelineEvent>();
+        }
+
+        private Coverage GetCoverageInfo(MatchTimelineDto timelineDto) 
+            => CoverageMapper.MapCoverage(timelineDto.coverage_info, soccerSettings.TrackerWidgetLink);
+
+        private static TeamStatistic GetStatistic(string teamId, StatisticsDto statistic)
+        {
+            var team = statistic?.teams?.FirstOrDefault(x => x.id == teamId);
+
+            if (team == null || team.statistics == null)
+            {
+                return new TeamStatistic();
+            }
+
+            return StatisticMapper.MapStatistic(team.statistics);
         }
     }
 }
