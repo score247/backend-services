@@ -41,7 +41,7 @@
                 return;
             }
             
-            var processedRedCards = await GetProcessedRedCards(matchEvent.MatchId);
+            var processedRedCards = await GetProcessedRedCards(matchEvent.MatchId, matchEvent.Timeline.Team);
 
             var teamStats = new TeamStatistic
             {
@@ -53,7 +53,7 @@
             await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
         }
 
-        private async Task<IList<TimelineEvent>> GetProcessedRedCards(string matchId)
+        private async Task<IList<TimelineEvent>> GetProcessedRedCards(string matchId, string teamId)
         {
             IList<TimelineEvent> timelineEvents;
 
@@ -72,7 +72,7 @@
                 }
             }
 
-            return timelineEvents.Where(t => t.Type.IsRedCard() || t.Type.IsYellowRedCard()).ToList();
+            return timelineEvents.Where(t => t.Team == teamId && (t.Type.IsRedCard() || t.Type.IsYellowRedCard())).ToList();
         }
     }
 }
