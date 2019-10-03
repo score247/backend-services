@@ -12,6 +12,7 @@
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
     using Soccer.Database.Matches.Criteria;
+    using Soccer.EventProcessors._Shared.Cache;
     using Soccer.EventProcessors._Shared.Filters;
 
     public class ReceiveMatchEventConsumer : IConsumer<IMatchEventReceivedMessage>
@@ -21,17 +22,18 @@
             SlidingExpiration = TimeSpan.FromMinutes(10),
         };
 
-        private readonly ICacheService cacheService;
+        private readonly ICacheManager cacheManager;
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
         private readonly IFilter<MatchEvent, bool> matchEventFilter;
 
-        public ReceiveMatchEventConsumer(ICacheService cacheService,
+        public ReceiveMatchEventConsumer(
+            ICacheManager cacheManager,
             IDynamicRepository dynamicRepository,
             IBus messageBus,
             IFilter<MatchEvent, bool> matchEventFilter)
         {
-            this.cacheService = cacheService;
+            this.cacheManager = cacheManager;
             this.dynamicRepository = dynamicRepository;
             this.messageBus = messageBus;
             this.matchEventFilter = matchEventFilter;
@@ -98,18 +100,14 @@
 
             var timelineEventsCacheKey = $"MatchPushEvent_Match_{matchId}";
 
-            timelineEvents = cacheService.Get<IList<TimelineEvent>>(timelineEventsCacheKey);
-
-            if (timelineEvents == null || timelineEvents.Count == 0)
-            {
-                timelineEvents = (await dynamicRepository.FetchAsync<TimelineEvent>
-                    (new GetTimelineEventsCriteria(matchId))).ToList();
-
-                if (timelineEvents?.Count > 0)
+            timelineEvents = await cacheManager.GetOrFetch<IList<TimelineEvent>>(
+                timelineEventsCacheKey,
+                async () =>
                 {
-                    await cacheService.SetAsync(timelineEventsCacheKey, timelineEvents, EventCacheOptions);
-                }
-            }
+                    return (await dynamicRepository.FetchAsync<TimelineEvent>
+                                (new GetTimelineEventsCriteria(matchId))).ToList();
+                },
+                EventCacheOptions);
 
             return timelineEvents;
         }

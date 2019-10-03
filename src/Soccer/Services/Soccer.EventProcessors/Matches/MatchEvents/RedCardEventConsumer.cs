@@ -13,11 +13,12 @@
     using Soccer.Core.Teams.Models;
     using Soccer.Core.Teams.QueueMessages;
     using Soccer.Database.Matches.Criteria;
+    using Soccer.EventProcessors._Shared.Cache;
 
     public class RedCardEventConsumer : IConsumer<IRedCardEventMessage>
     {
         private readonly IBus messageBus;
-        private readonly ICacheService cacheService;
+        private readonly ICacheManager cacheManager;
         private readonly IDynamicRepository dynamicRepository;
 
         private static readonly CacheItemOptions EventCacheOptions = new CacheItemOptions
@@ -25,10 +26,10 @@
             SlidingExpiration = TimeSpan.FromMinutes(10),
         };
 
-        public RedCardEventConsumer(IBus messageBus, ICacheService cacheService, IDynamicRepository dynamicRepository)
+        public RedCardEventConsumer(IBus messageBus, ICacheManager cacheManager, IDynamicRepository dynamicRepository)
         {
             this.messageBus = messageBus;
-            this.cacheService = cacheService;
+            this.cacheManager = cacheManager;
             this.dynamicRepository = dynamicRepository;
         }
 
@@ -40,7 +41,7 @@
             {
                 return;
             }
-            
+
             var processedRedCards = await GetProcessedRedCards(matchEvent.MatchId, matchEvent.Timeline.Team);
 
             var teamStats = new TeamStatistic
@@ -59,18 +60,14 @@
 
             var timelineEventsCacheKey = $"MatchPushEvent_Match_{matchId}";
 
-            timelineEvents = cacheService.Get<IList<TimelineEvent>>(timelineEventsCacheKey);
-
-            if (timelineEvents == null || timelineEvents.Count == 0)
-            {
-                timelineEvents = (await dynamicRepository.FetchAsync<TimelineEvent>
-                    (new GetTimelineEventsCriteria(matchId))).ToList();
-
-                if (timelineEvents?.Count > 0)
+            timelineEvents = await cacheManager.GetOrFetch<IList<TimelineEvent>>(
+                timelineEventsCacheKey, 
+                async () => 
                 {
-                    await cacheService.SetAsync(timelineEventsCacheKey, timelineEvents, EventCacheOptions);
-                }
-            }
+                    return (await dynamicRepository.FetchAsync<TimelineEvent>
+                                (new GetTimelineEventsCriteria(matchId))).ToList();
+                } , 
+                EventCacheOptions);
 
             return timelineEvents.Where(t => t.Team == teamId && (t.Type.IsRedCard() || t.Type.IsYellowRedCard())).ToList();
         }
