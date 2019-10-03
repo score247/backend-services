@@ -1,6 +1,5 @@
 ﻿namespace Soccer.EventProcessors.Matches.MatchEvents
 {
-    using System;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using MassTransit;
@@ -22,11 +21,14 @@
         public async Task Consume(ConsumeContext<IPeriodStartEventMessage> context)
         {
             var matchEvent = context?.Message?.MatchEvent;
-            var command = new UpdateLiveMatchCurrentPeriodStartTimeCommand(
-                    matchEvent?.MatchId, matchEvent?.Timeline?.Time ?? DateTimeOffset.Now);
-            await dynamicRepository.ExecuteAsync(command);
 
-            await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
+            if (matchEvent != null)
+            {
+                var command = new UpdateLiveMatchCurrentPeriodStartTimeCommand(matchEvent.MatchId, matchEvent.Timeline.Time);
+                await dynamicRepository.ExecuteAsync(command);
+
+                await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
+            }
         }
     }
 }
