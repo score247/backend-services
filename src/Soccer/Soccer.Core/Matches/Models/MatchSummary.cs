@@ -43,7 +43,8 @@
             string countryCode,
             string countryName,
             DateTimeOffset modifiedTime,
-            bool isInternationalLeague)
+            bool isInternationalLeague,
+            int leagueOrder)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             Id = id;
@@ -76,6 +77,7 @@
             CountryName = countryName;
             ModifiedTime = modifiedTime;
             IsInternationalLeague = isInternationalLeague;
+            LeagueOrder = leagueOrder;
         }
 
         public MatchSummary()
@@ -104,6 +106,7 @@
                 CountryCode = match.League.CountryCode;
                 CountryName = match.League.CountryName;
                 IsInternationalLeague = match.League.IsInternational;
+                LeagueOrder = match.League.Order;
             }
         }
 
@@ -258,6 +261,9 @@
 
         [Key(29)]
         public bool IsInternationalLeague { get; private set; }
+
+        [Key(30)]
+        public int LeagueOrder { get; private set; }
     }
 
 #pragma warning restore S109 // Magic numbers should not be used

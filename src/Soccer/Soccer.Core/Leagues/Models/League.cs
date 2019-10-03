@@ -55,5 +55,10 @@ namespace Soccer.Core.Leagues.Models
             CountryCode = countryCode;
             IsInternational = true;
         }
+
+        public void SetOrder(int order)
+        {
+            Order = order;
+        }
     }
 }

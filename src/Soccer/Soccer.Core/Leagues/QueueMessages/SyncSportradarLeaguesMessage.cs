@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Soccer.Core.Leagues.QueueMessages
 {
-    public interface ISyncSportradarLeaguesMessage
+    public interface ILeaguesSyncedMessage
     {
     }
 

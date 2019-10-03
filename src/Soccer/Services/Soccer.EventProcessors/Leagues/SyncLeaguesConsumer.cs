@@ -5,16 +5,16 @@ using Soccer.Core.Leagues.QueueMessages;
 
 namespace Soccer.EventProcessors.Leagues
 {
-    public class FetchGetSportradarLeaguesConsumer : IConsumer<ISyncSportradarLeaguesMessage>
+    public class SyncLeaguesConsumer : IConsumer<ILeaguesSyncedMessage>
     {
         private readonly IDynamicRepository dynamicRepository;
 
-        public FetchGetSportradarLeaguesConsumer(IDynamicRepository dynamicRepository)
+        public SyncLeaguesConsumer(IDynamicRepository dynamicRepository)
         {
             this.dynamicRepository = dynamicRepository;
         }
 
-        public Task Consume(ConsumeContext<ISyncSportradarLeaguesMessage> context)
+        public Task Consume(ConsumeContext<ILeaguesSyncedMessage> context)
         {
             throw new System.NotImplementedException();
         }
