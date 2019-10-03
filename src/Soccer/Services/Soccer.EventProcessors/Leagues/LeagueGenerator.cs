@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Fanex.Caching;
-using Soccer.Core.Leagues.Models;
+﻿using System.Linq;
 using Soccer.Core.Matches.Models;
-using Soccer.Database.Leagues.Criteria;
 using Soccer.EventProcessors.Shared.Configurations;
 
 namespace Soccer.EventProcessors.Leagues
@@ -26,12 +20,12 @@ namespace Soccer.EventProcessors.Leagues
 
         public Match GenerateInternationalCode(Match match)
         {
-            var internationalCode = appSettings.InternationalLeagues
-                                        .FirstOrDefault(league => league.Id == match.League.Id)?.CountryCode;
+            var internationalLeague = appSettings.InternationalLeagues
+                    .FirstOrDefault(league => league.Id == match.League.Id);
 
-            if (!string.IsNullOrWhiteSpace(internationalCode))
+            if (internationalLeague != null)
             {
-                match.League.SetInternationalLeagueCode(internationalCode);
+                match.League.SetInternationalLeagueCode(internationalLeague.CountryCode);
             }
 
             return match;
