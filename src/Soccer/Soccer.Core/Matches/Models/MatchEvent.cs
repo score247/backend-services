@@ -1,4 +1,6 @@
-﻿namespace Soccer.Core.Matches.Models
+﻿using Soccer.Core.Shared.Enumerations;
+
+namespace Soccer.Core.Matches.Models
 {
     public class MatchEvent
     {
@@ -8,7 +10,6 @@
             MatchId = matchId;
             MatchResult = matchResult;
             Timeline = timeline;
-            Timeline.UpdateScore(matchResult.HomeScore, matchResult.AwayScore);
         }
 
         public string LeagueId { get; }
@@ -18,5 +19,15 @@
         public MatchResult MatchResult { get; }
 
         public TimelineEvent Timeline { get; }
+
+        public MatchEvent AddScoreToSpecialTimeline(MatchResult matchResult) 
+        {
+            if (Timeline.Type == EventType.BreakStart || Timeline.Type == EventType.MatchEnded)
+            {
+                Timeline.UpdateScore(matchResult.HomeScore, matchResult.AwayScore);
+            }
+
+            return this;
+        }
     }
 }
