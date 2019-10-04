@@ -144,14 +144,14 @@
 
                     var matchEvent = MatchMapper.MapMatchEvent(matchEventPayload);
 
-                    await WriteHeartbeatLog();
+                    await WriteHeartbeatLog(regionStream.Key);
 
                     if (matchEvent == default(MatchEvent))
                     {
                         continue;
                     }
 
-                    handler.Invoke(matchEvent);
+                    handler.Invoke(matchEvent.AddScoreToSpecialTimeline(matchEvent.MatchResult));
 
                     await logger.InfoAsync($"{DateTime.Now} - region {regionStream.Key} Receiving: {matchEventPayload}");
                 }
@@ -162,11 +162,11 @@
             }
         }
 
-        private async Task WriteHeartbeatLog()
+        private async Task WriteHeartbeatLog(string region)
         {
             if (DateTime.Now.Minute % FiveMinutes == 0 && !isWroteHeartbeatLog)
             {
-                await logger.InfoAsync($"Event Listener Heartbeat at {DateTime.Now}");
+                await logger.InfoAsync($"Region {region} - Event Listener Heartbeat at {DateTime.Now}");
                 isWroteHeartbeatLog = true;
             }
 
