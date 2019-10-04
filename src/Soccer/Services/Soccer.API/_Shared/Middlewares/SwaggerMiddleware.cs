@@ -1,11 +1,13 @@
 ﻿namespace Soccer.API.Shared.Middlewares
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.Extensions.DependencyInjection;
-    using Swashbuckle.AspNetCore.Swagger;
+    using Microsoft.OpenApi.Models;
+    using Swashbuckle.AspNetCore.Filters;
 
     public static class SwaggerMiddleware
     {
@@ -13,7 +15,7 @@
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Info { Title = "Score247 Query API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Version = "1.0", Title = "Score247 Query API" });
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
@@ -23,10 +25,12 @@
 
         public static void ConfigureSwagger(this IApplicationBuilder application)
         {
-            application.UseSwagger().UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint($"../swagger/v1/swagger.json", "Score247 Query API Docs");
-            });
+            application
+                .UseSwagger()
+                .UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint($"../swagger/v1/swagger.json", "Score247 Query API Docs");
+                });
         }
     }
 }

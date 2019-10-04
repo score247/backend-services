@@ -9,6 +9,7 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
     using Soccer.Core.Shared.Configurations;
     using Soccer.EventPublishers.Matches;
     using Soccer.EventPublishers.Odds;
@@ -90,7 +91,7 @@
             services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
         }
 
-        public static void UseRabbitMq(this IApplicationBuilder application, IApplicationLifetime applicationLifetime)
+        public static void UseRabbitMq(this IApplicationBuilder application, IHostApplicationLifetime applicationLifetime)
         {
             var bus = application.ApplicationServices.GetService<IBusControl>();
 

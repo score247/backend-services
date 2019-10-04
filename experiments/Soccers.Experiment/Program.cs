@@ -34,21 +34,27 @@
                 await connection.StartAsync();
             };
 
+            connection.On<string>("MatchEvent", (data) =>
+            {
+                //var pushEvents = JsonConvert.DeserializeObject<Dictionary<string, MatchPushEvent>>(data);
+                Console.WriteLine($"MatchEvent \r\n{data}\r\n ");
+            });
+
             connection.On<string>("OddsMovement", (data) =>
             {
                 //var pushEvents = JsonConvert.DeserializeObject<Dictionary<string, MatchPushEvent>>(data);
-                Console.WriteLine($"OddsMovement \r\n : {data}\r\n ");
+                Console.WriteLine($"OddsMovement \r\n{data}\r\n ");
             });
 
             connection.On<string>("OddsComparison", (data) =>
             {
                 //var pushEvents = JsonConvert.DeserializeObject<Dictionary<string, MatchPushEvent>>(data);
-                Console.WriteLine($"OddsComparison \r\n: {data}\r\n ");
+                Console.WriteLine($"OddsComparison \r\n{data}\r\n ");
             });
 
             connection.On<string>("TeamStatistic", (data) =>
             {
-                Console.WriteLine($"TeamStatistic \r\n {data}\r\n ");
+                Console.WriteLine($"TeamStatistic \r\n{data}\r\n ");
             });
 
             connection.StartAsync().GetAwaiter().GetResult();

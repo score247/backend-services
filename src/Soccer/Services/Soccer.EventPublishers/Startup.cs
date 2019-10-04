@@ -2,10 +2,10 @@
 {
     using JsonNet.ContractResolvers;
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
     using Newtonsoft.Json;
     using Soccer.EventPublishers.Hubs;
     using Soccer.EventPublishers.Shared.Middlewares;
@@ -34,26 +34,22 @@
             services.AddLogging(Configuration);
             services.AddRabbitMq(Configuration);
             services.AddSingleton(services.BuildServiceProvider());
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers();
+            services
+                .AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IApplicationLifetime applicationLifetime)
+        public void Configure(IApplicationBuilder app, IHostApplicationLifetime applicationLifetime)
         {
             app.ConfigureExceptionHandler();
-
-            app.UseSignalR(routes =>
-            {
-                routes.MapHub<SoccerHub>("/hubs/soccerhub");
-            });
-
             app.UseRabbitMq(applicationLifetime);
-            app.UseMvc(routes =>
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}");
+                endpoints.MapHub<SoccerHub>("/hubs/soccerhub");
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
         }
     }

@@ -2,7 +2,6 @@
 using System.Reflection;
 using Fanex.Logging;
 using MediatR;
-using MessagePack.AspNetCoreMvcFormatter;
 using MessagePack.Resolvers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Soccer.API._Shared.Formatters;
 using Soccer.API.Shared.Middlewares;
 using Soccer.Database;
 
@@ -36,19 +36,14 @@ namespace Soccer.API
                 services.AddServices();
                 services.AddHealthCheck();
                 services.AddSwagger();
-                services.AddMvc()
+                services
+                    .AddMvc()
                     .AddMvcOptions(option =>
                     {
-                        option.OutputFormatters.Clear();
                         option.OutputFormatters.Add(new MessagePackOutputFormatter(ContractlessStandardResolver.Instance));
-                        option.InputFormatters.Clear();
                         option.InputFormatters.Add(new MessagePackInputFormatter(ContractlessStandardResolver.Instance));
                     })
-                    .AddJsonOptions(options =>
-                    {
-                        options.SerializerSettings.DateTimeZoneHandling = DateTimeZoneHandling.Unspecified;
-                    })
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             }
             catch (Exception ex)
             {
@@ -58,16 +53,20 @@ namespace Soccer.API
 
 #pragma warning restore S3902 // "Assembly.GetExecutingAssembly" should not be called
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             try
             {
+                app.UseStaticFiles();
                 app.ConfigureExceptionHandler();
                 app.UseHealthCheck();
                 app.UseDatabase(Configuration);
                 app.ConfigureSwagger();
-
-                app.UseMvc();
+                app.UseRouting();
+                app.UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+                });
 
                 SqlMappers.RegisterJsonTypeHandlers();
             }
