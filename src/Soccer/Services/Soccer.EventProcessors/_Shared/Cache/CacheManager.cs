@@ -21,7 +21,7 @@ namespace Soccer.EventProcessors._Shared.Cache
         {
             var cacheItems = cacheService.Get<T>(cacheKey);
 
-            if (cacheItems == default)
+            if (cacheItems == null)
             {
                 cacheItems = await fetchFunc.Invoke();
 
