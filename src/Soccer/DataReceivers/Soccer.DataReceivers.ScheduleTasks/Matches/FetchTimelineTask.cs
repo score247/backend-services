@@ -1,5 +1,6 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
+    using System.Linq;
     using System.Threading.Tasks;
     using Hangfire;
     using MassTransit;
@@ -48,7 +49,7 @@
             if (!string.IsNullOrWhiteSpace(match.Referee) || match.Attendance > 0)
             {
                 await messageBus.Publish<IMatchUpdatedConditionsMessage>(new MatchUpdatedConditionsMessage(matchId, match.Referee, match.Attendance, language));
-            }       
+            }
 
             foreach (var team in match.Teams)
             {
@@ -57,11 +58,16 @@
 
             if (match.TimeLines != null)
             {
-                foreach (var timelineItem in match.TimeLines)
-                {
-                    var matchEvent = new MatchEvent(match.League.Id, match.Id, match.MatchResult, timelineItem);
+                //TODO should apply for latest event only
+                var latestTimeline = match.TimeLines.Last();
+                var matchEvent = new MatchEvent(match.League.Id, match.Id, match.MatchResult, latestTimeline);
+                await messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent));
 
-                    await messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent));
+                var filteredTimelinesButLast = match.TimeLines.Where(t => t.Type != EventType.BreakStart).SkipLast(1).ToList();
+
+                foreach (var timeline in filteredTimelinesButLast)
+                {                    
+                    await messageBus.Publish<ITimelineFetchedMessage>(new TimelineFetchedMessage(matchId, timeline, language));
                 }
             }
 
