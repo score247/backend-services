@@ -57,16 +57,22 @@
                 await messageBus.Publish<ITeamStatisticUpdatedMessage>(new TeamStatisticUpdatedMessage(matchId, team.IsHome, team.Statistic));
             }
 
-            if (match.TimeLines != null)
+            if (match.TimeLines != null && match.TimeLines.Any())
             {
                 //TODO should apply for latest event only
-                var latestTimeline = match.TimeLines.Last();
+                var latestTimeline = match.TimeLines.LastOrDefault();
+
+                if (latestTimeline == null)
+                {
+                    return;
+                }
+
                 var matchEvent = new MatchEvent(match.League.Id, match.Id, match.MatchResult, latestTimeline, true);
                 await messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent));
 
-                var filteredTimelinesButLast = match.TimeLines.SkipLast(1).ToList();
-
                 await ProcessBreakStartEvent(match, match.TimeLines);
+
+                var filteredTimelinesButLast = match.TimeLines.SkipLast(1).ToList();
 
                 foreach (var timeline in filteredTimelinesButLast)
                 {
