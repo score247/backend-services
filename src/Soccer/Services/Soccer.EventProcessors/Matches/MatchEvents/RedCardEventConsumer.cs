@@ -1,5 +1,7 @@
 ﻿namespace Soccer.EventProcessors.Matches.MatchEvents
 {
+    using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Fanex.Caching;
@@ -8,7 +10,6 @@
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
-    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.Models;
     using Soccer.Core.Teams.QueueMessages;
     using Soccer.Database.Matches.Criteria;
@@ -18,6 +19,11 @@
         private readonly IBus messageBus;
         private readonly ICacheService cacheService;
         private readonly IDynamicRepository dynamicRepository;
+
+        private static readonly CacheItemOptions EventCacheOptions = new CacheItemOptions
+        {
+            SlidingExpiration = TimeSpan.FromMinutes(10),
+        };
 
         public RedCardEventConsumer(IBus messageBus, ICacheService cacheService, IDynamicRepository dynamicRepository)
         {
@@ -35,39 +41,38 @@
                 return;
             }
 
-            var timeline = matchEvent.Timeline;
-            var cacheKey = $"{matchEvent.MatchId}_{matchEvent.Timeline.Team}_Statistic";
-            TeamStatistic teamStats;
+            var processedRedCards = await GetProcessedRedCards(matchEvent.MatchId, matchEvent.Timeline.Team);
 
-            if (await cacheService.ContainAsync(cacheKey))
+            var teamStats = new TeamStatistic
             {
-                teamStats = await cacheService.GetAsync<TeamStatistic>(cacheKey);
+                RedCards = processedRedCards.Count(x => x.Type.IsRedCard()),
+                YellowRedCards = processedRedCards.Count(x => x.Type.IsYellowRedCard())
+            };
 
-                IncreaseRedCardCount(timeline, teamStats);
-            }
-            else
-            {
-                var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(matchEvent.MatchId, Language.en_US));
-                teamStats = match?.Teams?.FirstOrDefault(t => t.IsHome == matchEvent.Timeline.IsHome)?.Statistic;
-
-                IncreaseRedCardCount(timeline, teamStats);
-            }
-
-            await cacheService.SetAsync(cacheKey, teamStats);
-            await messageBus.Publish<ITeamStatisticUpdatedMessage>(new TeamStatisticUpdatedMessage(matchEvent.MatchId, timeline.IsHome, teamStats));
+            await messageBus.Publish<ITeamStatisticUpdatedMessage>(new TeamStatisticUpdatedMessage(matchEvent.MatchId, matchEvent.Timeline.IsHome, teamStats));
             await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
         }
 
-        private static void IncreaseRedCardCount(TimelineEvent timeline, TeamStatistic teamStats)
+        private async Task<IList<TimelineEvent>> GetProcessedRedCards(string matchId, string teamId)
         {
-            if (timeline.Type.IsRedCard())
+            IList<TimelineEvent> timelineEvents;
+
+            var timelineEventsCacheKey = $"MatchPushEvent_Match_{matchId}";
+
+            timelineEvents = cacheService.Get<IList<TimelineEvent>>(timelineEventsCacheKey);
+
+            if (timelineEvents == null || timelineEvents.Count == 0)
             {
-                teamStats.RedCards++;
+                timelineEvents = (await dynamicRepository.FetchAsync<TimelineEvent>
+                    (new GetTimelineEventsCriteria(matchId))).ToList();
+
+                if (timelineEvents?.Count > 0)
+                {
+                    await cacheService.SetAsync(timelineEventsCacheKey, timelineEvents, EventCacheOptions);
+                }
             }
-            else
-            {
-                teamStats.YellowRedCards++;
-            }
+
+            return timelineEvents.Where(t => t.Team == teamId && (t.Type.IsRedCard() || t.Type.IsYellowRedCard())).ToList();
         }
     }
 }
