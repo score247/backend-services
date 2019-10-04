@@ -60,14 +60,20 @@
             {
                 //TODO should apply for latest event only
                 var latestTimeline = match.TimeLines.Last();
-                var matchEvent = new MatchEvent(match.League.Id, match.Id, match.MatchResult, latestTimeline);
+                var matchEvent = new MatchEvent(match.League.Id, match.Id, match.MatchResult, latestTimeline, true);
                 await messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent));
 
-                var filteredTimelinesButLast = match.TimeLines.Where(t => t.Type != EventType.BreakStart).SkipLast(1).ToList();
+                var filteredTimelinesButLast = match.TimeLines.SkipLast(1).ToList();
 
                 foreach (var timeline in filteredTimelinesButLast)
-                {                    
-                    await messageBus.Publish<ITimelineFetchedMessage>(new TimelineFetchedMessage(matchId, timeline, language));
+                {
+                    await messageBus.Publish<IMatchEventReceivedMessage>(
+                        new MatchEventReceivedMessage(new MatchEvent(
+                                match.League.Id,
+                                match.Id,
+                                match.MatchResult,
+                                latestTimeline,
+                                false)));
                 }
             }
 

@@ -4,17 +4,20 @@ namespace Soccer.Core.Matches.Models
 {
     public class MatchEvent
     {
-        public MatchEvent(string leagueId, string matchId, MatchResult matchResult, TimelineEvent timeline)
+        public MatchEvent(string leagueId, string matchId, MatchResult matchResult, TimelineEvent timeline, bool isUpdateScore)
         {
             LeagueId = leagueId;
             MatchId = matchId;
             MatchResult = matchResult;
             Timeline = timeline;
+            IsUpdateScore = isUpdateScore;
         }
 
         public string LeagueId { get; }
 
         public string MatchId { get; }
+
+        public bool IsUpdateScore { get; }
 
         public MatchResult MatchResult { get; }
 
@@ -22,6 +25,11 @@ namespace Soccer.Core.Matches.Models
 
         public MatchEvent AddScoreToSpecialTimeline(MatchResult matchResult) 
         {
+            if (!IsUpdateScore)
+            {
+                return this;            
+            }
+
             if (Timeline.Type == EventType.BreakStart || Timeline.Type == EventType.MatchEnded)
             {
                 Timeline.UpdateScore(matchResult.HomeScore, matchResult.AwayScore);

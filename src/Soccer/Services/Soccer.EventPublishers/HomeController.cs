@@ -66,7 +66,8 @@
                 {
                     Id = "121212112",
                     MatchClock = "11:11"
-                }));
+                },
+                true));
 
             await hubContext.Clients.All.SendAsync("MatchEvent", JsonConvert.SerializeObject(matchEventMessage));
         }
