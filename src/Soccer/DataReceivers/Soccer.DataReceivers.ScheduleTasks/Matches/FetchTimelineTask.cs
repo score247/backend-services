@@ -1,5 +1,6 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Hangfire;
@@ -65,6 +66,8 @@
 
                 var filteredTimelinesButLast = match.TimeLines.SkipLast(1).ToList();
 
+                await ProcessBreakStartEvent(match, match.TimeLines);
+
                 foreach (var timeline in filteredTimelinesButLast)
                 {
                     await messageBus.Publish<IMatchEventReceivedMessage>(
@@ -78,6 +81,28 @@
             }
 
             // TODO: Add update match kick off time
+        }
+
+        private async Task ProcessBreakStartEvent(Match match, IEnumerable<TimelineEvent> timelines) 
+        {
+            var breakStarts = timelines.Where(t => t.Type == EventType.BreakStart).ToList();
+
+            foreach (var breakStart in breakStarts)
+            {            
+                var latestScore = timelines
+                    .LastOrDefault(t => t.Type == EventType.ScoreChange && t.Time < breakStart.Time);             
+
+                breakStart.HomeScore = latestScore == null ? 0 : latestScore.HomeScore;
+                breakStart.AwayScore = latestScore == null ? 0 : latestScore.AwayScore;
+
+                await messageBus.Publish<IMatchEventReceivedMessage>(
+                        new MatchEventReceivedMessage(new MatchEvent(
+                                match.League.Id,
+                                match.Id,
+                                match.MatchResult,
+                                breakStart,
+                                false)));
+            }        
         }
     }
 }
