@@ -59,7 +59,6 @@
 
             if (match.TimeLines != null && match.TimeLines.Any())
             {
-                //TODO should apply for latest event only
                 var latestTimeline = match.TimeLines.LastOrDefault();
 
                 if (latestTimeline == null)
@@ -68,7 +67,8 @@
                 }
 
                 var matchEvent = new MatchEvent(match.League.Id, match.Id, match.MatchResult, latestTimeline, true);
-                await messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent));
+                await messageBus.Publish<IMatchEventReceivedMessage>(
+                    new MatchEventReceivedMessage(matchEvent.AddScoreToSpecialTimeline(match.MatchResult)));
 
                 await ProcessBreakStartEvent(match, match.TimeLines);
 
@@ -89,14 +89,14 @@
             // TODO: Add update match kick off time
         }
 
-        private async Task ProcessBreakStartEvent(Match match, IEnumerable<TimelineEvent> timelines) 
+        private async Task ProcessBreakStartEvent(Match match, IEnumerable<TimelineEvent> timelines)
         {
             var breakStarts = timelines.Where(t => t.Type == EventType.BreakStart).ToList();
 
             foreach (var breakStart in breakStarts)
-            {            
+            {
                 var latestScore = timelines
-                    .LastOrDefault(t => t.Type == EventType.ScoreChange && t.Time < breakStart.Time);             
+                    .LastOrDefault(t => t.Type == EventType.ScoreChange && t.Time < breakStart.Time);
 
                 breakStart.HomeScore = latestScore == null ? 0 : latestScore.HomeScore;
                 breakStart.AwayScore = latestScore == null ? 0 : latestScore.AwayScore;
@@ -108,7 +108,7 @@
                                 match.MatchResult,
                                 breakStart,
                                 false)));
-            }        
+            }
         }
     }
 }
