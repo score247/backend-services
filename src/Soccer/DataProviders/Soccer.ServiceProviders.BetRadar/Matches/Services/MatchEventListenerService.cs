@@ -50,7 +50,7 @@
                 runningTasks = soccerSettings?.Regions?.Select(
                     region => Task.Factory.StartNew(
                                 () => ListeningEventForRegion(region.Name, region.PushKey, handler, cancellationToken),
-                    cancellationToken));
+                                TaskCreationOptions.LongRunning));
 
                 await Task.WhenAll(runningTasks);
             }
