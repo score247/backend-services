@@ -6,13 +6,13 @@
     using System.Threading.Tasks;
     using Fanex.Caching;
     using Fanex.Data.Repository;
+    using Fanex.Logging;
     using MassTransit;
     using Soccer.Core.Matches.Extensions;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
     using Soccer.Database.Matches.Criteria;
-    using Soccer.EventProcessors._Shared.Cache;
     using Soccer.EventProcessors._Shared.Filters;
 
     public class ReceiveMatchEventConsumer : IConsumer<IMatchEventReceivedMessage>
@@ -22,20 +22,23 @@
             SlidingExpiration = TimeSpan.FromMinutes(10),
         };
 
-        private readonly ICacheManager cacheManager;
+        private readonly ICacheService cacheService;
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
+        private readonly ILogger logger;
         private readonly IFilter<MatchEvent, bool> matchEventFilter;
 
         public ReceiveMatchEventConsumer(
-            ICacheManager cacheManager,
+            ICacheService cacheService,
             IDynamicRepository dynamicRepository,
             IBus messageBus,
+            ILogger logger,
             IFilter<MatchEvent, bool> matchEventFilter)
         {
-            this.cacheManager = cacheManager;
+            this.cacheService = cacheService;
             this.dynamicRepository = dynamicRepository;
             this.messageBus = messageBus;
+            this.logger = logger;
             this.matchEventFilter = matchEventFilter;
         }
 
@@ -100,11 +103,11 @@
 
             var timelineEventsCacheKey = $"MatchPushEvent_Match_{matchId}";
 
-            timelineEvents = await cacheManager.GetOrFetch<IList<TimelineEvent>>(
+            timelineEvents = await cacheService.GetOrSetAsync<IList<TimelineEvent>>(
                 timelineEventsCacheKey,
-                async () =>
+                () =>
                 {
-                    return (await dynamicRepository.FetchAsync<TimelineEvent>
+                    return (dynamicRepository.Fetch<TimelineEvent>
                                 (new GetTimelineEventsCriteria(matchId))).ToList();
                 },
                 EventCacheOptions);
@@ -118,10 +121,17 @@
 
             var processedItem = timeLineEvents.FirstOrDefault(t => t == matchEvent.Timeline);
 
-            if (processedItem != null)
+            try
             {
-                timeLineEvents.Remove(processedItem);
+                if (processedItem != null)
+                {
+                    timeLineEvents.Remove(processedItem);
+                }
             }
+            catch (Exception e)
+            {
+                await logger.ErrorAsync($"Cannot remove item {processedItem?.Type} - {processedItem?.Team} of match {matchEvent.MatchId}", e);
+            }            
 
             timeLineEvents.Add(matchEvent.Timeline);
         }
