@@ -14,12 +14,12 @@
     public class FetchPreMatchesConsumer : IConsumer<IPreMatchesFetchedMessage>
     {
         private readonly IDynamicRepository dynamicRepository;
-        private readonly IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
+        private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
         private readonly ILeagueGenerator leagueGenerator;
 
         public FetchPreMatchesConsumer(
             IDynamicRepository dynamicRepository,
-            IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter,
+            IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter,
             ILeagueGenerator leagueGenerator)
         {
             this.dynamicRepository = dynamicRepository;
@@ -30,7 +30,7 @@
         public async Task Consume(ConsumeContext<IPreMatchesFetchedMessage> context)
         {
             var message = context.Message;
-            var filteredMatches = (await leagueFilter.FilterAsync(message.Matches))
+            var filteredMatches = (await leagueFilter.Filter(message.Matches))
                                     .Select(match => leagueGenerator.GenerateInternationalCode(match))
                                     .ToList();
 

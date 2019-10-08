@@ -14,12 +14,12 @@
     public class FetchPostMatchesConsumer : IConsumer<IPostMatchFetchedMessage>
     {
         private readonly IDynamicRepository dynamicRepository;
-        private readonly IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
+        private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
         private readonly ILeagueGenerator leagueGenerator;
 
         public FetchPostMatchesConsumer(
             IDynamicRepository dynamicRepository,
-            IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter,
+            IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter,
             ILeagueGenerator leagueGenerator)
         {
             this.dynamicRepository = dynamicRepository;
@@ -30,7 +30,7 @@
         public async Task Consume(ConsumeContext<IPostMatchFetchedMessage> context)
         {
             var message = context.Message;
-            var filteredMatches = (await leagueFilter.FilterAsync(message.Matches))
+            var filteredMatches = (await leagueFilter.Filter(message.Matches))
                                     .Select(match => leagueGenerator.GenerateInternationalCode(match))
                                     .ToList();
 

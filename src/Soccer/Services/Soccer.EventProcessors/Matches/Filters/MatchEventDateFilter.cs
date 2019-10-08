@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.EventProcessors._Shared.Filters;
@@ -12,11 +11,11 @@ namespace Soccer.EventProcessors.Matches.Filters
     {
         private const int TimeSpanInMinutes = 10;
 
-        public Task<IEnumerable<Match>> FilterAsync(IEnumerable<Match> data)
-            => Task.FromResult(data.Where(m => m.MatchResult.EventStatus != MatchStatus.NotStarted 
-                                                || (m.MatchResult.EventStatus == MatchStatus.NotStarted && IsValid(m.EventDate))));
+        public IEnumerable<Match> Filter(IEnumerable<Match> data)
+            => data.Where(m => m.MatchResult.EventStatus != MatchStatus.NotStarted 
+                                || (m.MatchResult.EventStatus == MatchStatus.NotStarted && IsValidEventDate(m.EventDate)));
 
-        private static bool IsValid(DateTimeOffset dateTime)
+        private static bool IsValidEventDate(DateTimeOffset dateTime)
             => dateTime >= (DateTimeOffset.Now - TimeSpan.FromMinutes(TimeSpanInMinutes));       
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.EventProcessors._Shared.Filters;
@@ -22,17 +21,17 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
         }
 
         [Fact]
-        public async Task FilterAsync_EmptyList_ShouldReturnEmpty()
+        public void FilterAsync_EmptyList_ShouldReturnEmpty()
         {
             var matches = new List<Match>();
 
-            var filteredMatches = await eventDateFilter.FilterAsync(matches);
+            var filteredMatches = eventDateFilter.Filter(matches);
 
             Assert.Empty(filteredMatches);
         }
 
         [Fact]
-        public async Task FilterAsync_NotHaveNotStartedMatches_ShouldReturnCorrectList()
+        public void FilterAsync_NotHaveNotStartedMatches_ShouldReturnCorrectList()
         {
             var matches = new List<Match>
             {
@@ -40,13 +39,13 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
                 new Match { Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.Live }  }
             };
 
-            var filteredMatches = (await eventDateFilter.FilterAsync(matches)).ToList();
+            var filteredMatches = eventDateFilter.Filter(matches).ToList();
 
             Assert.Equal(2, filteredMatches.Count);
         }
 
         [Fact]
-        public async Task FilterAsync_HaveNotStartedMatchesAndValidEventDate_ShouldReturnCorrectList()
+        public void FilterAsync_HaveNotStartedMatchesAndValidEventDate_ShouldReturnCorrectList()
         {
             var matches = new List<Match>
             {
@@ -56,13 +55,13 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
 
             };
 
-            var filteredMatches = (await eventDateFilter.FilterAsync(matches)).ToList();
+            var filteredMatches = eventDateFilter.Filter(matches).ToList();
 
             Assert.Equal(3, filteredMatches.Count);
         }
 
         [Fact]
-        public async Task FilterAsync_HaveNotStartedMatchesButInvalidEventDate_ShouldReturnCorrectList()
+        public void FilterAsync_HaveNotStartedMatchesButInvalidEventDate_ShouldReturnCorrectList()
         {
             var matches = new List<Match>
             {
@@ -73,13 +72,13 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
                 new Match { Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(20))  },
             };
 
-            var filteredMatches = (await eventDateFilter.FilterAsync(matches)).ToList();
+            var filteredMatches = eventDateFilter.Filter(matches).ToList();
 
             Assert.Equal(3, filteredMatches.Count);
         }
 
         [Fact]
-        public async Task FilterAsync_AllValidNotStartedMatches_ShouldReturnFullList()
+        public void FilterAsync_AllValidNotStartedMatches_ShouldReturnFullList()
         {
             var matches = new List<Match>
             {
@@ -88,7 +87,7 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
                 new Match { Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(9))  },
             };
 
-            var filteredMatches = (await eventDateFilter.FilterAsync(matches)).ToList();
+            var filteredMatches = eventDateFilter.Filter(matches).ToList();
 
             Assert.Equal(3, filteredMatches.Count);
         }

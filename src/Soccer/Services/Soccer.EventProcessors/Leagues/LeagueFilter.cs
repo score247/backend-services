@@ -15,9 +15,9 @@ using Soccer.EventProcessors.Shared.Configurations;
 namespace Soccer.EventProcessors.Leagues
 {
     public class LeagueFilter :
-        IFilter<IEnumerable<Match>, IEnumerable<Match>>,
-        IFilter<Match, bool>,
-        IFilter<MatchEvent, bool>
+        IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>>,
+        IAsyncFilter<Match, bool>,
+        IAsyncFilter<MatchEvent, bool>
     {
         private const string MajorLeaguesCacheKey = "Major_Leagues";
         private readonly IDynamicRepository dynamicRepository;
@@ -29,7 +29,7 @@ namespace Soccer.EventProcessors.Leagues
             this.cacheService = cacheService;
         }
 
-        public async Task<IEnumerable<Match>> FilterAsync(IEnumerable<Match> data)
+        public async Task<IEnumerable<Match>> Filter(IEnumerable<Match> data)
         {
             var majorLeagues = await GetMajorLeagues();
 
@@ -38,13 +38,13 @@ namespace Soccer.EventProcessors.Leagues
                 .Select(m => SetLeagueOrder(m, majorLeagues));
         }
 
-        public Task<bool> FilterAsync(Match data)
+        public Task<bool> Filter(Match data)
         {
             // TODO: Implement later
             return Task.FromResult(true);
         }
 
-        public async Task<bool> FilterAsync(MatchEvent data)
+        public async Task<bool> Filter(MatchEvent data)
         {
             if (data == null)
             {

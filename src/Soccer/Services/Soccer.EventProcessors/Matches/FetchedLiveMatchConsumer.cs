@@ -20,7 +20,7 @@ namespace Soccer.EventProcessors.Matches
     {
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
-        private readonly IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
+        private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
         private readonly IFilter<IEnumerable<Match>, IEnumerable<Match>> eventDateFilter;
         private readonly ILeagueGenerator leagueGenerator;
         private readonly ILogger logger;
@@ -28,7 +28,7 @@ namespace Soccer.EventProcessors.Matches
         public FetchedLiveMatchConsumer(
             IBus messageBus,
             IDynamicRepository dynamicRepository,
-            IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter,
+            IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter,
             IFilter<IEnumerable<Match>, IEnumerable<Match>> eventDateFilter,
             ILeagueGenerator leagueGenerator,
             ILogger logger)
@@ -73,9 +73,10 @@ namespace Soccer.EventProcessors.Matches
 
         private async Task<IEnumerable<Match>> FilterMatches(ILiveMatchFetchedMessage message)
         {
-            var filteredMatches = await leagueFilter.FilterAsync(message.Matches);
+            var filteredMatches = await leagueFilter.Filter(message.Matches);
 
-            filteredMatches = (await eventDateFilter.FilterAsync(filteredMatches))
+            filteredMatches = eventDateFilter
+                .Filter(filteredMatches)
                 .Select(match => leagueGenerator.GenerateInternationalCode(match)).ToList();
 
             return filteredMatches;

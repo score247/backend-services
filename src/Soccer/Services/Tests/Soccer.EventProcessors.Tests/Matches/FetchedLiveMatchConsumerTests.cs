@@ -24,7 +24,7 @@ namespace Soccer.EventProcessors.Tests.Matches
     {
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
-        private readonly IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
+        private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
         private readonly IFilter<IEnumerable<Match>, IEnumerable<Match>> eventDateFilter;
         private readonly ILeagueGenerator leagueGenerator;
         private readonly ILogger logger;
@@ -36,7 +36,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
             messageBus = Substitute.For<IBus>();
-            leagueFilter = Substitute.For<IFilter<IEnumerable<Match>, IEnumerable<Match>>>();
+            leagueFilter = Substitute.For<IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>>>();
             eventDateFilter = Substitute.For<IFilter<IEnumerable<Match>, IEnumerable<Match>>>();
             leagueGenerator = Substitute.For<ILeagueGenerator>();
             logger = Substitute.For<ILogger>();
@@ -71,13 +71,13 @@ namespace Soccer.EventProcessors.Tests.Matches
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { match }));
 
-            leagueFilter.FilterAsync(Arg.Any<IEnumerable<Match>>())
+            leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
                 .Returns(new List<Match> { match });
 
             leagueGenerator.GenerateInternationalCode(Arg.Is<Match>(m => m.Id == "1"))
                 .Returns(match);
 
-            eventDateFilter.FilterAsync(Arg.Any<IEnumerable<Match>>())
+            eventDateFilter.Filter(Arg.Any<IEnumerable<Match>>())
                 .Returns(new List<Match> { match });
 
             await fetchedLiveMatchConsumer.Consume(context);
@@ -106,13 +106,13 @@ namespace Soccer.EventProcessors.Tests.Matches
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { newMatch }));
 
-            leagueFilter.FilterAsync(Arg.Any<IEnumerable<Match>>())
+            leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
                 .Returns(new List<Match> { newMatch });
 
             leagueGenerator.GenerateInternationalCode(Arg.Is<Match>(m => m.Id == "2"))
                 .Returns(newMatch);
 
-            eventDateFilter.FilterAsync(Arg.Any<IEnumerable<Match>>())
+            eventDateFilter.Filter(Arg.Any<IEnumerable<Match>>())
                 .Returns(new List<Match> { newMatch });
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
@@ -130,13 +130,13 @@ namespace Soccer.EventProcessors.Tests.Matches
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { newMatch }));
 
-            leagueFilter.FilterAsync(Arg.Any<IEnumerable<Match>>())
+            leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
                 .Returns(new List<Match> { newMatch });
 
             leagueGenerator.GenerateInternationalCode(Arg.Is<Match>(m => m.Id == "1"))
                 .Returns(newMatch);
 
-            eventDateFilter.FilterAsync(Arg.Any<IEnumerable<Match>>())
+            eventDateFilter.Filter(Arg.Any<IEnumerable<Match>>())
                 .Returns(new List<Match> { newMatch });
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())

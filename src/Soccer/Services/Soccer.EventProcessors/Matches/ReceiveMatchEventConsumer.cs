@@ -26,14 +26,14 @@
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
         private readonly ILogger logger;
-        private readonly IFilter<MatchEvent, bool> matchEventFilter;
+        private readonly IAsyncFilter<MatchEvent, bool> matchEventFilter;
 
         public ReceiveMatchEventConsumer(
             ICacheService cacheService,
             IDynamicRepository dynamicRepository,
             IBus messageBus,
             ILogger logger,
-            IFilter<MatchEvent, bool> matchEventFilter)
+            IAsyncFilter<MatchEvent, bool> matchEventFilter)
         {
             this.cacheService = cacheService;
             this.dynamicRepository = dynamicRepository;
@@ -46,7 +46,7 @@
         {
             var matchEvent = context.Message?.MatchEvent;
             var isValidMatchEvent = matchEvent != null
-                                    && await matchEventFilter.FilterAsync(matchEvent);
+                                    && await matchEventFilter.Filter(matchEvent);
             if (isValidMatchEvent)
             {
                 if (matchEvent.Timeline.IsScoreChangeInPenalty())

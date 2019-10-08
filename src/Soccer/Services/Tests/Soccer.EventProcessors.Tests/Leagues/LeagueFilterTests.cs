@@ -18,7 +18,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
         private const string MajorLeaguesCacheKey = "Major_Leagues";
         private readonly IDynamicRepository dynamicRepository;      
         private readonly ICacheService cacheService;
-        private readonly IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
+        private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
 
         public LeagueFilterTests()
         {
@@ -43,7 +43,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
                 new Match { Id = "match:2", League = new League{ Id = "league:4" }  }
             };
 
-            var filteredMatches = await leagueFilter.FilterAsync(matches);
+            var filteredMatches = await leagueFilter.Filter(matches);
 
             Assert.Empty(filteredMatches);
         }
@@ -66,7 +66,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
                 new Match { Id = "match:4", League = new League{ Id = "league:6" }  }                
             };
 
-            var filteredMatches = (await leagueFilter.FilterAsync(matches)).ToList();
+            var filteredMatches = (await leagueFilter.Filter(matches)).ToList();
 
             Assert.Equal(2, filteredMatches.Count);
             Assert.Contains(filteredMatches, m => m.Id == "match:3");
