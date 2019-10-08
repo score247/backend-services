@@ -9,9 +9,9 @@ namespace Soccer.EventProcessors.Matches.Filters
 {
     public class MatchEventDateFilter : IFilter<IEnumerable<Match>, IEnumerable<Match>>
     {
-        private static TimeSpan TimeSpanInMinutes = TimeSpan.FromMinutes(10);
-        private static DateTimeOffset ValidFromTime = DateTimeOffset.Now - TimeSpanInMinutes;
-        private static DateTimeOffset ValidToTime = DateTimeOffset.Now + TimeSpanInMinutes;
+        private const int TimeSpanInMinutes = 10;
+        private static DateTimeOffset ValidFromTime = DateTimeOffset.UtcNow.AddMinutes(-TimeSpanInMinutes);
+        private static DateTimeOffset ValidToTime = DateTimeOffset.UtcNow.AddMinutes(TimeSpanInMinutes);
 
         public IEnumerable<Match> Filter(IEnumerable<Match> data)
             => data.Where(m => m.MatchResult.EventStatus == MatchStatus.Live
@@ -19,8 +19,8 @@ namespace Soccer.EventProcessors.Matches.Filters
                                 || IsValidClosedMatch(m.MatchResult.EventStatus, m.LatestTimeline?.Time));
 
         private static bool IsValidNotStartMatch(MatchStatus eventStatus, DateTimeOffset dateTime)
-            => eventStatus.IsNotStart() 
-                && dateTime >= ValidFromTime 
+            => eventStatus.IsNotStart()
+                && dateTime >= ValidFromTime
                 && dateTime <= ValidToTime;
 
         private static bool IsValidClosedMatch(MatchStatus eventStatus, DateTimeOffset? dateTime)

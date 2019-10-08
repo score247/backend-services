@@ -92,12 +92,13 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
             var matches = new List<Match>
             {
                 new Match { Id = "match:1", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = DateTimeOffset.Now  + TimeSpan.FromMinutes(11) },
-                new Match { Id = "match:1", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = DateTimeOffset.Now  + TimeSpan.FromMinutes(9) },
-                new Match { Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = DateTimeOffset.Now  + TimeSpan.FromMinutes(5) },
-                new Match { Id = "match:3", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = DateTimeOffset.Now  },
-                new Match { Id = "match:4", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(5))  },
-                new Match { Id = "match:5", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(9))  },
-                new Match { Id = "match:5", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(19))  },
+                new Match { Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = DateTimeOffset.Now  + TimeSpan.FromMinutes(9) },
+                new Match { Id = "match:3", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = DateTimeOffset.Now  + TimeSpan.FromMinutes(5) },
+                new Match { Id = "match:4", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = DateTimeOffset.Now  },
+                new Match { Id = "match:5", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(1))  },
+                new Match { Id = "match:6", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(2))  },
+                new Match { Id = "match:7", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(11))  },
+                new Match { Id = "match:8", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(19))  },
             };
 
             var filteredMatches = eventDateFilter.Filter(matches).ToList();
