@@ -14,16 +14,13 @@ BEGIN
 						`Value`,
 						`matchId`,
 						`BetTypeId`,
-						`BookmakerId`,
-                        `Id`)
+						`BookmakerId`)
 						VALUES
-						(CURRENT_TIMESTAMP(6),
-                        -- JSON_UNQUOTE(JSON_EXTRACT(oddsList, CONCAT('$[', oddsIndex, '].LastUpdatedTime'))),
+						(UTC_TIMESTAMP(6),
 						JSON_EXTRACT(oddsList, CONCAT('$[', oddsIndex, ']')),
 						matchId,
 						JSON_EXTRACT(oddsList, CONCAT('$[', oddsIndex, '].Id')),
-						JSON_UNQUOTE(JSON_EXTRACT(oddsList, CONCAT('$[', oddsIndex, '].Bookmaker.Id'))),
-                        RAND());
+						JSON_UNQUOTE(JSON_EXTRACT(oddsList, CONCAT('$[', oddsIndex, '].Bookmaker.Id'))));
 			-- Increment the loop variable                                                                                                                                                        
 			SET oddsIndex = oddsIndex + 1;
 		END WHILE;

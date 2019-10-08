@@ -28,8 +28,9 @@ CREATE TABLE `Timeline` (
   `Id` bigint(20) NOT NULL,
   `MatchId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Value` json NOT NULL,
+  `Language` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'en-US',
   `CreatedTime` timestamp NULL DEFAULT NULL,
-  `ModifiedTime` timestamp NULL DEFAULT NULL,
+  `ModifiedTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`,`MatchId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -67,11 +68,11 @@ CREATE TABLE IF NOT EXISTS `TeamStatistic` (
   `Language` VARCHAR(45) NOT NULL DEFAULT 'en-US',
   PRIMARY KEY (`Id`, `Language`));
  
- CREATE TABLE `Match_Archived` (
+CREATE TABLE IF NOT EXISTS `Match_Archived` (
   `Id` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Value` json NOT NULL,
   `Language` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `SportId` int(11) NOT NULL,
+  `SportId` INT NOT NULL,
   `LeagueId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `EventDate` timestamp NOT NULL,
   `Region` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -80,8 +81,8 @@ CREATE TABLE IF NOT EXISTS `TeamStatistic` (
   PRIMARY KEY (`Id`,`Language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
- CREATE TABLE `Timeline_Archived` (
-  `Id` bigint(20) NOT NULL,
+CREATE TABLE IF NOT EXISTS `Timeline_Archived` (
+  `Id` BIGINT NOT NULL,
   `MatchId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Value` json NOT NULL,
   `Language` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'en-US',
@@ -89,6 +90,17 @@ CREATE TABLE IF NOT EXISTS `TeamStatistic` (
   `ModifiedTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`,`MatchId`,`Language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `Odds_Archived` (
+    `Id` INT AUTO_INCREMENT NOT NULL,
+    `CreatedTime` TIMESTAMP NOT NULL,
+    `Value` JSON NOT NULL,
+    `MatchId` VARCHAR(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `BetTypeId` INT NOT NULL,
+    `BookmakerId` VARCHAR(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+    CONSTRAINT `PK_Odds` PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 

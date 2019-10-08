@@ -15,7 +15,7 @@ namespace DBUp.Deployment
         {
             //LOCAL DEV
             // var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_dev;Persist Security Info=True;User ID=user;Password=1234aa;Allow User Variables=True;";
-            var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_dev1;Persist Security Info=True;User ID=user;Password=1234aa;Allow User Variables=True;";
+            var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_dev;Persist Security Info=True;User ID=user;Password=1234aa;Allow User Variables=True;";
             // var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_dev2;Persist Security Info=True;User ID=user;Password=1234aa;Allow User Variables=True;";
 
             //LOCAL TEST
