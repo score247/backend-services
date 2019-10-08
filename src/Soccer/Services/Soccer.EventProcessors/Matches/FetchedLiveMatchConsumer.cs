@@ -21,6 +21,7 @@ namespace Soccer.EventProcessors.Matches
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
         private readonly IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
+        private readonly IFilter<IEnumerable<Match>, IEnumerable<Match>> eventDateFilter;
         private readonly ILeagueGenerator leagueGenerator;
         private readonly ILogger logger;
 
@@ -28,28 +29,28 @@ namespace Soccer.EventProcessors.Matches
             IBus messageBus,
             IDynamicRepository dynamicRepository,
             IFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter,
+            IFilter<IEnumerable<Match>, IEnumerable<Match>> eventDateFilter,
             ILeagueGenerator leagueGenerator,
             ILogger logger)
         {
             this.messageBus = messageBus;
             this.dynamicRepository = dynamicRepository;
             this.leagueFilter = leagueFilter;
+            this.eventDateFilter = eventDateFilter;
             this.leagueGenerator = leagueGenerator;
             this.logger = logger;
         }
 
         public async Task Consume(ConsumeContext<ILiveMatchFetchedMessage> context)
         {
-            var message = context.Message;
+            var message = context?.Message;
 
-            if (message.Matches == null)
+            if (message == null || message.Matches == null || message.Language == null)
             {
                 return;
             }
 
-            var filteredMatches = (await leagueFilter.FilterAsync(message.Matches))
-                                    .Select(match => leagueGenerator.GenerateInternationalCode(match))
-                                    .ToList();
+            IEnumerable<Match> filteredMatches = await FilterMatches(message);
 
             var currentLiveMatches = (await dynamicRepository
                     .FetchAsync<Match>(new GetLiveMatchesCriteria(message.Language)))
@@ -68,6 +69,16 @@ namespace Soccer.EventProcessors.Matches
 
                 await Task.WhenAll(tasks);
             }
+        }
+
+        private async Task<IEnumerable<Match>> FilterMatches(ILiveMatchFetchedMessage message)
+        {
+            var filteredMatches = await leagueFilter.FilterAsync(message.Matches);
+
+            filteredMatches = (await eventDateFilter.FilterAsync(filteredMatches))
+                .Select(match => leagueGenerator.GenerateInternationalCode(match)).ToList();
+
+            return filteredMatches;
         }
 
         private async Task InsertOrRemoveLiveMatches(Language language, IEnumerable<Match> newLiveMatches, IEnumerable<Match> removedMatches)
