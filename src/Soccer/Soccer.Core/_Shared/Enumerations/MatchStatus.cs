@@ -112,5 +112,9 @@
         public bool IsSecondHalfExtra() => this == SecondHaftExtra;
 
         public bool IsNotStartOrDelay() => this == NotStarted || this == Postponed || this == Cancelled || this == StartDelayed;
+
+        public bool IsEnded() => this == Ended;
+
+        public bool IsNotStart() => this == NotStarted;
     }
 }

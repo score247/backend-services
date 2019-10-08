@@ -35,7 +35,10 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
         {
             var matches = new List<Match>
             {
-                new Match { Id = "match:1", MatchResult = new MatchResult{ EventStatus = MatchStatus.Closed } },
+                new Match {
+                    Id = "match:1",
+                    MatchResult = new MatchResult{ EventStatus = MatchStatus.Closed },
+                    LatestTimeline = new TimelineEvent{ Type = EventType.MatchEnded, Time = DateTimeOffset.Now } },
                 new Match { Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.Live }  }
             };
 
@@ -49,7 +52,10 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
         {
             var matches = new List<Match>
             {
-                new Match { Id = "match:1", MatchResult = new MatchResult{ EventStatus = MatchStatus.Closed } },
+                 new Match {
+                    Id = "match:1",
+                    MatchResult = new MatchResult{ EventStatus = MatchStatus.Closed },
+                    LatestTimeline = new TimelineEvent{ Type = EventType.MatchEnded, Time = DateTimeOffset.Now } },
                 new Match { Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.Live }  },
                 new Match { Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = DateTimeOffset.Now  },
 
@@ -65,7 +71,10 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
         {
             var matches = new List<Match>
             {
-                new Match { Id = "match:1", MatchResult = new MatchResult{ EventStatus = MatchStatus.Closed } },
+                 new Match {
+                    Id = "match:1",
+                    MatchResult = new MatchResult{ EventStatus = MatchStatus.Closed },
+                    LatestTimeline = new TimelineEvent{ Type = EventType.MatchEnded, Time = DateTimeOffset.Now } },
                 new Match { Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.Live }  },
                 new Match { Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = DateTimeOffset.Now  },
                 new Match { Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(11))  },
@@ -90,6 +99,24 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
             var filteredMatches = eventDateFilter.Filter(matches).ToList();
 
             Assert.Equal(3, filteredMatches.Count);
+        }
+
+        [Fact]
+        public void FilterAsync_InvalidClosedMatch_ShouldReturnCorrectList()
+        {
+            var matches = new List<Match>
+            {
+                new Match {
+                    Id = "match:1",
+                    MatchResult = new MatchResult{ EventStatus = MatchStatus.Closed },
+                    LatestTimeline = new TimelineEvent{ Type = EventType.MatchEnded, Time = DateTimeOffset.Now - TimeSpan.FromMinutes(11) } },
+                new Match { Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(5))  },
+                new Match { Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(9))  },
+            };
+
+            var filteredMatches = eventDateFilter.Filter(matches).ToList();
+
+            Assert.Equal(2, filteredMatches.Count);
         }
     }
 }

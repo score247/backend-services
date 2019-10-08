@@ -10,12 +10,19 @@ namespace Soccer.EventProcessors.Matches.Filters
     public class MatchEventDateFilter : IFilter<IEnumerable<Match>, IEnumerable<Match>>
     {
         private const int TimeSpanInMinutes = 10;
-
+        
         public IEnumerable<Match> Filter(IEnumerable<Match> data)
-            => data.Where(m => m.MatchResult.EventStatus != MatchStatus.NotStarted 
-                                || (m.MatchResult.EventStatus == MatchStatus.NotStarted && IsValidEventDate(m.EventDate)));
+            => data.Where(m => m.MatchResult.EventStatus == MatchStatus.Live
+                                || IsValidNotStartMatch(m.MatchResult.EventStatus, m.EventDate)
+                                || IsValidClosedMatch(m.MatchResult.EventStatus, m.LatestTimeline?.Time));
 
-        private static bool IsValidEventDate(DateTimeOffset dateTime)
-            => dateTime >= (DateTimeOffset.Now - TimeSpan.FromMinutes(TimeSpanInMinutes));       
+        private static bool IsValidNotStartMatch(MatchStatus eventStatus, DateTimeOffset dateTime)
+            => eventStatus.IsNotStart() 
+                && dateTime >= (DateTimeOffset.Now - TimeSpan.FromMinutes(TimeSpanInMinutes));
+
+        private static bool IsValidClosedMatch(MatchStatus eventStatus, DateTimeOffset? dateTime)
+            => (dateTime != null) 
+                && eventStatus.IsClosed()
+                && dateTime + TimeSpan.FromMinutes(TimeSpanInMinutes) > DateTimeOffset.Now;               
     }
 }
