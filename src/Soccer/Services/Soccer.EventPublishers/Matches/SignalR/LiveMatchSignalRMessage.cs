@@ -9,13 +9,11 @@
         public LiveMatchSignalRMessage(
             byte sportId,
             IEnumerable<MatchSummary> newMatches,
-            IEnumerable<MatchSummary> removedMatches,
-            int liveMatchCount)
+            IEnumerable<MatchSummary> removedMatches)
         {
             SportId = sportId;
             NewMatches = newMatches;
             RemoveMatchIds = removedMatches.Select(m => m.Id).ToArray();
-            LiveMatchCount = liveMatchCount;
         }
 
         public byte SportId { get; }
@@ -23,7 +21,5 @@
         public IEnumerable<MatchSummary> NewMatches { get; }
 
         public string[] RemoveMatchIds { get; }
-
-        public int LiveMatchCount { get; }
     }
 }

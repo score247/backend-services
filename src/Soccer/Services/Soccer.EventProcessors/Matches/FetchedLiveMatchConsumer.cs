@@ -54,16 +54,16 @@ namespace Soccer.EventProcessors.Matches
             var currentLiveMatches = (await dynamicRepository
                     .FetchAsync<Match>(new GetLiveMatchesCriteria(message.Language)))
                     .ToList();
+
             var removedMatches = currentLiveMatches.Except(filteredMatches).ToList();
             var newLiveMatches = filteredMatches.Except(currentLiveMatches).ToList();
-            var liveMatchCount = currentLiveMatches.Count + newLiveMatches.Count - removedMatches.Count;
 
             if (removedMatches.Count > 0 || newLiveMatches.Count > 0)
             {
                 var tasks = new List<Task>
                 {
                     InsertOrRemoveLiveMatches(message.Language, newLiveMatches, removedMatches),
-                    PublishLiveMatchUpdatedMessage(message.Language, newLiveMatches, removedMatches, liveMatchCount)
+                    PublishLiveMatchUpdatedMessage(message.Language, newLiveMatches, removedMatches)
                 };
 
                 await Task.WhenAll(tasks);
@@ -84,9 +84,7 @@ namespace Soccer.EventProcessors.Matches
             }
         }
 
-        private async Task PublishLiveMatchUpdatedMessage(Language language, IEnumerable<Match> newLiveMatches, IEnumerable<Match> removedMatches, int liveMatchCount)
-        {
-            await messageBus.Publish<ILiveMatchUpdatedMessage>(new LiveMatchUpdatedMessage(language, newLiveMatches, removedMatches, liveMatchCount));
-        }
+        private Task PublishLiveMatchUpdatedMessage(Language language, IEnumerable<Match> newLiveMatches, IEnumerable<Match> removedMatches)
+        => messageBus.Publish<ILiveMatchUpdatedMessage>(new LiveMatchUpdatedMessage(language, newLiveMatches, removedMatches));
     }
 }
