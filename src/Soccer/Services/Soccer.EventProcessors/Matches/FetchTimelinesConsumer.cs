@@ -39,11 +39,11 @@ namespace Soccer.EventProcessors.Matches
             await messageBus.Publish<IMatchEventReceivedMessage>(
                 new MatchEventReceivedMessage(matchEvent.AddScoreToSpecialTimeline(message.Match.MatchResult)));
 
-            var timelinesSkipLastAndPenalty = message.Match.TimeLines.SkipLast(1).Where(t=> !t.IsShootOutInPenalty()).ToList();
+            var timelinesSkipLast = message.Match.TimeLines.SkipLast(1).ToList();
 
             TimelineEvent latestScore = null;
 
-            foreach (var timeline in timelinesSkipLastAndPenalty)
+            foreach (var timeline in timelinesSkipLast)
             {
                 if (timeline.Type.IsScoreChange())
                 {
