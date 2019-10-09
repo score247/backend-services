@@ -4,7 +4,6 @@ using MassTransit;
 using Soccer.Core.Matches.Extensions;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
-using Soccer.Core.Timeline.QueueMessages;
 using Soccer.EventProcessors._Shared.Filters;
 
 namespace Soccer.EventProcessors.Matches
@@ -26,16 +25,14 @@ namespace Soccer.EventProcessors.Matches
         {
             var message = context.Message;
 
-            if (message == null || message.Match == null || message.Match.TimeLines == null || !message.Match.TimeLines.Any())
+            if (message == null 
+                || message.Match?.TimeLines == null 
+                || !message.Match.TimeLines.Any() 
+                || !(await majorLeagueFilter.Filter(message.Match)))
             {
                 return;
             }
-
-            if (!(await majorLeagueFilter.Filter(message.Match)))
-            {
-                return;
-            }
-
+         
             var latestTimeline = message.Match.TimeLines.LastOrDefault();
 
             var matchEvent = new MatchEvent(message.Match.League.Id, message.Match.Id, message.Match.MatchResult, latestTimeline);
@@ -58,8 +55,8 @@ namespace Soccer.EventProcessors.Matches
                     timeline.UpdateScore(latestScore.HomeScore, latestScore.AwayScore);
                 }
 
-                await messageBus.Publish<ITimelineUpdatedMessage>(
-                    new TimelineUpdatedMessage(message.Match.Id, message.Match.League.Id, message.Language, timeline));
+                await messageBus.Publish<IMatchEventReceivedMessage>(
+                    new MatchEventReceivedMessage(new MatchEvent(message.Match.League.Id, message.Match.Id, message.Match.MatchResult, timeline)));
             }
         }
     }

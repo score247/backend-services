@@ -7,7 +7,6 @@ using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
-using Soccer.Core.Timeline.QueueMessages;
 using Soccer.EventProcessors._Shared.Filters;
 using Soccer.EventProcessors.Matches;
 using Xunit;
@@ -103,7 +102,7 @@ namespace Soccer.EventProcessors.Tests.Matches
 
             await fetchTimelineConsumer.Consume(context);
 
-            await messageBus.Received(1).Publish<ITimelineUpdatedMessage>(Arg.Any<TimelineUpdatedMessage>());
+            await messageBus.Received(2).Publish<IMatchEventReceivedMessage>(Arg.Any<MatchEventReceivedMessage>());
         }
 
         [Fact]
@@ -129,8 +128,10 @@ namespace Soccer.EventProcessors.Tests.Matches
 
             await fetchTimelineConsumer.Consume(context);
 
-            await messageBus.Received(1).Publish<ITimelineUpdatedMessage>(
-                Arg.Is<TimelineUpdatedMessage>(m => m.Timeline.Type.IsBreakStart() && m.Timeline.HomeScore == 1 && m.Timeline.AwayScore == 0));
+            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(
+                Arg.Is<MatchEventReceivedMessage>(m => m.MatchEvent.Timeline.Type.IsBreakStart() 
+                    && m.MatchEvent.Timeline.HomeScore == 1 
+                    && m.MatchEvent.Timeline.AwayScore == 0));
         }
 
         [Fact]
@@ -155,7 +156,7 @@ namespace Soccer.EventProcessors.Tests.Matches
 
             await fetchTimelineConsumer.Consume(context);
 
-            await messageBus.Received(3).Publish<ITimelineUpdatedMessage>(Arg.Any<TimelineUpdatedMessage>());
+            await messageBus.Received(4).Publish<IMatchEventReceivedMessage>(Arg.Any<MatchEventReceivedMessage>());
         }
     }
 }
