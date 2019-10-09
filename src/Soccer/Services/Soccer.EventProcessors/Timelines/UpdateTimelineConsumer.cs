@@ -17,7 +17,7 @@ namespace Soccer.EventProcessors.Timelines
 
         public async Task Consume(ConsumeContext<ITimelineUpdatedMessage> context)
         {
-            if (context.Message == null)
+            if (context.Message == null || context.Message.Language == null || context.Message.Timeline == null)
             {
                 return;
             }

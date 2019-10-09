@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using MassTransit;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
-using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Timeline.QueueMessages;
 using Soccer.EventProcessors._Shared.Filters;
 
@@ -22,7 +20,7 @@ namespace Soccer.EventProcessors.Matches
             this.messageBus = messageBus;
             this.majorLeagueFilter = majorLeagueFilter;
         }
-        
+
         public async Task Consume(ConsumeContext<IMatchTimelinesFetchedMessage> context)
         {
             var message = context.Message;
@@ -45,17 +43,18 @@ namespace Soccer.EventProcessors.Matches
 
             var filteredTimelinesButNotLast = message.Match.TimeLines.SkipLast(1).ToList();
 
+            TimelineEvent latestScore = null;
+
             foreach (var timeline in filteredTimelinesButNotLast)
             {
-                if (timeline.Type.IsBreakStart())
+                if (timeline.Type.IsScoreChange())
                 {
-                    var latestScore = filteredTimelinesButNotLast
-                        .LastOrDefault(t => t.Type.IsScoreChange() && t.Time < timeline.Time);
+                    latestScore = timeline;
+                }
 
-                    if (latestScore != null)
-                    {
-                        timeline.UpdateScore(latestScore.HomeScore, latestScore.AwayScore);
-                    }
+                if (timeline.Type.IsBreakStart() && latestScore != null)
+                {
+                    timeline.UpdateScore(latestScore.HomeScore, latestScore.AwayScore);
                 }
 
                 await messageBus.Publish<ITimelineUpdatedMessage>(
