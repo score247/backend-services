@@ -116,8 +116,7 @@
                     matchEventDto.metadata.tournament_id,
                     matchEventDto.metadata.sport_event_id,
                     MapMatchResult(string.Empty, matchEventDto.payload.sport_event_status),
-                    TimelineMapper.MapTimeline(matchEventDto.payload.timeline),
-                    true);
+                    TimelineMapper.MapTimeline(matchEventDto.payload.timeline));
         }
     }
 }

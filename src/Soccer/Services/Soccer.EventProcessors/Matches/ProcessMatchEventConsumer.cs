@@ -36,19 +36,11 @@
 
         private async Task UpdateLiveMatchResult(MatchEvent matchEvent)
         {
-            if (matchEvent.MatchResult.EventStatus.IsLive())
+            if (matchEvent.MatchResult.EventStatus.IsLive() 
+                || (matchEvent.MatchResult.EventStatus.IsEnded() && matchEvent.Timeline.Type.IsMatchEnd()))
             {
                 //TODO should check date update of timeline
-                if (matchEvent.IsUpdateScore)
-                {
-                    await dynamicRepository.ExecuteAsync(new UpdateLiveMatchResultCommand(matchEvent.MatchId, matchEvent.MatchResult));
-                }
 
-                await dynamicRepository.ExecuteAsync(new UpdateLiveMatchLastTimelineCommand(matchEvent.MatchId, matchEvent.Timeline));
-            }
-
-            if (matchEvent.MatchResult.EventStatus.IsEnded() && matchEvent.Timeline.Type.IsMatchEnd())
-            {
                 await dynamicRepository.ExecuteAsync(new UpdateLiveMatchResultCommand(matchEvent.MatchId, matchEvent.MatchResult));
                 await dynamicRepository.ExecuteAsync(new UpdateLiveMatchLastTimelineCommand(matchEvent.MatchId, matchEvent.Timeline));
             }

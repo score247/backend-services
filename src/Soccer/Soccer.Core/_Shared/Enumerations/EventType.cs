@@ -110,5 +110,7 @@
         public bool IsRedCard() => this == RedCard;
 
         public bool IsYellowRedCard() => this == YellowRedCard;
+
+        public bool IsBreakStart() => this == BreakStart;
     }
 }
