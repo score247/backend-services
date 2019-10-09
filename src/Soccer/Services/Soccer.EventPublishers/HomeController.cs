@@ -119,10 +119,7 @@
                     Sport.Soccer.Value,
                     "1111",
                     true,
-                    new TeamStatistic
-                    {
-                        RedCards = 2
-                    });
+                    new TeamStatistic(2, 0));
 
             await hubContext.Clients.All.SendAsync("TeamStatistic", JsonConvert.SerializeObject(teamStatisticMessage));
         }

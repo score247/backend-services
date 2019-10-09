@@ -26,6 +26,8 @@
         Task<MatchCoverage> GetMatchCoverage(string id, Language language);
 
         Task<MatchCommentary> GetMatchCommentary(string id, Language language);
+        
+        Task<MatchStatistic> GetMatchStatistic(string id);
     }
 
     public class MatchQueryService : IMatchQueryService
@@ -140,10 +142,20 @@
 
         public async Task<MatchCommentary> GetMatchCommentary(string id, Language language)
         {
-            //TODO process language
+                    //TODO process language
             var timelines = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
 
             return new MatchCommentary(id, timelines);
+
+        }
+        
+        public async Task<MatchStatistic> GetMatchStatistic(string id)
+        {
+            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, Language.en_US));
+
+            var matchStatistic = new MatchStatistic(match);
+
+            return matchStatistic;
         }
     }
 }

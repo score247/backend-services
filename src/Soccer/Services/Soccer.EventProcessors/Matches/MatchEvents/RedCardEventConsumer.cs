@@ -44,11 +44,9 @@
 
             var processedRedCards = await GetProcessedRedCards(matchEvent.MatchId, matchEvent.Timeline.Team);
 
-            var teamStats = new TeamStatistic
-            {
-                RedCards = processedRedCards.Count(x => x.Type.IsRedCard()),
-                YellowRedCards = processedRedCards.Count(x => x.Type.IsYellowRedCard())
-            };
+            var teamStats = new TeamStatistic(
+                processedRedCards.Count(x => x.Type.IsRedCard()), 
+                processedRedCards.Count(x => x.Type.IsYellowRedCard()));
 
             await messageBus.Publish<ITeamStatisticUpdatedMessage>(new TeamStatisticUpdatedMessage(matchEvent.MatchId, matchEvent.Timeline.IsHome, teamStats));
             await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));

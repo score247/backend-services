@@ -1,35 +1,112 @@
-﻿namespace Soccer.Core.Teams.Models
+﻿using MessagePack;
+
+namespace Soccer.Core.Teams.Models
 {
+    using MessagePack;
+    using Newtonsoft.Json;
+
+    [MessagePackObject]
     public class TeamStatistic
     {
-        public int Possession { get; set; }
+        public TeamStatistic() { }
 
-        public int FreeKicks { get; set; }
+        public TeamStatistic(
+            int redCards,
+            int yellowRedCards) 
+        {
+            RedCards = redCards;
+            YellowRedCards = yellowRedCards;
+        }
 
-        public int ThrowIns { get; set; }
 
-        public int GoalKicks { get; set; }
+#pragma warning disable S107 // Methods should not have too many parameters
+        [SerializationConstructor, JsonConstructor]
+        public TeamStatistic(
+            int possession, 
+            int freeKicks, 
+            int throwIns, 
+            int goalKicks, 
+            int shotsBlocked, 
+            int shotsOnTarget, 
+            int shotsOffTarget, 
+            int cornerKicks, 
+            int fouls, 
+            int shotsSaved,
+            int offsides, 
+            int yellowCards, 
+            int injuries, 
+            int redCards, 
+            int yellowRedCards)
+#pragma warning restore S107 // Methods should not have too many parameters
+        {
+            Possession = possession;
+            FreeKicks = freeKicks;
+            ThrowIns = throwIns;
+            GoalKicks = goalKicks;
+            ShotsBlocked = shotsBlocked;
+            ShotsOnTarget = shotsOnTarget;
+            ShotsOffTarget = shotsOffTarget;
+            CornerKicks = cornerKicks;
+            Fouls = fouls;
+            ShotsSaved = shotsSaved;
+            Offsides = offsides;
+            YellowCards = yellowCards;
+            Injuries = injuries;
+            RedCards = redCards;
+            YellowRedCards = yellowRedCards;
+        }
 
-        public int ShotsBlocked { get; set; }
+        [Key(0)]
+        public int Possession { get; }
 
-        public int ShotsOnTarget { get; set; }
+        [Key(1)]
+        public int FreeKicks { get; }
 
-        public int ShotsOffTarget { get; set; }
+        [Key(2)]
+        public int ThrowIns { get; }
 
-        public int CornerKicks { get; set; }
+        [Key(3)]
+        public int GoalKicks { get; }
 
-        public int Fouls { get; set; }
+        [Key(4)]
+        public int ShotsBlocked { get; }
 
-        public int ShotsSaved { get; set; }
+        [Key(5)]
+        public int ShotsOnTarget { get; }
 
-        public int Offsides { get; set; }
+        [Key(6)]
+        public int ShotsOffTarget { get; }
 
-        public int YellowCards { get; set; }
 
-        public int Injuries { get; set; }
+        [Key(7)]
+        public int CornerKicks { get; }
 
-        public int RedCards { get; set; }
 
-        public int YellowRedCards { get; set; }
+        [Key(8)]
+        public int Fouls { get; }
+
+
+        [Key(9)]
+        public int ShotsSaved { get; }
+
+
+        [Key(10)]
+        public int Offsides { get; }
+
+
+        [Key(11)]
+        public int YellowCards { get; }
+
+
+        [Key(12)]
+        public int Injuries { get; }
+
+
+        [Key(13)]
+        public int RedCards { get; }
+
+
+        [Key(14)]
+        public int YellowRedCards { get; }
     }
 }

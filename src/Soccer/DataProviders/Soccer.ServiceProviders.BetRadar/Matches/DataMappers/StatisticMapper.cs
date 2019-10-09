@@ -6,25 +6,22 @@
     public static class StatisticMapper
     {
         public static TeamStatistic MapStatistic(Statistics statisticsDto)
-        {
-            return new TeamStatistic
-            {
-                Possession = statisticsDto.ball_possession,
-                FreeKicks = statisticsDto.free_kicks,
-                ThrowIns = statisticsDto.throw_ins,
-                GoalKicks = statisticsDto.goal_kicks,
-                ShotsBlocked = statisticsDto.shots_blocked,
-                ShotsOnTarget = statisticsDto.shots_on_target,
-                ShotsOffTarget = statisticsDto.shots_off_target,
-                CornerKicks = statisticsDto.corner_kicks,
-                Fouls = statisticsDto.fouls,
-                ShotsSaved = statisticsDto.shots_saved,
-                Offsides = statisticsDto.offsides,
-                YellowCards = statisticsDto.yellow_cards,
-                Injuries = statisticsDto.injuries,
-                RedCards = statisticsDto.red_cards,
-                YellowRedCards = statisticsDto.yellow_red_cards
-            };
-        }
+            => new TeamStatistic(
+                statisticsDto.ball_possession,
+                statisticsDto.free_kicks,
+                statisticsDto.throw_ins,
+                statisticsDto.goal_kicks,
+                statisticsDto.shots_blocked,
+                statisticsDto.shots_on_target,
+                statisticsDto.shots_off_target,
+                statisticsDto.corner_kicks,
+                statisticsDto.fouls,
+                statisticsDto.shots_saved,
+                statisticsDto.offsides,
+                statisticsDto.yellow_cards,
+                statisticsDto.injuries,
+                statisticsDto.red_cards,
+                statisticsDto.yellow_red_cards
+            );
     }
 }
