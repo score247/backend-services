@@ -13,6 +13,7 @@
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
     using Soccer.Database.Matches.Criteria;
+    using Soccer.EventProcessors._Shared.Cache;
     using Soccer.EventProcessors._Shared.Filters;
 
     public class ReceiveMatchEventConsumer : IConsumer<IMatchEventReceivedMessage>
@@ -22,20 +23,20 @@
             SlidingExpiration = TimeSpan.FromMinutes(10),
         };
 
-        private readonly ICacheService cacheService;
+        private readonly ICacheManager cacheManager;
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
         private readonly ILogger logger;
         private readonly IAsyncFilter<MatchEvent, bool> matchEventFilter;
 
         public ReceiveMatchEventConsumer(
-            ICacheService cacheService,
+            ICacheManager cacheManager,
             IDynamicRepository dynamicRepository,
             IBus messageBus,
             ILogger logger,
             IAsyncFilter<MatchEvent, bool> matchEventFilter)
         {
-            this.cacheService = cacheService;
+            this.cacheManager = cacheManager;
             this.dynamicRepository = dynamicRepository;
             this.messageBus = messageBus;
             this.logger = logger;
@@ -103,11 +104,11 @@
 
             var timelineEventsCacheKey = $"MatchPushEvent_Match_{matchId}";
 
-            timelineEvents = await cacheService.GetOrSetAsync<IList<TimelineEvent>>(
+            timelineEvents = await cacheManager.GetOrFetch<IList<TimelineEvent>>(
                 timelineEventsCacheKey,
-                () =>
+                async() =>
                 {
-                    return (dynamicRepository.Fetch<TimelineEvent>
+                    return (await dynamicRepository.FetchAsync<TimelineEvent>
                                 (new GetTimelineEventsCriteria(matchId))).ToList();
                 },
                 EventCacheOptions);

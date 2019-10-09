@@ -57,7 +57,7 @@
 
             if (match.TimeLines != null && match.TimeLines.Any())
             {
-                await messageBus.Publish<IMatchEventReceivedMessage>(new MatchTimelinesFetchedMessage(match, language));
+                await messageBus.Publish<IMatchTimelinesFetchedMessage>(new MatchTimelinesFetchedMessage(match, language));
             }
         }
     }

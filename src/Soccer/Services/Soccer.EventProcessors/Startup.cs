@@ -10,6 +10,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Soccer.Core.Matches.Models;
+    using Soccer.EventProcessors._Shared.Cache;
     using Soccer.EventProcessors._Shared.Filters;
     using Soccer.EventProcessors.Leagues;
     using Soccer.EventProcessors.Matches.Filters;
@@ -34,7 +35,8 @@
         {
             services.AddLogging(Configuration);
             services.AddSettings(Configuration);
-            services.AddSingleton<ICacheService, CacheService>();            
+            services.AddSingleton<ICacheService, CacheService>();
+            services.AddSingleton<ICacheManager, CacheManager>();
             services.AddSingleton<Func<DateTime>>(() => DateTime.Now);
             services.AddRabbitMq(Configuration);
             services.AddHealthCheck();

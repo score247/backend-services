@@ -13,11 +13,12 @@
     using Soccer.Core.Teams.Models;
     using Soccer.Core.Teams.QueueMessages;
     using Soccer.Database.Matches.Criteria;
+    using Soccer.EventProcessors._Shared.Cache;
 
     public class RedCardEventConsumer : IConsumer<IRedCardEventMessage>
     {
         private readonly IBus messageBus;
-        private readonly ICacheService cacheService;
+        private readonly ICacheManager cacheManager;
         private readonly IDynamicRepository dynamicRepository;
 
         private static readonly CacheItemOptions EventCacheOptions = new CacheItemOptions
@@ -25,10 +26,10 @@
             SlidingExpiration = TimeSpan.FromMinutes(10),
         };
 
-        public RedCardEventConsumer(IBus messageBus, ICacheService cacheService, IDynamicRepository dynamicRepository)
+        public RedCardEventConsumer(IBus messageBus, ICacheManager cacheManager, IDynamicRepository dynamicRepository)
         {
             this.messageBus = messageBus;
-            this.cacheService = cacheService;
+            this.cacheManager = cacheManager;
             this.dynamicRepository = dynamicRepository;
         }
 
@@ -59,13 +60,13 @@
 
             var timelineEventsCacheKey = $"MatchPushEvent_Match_{matchId}";
 
-            timelineEvents = await cacheService.GetOrSetAsync<IList<TimelineEvent>>(
-                timelineEventsCacheKey, 
-                () => 
+            timelineEvents = await cacheManager.GetOrFetch<IList<TimelineEvent>>(
+                timelineEventsCacheKey,
+                async () =>
                 {
-                    return (dynamicRepository.Fetch<TimelineEvent>
+                    return (await dynamicRepository.FetchAsync<TimelineEvent>
                                 (new GetTimelineEventsCriteria(matchId))).ToList();
-                } , 
+                },
                 EventCacheOptions);
 
             return timelineEvents.Where(t => t.Team == teamId && (t.Type.IsRedCard() || t.Type.IsYellowRedCard())).ToList();
