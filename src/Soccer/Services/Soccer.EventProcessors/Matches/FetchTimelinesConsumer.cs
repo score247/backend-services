@@ -39,11 +39,11 @@ namespace Soccer.EventProcessors.Matches
             await messageBus.Publish<IMatchEventReceivedMessage>(
                 new MatchEventReceivedMessage(matchEvent.AddScoreToSpecialTimeline(message.Match.MatchResult)));
 
-            var timelinesSkipLast = message.Match.TimeLines.SkipLast(1).ToList();
+            var timelinesSkipLastAndPenalty = message.Match.TimeLines.SkipLast(1).Where(t=> !t.IsShootOutInPenalty()).ToList();
 
             TimelineEvent latestScore = null;
 
-            foreach (var timeline in timelinesSkipLast)
+            foreach (var timeline in timelinesSkipLastAndPenalty)
             {
                 if (timeline.Type.IsScoreChange())
                 {
@@ -58,6 +58,8 @@ namespace Soccer.EventProcessors.Matches
                 await messageBus.Publish<IMatchEventReceivedMessage>(
                     new MatchEventReceivedMessage(new MatchEvent(message.Match.League.Id, message.Match.Id, message.Match.MatchResult, timeline)));
             }
+
+            //TODO need to process penalty
         }
     }
 }
