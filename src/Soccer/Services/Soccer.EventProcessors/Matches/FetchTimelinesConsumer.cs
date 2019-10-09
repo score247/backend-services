@@ -42,41 +42,24 @@ namespace Soccer.EventProcessors.Matches
             var matchEvent = new MatchEvent(message.Match.League.Id, message.Match.Id, message.Match.MatchResult, latestTimeline);
             await messageBus.Publish<IMatchEventReceivedMessage>(
                 new MatchEventReceivedMessage(matchEvent.AddScoreToSpecialTimeline(message.Match.MatchResult)));
-            
-            if (!message.Match.TimeLines.SkipLast(1).Any()) 
+
+            var filteredTimelinesButNotLast = message.Match.TimeLines.SkipLast(1).ToList();
+
+            foreach (var timeline in filteredTimelinesButNotLast)
             {
-                return;
-            }
+                if (timeline.Type.IsBreakStart())
+                {
+                    var latestScore = filteredTimelinesButNotLast
+                        .LastOrDefault(t => t.Type.IsScoreChange() && t.Time < timeline.Time);
 
-            await ProcessBreakStartEvent(message.Match.League.Id, message.Match.Id, message.Language, message.Match.TimeLines.ToList());
+                    if (latestScore != null)
+                    {
+                        timeline.UpdateScore(latestScore.HomeScore, latestScore.AwayScore);
+                    }
+                }
 
-            var filteredTimelinesButLast = message.Match.TimeLines
-                .SkipLast(1)
-                .Where(t => !t.Type.IsBreakStart())
-                .ToList();
-
-            foreach (var timeline in filteredTimelinesButLast)
-            {
                 await messageBus.Publish<ITimelineUpdatedMessage>(
                     new TimelineUpdatedMessage(message.Match.Id, message.Match.League.Id, message.Language, timeline));
-            }
-        }
-
-        //TODO should separate as a PreProcsessor
-        private async Task ProcessBreakStartEvent(string leagueId, string matchId, Language language, IReadOnlyList<TimelineEvent> timelines)
-        {
-            var breakStarts = timelines.Where(t => t.Type.IsBreakStart()).ToList();
-
-            foreach (var breakStart in breakStarts)
-            {
-                var latestScore = timelines
-                    .LastOrDefault(t => t.Type.IsScoreChange() && t.Time < breakStart.Time);
-
-                breakStart.HomeScore = latestScore == null ? 0 : latestScore.HomeScore;
-                breakStart.AwayScore = latestScore == null ? 0 : latestScore.AwayScore;
-                
-                await messageBus.Publish<ITimelineUpdatedMessage>(
-                        new TimelineUpdatedMessage(matchId, leagueId, language, breakStart));
             }
         }
     }

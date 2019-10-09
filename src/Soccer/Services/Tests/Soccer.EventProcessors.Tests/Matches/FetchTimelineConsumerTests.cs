@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MassTransit;
 using NSubstitute;
@@ -116,9 +117,9 @@ namespace Soccer.EventProcessors.Tests.Matches
                     TimeLines = new List<TimelineEvent>
                     {
                         new TimelineEvent{ Type = EventType.MatchStarted },
-                        new TimelineEvent{ Type = EventType.ScoreChange, HomeScore = 1, AwayScore = 0 },
-                        new TimelineEvent{ Type = EventType.BreakStart },
-                        new TimelineEvent{ Type = EventType.ScoreChange, HomeScore = 1, AwayScore = 1 },
+                        new TimelineEvent{ Type = EventType.ScoreChange, HomeScore = 1, AwayScore = 0, Time = DateTime.Now.AddMinutes(-1) },
+                        new TimelineEvent{ Type = EventType.BreakStart, Time = DateTime.Now },
+                        new TimelineEvent{ Type = EventType.ScoreChange, HomeScore = 1, AwayScore = 1, Time = DateTime.Now.AddMinutes(1) },
                         new TimelineEvent{ Type = EventType.MatchEnded }
                     }
                 },
@@ -129,7 +130,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             await fetchTimelineConsumer.Consume(context);
 
             await messageBus.Received(1).Publish<ITimelineUpdatedMessage>(
-                Arg.Is<TimelineUpdatedMessage>(m => m.Timeline.HomeScore == 1 && m.Timeline.AwayScore == 0));
+                Arg.Is<TimelineUpdatedMessage>(m => m.Timeline.Type.IsBreakStart() && m.Timeline.HomeScore == 1 && m.Timeline.AwayScore == 0));
         }
 
         [Fact]
