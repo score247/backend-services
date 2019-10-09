@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using MassTransit;
+using Soccer.Core.Matches.Extensions;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Timeline.QueueMessages;
@@ -41,11 +42,11 @@ namespace Soccer.EventProcessors.Matches
             await messageBus.Publish<IMatchEventReceivedMessage>(
                 new MatchEventReceivedMessage(matchEvent.AddScoreToSpecialTimeline(message.Match.MatchResult)));
 
-            var timelinesSkipLast = message.Match.TimeLines.SkipLast(1).ToList();
+            var timelinesSkipLastAndPenalty = message.Match.TimeLines.SkipLast(1).Where(t=> !t.IsShootOutInPenalty()).ToList();
 
             TimelineEvent latestScore = null;
 
-            foreach (var timeline in timelinesSkipLast)
+            foreach (var timeline in timelinesSkipLastAndPenalty)
             {
                 if (timeline.Type.IsScoreChange())
                 {
