@@ -27,7 +27,7 @@ namespace Soccer.EventProcessors.Matches
         {
             var message = context.Message;
 
-            if (message == null || message.Match == null || message.Match.TimeLines.Any())
+            if (message == null || message.Match == null || message.Match.TimeLines == null || !message.Match.TimeLines.Any())
             {
                 return;
             }
@@ -42,6 +42,11 @@ namespace Soccer.EventProcessors.Matches
             var matchEvent = new MatchEvent(message.Match.League.Id, message.Match.Id, message.Match.MatchResult, latestTimeline);
             await messageBus.Publish<IMatchEventReceivedMessage>(
                 new MatchEventReceivedMessage(matchEvent.AddScoreToSpecialTimeline(message.Match.MatchResult)));
+            
+            if (!message.Match.TimeLines.SkipLast(1).Any()) 
+            {
+                return;
+            }
 
             await ProcessBreakStartEvent(message.Match.League.Id, message.Match.Id, message.Language, message.Match.TimeLines.ToList());
 
