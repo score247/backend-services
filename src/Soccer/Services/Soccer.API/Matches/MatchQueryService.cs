@@ -24,6 +24,8 @@
         Task<int> GetLiveMatchCount(Language language);
 
         Task<MatchCoverage> GetMatchCoverage(string id, Language language);
+
+        Task<MatchCommentary> GetMatchCommentary(string id, Language language);
     }
 
     public class MatchQueryService : IMatchQueryService
@@ -90,10 +92,13 @@
                 // TODO: Should fix here
                 return null;
             }
+            
             var timelineEvents = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
             var matchInfo = new MatchInfo(new MatchSummary(match), timelineEvents, match.Venue, match.Referee, match.Attendance);
             await cacheManager.SetAsync(
                 BuildMatchInfoCacheKey(id), matchInfo, BuildCacheOptions(match.EventDate.DateTime));
+
+            //TODO filter by highlight events
 
             return matchInfo;
         }
@@ -101,12 +106,12 @@
         private static string BuildMatchInfoCacheKey(string matchId)
             => $"{MatchInfoCacheKey}_{matchId}";
 
-        private async Task<T> GetOrSetAsync<T>(string key, DateTime from, DateTime to, Func<Task<T>> factory)
+        private Task<T> GetOrSetAsync<T>(string key, DateTime from, DateTime to, Func<Task<T>> factory)
         {
             var cacheItemOptions = BuildCacheOptions(from);
             var cacheKey = BuildCacheKey(key, from, to);
 
-            return await cacheManager
+            return cacheManager
                 .GetOrSetAsync(cacheKey, factory, cacheItemOptions);
         }
 
@@ -131,6 +136,14 @@
             var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language));
 
             return new MatchCoverage(match.Id, match.Coverage);
+        }
+
+        public async Task<MatchCommentary> GetMatchCommentary(string id, Language language)
+        {
+            //TODO process language
+            var timelines = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
+
+            return new MatchCommentary(id, timelines);
         }
     }
 }

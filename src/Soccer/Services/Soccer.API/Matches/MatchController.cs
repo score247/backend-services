@@ -50,5 +50,10 @@ namespace Soccer.API.Matches
         [Route("{id}/coverage")]
         public async Task<MatchCoverage> GetMatchCoverage(string id, string language = "en-US")
            => await mediator.Send(new MatchCoverageByIdRequest(id, language));
+
+        [HttpGet]
+        [Route("{id}/commentary")]
+        public async Task<MatchCommentary> GetMatchCommentary(string id, string language = "en-US")
+           => await mediator.Send(new MatchCommentaryByIdRequest(id, language));
     }
 }
