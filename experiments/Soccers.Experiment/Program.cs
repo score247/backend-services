@@ -25,7 +25,7 @@
         private static void TestSignalRHubs()
         {
             connection = new HubConnectionBuilder()
-                            .WithUrl("http://10.19.10.52/Soccer.EventPublishers/hubs/soccerhub")
+                            .WithUrl("http://10.18.200.142:7872/dev/hubs/soccerhub")
                             .Build();
 
             connection.Closed += async (error) =>

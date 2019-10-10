@@ -1,15 +1,15 @@
-﻿namespace Soccer.Services.EventPublishers
-{
-    using JsonNet.ContractResolvers;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-    using Newtonsoft.Json;
-    using Soccer.EventPublishers.Hubs;
-    using Soccer.EventPublishers.Shared.Middlewares;
+﻿using JsonNet.ContractResolvers;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
+using Soccer.EventPublishers.Hubs;
+using Soccer.EventPublishers.Shared.Middlewares;
 
+namespace Soccer.EventPublishers
+{
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -19,17 +19,14 @@
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            JsonConvert.DefaultSettings = () =>
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
-                return new JsonSerializerSettings
-                {
-                    DateTimeZoneHandling = DateTimeZoneHandling.Utc,
-                    ContractResolver = new PrivateSetterContractResolver()
-                };
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc,
+                ContractResolver = new PrivateSetterContractResolver()
             };
+
             services.AddSignalR();
             services.AddLogging(Configuration);
             services.AddRabbitMq(Configuration);
@@ -40,7 +37,8 @@
                 .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+#pragma warning disable S2325 // Methods and properties that don't access instance data should be static
+
         public void Configure(IApplicationBuilder app, IHostApplicationLifetime applicationLifetime)
         {
             app.ConfigureExceptionHandler();
@@ -52,5 +50,7 @@
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
         }
+
+#pragma warning restore S2325 // Methods and properties that don't access instance data should be static
     }
 }
