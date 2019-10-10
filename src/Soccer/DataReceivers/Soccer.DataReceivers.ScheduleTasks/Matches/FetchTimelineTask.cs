@@ -8,6 +8,7 @@
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.QueueMessages;
+    using Soccer.Core.Timeline.QueueMessages;
     using Soccer.DataProviders.Matches.Services;
 
     public interface IFetchTimelineTask
@@ -56,8 +57,17 @@
             }
 
             if (match.TimeLines != null && match.TimeLines.Any())
-            {
+            {                
                 await messageBus.Publish<IMatchTimelinesFetchedMessage>(new MatchTimelinesFetchedMessage(match, language));
+            }
+
+            if (match.Commentaries != null && match.Commentaries.Any())
+            {                
+                foreach (var commentary in match.Commentaries)
+                {
+                    await messageBus.Publish<IMatchCommentaryFetchedMessage>(
+                        new MatchCommentaryFetchedMessage(match.League.Id, matchId, commentary, language));
+                }
             }
         }
     }

@@ -5,6 +5,7 @@
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.Models;
+    using Soccer.Core.Timeline.Models;
 
     public static class TimelineMapper
     {
@@ -35,30 +36,50 @@
                 timeline.Time = timelineDto.time;
                 timeline.HomeScore = timelineDto.home_score;
                 timeline.AwayScore = timelineDto.away_score;
-                timeline.StoppageTime = timelineDto.stoppage_time;
-                timeline.Commentaries = timelineDto.commentaries?.Select(x => new Commentary { Text = x.text });
+                timeline.StoppageTime = timelineDto.stoppage_time;                
 
                 timeline.MatchTime = (byte)(timelineDto.match_time == 0
                     ? ParseMatchClock(timelineDto.match_clock)
                     : timelineDto.match_time);
 
-                timeline.GoalScorer = timelineDto.goal_scorer == null
-                    ? null
-                    : new GoalScorer { Name = timelineDto.goal_scorer.name, Id = timelineDto.goal_scorer.id, Method = timelineDto.goal_scorer.method };
-
-                timeline.Assist = timelineDto.assist == null
-                    ? null
-                    : new Player { Name = timelineDto.assist.name, Id = timelineDto.assist.id };
-
-                timeline.Player = timelineDto.player == null
-                    ? null
-                    : new Player { Name = timelineDto.player.name, Id = timelineDto.player.id };
+                timeline.GoalScorer = GetGoalScorer(timelineDto);
+                timeline.Assist = GetGoalAssist(timelineDto);
+                timeline.Player = GetPlayer(timelineDto);
 
                 SetPenaltyInfo(timelineDto, timeline);
             }
 
             return timeline;
         }
+
+        private static GoalScorer GetGoalScorer(Dtos.TimelineDto timelineDto)
+            => timelineDto.goal_scorer == null
+                                ? null
+                                : new GoalScorer
+                                {
+                                    Name = timelineDto.goal_scorer.name,
+                                    Id = timelineDto.goal_scorer.id,
+                                    Method = timelineDto.goal_scorer.method
+                                };
+
+        private static Player GetGoalAssist(Dtos.TimelineDto timelineDto)
+            => timelineDto.assist == null
+                    ? null
+                    : new Player { Name = timelineDto.assist.name, Id = timelineDto.assist.id };
+
+        private static Player GetPlayer(Dtos.TimelineDto timelineDto)
+            => timelineDto.player == null
+                    ? null
+                    : new Player { Name = timelineDto.player.name, Id = timelineDto.player.id };
+
+        public static TimelineCommentary MapTimelineCommentary(Dtos.TimelineDto timelineDto)
+            => timelineDto.commentaries == null
+                    ? null
+                    : new TimelineCommentary
+                    {
+                        TimelineId = timelineDto.id,
+                        Commentaries = timelineDto.commentaries.Select(x => new Commentary { Text = x.text }).ToList()
+                    };
 
         public static int ParseMatchClock(string matchClock)
              => string.IsNullOrWhiteSpace(matchClock)
@@ -70,9 +91,9 @@
             if (timelineDto.period_type == PeriodType.Penalties.DisplayName)
             {
                 var isScored = timelineDto.status == "scored";
-                var player = timelineDto.player == null
-                    ? null
-                    : new Player { Name = timelineDto.player.name, Id = timelineDto.player.id };
+
+                var player = GetPlayer(timelineDto);
+
                 if (timelineDto.team == "home")
                 {
                     timeline.IsHomeShootoutScored = isScored;

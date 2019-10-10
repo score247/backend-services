@@ -14,6 +14,7 @@
     using Soccer.EventProcessors.Matches.MatchEvents;
     using Soccer.EventProcessors.Odds;
     using Soccer.EventProcessors.Teams;
+    using Soccer.EventProcessors.Timeline;
 
     public static class RabbitMqMiddleware
     {
@@ -41,6 +42,7 @@
                 serviceCollectionConfigurator.AddConsumer<UpdateMatchCoverageCosumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchedLiveMatchConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchTimelinesConsumer>();
+                serviceCollectionConfigurator.AddConsumer<FetchCommentaryConsumer>();
             });
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -138,6 +140,14 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<FetchTimelinesConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_Commentaries", e =>
+                {
+                    e.PrefetchCount = PrefetchCount;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<FetchCommentaryConsumer>(provider);
                 });
             }));
 

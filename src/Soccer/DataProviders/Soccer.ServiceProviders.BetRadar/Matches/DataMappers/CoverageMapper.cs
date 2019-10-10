@@ -7,8 +7,8 @@
     {
         public static Coverage MapCoverage(CoverageInfoDto coverageDto, string widgetLink)
         {
-            return coverageDto.coverage == null
-                ? new Coverage(coverageDto.live_coverage, widgetLink)
+            return coverageDto?.coverage == null
+                ? new Coverage(false, widgetLink)
                 : new Coverage(
                     live: coverageDto.live_coverage,
                     widgetLink,

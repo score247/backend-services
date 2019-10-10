@@ -15,18 +15,14 @@
             this.dynamicRepository = dynamicRepository;
         }
 
-        public async Task Consume(ConsumeContext<ILiveMatchClosedMessage> context)
-        {
-            var message = context.Message;
+        public Task Consume(ConsumeContext<ILiveMatchClosedMessage> context)        
+            => UpdateMatchResultAndMigrateLiveData(context.Message);
 
-            await UpdateMatchResultAndMigrateLiveData(message);
-        }
-
-        private async Task UpdateMatchResultAndMigrateLiveData(ILiveMatchClosedMessage message)
+        private Task UpdateMatchResultAndMigrateLiveData(ILiveMatchClosedMessage message)
         {
             var command = new UpdateMatchResultAndMigrateLiveData(message.MatchId, message.MatchResult);
 
-            await dynamicRepository.ExecuteAsync(command);
+            return dynamicRepository.ExecuteAsync(command);
         }
     }
 }

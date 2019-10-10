@@ -50,6 +50,7 @@ namespace Soccer.EventProcessors.Matches
                     latestScore = timeline;
                 }
 
+                //TODO update score for event penalty_missed
                 if (timeline.Type.IsBreakStart() && latestScore != null)
                 {
                     timeline.UpdateScore(latestScore.HomeScore, latestScore.AwayScore);

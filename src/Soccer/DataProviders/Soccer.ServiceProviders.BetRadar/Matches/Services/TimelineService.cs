@@ -10,6 +10,7 @@
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.Models;
+    using Soccer.Core.Timeline.Models;
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataProviders.SportRadar.Matches.DataMappers;
     using Soccer.DataProviders.SportRadar.Matches.Dtos;
@@ -55,6 +56,7 @@
 
                     match.TimeLines = GetTimelines(timelineDto);
                     match.Coverage = GetCoverageInfo(timelineDto);
+                    match.Commentaries = GetTimelineCommentaries(timelineDto);
 
                     foreach (var team in match.Teams)
                     {
@@ -70,7 +72,7 @@
             return match;
         }
 
-        private static IEnumerable<TimelineEvent> GetTimelines(Dtos.MatchTimelineDto timelineDto)
+        private static IEnumerable<TimelineEvent> GetTimelines(MatchTimelineDto timelineDto)
         {
             if (timelineDto?.timeline?.Any() == true)
             {
@@ -78,6 +80,19 @@
             }
 
             return Enumerable.Empty<TimelineEvent>();
+        }
+
+        private static IEnumerable<TimelineCommentary> GetTimelineCommentaries(MatchTimelineDto timelineDto)
+        {
+            if (timelineDto?.timeline?.Any() == true)
+            {
+                return timelineDto.timeline
+                    .Where(x=>x.commentaries != null)
+                    .Select(t => TimelineMapper.MapTimelineCommentary(t))
+                    .ToList();
+            }
+
+            return Enumerable.Empty<TimelineCommentary>();
         }
 
         private Coverage GetCoverageInfo(MatchTimelineDto timelineDto) 
