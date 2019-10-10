@@ -102,8 +102,8 @@ CREATE TABLE IF NOT EXISTS `Odds_Archived` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE `Commentary` (
-  `Id` bigint(20) NOT NULL,
-  `TimelineId` bigint(20) NOT NULL,
+  `Id` bigint NOT NULL,
+  `TimelineId` bigint NOT NULL,
   `MatchId` varchar(45) NOT NULL,
   `Value` json NOT NULL,
   `Language` varchar(10) NOT NULL,
@@ -111,7 +111,8 @@ CREATE TABLE `Commentary` (
   `ModifiedTime` timestamp NOT NULL,
   PRIMARY KEY (`Id`),
   UNIQUE KEY `Id_UNIQUE` (`Id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 
 
