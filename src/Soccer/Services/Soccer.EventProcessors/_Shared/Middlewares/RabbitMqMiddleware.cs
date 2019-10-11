@@ -47,6 +47,7 @@
             {
                 var host = cfg.Host(
                        messageQueueSettings.Host,
+                       port: messageQueueSettings.Port,
                        messageQueueSettings.VirtualHost, h =>
                        {
                            h.Username(messageQueueSettings.Username);

@@ -1,4 +1,5 @@
-﻿using Soccer.Core.Shared.Configurations;
+﻿using System;
+using Soccer.Core.Shared.Configurations;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
                     {
                         cfg.Host(
                             messageQueueSettings.Host,
+                            messageQueueSettings.Port,
                             messageQueueSettings.VirtualHost, h =>
                             {
                                 h.Username(messageQueueSettings.Username);

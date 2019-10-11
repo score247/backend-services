@@ -93,7 +93,8 @@
                   cfg =>
                   {
                       cfg.Host(
-                           messageQueueSettings.Host,
+                          messageQueueSettings.Host,
+                          messageQueueSettings.Port,
                            messageQueueSettings.VirtualHost, h =>
                            {
                                h.Username(messageQueueSettings.Username);
