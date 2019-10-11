@@ -4,6 +4,7 @@
 
     internal class TeamStatisticSignalRMessage
     {
+        //TODO only send latest statistic
         public TeamStatisticSignalRMessage(
             byte sportId,
             string matchId,
