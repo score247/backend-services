@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Soccer.Services.EventPublishers
+namespace Soccer.EventPublishers
 {
     public class Program
     {
