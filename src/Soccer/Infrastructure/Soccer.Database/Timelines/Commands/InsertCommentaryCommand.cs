@@ -10,12 +10,12 @@ namespace Soccer.Database.Timelines.Commands
         public InsertCommentaryCommand(
           string matchId,
           long timelineId,
-          IReadOnlyList<Commentary> Commentaries,
+          IReadOnlyList<Commentary> commentaries,
           Language language)
         {
             MatchId = matchId;
             TimelineId = timelineId;
-            this.Commentaries = ToJsonString(Commentaries);
+            Commentaries = ToJsonString(commentaries);
             Language = language.DisplayName;
         }
 
