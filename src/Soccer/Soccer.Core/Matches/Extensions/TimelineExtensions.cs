@@ -22,6 +22,14 @@
                 EventType.PenaltyMissed.Value
            };
 
+        public static List<byte> ReprocessScoreEventTypes { get; }
+           = new List<byte>
+           {               
+                EventType.BreakStart.Value,              
+                EventType.MatchEnded.Value,
+                EventType.PenaltyMissed.Value
+           };
+
         private const string NotTakenYetStatus = "not_taken_yet";
 
         public static bool IsScoreChangeInPenalty(this TimelineEvent timeline)
@@ -36,8 +44,9 @@
                 && timeline.PenaltyStatus?.ToLowerInvariant() != NotTakenYetStatus;
 
         public static bool IsBasicEvent(this TimelineEvent timeline)
-        {
-            return BasicEventTypes.Contains(timeline.Type.Value);
-        }
+            => BasicEventTypes.Contains(timeline.Type.Value);
+
+        public static bool ShouldReprocessScore(this TimelineEvent timeline)
+            => ReprocessScoreEventTypes.Contains(timeline.Type.Value);
     }
 }

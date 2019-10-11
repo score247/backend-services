@@ -49,10 +49,8 @@ namespace Soccer.EventProcessors.Timeline
                 {
                     latestScore = timeline;
                 }
-
-                //TODO update score for event penalty_missed
-                // timeline type need to update score: break_start, penalty_missed, match_end
-                if (timeline.Type.IsBreakStart() && latestScore != null)
+               
+                if (timeline.ShouldReprocessScore() && latestScore != null)
                 {
                     timeline.UpdateScore(latestScore.HomeScore, latestScore.AwayScore);
                 }

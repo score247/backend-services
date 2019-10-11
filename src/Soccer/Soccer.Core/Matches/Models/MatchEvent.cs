@@ -1,4 +1,4 @@
-﻿using Soccer.Core.Shared.Enumerations;
+﻿using Soccer.Core.Matches.Extensions;
 
 namespace Soccer.Core.Matches.Models
 {
@@ -22,7 +22,7 @@ namespace Soccer.Core.Matches.Models
 
         public MatchEvent AddScoreToSpecialTimeline(MatchResult matchResult) 
         {            
-            if (Timeline.Type == EventType.BreakStart || Timeline.Type == EventType.MatchEnded)
+            if (Timeline.ShouldReprocessScore())
             {
                 Timeline.UpdateScore(matchResult.HomeScore, matchResult.AwayScore);
             }
