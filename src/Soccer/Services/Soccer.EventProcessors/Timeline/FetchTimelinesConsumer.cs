@@ -57,7 +57,7 @@ namespace Soccer.EventProcessors.Timeline
 
                 //TODO should process languages
                 await messageBus.Publish<IMatchEventReceivedMessage>(
-                    new MatchEventReceivedMessage(new MatchEvent(message.Match.League.Id, message.Match.Id, message.Match.MatchResult, timeline)));
+                    new MatchEventReceivedMessage(new MatchEvent(message.Match.League.Id, message.Match.Id, message.Match.MatchResult, timeline, false)));
             }
 
             //TODO need to process penalty

@@ -26,7 +26,7 @@
         {
             var matchEvent = context?.Message?.MatchEvent;
 
-            if (matchEvent?.Timeline?.IsBasicEvent() == true)
+            if (matchEvent?.Timeline?.IsBasicEvent() == true && matchEvent.IsLatest)
             {
                 var message = JsonConvert.SerializeObject(new MatchEventSignalRMessage(Sport.Soccer.Value, matchEvent));
 
