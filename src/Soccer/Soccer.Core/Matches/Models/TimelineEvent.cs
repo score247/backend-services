@@ -74,6 +74,9 @@
         public string PenaltyStatus { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public IEnumerable<Commentary> Commentaries { get; set; }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         [IgnoreMember]
         public Player PlayerOut { get; set; }
 

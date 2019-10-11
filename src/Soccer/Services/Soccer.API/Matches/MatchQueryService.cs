@@ -12,6 +12,7 @@
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Database.Matches.Criteria;
+    using Soccer.Database.Timelines.Criteria;
 
     public interface IMatchQueryService
     {
@@ -141,9 +142,8 @@
         }
 
         public async Task<MatchCommentary> GetMatchCommentary(string id, Language language)
-        {
-                    //TODO process language
-            var timelines = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
+        {            
+            var timelines = await dynamicRepository.FetchAsync<TimelineEvent>(new GetCommentaryCriteria(id, language));
 
             return new MatchCommentary(id, timelines);
 

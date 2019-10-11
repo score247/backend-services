@@ -9,7 +9,7 @@
     <Setting Key="Match_GetById" SpName="Match_GetById" DbName="DefaultConnection" />
     <Setting Key="Match_InsertOrUpdatePostMatches" SpName="Match_InsertOrUpdatePostMatches" DbName="DefaultConnection" />
     <Setting Key="Match_UpdateCoverage" SpName="Match_UpdateCoverage" DbName="DefaultConnection" />
-    <Setting Key="Match_InsertCommentary" SpName="Match_InsertCommentary" DbName="DefaultConnection" />
+    <Setting Key="Match_InsertCommentary" SpName="Match_InsertCommentary" DbName="DefaultConnection" />    
   </Function>
   <Function Name="LiveMatch">
     <Setting Key="LiveMatch_RemoveById" SpName="LiveMatch_RemoveById" DbName="DefaultConnection" />
@@ -25,6 +25,6 @@
     <Setting Key="Odds_GetOdds" SpName="Odds_GetOdds" DbName="DefaultConnection" />
   </Function>
   <Function Name="League">
-    <Setting Key="League_GetActive" SpName="League_GetActive" DbName="DefaultConnection" />
+    <Setting Key="League_GetActive" SpName="League_GetActive" DbName="DefaultConnection" />  
   </Function>
 </Functions>

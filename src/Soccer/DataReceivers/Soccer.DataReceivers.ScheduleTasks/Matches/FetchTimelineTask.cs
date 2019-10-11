@@ -65,8 +65,11 @@
             {                
                 foreach (var commentary in match.Commentaries)
                 {
-                    await messageBus.Publish<IMatchCommentaryFetchedMessage>(
-                        new MatchCommentaryFetchedMessage(match.League.Id, matchId, commentary, language));
+                    if (commentary.Commentaries.Any())
+                    {
+                        await messageBus.Publish<IMatchCommentaryFetchedMessage>(
+                            new MatchCommentaryFetchedMessage(match.League.Id, matchId, commentary, language));
+                    }
                 }
             }
         }
