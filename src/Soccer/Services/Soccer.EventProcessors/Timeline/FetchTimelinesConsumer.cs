@@ -6,7 +6,7 @@ using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.EventProcessors._Shared.Filters;
 
-namespace Soccer.EventProcessors.Matches
+namespace Soccer.EventProcessors.Timeline
 {
     public class FetchTimelinesConsumer : IConsumer<IMatchTimelinesFetchedMessage>
     {
@@ -51,6 +51,7 @@ namespace Soccer.EventProcessors.Matches
                 }
 
                 //TODO update score for event penalty_missed
+                // timeline type need to update score: break_start, penalty_missed, match_end
                 if (timeline.Type.IsBreakStart() && latestScore != null)
                 {
                     timeline.UpdateScore(latestScore.HomeScore, latestScore.AwayScore);

@@ -8,10 +8,10 @@ using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.EventProcessors._Shared.Filters;
-using Soccer.EventProcessors.Matches;
+using Soccer.EventProcessors.Timeline;
 using Xunit;
 
-namespace Soccer.EventProcessors.Tests.Matches
+namespace Soccer.EventProcessors.Tests.Timeline
 {
     [Trait("Soccer.EventProcessors", "FetchTimelineConsumer")]
     public class FetchTimelineConsumerTests
@@ -60,7 +60,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         }
 
         [Fact]
-        public async Task Consume_MatchInMajorLeagues_ShouldPublishMatchEventWithUpdatedScore()
+        public async Task Consume_MatchInMajorLeagues_ShouldPublishLastEventWithUpdatedScore()
         {
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 new Match
@@ -68,7 +68,8 @@ namespace Soccer.EventProcessors.Tests.Matches
                     League = new League { Id = "league:1" },
                     MatchResult = new MatchResult { HomeScore = 1, AwayScore = 2 },
                     TimeLines = new List<TimelineEvent> 
-                    { 
+                    {
+                        new TimelineEvent{ Type = EventType.MatchStarted },
                         new TimelineEvent{ Type = EventType.MatchEnded }
                     }
                 },
@@ -79,11 +80,14 @@ namespace Soccer.EventProcessors.Tests.Matches
             await fetchTimelineConsumer.Consume(context);
 
             await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(
-                Arg.Is<MatchEventReceivedMessage>(m => m.MatchEvent.Timeline.HomeScore == 1 && m.MatchEvent.Timeline.AwayScore == 2 ));            
+                Arg.Is<MatchEventReceivedMessage>(m => 
+                    m.MatchEvent.Timeline.Type.IsMatchEnd() 
+                    && m.MatchEvent.Timeline.HomeScore == 1 
+                    && m.MatchEvent.Timeline.AwayScore == 2 ));            
         }
 
         [Fact]
-        public async Task Consume_BreakStartEvent_ShouldPublishTimelineUpdatedMessage()
+        public async Task Consume_BreakStartEvent_ShouldPublishMatchEvent()
         {
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 new Match
@@ -106,7 +110,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         }
 
         [Fact]
-        public async Task Consume_BreakStartEventAndScoreChanged_ShouldPublishTimelineUpdatedMessage()
+        public async Task Consume_BreakStartEventAndScoreChanged_ShouldUpdatedScore()
         {
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 new Match
@@ -135,7 +139,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         }
 
         [Fact]
-        public async Task Consume_TimelineEvents_ShouldPublishTimelineUpdatedMessageSkipLast()
+        public async Task Consume_TimelineEvents_ShouldPublishMatchEvent()
         {
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 new Match

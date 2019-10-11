@@ -57,20 +57,24 @@
             }
 
             if (match.TimeLines != null && match.TimeLines.Any())
-            {                
+            {
                 await messageBus.Publish<IMatchTimelinesFetchedMessage>(new MatchTimelinesFetchedMessage(match, language));
             }
 
             if (match.Commentaries != null && match.Commentaries.Any())
-            {                
-                foreach (var commentary in match.Commentaries)
-                {
-                    if (commentary.Commentaries.Any())
-                    {
-                        await messageBus.Publish<IMatchCommentaryFetchedMessage>(
-                            new MatchCommentaryFetchedMessage(match.League.Id, matchId, commentary, language));
-                    }
-                }
+            {
+                await PublishCommentaries(matchId, language, match);
+            }
+        }
+
+        private async Task PublishCommentaries(string matchId, Language language, Core.Matches.Models.Match match)
+        {
+            foreach (var commentary in from commentary in match.Commentaries
+                                       where commentary.Commentaries.Any()
+                                       select commentary)
+            {
+                await messageBus.Publish<IMatchCommentaryFetchedMessage>(
+                    new MatchCommentaryFetchedMessage(match.League.Id, matchId, commentary, language));
             }
         }
     }
