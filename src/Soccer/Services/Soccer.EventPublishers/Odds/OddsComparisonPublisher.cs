@@ -32,8 +32,8 @@
                 var message = JsonConvert.SerializeObject(
                     new OddsComparisonSignalRMessage(Sport.Soccer.Value, context.Message.MatchId, context.Message.BetTypeOddsList));
                 const string OddsComparisonName = "OddsComparison";
-                await hubContext.Clients.All.SendAsync(OddsComparisonName, message);
-                await logger.InfoAsync($"Send Odds Comparison: {matchId}\r\n" + message);
+                //await hubContext.Clients.All.SendAsync(OddsComparisonName, message);
+                // await logger.InfoAsync($"Send Odds Comparison: {matchId}\r\n" + message);
             }
         }
     }
