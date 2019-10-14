@@ -24,12 +24,12 @@ BEGIN
 				now(),
 				now());
 	ELSE
-			UPDATE `Commentary` 
+			UPDATE `Commentary` AS Commentary
 			SET 
-				`Value` = JSON_SET(`Value`,  '$', JSON_EXTRACT(commentaries, '$')),
-                `ModifiedTime` = now()
-			WHERE MatchId = matchId
-				AND TimelineId = timelineId 
-				AND Language = language;		
+				Commentary.`Value` = JSON_SET(`Value`,  '$', JSON_EXTRACT(commentaries, '$')),
+                Commentary.`ModifiedTime` = now()
+			WHERE Commentary.MatchId = matchId
+				AND Commentary.TimelineId = timelineId 
+				AND Commentary.Language = language;		
     END IF;
 END
