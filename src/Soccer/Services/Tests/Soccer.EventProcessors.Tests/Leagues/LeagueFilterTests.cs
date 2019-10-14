@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Caching;
@@ -6,6 +7,7 @@ using Fanex.Data.Repository;
 using NSubstitute;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
+using Soccer.EventProcessors._Shared.Cache;
 using Soccer.EventProcessors._Shared.Filters;
 using Soccer.EventProcessors.Leagues;
 using Xunit;
@@ -17,7 +19,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
     {
         private const string MajorLeaguesCacheKey = "Major_Leagues";
         private readonly IDynamicRepository dynamicRepository;      
-        private readonly ICacheService cacheService;
+        private readonly ICacheManager cacheService;
         private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> matchListFilter;
         private readonly IAsyncFilter<Match, bool> matchFilter;
         private readonly IAsyncFilter<MatchEvent, bool> matchEventFilter;
@@ -25,7 +27,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
         public LeagueFilterTests()
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
-            cacheService = Substitute.For<ICacheService>();
+            cacheService = Substitute.For<ICacheManager>();
 
             matchListFilter = new LeagueFilter(dynamicRepository, cacheService);
             matchFilter = new LeagueFilter(dynamicRepository, cacheService);
@@ -35,7 +37,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
         [Fact]
         public async Task FilterAsync_NoMatchInMajorLeague_ShouldReturnEmpty()
         {
-            cacheService.GetAsync<IEnumerable<League>>(MajorLeaguesCacheKey)
+            cacheService.GetOrFetch(MajorLeaguesCacheKey, Arg.Any<Func<Task<IEnumerable<League>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<League> {
                     new League{ Id = "league:1" },
                     new League{ Id = "league:2" }
@@ -55,7 +57,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
         [Fact]
         public async Task FilterAsync_MatchInMajorLeague_ShouldReturnFilteredMatch()
         {
-            cacheService.GetAsync<IEnumerable<League>>(MajorLeaguesCacheKey)
+            cacheService.GetOrFetch(MajorLeaguesCacheKey, Arg.Any<Func<Task<IEnumerable<League>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<League> {
                     new League{ Id = "league:1" },
                     new League{ Id = "league:2" }
@@ -80,7 +82,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
         [Fact]
         public async Task Filter_MatchIsNull_ShouldReturnFalse()
         {
-            cacheService.GetAsync<IEnumerable<League>>(MajorLeaguesCacheKey)
+            cacheService.GetOrFetch(MajorLeaguesCacheKey, Arg.Any<Func<Task<IEnumerable<League>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<League> {
                     new League{ Id = "league:1" },
                     new League{ Id = "league:2" }
@@ -94,7 +96,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
         [Fact]
         public async Task Filter_MatchNotInMajorLeague_ShouldReturnFalse()
         {
-            cacheService.GetAsync<IEnumerable<League>>(MajorLeaguesCacheKey)
+            cacheService.GetOrFetch(MajorLeaguesCacheKey, Arg.Any<Func<Task<IEnumerable<League>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<League> {
                     new League{ Id = "league:1" },
                     new League{ Id = "league:2" }
@@ -110,7 +112,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
         [Fact]
         public async Task FilterAsync_MatchInMajorLeague_ShouldReturnTrue()
         {
-            cacheService.GetAsync<IEnumerable<League>>(MajorLeaguesCacheKey)
+            cacheService.GetOrFetch(MajorLeaguesCacheKey, Arg.Any<Func<Task<IEnumerable<League>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<League> {
                     new League{ Id = "league:1" },
                     new League{ Id = "league:2" }
@@ -126,7 +128,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
         [Fact]
         public async Task Filter_MatchEventIsNull_ShouldReturnFalse()
         {
-            cacheService.GetAsync<IEnumerable<League>>(MajorLeaguesCacheKey)
+            cacheService.GetOrFetch(MajorLeaguesCacheKey, Arg.Any<Func<Task<IEnumerable<League>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<League> {
                     new League{ Id = "league:1" },
                     new League{ Id = "league:2" }
@@ -140,7 +142,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
         [Fact]
         public async Task Filter_MatchEventNotInMajorLeague_ShouldReturnFalse()
         {
-            cacheService.GetAsync<IEnumerable<League>>(MajorLeaguesCacheKey)
+            cacheService.GetOrFetch(MajorLeaguesCacheKey, Arg.Any<Func<Task<IEnumerable<League>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<League> {
                     new League{ Id = "league:1" },
                     new League{ Id = "league:2" }
@@ -156,7 +158,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
         [Fact]
         public async Task FilterAsync_MatchEventInMajorLeague_ShouldReturnTrue()
         {
-            cacheService.GetAsync<IEnumerable<League>>(MajorLeaguesCacheKey)
+            cacheService.GetOrFetch(MajorLeaguesCacheKey, Arg.Any<Func<Task<IEnumerable<League>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<League> {
                     new League{ Id = "league:1" },
                     new League{ Id = "league:2" }
