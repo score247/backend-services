@@ -1,17 +1,22 @@
 ﻿using System.Collections.Generic;
 using MessagePack;
-using Score247.Shared.Base;
 using Soccer.Core.Matches.Models;
 
 namespace Soccer.Core.Timeline.Models
 {
     [MessagePackObject]
-    public class TimelineCommentary : BaseModel
-    {       
-        [Key(2)]
-        public long TimelineId { get; set; }
+    public class TimelineCommentary
+    {
+        public TimelineCommentary(long timelineId, IReadOnlyList<Commentary> commentaries) 
+        {
+            TimelineId = timelineId;
+            Commentaries = commentaries;
+        }
 
-        [Key(3)]
-        public IReadOnlyList<Commentary> Commentaries { get; set; }
+        [Key(0)]
+        public long TimelineId { get; }
+
+        [Key(1)]
+        public IReadOnlyList<Commentary> Commentaries { get; }
     }
 }

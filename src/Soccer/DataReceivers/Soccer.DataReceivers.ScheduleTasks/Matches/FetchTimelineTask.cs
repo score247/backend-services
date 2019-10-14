@@ -41,7 +41,7 @@
         {
             var match = await timelineService.GetTimelines(matchId, region, language);
 
-            if (match.Teams == null)
+            if (match == null || match.Teams == null)
             {
                 return;
             }
@@ -51,25 +51,31 @@
                 await messageBus.Publish<IMatchUpdatedConditionsMessage>(new MatchUpdatedConditionsMessage(matchId, match.Referee, match.Attendance, language));
             }
 
-            foreach (var team in match.Teams)
-            {
-                await messageBus.Publish<ITeamStatisticUpdatedMessage>(new TeamStatisticUpdatedMessage(matchId, team.IsHome, team.Statistic));
-            }
+            await PublishTeamStatistic(matchId, match);
 
             if (match.TimeLines != null && match.TimeLines.Any())
             {
                 await messageBus.Publish<IMatchTimelinesFetchedMessage>(new MatchTimelinesFetchedMessage(match, language));
             }
 
-            if (match.Commentaries != null && match.Commentaries.Any())
+            if (match.TimelineCommentaries != null)
             {
                 await PublishCommentaries(matchId, language, match);
             }
         }
 
+        private async Task PublishTeamStatistic(string matchId, Core.Matches.Models.Match match)
+        {
+            foreach (var team in match.Teams.Where(team => team.Statistic != null).Select(team => team))
+            {
+                await messageBus.Publish<ITeamStatisticUpdatedMessage>(
+                    new TeamStatisticUpdatedMessage(matchId, team.IsHome, team.Statistic));
+            }
+        }
+
         private async Task PublishCommentaries(string matchId, Language language, Core.Matches.Models.Match match)
         {
-            foreach (var commentary in from commentary in match.Commentaries
+            foreach (var commentary in from commentary in match.TimelineCommentaries
                                        where commentary.Commentaries.Any()
                                        select commentary)
             {

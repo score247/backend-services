@@ -35,6 +35,6 @@
 
         public Coverage Coverage { get; set; }
 
-        public IEnumerable<TimelineCommentary> Commentaries { get; set; }
+        public IEnumerable<TimelineCommentary> TimelineCommentaries { get; set; }
     }
 }

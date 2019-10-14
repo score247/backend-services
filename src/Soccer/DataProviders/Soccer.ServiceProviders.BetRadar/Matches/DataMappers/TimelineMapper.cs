@@ -75,11 +75,9 @@
         public static TimelineCommentary MapTimelineCommentary(Dtos.TimelineDto timelineDto)
             => timelineDto.commentaries == null
                     ? null
-                    : new TimelineCommentary
-                    {
-                        TimelineId = timelineDto.id,
-                        Commentaries = timelineDto.commentaries.Select(x => new Commentary { Text = x.text }).ToList()
-                    };
+                    : new TimelineCommentary(
+                        timelineDto.id, 
+                        timelineDto.commentaries.Select(x => new Commentary { Text = x.text }).ToList());
 
         public static int ParseMatchClock(string matchClock)
              => string.IsNullOrWhiteSpace(matchClock)

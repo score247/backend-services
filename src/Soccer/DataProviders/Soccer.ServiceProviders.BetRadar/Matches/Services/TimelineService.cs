@@ -56,7 +56,7 @@
 
                     match.TimeLines = GetTimelines(timelineDto);
                     match.Coverage = GetCoverageInfo(timelineDto);
-                    match.Commentaries = GetTimelineCommentaries(timelineDto);
+                    match.TimelineCommentaries = GetTimelineCommentaries(timelineDto);
 
                     foreach (var team in match.Teams)
                     {
