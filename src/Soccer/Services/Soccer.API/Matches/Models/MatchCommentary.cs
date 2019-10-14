@@ -19,6 +19,8 @@ namespace Soccer.API.Matches.Models
             TimelineId = timelineEvent.Id;
             TimelineType = timelineEvent.Type;
             Time = timelineEvent.Time;
+            MatchTime = timelineEvent.MatchTime;
+            StoppageTime = timelineEvent.StoppageTime;
             Commentaries = timelineEvent.Commentaries;
         }
 
@@ -32,6 +34,12 @@ namespace Soccer.API.Matches.Models
         public DateTimeOffset Time { get; }
 
         [Key(3)]
+        public byte MatchTime { get; }
+
+        [Key(4)]
+        public string StoppageTime { get; }
+
+        [Key(5)]
         public IEnumerable<Commentary> Commentaries { get; }
     }
 }
