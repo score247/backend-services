@@ -26,8 +26,8 @@
 
         Task<MatchCoverage> GetMatchCoverage(string id, Language language);
 
-        Task<MatchCommentary> GetMatchCommentary(string id, Language language);
-        
+        Task<IEnumerable<MatchCommentary>> GetMatchCommentary(string id, Language language);
+
         Task<MatchStatistic> GetMatchStatistic(string id);
     }
 
@@ -86,6 +86,29 @@
             return cacheMatch ?? await GetAndCacheMatchInfo(id, language);
         }
 
+        public async Task<MatchCoverage> GetMatchCoverage(string id, Language language)
+        {
+            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language));
+
+            return new MatchCoverage(match.Id, match.Coverage);
+        }
+
+        public async Task<IEnumerable<MatchCommentary>> GetMatchCommentary(string id, Language language)
+        {
+            var timelineEvents = await dynamicRepository.FetchAsync<TimelineEvent>(new GetCommentaryCriteria(id, language));
+
+            return timelineEvents.OrderBy(t => t.Time).Select(t => new MatchCommentary(t));
+        }
+
+        public async Task<MatchStatistic> GetMatchStatistic(string id)
+        {
+            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, Language.en_US));
+
+            var matchStatistic = new MatchStatistic(match);
+
+            return matchStatistic;
+        }
+
         private async Task<MatchInfo> GetAndCacheMatchInfo(string id, Language language)
         {
             var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language));
@@ -95,7 +118,7 @@
                 // TODO: Should fix here
                 return null;
             }
-            
+
             var timelineEvents = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
             var matchInfo = new MatchInfo(new MatchSummary(match), timelineEvents, match.Venue, match.Referee, match.Attendance);
             await cacheManager.SetAsync(
@@ -121,41 +144,17 @@
         private CacheItemOptions BuildCacheOptions(DateTime date)
         {
             var cacheDuration = ShouldCacheWithShortDuration(date)
-                            ? appSettings.MatchShortCacheTimeDuration
-                            : appSettings.MatchLongCacheTimeDuration;
+                ? appSettings.MatchShortCacheTimeDuration
+                : appSettings.MatchLongCacheTimeDuration;
 
             return new CacheItemOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(cacheDuration));
         }
 
         private bool ShouldCacheWithShortDuration(DateTime date)
             => date.ToUniversalTime().Date == dateTimeNowFunc().UtcDateTime.Date
-                || date.ToUniversalTime().Date == dateTimeNowFunc().UtcDateTime.Date.AddDays(-1);
+               || date.ToUniversalTime().Date == dateTimeNowFunc().UtcDateTime.Date.AddDays(-1);
 
         private static string BuildCacheKey(string key, DateTime from, DateTime to)
             => $"{key}_{from.ToString(FormatDate)}_{to.ToString(FormatDate)}";
-
-        public async Task<MatchCoverage> GetMatchCoverage(string id, Language language)
-        {
-            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language));
-
-            return new MatchCoverage(match.Id, match.Coverage);
-        }
-
-        public async Task<MatchCommentary> GetMatchCommentary(string id, Language language)
-        {            
-            var timelines = await dynamicRepository.FetchAsync<TimelineEvent>(new GetCommentaryCriteria(id, language));
-
-            return new MatchCommentary(id, timelines);
-
-        }
-        
-        public async Task<MatchStatistic> GetMatchStatistic(string id)
-        {
-            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, Language.en_US));
-
-            var matchStatistic = new MatchStatistic(match);
-
-            return matchStatistic;
-        }
     }
 }

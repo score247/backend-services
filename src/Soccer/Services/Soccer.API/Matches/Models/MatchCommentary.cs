@@ -1,23 +1,37 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using MessagePack;
 using Soccer.Core.Matches.Models;
+using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.API.Matches.Models
 {
     [MessagePackObject]
     public class MatchCommentary
     {
-        public MatchCommentary(string matchId, IEnumerable<TimelineEvent> timelines) 
+        [SerializationConstructor]
+        public MatchCommentary()
         {
-            MatchId = matchId;
-            TimelineEvents = timelines.OrderBy(t => t.Time).ToList();
+        }
+
+        public MatchCommentary(TimelineEvent timelineEvent)
+        {
+            TimelineId = timelineEvent.Id;
+            TimelineType = timelineEvent.Type;
+            Time = timelineEvent.Time;
+            Commentaries = timelineEvent.Commentaries;
         }
 
         [Key(0)]
-        public string MatchId { get; }
+        public string TimelineId { get; }
 
         [Key(1)]
-        public IEnumerable<TimelineEvent> TimelineEvents { get; }
+        public EventType TimelineType { get; }
+
+        [Key(2)]
+        public DateTimeOffset Time { get; }
+
+        [Key(3)]
+        public IEnumerable<Commentary> Commentaries { get; }
     }
 }

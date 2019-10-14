@@ -14,7 +14,7 @@
         IRequestHandler<LiveMatchesRequest, IEnumerable<MatchSummary>>,
         IRequestHandler<LiveMatchCountRequest, int>,
         IRequestHandler<MatchCoverageByIdRequest, MatchCoverage>,
-        IRequestHandler<MatchCommentaryByIdRequest, MatchCommentary>,
+        IRequestHandler<MatchCommentaryByIdRequest, IEnumerable<MatchCommentary>>,
         IRequestHandler<MatchStatisticRequest, MatchStatistic>
     {
         private readonly IMatchQueryService matchQueryService;
@@ -39,9 +39,9 @@
         public async Task<MatchCoverage> Handle(MatchCoverageByIdRequest request, CancellationToken cancellationToken)
             => await matchQueryService.GetMatchCoverage(request.Id, request.Language);
 
-        public Task<MatchCommentary> Handle(MatchCommentaryByIdRequest request, CancellationToken cancellationToken)
+        public Task<IEnumerable<MatchCommentary>> Handle(MatchCommentaryByIdRequest request, CancellationToken cancellationToken)
             => matchQueryService.GetMatchCommentary(request.Id, request.Language);
-            
+
         public async Task<MatchStatistic> Handle(MatchStatisticRequest request, CancellationToken cancellationToken)
             => await matchQueryService.GetMatchStatistic(request.Id);
     }
