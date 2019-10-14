@@ -103,6 +103,12 @@
         }
 
         public async Task<MatchStatistic> GetMatchStatistic(string id)
+            => await cacheManager.GetOrSetAsync(
+                $"{MatchStatisticCacheKey}_{id}",
+                async () => await GetMatchStatisticData(id),
+                new CacheItemOptions().SetAbsoluteExpiration(dateTimeNowFunc().AddMinutes(statisticCacheInMinutes)));
+
+        private async Task<MatchStatistic> GetMatchStatisticData(string id)
         {
             var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, Language.en_US));
 
@@ -158,11 +164,5 @@
 
         private static string BuildCacheKey(string key, DateTime from, DateTime to)
             => $"{key}_{from.ToString(FormatDate)}_{to.ToString(FormatDate)}";
-            => await cacheManager.GetOrSetAsync(
-                $"{MatchStatisticCacheKey}_{id}",
-                async () => await GetMatchStatisticData(id),
-                new CacheItemOptions().SetAbsoluteExpiration(dateTimeNowFunc().AddMinutes(statisticCacheInMinutes)));
-
-        private async Task<MatchStatistic> GetMatchStatisticData(string id)
     }
 }
