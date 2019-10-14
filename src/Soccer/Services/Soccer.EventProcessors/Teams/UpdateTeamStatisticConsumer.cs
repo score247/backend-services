@@ -24,8 +24,11 @@
                 return;
             }
 
-            await dynamicRepository.ExecuteAsync(
-                new UpdateLiveMatchTeamStatisticCommand(message.MatchId, message.IsHome, message.TeamStatistic));
+            var command = message.IsUpdateOnlyRedCard
+                ? (INonQueryCommand)new UpdateLiveMatchTeamRedCardCommand(message.MatchId, message.IsHome, message.TeamStatistic.RedCards, message.TeamStatistic.YellowRedCards)
+                : new UpdateLiveMatchTeamStatisticCommand(message.MatchId, message.IsHome, message.TeamStatistic);
+
+            await dynamicRepository.ExecuteAsync(command);
         }
     }
 }

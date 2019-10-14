@@ -48,10 +48,13 @@
                 processedRedCards.Count(x => x.Type.IsRedCard()), 
                 processedRedCards.Count(x => x.Type.IsYellowRedCard()));
 
-            await messageBus.Publish<ITeamStatisticUpdatedMessage>(new TeamStatisticUpdatedMessage(matchEvent.MatchId, matchEvent.Timeline.IsHome, teamStats));
+            await messageBus.Publish<ITeamStatisticUpdatedMessage>(new TeamStatisticUpdatedMessage(matchEvent.MatchId, matchEvent.Timeline.IsHome, teamStats, true));
             await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
         }
 
+        /// <summary>
+        /// TODO: need review to remove duplication code
+        /// </summary>
         private async Task<IList<TimelineEvent>> GetProcessedRedCards(string matchId, string teamId)
         {
             IList<TimelineEvent> timelineEvents;
@@ -67,7 +70,9 @@
                 },
                 EventCacheOptions);
 
-            return timelineEvents.Where(t => t.Team == teamId && (t.Type.IsRedCard() || t.Type.IsYellowRedCard())).ToList();
+            return timelineEvents
+                .Where(t => t.Team == teamId && (t.Type.IsRedCard() || t.Type.IsYellowRedCard()))
+                .ToList();
         }
     }
 }
