@@ -18,7 +18,8 @@
     <Setting Key="LiveMatch_UpdateTeamStatistic" SpName="LiveMatch_UpdateTeamStatistic" DbName="DefaultConnection" />
     <Setting Key="LiveMatch_UpdateCurrentPeriodStartTime" SpName="LiveMatch_UpdateCurrentPeriodStartTime" DbName="DefaultConnection" />
     <Setting Key="LiveMatch_GetBySportId" SpName="LiveMatch_GetBySportId" DbName="DefaultConnection" />
-    <Setting Key="LiveMatch_InsertOrRemove" SpName="LiveMatch_InsertOrRemove" DbName="DefaultConnection" />    
+    <Setting Key="LiveMatch_InsertOrRemove" SpName="LiveMatch_InsertOrRemove" DbName="DefaultConnection" />
+    <Setting Key="LiveMatch_UpdateTeamRedCards" SpName="LiveMatch_UpdateTeamRedCards" DbName="DefaultConnection" />
   </Function>
   <Function Name="Odds">
     <Setting Key="Odds_InsertOdds" SpName="Odds_InsertOdds" DbName="DefaultConnection" />
