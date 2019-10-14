@@ -112,6 +112,11 @@
         {
             var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, Language.en_US));
 
+            if(match == null)
+            {
+                return new MatchStatistic();
+            }
+
             var matchStatistic = new MatchStatistic(match);
 
             return matchStatistic;
