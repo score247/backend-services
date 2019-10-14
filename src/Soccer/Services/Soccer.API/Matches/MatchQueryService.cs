@@ -33,6 +33,8 @@
 
     public class MatchQueryService : IMatchQueryService
     {
+        private const int statisticCacheInMinutes = 3;
+        private const string MatchStatisticCacheKey = "MatchQuery_MatchStatisticCacheKey";
         private const string MatchInfoCacheKey = "MatchQuery_MatchInfoCacheKey";
         private const string MatchListCacheKey = "MatchQuery_MatchListCacheKey";
         private const string FormatDate = "yyyyMMdd-hhmmss";
@@ -156,5 +158,11 @@
 
         private static string BuildCacheKey(string key, DateTime from, DateTime to)
             => $"{key}_{from.ToString(FormatDate)}_{to.ToString(FormatDate)}";
+            => await cacheManager.GetOrSetAsync(
+                $"{MatchStatisticCacheKey}_{id}",
+                async () => await GetMatchStatisticData(id),
+                new CacheItemOptions().SetAbsoluteExpiration(dateTimeNowFunc().AddMinutes(statisticCacheInMinutes)));
+
+        private async Task<MatchStatistic> GetMatchStatisticData(string id)
     }
 }
