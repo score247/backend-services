@@ -22,24 +22,21 @@ namespace Soccer.EventProcessors.Timeline
         }
 
         public async Task Consume(ConsumeContext<IMatchTimelinesFetchedMessage> context)
-        {
-            var message = context.Message;
+        {            
+            var match = context.Message?.Match;
 
-            if (message == null 
-                || message.Match?.TimeLines == null 
-                || !message.Match.TimeLines.Any() 
-                || !(await majorLeagueFilter.Filter(message.Match)))
+            if (match == null
+                || match.TimeLines == null
+                || !match.TimeLines.Any()
+                || !(await majorLeagueFilter.Filter(match)))
             {
                 return;
             }
-         
-            var latestTimeline = message.Match.TimeLines.LastOrDefault();
 
-            var matchEvent = new MatchEvent(message.Match.League.Id, message.Match.Id, message.Match.MatchResult, latestTimeline);
-            await messageBus.Publish<IMatchEventReceivedMessage>(
-                new MatchEventReceivedMessage(matchEvent.AddScoreToSpecialTimeline(message.Match.MatchResult)));
+            var latestTimeline = match.TimeLines.LastOrDefault();
+            await PublishLatestTimeline(match.League.Id, match.Id, match.MatchResult, latestTimeline);
 
-            var timelinesSkipLastAndPenalty = message.Match.TimeLines.SkipLast(1).Where(t=> !t.IsShootOutInPenalty()).ToList();
+            var timelinesSkipLastAndPenalty = match.TimeLines.SkipLast(1).Where(t => !t.IsShootOutInPenalty()).ToList();
 
             TimelineEvent latestScore = null;
 
@@ -49,7 +46,7 @@ namespace Soccer.EventProcessors.Timeline
                 {
                     latestScore = timeline;
                 }
-               
+
                 if (timeline.ShouldReprocessScore() && latestScore != null)
                 {
                     timeline.UpdateScore(latestScore.HomeScore, latestScore.AwayScore);
@@ -57,10 +54,18 @@ namespace Soccer.EventProcessors.Timeline
 
                 //TODO should process languages
                 await messageBus.Publish<IMatchEventReceivedMessage>(
-                    new MatchEventReceivedMessage(new MatchEvent(message.Match.League.Id, message.Match.Id, message.Match.MatchResult, timeline, false)));
+                    new MatchEventReceivedMessage(new MatchEvent(match.League.Id, match.Id, match.MatchResult, timeline, false)));
             }
 
             //TODO need to process penalty
+        }
+
+        private Task PublishLatestTimeline(string leagueId, string matchId, MatchResult matchResult, TimelineEvent latestTimeline)
+        {
+            var matchEvent = new MatchEvent(leagueId, matchId, matchResult, latestTimeline)
+                                    .AddScoreToSpecialTimeline(matchResult);
+
+            return messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent));
         }
     }
 }

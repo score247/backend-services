@@ -10,14 +10,18 @@ namespace Soccer.EventProcessors.Timeline
     {
         private readonly IDynamicRepository dynamicRepository;
 
-        public FetchCommentaryConsumer(IDynamicRepository dynamicRepository)
+        public FetchCommentaryConsumer(
+            IDynamicRepository dynamicRepository)
         {
             this.dynamicRepository = dynamicRepository;
         }
 
         public async Task Consume(ConsumeContext<IMatchCommentaryFetchedMessage> context)
         {
-            if (context.Message == null)
+            //TODO validate major leagues
+
+            if (context.Message == null 
+                || context.Message.Commentary == null)
             {
                 return;
             }

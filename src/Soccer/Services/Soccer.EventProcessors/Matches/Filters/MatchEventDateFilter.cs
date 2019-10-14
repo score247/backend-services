@@ -12,7 +12,7 @@ namespace Soccer.EventProcessors.Matches.Filters
         private const int TimeSpanInMinutes = 10;       
 
         public IEnumerable<Match> Filter(IEnumerable<Match> data)
-            => data.Where(m => m.MatchResult.EventStatus == MatchStatus.Live
+            => data.Where(m => m.MatchResult.EventStatus.IsLive()
                                 || IsValidNotStartMatch(m.MatchResult.EventStatus, m.EventDate)
                                 || IsValidClosedMatch(m.MatchResult.EventStatus, m.LatestTimeline?.Time));
 

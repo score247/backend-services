@@ -7,6 +7,7 @@ using Fanex.Data.Repository;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
 using Soccer.Database.Leagues.Criteria;
+using Soccer.EventProcessors._Shared.Cache;
 using Soccer.EventProcessors._Shared.Filters;
 
 namespace Soccer.EventProcessors.Leagues
@@ -18,12 +19,12 @@ namespace Soccer.EventProcessors.Leagues
     {
         private const string MajorLeaguesCacheKey = "Major_Leagues";
         private readonly IDynamicRepository dynamicRepository;
-        private readonly ICacheService cacheService;
+        private readonly ICacheManager cacheManager;
 
-        public LeagueFilter(IDynamicRepository dynamicRepository, ICacheService cacheService)
+        public LeagueFilter(IDynamicRepository dynamicRepository, ICacheManager cacheManager)
         {
             this.dynamicRepository = dynamicRepository;
-            this.cacheService = cacheService;
+            this.cacheManager = cacheManager;
         }
 
         public async Task<IEnumerable<Match>> Filter(IEnumerable<Match> data)
@@ -42,9 +43,17 @@ namespace Soccer.EventProcessors.Leagues
                 return false;
             }
 
-            var majorLeagues = await GetMajorLeagues();
+            return await IsBelongMajorLeagues(data.LeagueId);
+        }
 
-            return majorLeagues?.Any(league => league.Id == data.LeagueId) == true;
+        public async Task<bool> Filter(Match data)
+        {
+            if (data == null)
+            {
+                return false;
+            }
+
+            return await IsBelongMajorLeagues(data.League.Id);
         }
 
         private static Match SetLeagueOrder(Match match, IEnumerable<League> majorLeagues)
@@ -55,34 +64,22 @@ namespace Soccer.EventProcessors.Leagues
             return match;
         }
 
-        private async Task<IEnumerable<League>> GetMajorLeagues()
+        private async Task<bool> IsBelongMajorLeagues(string leagueId)
         {
-            IEnumerable<League> majorLeagues = (await cacheService
-                    .GetAsync<IEnumerable<League>>(MajorLeaguesCacheKey))?
-                .ToList();
-
-            if (majorLeagues?.Any() != true)
-            {
-                majorLeagues = await dynamicRepository.FetchAsync<League>(new GetActiveLeagueCriteria());
-                await cacheService.SetAsync(
-                    MajorLeaguesCacheKey,
-                    majorLeagues,
-                    new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
-            }
-
-            return majorLeagues;
-        }
-
-        public async Task<bool> Filter(Match data)
-        {
-            if (data == null)
-            {
-                return false;
-            }
-
             var majorLeagues = await GetMajorLeagues();
 
-            return majorLeagues?.Any(league => league.Id == data.League.Id) == true;
+            return majorLeagues?.Any(league => league.Id == leagueId) == true;
+        }
+
+        private async Task<IEnumerable<League>> GetMajorLeagues()
+        {
+            return await cacheManager.GetOrFetch(
+                MajorLeaguesCacheKey,
+                async () =>
+                {
+                    return await dynamicRepository.FetchAsync<League>(new GetActiveLeagueCriteria());
+                },
+                new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
         }
     }
 }
