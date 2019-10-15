@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MessagePack;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.Core.Teams.Models;
 
 namespace Soccer.API.Matches.Models
 {
@@ -22,6 +23,7 @@ namespace Soccer.API.Matches.Models
             MatchTime = timelineEvent.MatchTime;
             StoppageTime = timelineEvent.StoppageTime;
             Commentaries = timelineEvent.Commentaries;
+            GoalScorer = timelineEvent.GoalScorer;
         }
 
         [Key(0)]
@@ -41,5 +43,8 @@ namespace Soccer.API.Matches.Models
 
         [Key(5)]
         public IEnumerable<Commentary> Commentaries { get; }
+
+        [Key(6)]
+        public GoalScorer GoalScorer { get; }
     }
 }
