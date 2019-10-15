@@ -29,6 +29,12 @@
         public async Task Consume(ConsumeContext<IPenaltyEventMessage> context)
         {
             var matchEvent = context?.Message?.MatchEvent;
+
+            if (matchEvent == null)
+            {
+                return;
+            }
+
             var isCompleted = await HandlePenalty(matchEvent);
 
             if (isCompleted)
@@ -111,12 +117,14 @@
                 {
                     shootoutEvent.AwayShootoutPlayer = latestPenalty.AwayShootoutPlayer;
                     shootoutEvent.IsAwayShootoutScored = latestPenalty.IsAwayShootoutScored;
+
                     shootoutEvent.HomeShootoutPlayer = shootoutEvent.Player;
                 }
                 else
                 {
                     shootoutEvent.HomeShootoutPlayer = latestPenalty.HomeShootoutPlayer;
                     shootoutEvent.IsHomeShootoutScored = latestPenalty.IsHomeShootoutScored;
+
                     shootoutEvent.AwayShootoutPlayer = shootoutEvent.Player;
                 }
 
