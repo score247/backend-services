@@ -33,10 +33,12 @@
 
     public class MatchQueryService : IMatchQueryService
     {
-        private const int statisticCacheInMinutes = 3;
+        private const int StatisticCacheInMinutes = 3;
+        private const int CommentaryCacheInMinutes = 3;
         private const string MatchStatisticCacheKey = "MatchQuery_MatchStatisticCacheKey";
         private const string MatchInfoCacheKey = "MatchQuery_MatchInfoCacheKey";
         private const string MatchListCacheKey = "MatchQuery_MatchListCacheKey";
+        private const string MatchCommentaryCacheKey = "MatchQuery_MatchCommentaryCacheKey";
         private const string FormatDate = "yyyyMMdd-hhmmss";
         private readonly IDynamicRepository dynamicRepository;
         private readonly ICacheManager cacheManager;
@@ -68,15 +70,15 @@
         public async Task<IEnumerable<MatchSummary>> GetByDateRange(DateTime from, DateTime to, Language language)
         {
             var cachedMatches = await GetOrSetAsync(
-                MatchListCacheKey,
-                from,
-                to,
-                async () =>
-                {
-                    var matches = await dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(from, to, language));
+                    MatchListCacheKey,
+                    from,
+                    to,
+                    async () =>
+                    {
+                        var matches = await dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(from, to, language));
 
-                    return matches.Select(m => new MatchSummary(m));
-                });
+                        return matches.Select(m => new MatchSummary(m));
+                    });
 
             return cachedMatches;
         }
@@ -97,16 +99,19 @@
 
         public async Task<IEnumerable<MatchCommentary>> GetMatchCommentary(string id, Language language)
         {
-            var timelineEvents = await dynamicRepository.FetchAsync<TimelineEvent>(new GetCommentaryCriteria(id, language));
+            var timelineEvents = await cacheManager.GetOrSetAsync(
+                $"{MatchCommentaryCacheKey}_{id}",
+                async () => await dynamicRepository.FetchAsync<TimelineEvent>(new GetCommentaryCriteria(id, language)),
+                new CacheItemOptions().SetAbsoluteExpiration(dateTimeNowFunc().AddMinutes(CommentaryCacheInMinutes)));
 
-            return timelineEvents.OrderBy(t => t.Time).Select(t => new MatchCommentary(t));
+            return timelineEvents.Select(t => new MatchCommentary(t));
         }
 
         public async Task<MatchStatistic> GetMatchStatistic(string id)
             => await cacheManager.GetOrSetAsync(
                 $"{MatchStatisticCacheKey}_{id}",
                 async () => await GetMatchStatisticData(id),
-                new CacheItemOptions().SetAbsoluteExpiration(dateTimeNowFunc().AddMinutes(statisticCacheInMinutes)));
+                new CacheItemOptions().SetAbsoluteExpiration(dateTimeNowFunc().AddMinutes(StatisticCacheInMinutes)));
 
         private async Task<MatchStatistic> GetMatchStatisticData(string id)
         {
