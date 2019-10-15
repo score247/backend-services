@@ -24,8 +24,8 @@
 
         public static List<byte> ReprocessScoreEventTypes { get; }
            = new List<byte>
-           {               
-                EventType.BreakStart.Value,              
+           {
+                EventType.BreakStart.Value,
                 EventType.MatchEnded.Value,
                 EventType.PenaltyMissed.Value
            };

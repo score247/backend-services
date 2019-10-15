@@ -36,7 +36,7 @@
 
         private async Task UpdateLiveMatchResult(MatchEvent matchEvent)
         {
-            if (matchEvent.MatchResult.EventStatus.IsLive() 
+            if (matchEvent.MatchResult.EventStatus.IsLive()
                 || (matchEvent.MatchResult.EventStatus.IsEnded() && matchEvent.Timeline.Type.IsMatchEnd()))
             {
                 //TODO should check date update of timeline

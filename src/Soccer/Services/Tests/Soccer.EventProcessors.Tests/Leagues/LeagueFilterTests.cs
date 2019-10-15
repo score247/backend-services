@@ -18,7 +18,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
     public class LeagueFilterTests
     {
         private const string MajorLeaguesCacheKey = "Major_Leagues";
-        private readonly IDynamicRepository dynamicRepository;      
+        private readonly IDynamicRepository dynamicRepository;
         private readonly ICacheManager cacheService;
         private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> matchListFilter;
         private readonly IAsyncFilter<Match, bool> matchFilter;
@@ -69,7 +69,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
                 new Match { Id = "match:2", League = new League{ Id = "league:4" }  },
                 new Match { Id = "match:3", League = new League{ Id = "league:1" }  },
                 new Match { Id = "match:5", League = new League{ Id = "league:2" }  },
-                new Match { Id = "match:4", League = new League{ Id = "league:6" }  }                
+                new Match { Id = "match:4", League = new League{ Id = "league:6" }  }
             };
 
             var filteredMatches = (await matchListFilter.Filter(matches)).ToList();
@@ -87,7 +87,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
                     new League{ Id = "league:1" },
                     new League{ Id = "league:2" }
                 });
-           
+
             var result = (await matchFilter.Filter(null));
 
             Assert.False(result);
@@ -118,7 +118,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
                     new League{ Id = "league:2" }
                 });
 
-            var match = new Match { Id = "match:1", League = new League { Id = "league:1" } };           
+            var match = new Match { Id = "match:1", League = new League { Id = "league:1" } };
 
             var result = (await matchFilter.Filter(match));
 
@@ -148,7 +148,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
                     new League{ Id = "league:2" }
                 });
 
-            var match = new MatchEvent( "league:3", "match:1", null, null );
+            var match = new MatchEvent("league:3", "match:1", null, null);
 
             var result = (await matchEventFilter.Filter(match));
 
@@ -164,7 +164,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
                     new League{ Id = "league:2" }
                 });
 
-            var match = new MatchEvent("league:1", "match:1", null, null);           
+            var match = new MatchEvent("league:1", "match:1", null, null);
 
             var result = (await matchEventFilter.Filter(match));
 

@@ -14,13 +14,13 @@
 
         public byte SportId { get; }
 
-        public string MatchId { get; }       
+        public string MatchId { get; }
 
         public string Coverage { get; }
 
         public override string GetSettingKey() => "Match_UpdateCoverage";
 
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(MatchId)       
+        public override bool IsValid() => !string.IsNullOrWhiteSpace(MatchId)
             && !string.IsNullOrWhiteSpace(Coverage);
     }
 }

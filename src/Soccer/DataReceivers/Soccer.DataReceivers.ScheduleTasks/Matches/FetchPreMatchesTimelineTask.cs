@@ -32,7 +32,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         public void FetchPreMatchTimeline(IList<Match> matches)
         {
             foreach (var match in matches)
-            {                
+            {
                 BackgroundJob.Enqueue<IFetchPreMatchesTimelineTask>(t => t.FetchPreMatchTimeline(match.Id, match.Region));
             }
         }

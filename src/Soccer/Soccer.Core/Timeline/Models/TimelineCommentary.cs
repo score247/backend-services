@@ -7,7 +7,7 @@ namespace Soccer.Core.Timeline.Models
     [MessagePackObject]
     public class TimelineCommentary
     {
-        public TimelineCommentary(long timelineId, IReadOnlyList<Commentary> commentaries) 
+        public TimelineCommentary(long timelineId, IReadOnlyList<Commentary> commentaries)
         {
             TimelineId = timelineId;
             Commentaries = commentaries;

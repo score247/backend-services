@@ -87,7 +87,7 @@
             if (timelineDto?.timeline?.Any() == true)
             {
                 return timelineDto.timeline
-                    .Where(x=>x.commentaries != null)
+                    .Where(x => x.commentaries != null)
                     .Select(t => TimelineMapper.MapTimelineCommentary(t))
                     .ToList();
             }
@@ -95,7 +95,7 @@
             return Enumerable.Empty<TimelineCommentary>();
         }
 
-        private Coverage GetCoverageInfo(MatchTimelineDto timelineDto) 
+        private Coverage GetCoverageInfo(MatchTimelineDto timelineDto)
             => CoverageMapper.MapCoverage(timelineDto.coverage_info, soccerSettings.TrackerWidgetLink);
 
         private static TeamStatistic GetStatistic(string teamId, StatisticsDto statistic)

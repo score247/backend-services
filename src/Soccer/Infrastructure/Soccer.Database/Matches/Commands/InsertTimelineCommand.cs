@@ -1,5 +1,5 @@
 ﻿namespace Soccer.Database.Matches.Commands
-{    
+{
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
 

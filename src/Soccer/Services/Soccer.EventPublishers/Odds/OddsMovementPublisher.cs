@@ -31,7 +31,6 @@
             {
                 var message = JsonConvert.SerializeObject(
                     new OddsMovementSignalRMessage(Sport.Soccer.Value, context.Message.MatchId, context.Message.OddsEvents));
-                const string OddsMovementName = "OddsMovement";
                 //await hubContext.Clients.All.SendAsync(OddsMovementName, message);
                 // await logger.InfoAsync($"Send Odds Movement: {matchId}\r\n" + message);
             }

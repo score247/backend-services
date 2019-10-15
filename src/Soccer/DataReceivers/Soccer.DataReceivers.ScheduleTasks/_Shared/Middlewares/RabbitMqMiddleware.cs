@@ -1,8 +1,7 @@
-﻿using System;
-using Soccer.Core.Shared.Configurations;
-using MassTransit;
+﻿using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Soccer.Core.Shared.Configurations;
 
 namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
 {

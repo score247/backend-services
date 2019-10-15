@@ -32,7 +32,7 @@
         }
 
         [Fact]
-        public async Task GetMatchCommentary_ExecuteFetchAsync() 
+        public async Task GetMatchCommentary_ExecuteFetchAsync()
         {
             await matchQueryService.GetMatchCommentary("sr:match", Language.en_US);
 
@@ -44,7 +44,7 @@
         [Fact]
         public async Task GetMatchCommentary_ShouldOrderByTime()
         {
-            dynamicRepository.FetchAsync<TimelineEvent>(Arg.Any<GetCommentaryCriteria>()).Returns(new List<TimelineEvent> { 
+            dynamicRepository.FetchAsync<TimelineEvent>(Arg.Any<GetCommentaryCriteria>()).Returns(new List<TimelineEvent> {
                 new TimelineEvent { Id = "1", Time = DateTimeOffset.Now },
                 new TimelineEvent { Id = "2", Time = DateTimeOffset.Now.AddMinutes(-1) }
             });

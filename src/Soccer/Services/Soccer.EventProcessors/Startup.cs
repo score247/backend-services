@@ -71,7 +71,7 @@
 
         private static void RegisterFilters(IServiceCollection services)
         {
-            services.AddSingleton<IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>>, LeagueFilter>();            
+            services.AddSingleton<IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>>, LeagueFilter>();
             services.AddSingleton<IAsyncFilter<MatchEvent, bool>, LeagueFilter>();
             services.AddSingleton<IAsyncFilter<Match, bool>, LeagueFilter>();
             services.AddSingleton<IFilter<IEnumerable<Match>, IEnumerable<Match>>, MatchEventDateFilter>();

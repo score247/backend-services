@@ -9,7 +9,7 @@ namespace Soccer.EventProcessors.Matches.Filters
 {
     public class MatchEventDateFilter : IFilter<IEnumerable<Match>, IEnumerable<Match>>
     {
-        private const int TimeSpanInMinutes = 10;       
+        private const int TimeSpanInMinutes = 10;
 
         public IEnumerable<Match> Filter(IEnumerable<Match> data)
             => data.Where(m => m.MatchResult.EventStatus.IsLive()

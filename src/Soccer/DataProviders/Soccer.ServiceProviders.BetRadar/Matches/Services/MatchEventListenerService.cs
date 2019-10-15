@@ -64,7 +64,7 @@
             }
             finally
             {
-                if(retryCount < MaxRetryTimes)
+                if (retryCount < MaxRetryTimes)
                 {
                     var tasksInformation = string.Join("\r\n", runningTasks.Select(runningTask => $"TaskId: {runningTask.Id}, Status: {runningTask.Status}"));
                     await Task.Delay(MillisecondsTimeout, cancellationToken);

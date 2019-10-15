@@ -3,8 +3,8 @@
     using MessagePack;
 
     [MessagePackObject]
-    public class Commentary 
-    {       
+    public class Commentary
+    {
 #pragma warning disable S109 // Magic numbers should not be used
         [Key(0)]
 #pragma warning restore S109 // Magic numbers should not be used

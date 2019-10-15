@@ -1,6 +1,4 @@
-﻿using MessagePack;
-
-namespace Soccer.Core.Teams.Models
+﻿namespace Soccer.Core.Teams.Models
 {
     using MessagePack;
     using Newtonsoft.Json;
@@ -12,7 +10,7 @@ namespace Soccer.Core.Teams.Models
 
         public TeamStatistic(
             int redCards,
-            int yellowRedCards) 
+            int yellowRedCards)
         {
             RedCards = redCards;
             YellowRedCards = yellowRedCards;
@@ -22,20 +20,20 @@ namespace Soccer.Core.Teams.Models
 #pragma warning disable S107 // Methods should not have too many parameters
         [SerializationConstructor, JsonConstructor]
         public TeamStatistic(
-            int possession, 
-            int freeKicks, 
-            int throwIns, 
-            int goalKicks, 
-            int shotsBlocked, 
-            int shotsOnTarget, 
-            int shotsOffTarget, 
-            int cornerKicks, 
-            int fouls, 
+            int possession,
+            int freeKicks,
+            int throwIns,
+            int goalKicks,
+            int shotsBlocked,
+            int shotsOnTarget,
+            int shotsOffTarget,
+            int cornerKicks,
+            int fouls,
             int shotsSaved,
-            int offsides, 
-            int yellowCards, 
-            int injuries, 
-            int redCards, 
+            int offsides,
+            int yellowCards,
+            int injuries,
+            int redCards,
             int yellowRedCards)
 #pragma warning restore S107 // Methods should not have too many parameters
         {

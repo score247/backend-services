@@ -7,7 +7,7 @@
         MatchEvent MatchEvent { get; }
     }
 
-    public class MatchEventReceivedMessage: IMatchEventReceivedMessage
+    public class MatchEventReceivedMessage : IMatchEventReceivedMessage
     {
         public MatchEventReceivedMessage(MatchEvent matchEvent)
         {

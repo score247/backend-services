@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
-using Soccer.Core.Timeline.Models;
 
 namespace Soccer.Database.Timelines.Commands
 {
@@ -30,8 +29,8 @@ namespace Soccer.Database.Timelines.Commands
         public override string GetSettingKey() => "Match_InsertCommentary";
 
         public override bool IsValid()
-            => !string.IsNullOrWhiteSpace(MatchId) 
-                && TimelineId > 0 
+            => !string.IsNullOrWhiteSpace(MatchId)
+                && TimelineId > 0
                 && !string.IsNullOrWhiteSpace(Commentaries);
     }
 }

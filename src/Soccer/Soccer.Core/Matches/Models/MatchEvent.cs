@@ -23,8 +23,8 @@ namespace Soccer.Core.Matches.Models
 
         public TimelineEvent Timeline { get; }
 
-        public MatchEvent AddScoreToSpecialTimeline(MatchResult matchResult) 
-        {            
+        public MatchEvent AddScoreToSpecialTimeline(MatchResult matchResult)
+        {
             if (Timeline.ShouldReprocessScore())
             {
                 Timeline.UpdateScore(matchResult.HomeScore, matchResult.AwayScore);

@@ -22,7 +22,7 @@ namespace Soccer.EventProcessors.Timeline
         }
 
         public async Task Consume(ConsumeContext<IMatchTimelinesFetchedMessage> context)
-        {            
+        {
             var match = context.Message?.Match;
 
             if (match == null

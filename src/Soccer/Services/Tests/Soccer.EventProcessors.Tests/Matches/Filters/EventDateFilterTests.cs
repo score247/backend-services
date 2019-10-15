@@ -115,11 +115,11 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
                     Id = "match:1",
                     MatchResult = new MatchResult{ EventStatus = MatchStatus.Closed },
                     LatestTimeline = new TimelineEvent{ Type = EventType.MatchEnded, Time = DateTimeOffset.Now.AddMinutes(-11) } },
-                new Match { 
-                    Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, 
+                new Match {
+                    Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted },
                     EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(5))  },
-                new Match { 
-                    Id = "match:3", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, 
+                new Match {
+                    Id = "match:3", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted },
                     EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(9))  },
             };
 

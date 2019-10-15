@@ -21,7 +21,7 @@ namespace Soccer.EventProcessors.Tests.Timelines
 
         private readonly FetchCommentaryConsumer consumer;
 
-        public FetchCommentaryConsumerTests() 
+        public FetchCommentaryConsumerTests()
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
             context = Substitute.For<ConsumeContext<IMatchCommentaryFetchedMessage>>();

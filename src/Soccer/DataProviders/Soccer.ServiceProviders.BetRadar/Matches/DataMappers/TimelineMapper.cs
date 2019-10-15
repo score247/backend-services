@@ -36,7 +36,7 @@
                 timeline.Time = timelineDto.time;
                 timeline.HomeScore = timelineDto.home_score;
                 timeline.AwayScore = timelineDto.away_score;
-                timeline.StoppageTime = timelineDto.stoppage_time;                
+                timeline.StoppageTime = timelineDto.stoppage_time;
 
                 timeline.MatchTime = (byte)(timelineDto.match_time == 0
                     ? ParseMatchClock(timelineDto.match_clock)
@@ -76,7 +76,7 @@
             => timelineDto.commentaries == null
                     ? null
                     : new TimelineCommentary(
-                        timelineDto.id, 
+                        timelineDto.id,
                         timelineDto.commentaries.Select(x => new Commentary { Text = x.text }).ToList());
 
         public static int ParseMatchClock(string matchClock)

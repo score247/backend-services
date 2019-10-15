@@ -13,7 +13,7 @@ namespace Soccer.Core.Matches.QueueMessages
     public class MatchTimelinesFetchedMessage : IMatchTimelinesFetchedMessage
     {
         public MatchTimelinesFetchedMessage(Match match, Language language)
-        {           
+        {
             Match = match;
             Language = language;
         }

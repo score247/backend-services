@@ -20,7 +20,7 @@ namespace Soccer.EventProcessors.Timeline
         {
             //TODO validate major leagues
 
-            if (context.Message == null 
+            if (context.Message == null
                 || context.Message.Commentary == null)
             {
                 return;
@@ -31,6 +31,6 @@ namespace Soccer.EventProcessors.Timeline
                 context.Message.Commentary.TimelineId,
                 context.Message.Commentary.Commentaries,
                 context.Message.Language));
-        }     
+        }
     }
 }

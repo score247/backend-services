@@ -15,7 +15,7 @@
             this.dynamicRepository = dynamicRepository;
         }
 
-        public Task Consume(ConsumeContext<ILiveMatchClosedMessage> context)        
+        public Task Consume(ConsumeContext<ILiveMatchClosedMessage> context)
             => UpdateMatchResultAndMigrateLiveData(context.Message);
 
         private Task UpdateMatchResultAndMigrateLiveData(ILiveMatchClosedMessage message)

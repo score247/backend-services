@@ -44,14 +44,14 @@ namespace Soccer.EventProcessors.Tests.Timeline
         public async Task Consume_MatchNotInMajorLeagues_ShouldNotPublishMatchEvent()
         {
             context.Message.Returns(new MatchTimelinesFetchedMessage(
-                new Match 
+                new Match
                 {
                     League = new League { Id = "league:1" },
-                    TimeLines = new List<TimelineEvent> 
+                    TimeLines = new List<TimelineEvent>
                     {
                         new TimelineEvent{ Type = EventType.MatchStarted }
                     }
-                }, 
+                },
                 Language.en_US));
 
             await fetchTimelineConsumer.Consume(context);
@@ -67,7 +67,7 @@ namespace Soccer.EventProcessors.Tests.Timeline
                 {
                     League = new League { Id = "league:1" },
                     MatchResult = new MatchResult { HomeScore = 1, AwayScore = 2 },
-                    TimeLines = new List<TimelineEvent> 
+                    TimeLines = new List<TimelineEvent>
                     {
                         new TimelineEvent{ Type = EventType.MatchStarted },
                         new TimelineEvent{ Type = EventType.MatchEnded }
@@ -80,10 +80,10 @@ namespace Soccer.EventProcessors.Tests.Timeline
             await fetchTimelineConsumer.Consume(context);
 
             await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(
-                Arg.Is<MatchEventReceivedMessage>(m => 
-                    m.MatchEvent.Timeline.Type.IsMatchEnd() 
-                    && m.MatchEvent.Timeline.HomeScore == 1 
-                    && m.MatchEvent.Timeline.AwayScore == 2 ));            
+                Arg.Is<MatchEventReceivedMessage>(m =>
+                    m.MatchEvent.Timeline.Type.IsMatchEnd()
+                    && m.MatchEvent.Timeline.HomeScore == 1
+                    && m.MatchEvent.Timeline.AwayScore == 2));
         }
 
         [Fact]
@@ -133,8 +133,8 @@ namespace Soccer.EventProcessors.Tests.Timeline
             await fetchTimelineConsumer.Consume(context);
 
             await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(
-                Arg.Is<MatchEventReceivedMessage>(m => m.MatchEvent.Timeline.Type.IsBreakStart() 
-                    && m.MatchEvent.Timeline.HomeScore == 1 
+                Arg.Is<MatchEventReceivedMessage>(m => m.MatchEvent.Timeline.Type.IsBreakStart()
+                    && m.MatchEvent.Timeline.HomeScore == 1
                     && m.MatchEvent.Timeline.AwayScore == 0));
         }
 

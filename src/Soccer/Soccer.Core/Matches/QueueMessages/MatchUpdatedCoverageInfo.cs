@@ -1,7 +1,6 @@
 ﻿namespace Soccer.Core.Matches.QueueMessages
 {
     using Soccer.Core.Matches.Models;
-    using Soccer.Core.Shared.Enumerations;
 
     public interface IMatchUpdatedCoverageInfo
     {

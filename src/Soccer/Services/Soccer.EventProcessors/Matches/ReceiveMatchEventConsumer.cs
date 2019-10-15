@@ -47,7 +47,7 @@
         {
             var matchEvent = context.Message?.MatchEvent;
 
-            if (matchEvent == null 
+            if (matchEvent == null
                 || !(await matchEventFilter.Filter(matchEvent))
                 || matchEvent.Timeline.IsScoreChangeInPenalty())
             {

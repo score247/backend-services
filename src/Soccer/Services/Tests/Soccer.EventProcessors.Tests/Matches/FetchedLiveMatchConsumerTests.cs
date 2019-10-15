@@ -48,7 +48,7 @@ namespace Soccer.EventProcessors.Tests.Matches
 
         [Fact]
         public async Task Consume_LanguageIsNull_ShouldNotFetchLiveMatchFromRepository()
-        {          
+        {
             await fetchedLiveMatchConsumer.Consume(context);
 
             await dynamicRepository.DidNotReceive().FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>());
