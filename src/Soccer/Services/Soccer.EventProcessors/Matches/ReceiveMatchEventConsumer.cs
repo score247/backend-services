@@ -47,43 +47,39 @@
         {
             var matchEvent = context.Message?.MatchEvent;
 
-            var isValidMatchEvent = matchEvent != null
-                                    && await matchEventFilter.Filter(matchEvent);
-
-            if (isValidMatchEvent)
+            if (matchEvent == null 
+                || !(await matchEventFilter.Filter(matchEvent))
+                || matchEvent.Timeline.IsScoreChangeInPenalty())
             {
-                if (matchEvent.Timeline.IsScoreChangeInPenalty())
-                {
-                    return;
-                }
-
-                if (matchEvent.Timeline.Type.IsPeriodStart())
-                {
-                    await messageBus.Publish<IPeriodStartEventMessage>(new PeriodStartEventMessage(matchEvent));
-                    return;
-                }
-
-                if (await IsTimelineEventNotProcessed(matchEvent) && matchEvent.Timeline.IsShootOutInPenalty())
-                {
-                    await messageBus.Publish<IPenaltyEventMessage>(new PenaltyEventMessage(matchEvent));
-                    return;
-                }
-
-                if (matchEvent.Timeline.Type.IsMatchEnd())
-                {
-                    await messageBus.Publish<IMatchEndEventMessage>(new MatchEndEventMessage(matchEvent));
-                    return;
-                }
-
-                if (matchEvent.Timeline.Type.IsRedCard() || matchEvent.Timeline.Type.IsYellowRedCard())
-                {
-                    await InsertOrUpdateProcessedEvent(matchEvent);
-                    await messageBus.Publish<IRedCardEventMessage>(new RedCardEventMessage(matchEvent));
-                    return;
-                }
-
-                await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
+                return;
             }
+
+            if (matchEvent.Timeline.Type.IsPeriodStart())
+            {
+                await messageBus.Publish<IPeriodStartEventMessage>(new PeriodStartEventMessage(matchEvent));
+                return;
+            }
+
+            if (await IsTimelineEventNotProcessed(matchEvent) && matchEvent.Timeline.IsShootOutInPenalty())
+            {
+                await messageBus.Publish<IPenaltyEventMessage>(new PenaltyEventMessage(matchEvent));
+                return;
+            }
+
+            if (matchEvent.Timeline.Type.IsMatchEnd())
+            {
+                await messageBus.Publish<IMatchEndEventMessage>(new MatchEndEventMessage(matchEvent));
+                return;
+            }
+
+            if (matchEvent.Timeline.Type.IsRedCard() || matchEvent.Timeline.Type.IsYellowRedCard())
+            {
+                await InsertOrUpdateProcessedEvent(matchEvent);
+                await messageBus.Publish<IRedCardEventMessage>(new RedCardEventMessage(matchEvent));
+                return;
+            }
+
+            await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
         }
 
         private async Task<bool> IsTimelineEventProcessed(MatchEvent matchEvent)
@@ -108,7 +104,7 @@
 
             timelineEvents = await cacheManager.GetOrSetAsync<IList<TimelineEvent>>(
                 timelineEventsCacheKey,
-                async() =>
+                async () =>
                 {
                     return (await dynamicRepository.FetchAsync<TimelineEvent>
                                 (new GetTimelineEventsCriteria(matchId))).ToList();
@@ -134,7 +130,7 @@
             catch (Exception e)
             {
                 await logger.ErrorAsync($"Cannot remove item {processedItem?.Type} - {processedItem?.Team} of match {matchEvent.MatchId}", e);
-            }            
+            }
 
             timeLineEvents.Add(matchEvent.Timeline);
         }
