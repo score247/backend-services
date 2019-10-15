@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Caching;
 using Fanex.Data.Repository;
+using Score247.Shared;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
 using Soccer.Database.Leagues.Criteria;
-using Soccer.EventProcessors._Shared.Cache;
 using Soccer.EventProcessors._Shared.Filters;
 
 namespace Soccer.EventProcessors.Leagues
@@ -73,7 +73,7 @@ namespace Soccer.EventProcessors.Leagues
 
         private async Task<IEnumerable<League>> GetMajorLeagues()
         {
-            return await cacheManager.GetOrFetch(
+            return await cacheManager.GetOrSetAsync(
                 MajorLeaguesCacheKey,
                 async () =>
                 {

@@ -4,10 +4,10 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using _Shared;
     using Fanex.Caching;
     using Fanex.Data.Repository;
     using Models;
+    using Score247.Shared;
     using Shared.Configurations;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
@@ -112,7 +112,7 @@
         {
             var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, Language.en_US));
 
-            if(match == null)
+            if (match == null)
             {
                 return new MatchStatistic();
             }

@@ -9,8 +9,8 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Score247.Shared;
     using Soccer.Core.Matches.Models;
-    using Soccer.EventProcessors._Shared.Cache;
     using Soccer.EventProcessors._Shared.Filters;
     using Soccer.EventProcessors.Leagues;
     using Soccer.EventProcessors.Matches.Filters;

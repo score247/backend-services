@@ -7,13 +7,13 @@
     using Fanex.Caching;
     using Fanex.Data.Repository;
     using MassTransit;
+    using Score247.Shared;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
     using Soccer.Core.Teams.Models;
     using Soccer.Core.Teams.QueueMessages;
     using Soccer.Database.Matches.Criteria;
-    using Soccer.EventProcessors._Shared.Cache;
 
     public class RedCardEventConsumer : IConsumer<IRedCardEventMessage>
     {
@@ -61,7 +61,7 @@
 
             var timelineEventsCacheKey = $"MatchPushEvent_Match_{matchId}";
 
-            timelineEvents = await cacheManager.GetOrFetch<IList<TimelineEvent>>(
+            timelineEvents = await cacheManager.GetOrSetAsync<IList<TimelineEvent>>(
                 timelineEventsCacheKey,
                 async () =>
                 {

@@ -6,7 +6,7 @@ namespace Soccer.API.Shared.Middlewares
     using Fanex.Caching;
     using Fanex.Data.Repository;
     using Microsoft.Extensions.DependencyInjection;
-    using Soccer.API._Shared;
+    using Score247.Shared;
     using Soccer.API.Matches;
     using Soccer.API.Odds;
 

@@ -6,7 +6,7 @@
     using System.Threading.Tasks;
     using Fanex.Caching;
     using Fanex.Data.Repository;
-    using Soccer.API._Shared;
+    using Score247.Shared;
     using Soccer.API.Shared.Configurations;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Odds;

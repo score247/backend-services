@@ -1,4 +1,4 @@
-﻿namespace Soccer.API._Shared
+﻿namespace Score247.Shared
 {
     using System;
     using System.Threading.Tasks;

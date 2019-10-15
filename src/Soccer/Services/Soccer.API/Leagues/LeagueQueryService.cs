@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fanex.Caching;
 using Fanex.Data.Repository;
-using Soccer.API._Shared;
+using Score247.Shared;
 using Soccer.Core.Leagues.Models;
 using Soccer.Database.Leagues.Criteria;
 

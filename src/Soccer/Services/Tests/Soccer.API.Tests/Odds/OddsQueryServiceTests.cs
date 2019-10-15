@@ -7,7 +7,7 @@
     using Fanex.Caching;
     using Fanex.Data.Repository;
     using NSubstitute;
-    using Soccer.API._Shared;
+    using Score247.Shared;
     using Soccer.API.Odds;
     using Soccer.API.Shared.Configurations;
     using Soccer.Core.Matches.Models;

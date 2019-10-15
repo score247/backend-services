@@ -8,12 +8,12 @@
     using Fanex.Data.Repository;
     using Fanex.Logging;
     using MassTransit;
+    using Score247.Shared;
     using Soccer.Core.Matches.Extensions;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
     using Soccer.Database.Matches.Criteria;
-    using Soccer.EventProcessors._Shared.Cache;
     using Soccer.EventProcessors._Shared.Filters;
 
     public class ReceiveMatchEventConsumer : IConsumer<IMatchEventReceivedMessage>
@@ -46,8 +46,10 @@
         public async Task Consume(ConsumeContext<IMatchEventReceivedMessage> context)
         {
             var matchEvent = context.Message?.MatchEvent;
+
             var isValidMatchEvent = matchEvent != null
                                     && await matchEventFilter.Filter(matchEvent);
+
             if (isValidMatchEvent)
             {
                 if (matchEvent.Timeline.IsScoreChangeInPenalty())
@@ -104,7 +106,7 @@
 
             var timelineEventsCacheKey = $"MatchPushEvent_Match_{matchId}";
 
-            timelineEvents = await cacheManager.GetOrFetch<IList<TimelineEvent>>(
+            timelineEvents = await cacheManager.GetOrSetAsync<IList<TimelineEvent>>(
                 timelineEventsCacheKey,
                 async() =>
                 {
