@@ -7,6 +7,7 @@ using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.Core.Teams.Models;
 using Soccer.EventProcessors._Shared.Filters;
 using Soccer.EventProcessors.Timeline;
 using Xunit;
@@ -162,5 +163,252 @@ namespace Soccer.EventProcessors.Tests.Timeline
 
             await messageBus.Received(4).Publish<IMatchEventReceivedMessage>(Arg.Any<MatchEventReceivedMessage>());
         }
+
+        [Fact]
+        public async Task Consume_FirstHomePenaltyShootoutEvents_ShouldPublishMatchEvent()
+        {
+            context.Message.Returns(new MatchTimelinesFetchedMessage(
+                new Match
+                {
+                    League = new League { Id = "league:1" },
+                    MatchResult = new MatchResult { HomeScore = 1, AwayScore = 1 },
+                    TimeLines = new List<TimelineEvent>
+                    {
+                        StubHomePenaltyShootout("1", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 0)
+                    }
+                },
+                Language.en_US));
+
+            majorLeagueFilter.Filter(Arg.Any<Match>()).Returns(true);
+
+            await fetchTimelineConsumer.Consume(context);
+
+            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventReceivedMessage>(
+                m => m.MatchEvent.Timeline.Type.IsPenaltyShootout() &&
+                    m.MatchEvent.Timeline.IsHomeShootoutScored &&
+                    m.MatchEvent.Timeline.ShootoutHomeScore == 1 &&
+                    !m.MatchEvent.Timeline.IsAwayShootoutScored &&
+                    m.MatchEvent.Timeline.ShootoutAwayScore == 0 &&
+                    m.MatchEvent.Timeline.IsFirstShoot));
+        }
+
+        [Fact]
+        public async Task Consume_FirstAwayPenaltyShootoutEvents_ShouldPublishMatchEvent()
+        {
+            context.Message.Returns(new MatchTimelinesFetchedMessage(
+                new Match
+                {
+                    League = new League { Id = "league:1" },
+                    MatchResult = new MatchResult { HomeScore = 1, AwayScore = 1 },
+                    TimeLines = new List<TimelineEvent>
+                    {
+                        StubAwayPenaltyShootout("1", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 0)
+                    }
+                },
+                Language.en_US));
+
+            majorLeagueFilter.Filter(Arg.Any<Match>()).Returns(true);
+
+            await fetchTimelineConsumer.Consume(context);
+
+            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventReceivedMessage>(
+                m => m.MatchEvent.Timeline.Type.IsPenaltyShootout() &&
+                    m.MatchEvent.Timeline.IsAwayShootoutScored &&
+                    m.MatchEvent.Timeline.ShootoutAwayScore == 1 &&
+                    !m.MatchEvent.Timeline.IsHomeShootoutScored &&
+                    m.MatchEvent.Timeline.ShootoutHomeScore == 0 &&
+                    m.MatchEvent.Timeline.IsFirstShoot));
+        }
+
+        [Fact]
+        public async Task Consume_PairOfPenaltyShootoutEventsAndHomeFirst_ShouldPublishMatchEvent()
+        {
+            context.Message.Returns(new MatchTimelinesFetchedMessage(
+                new Match
+                {
+                    League = new League { Id = "league:1" },
+                    MatchResult = new MatchResult { HomeScore = 1, AwayScore = 1 },
+                    TimeLines = new List<TimelineEvent>
+                    {
+                        StubHomePenaltyShootout("1", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 0),
+                        StubAwayPenaltyShootout("2", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 1),
+                    }
+                },
+                Language.en_US));
+
+            majorLeagueFilter.Filter(Arg.Any<Match>()).Returns(true);
+
+            await fetchTimelineConsumer.Consume(context);
+
+            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventReceivedMessage>(
+                m => m.MatchEvent.Timeline.Type.IsPenaltyShootout()
+                    && m.MatchEvent.Timeline.IsHomeShootoutScored 
+                    && m.MatchEvent.Timeline.ShootoutHomeScore == 1 
+                    && m.MatchEvent.Timeline.IsAwayShootoutScored 
+                    && m.MatchEvent.Timeline.ShootoutAwayScore == 1 
+                    && !m.MatchEvent.Timeline.IsFirstShoot));
+        }
+
+        [Fact]
+        public async Task Consume_PenaltyShootoutEventsAndAwayFirst_ShouldPublishMatchEvent()
+        {
+            context.Message.Returns(new MatchTimelinesFetchedMessage(
+                new Match
+                {
+                    League = new League { Id = "league:1" },
+                    MatchResult = new MatchResult { HomeScore = 1, AwayScore = 1 },
+                    TimeLines = new List<TimelineEvent>
+                    {
+                        StubAwayPenaltyShootout("1", scored: false),
+                        StubHomePenaltyShootout("2", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 0),                        
+                    }
+                },
+                Language.en_US));
+
+            majorLeagueFilter.Filter(Arg.Any<Match>()).Returns(true);
+
+            await fetchTimelineConsumer.Consume(context);
+
+            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventReceivedMessage>(
+                m => m.MatchEvent.Timeline.Type.IsPenaltyShootout() &&
+                    m.MatchEvent.Timeline.IsHomeShootoutScored &&
+                    m.MatchEvent.Timeline.ShootoutHomeScore == 1 &&
+                    !m.MatchEvent.Timeline.IsAwayShootoutScored &&
+                    m.MatchEvent.Timeline.ShootoutAwayScore == 0 &&
+                    !m.MatchEvent.Timeline.IsFirstShoot));
+        }
+
+        [Fact]
+        public async Task Consume_PenaltyShootoutEvents_ShouldPublishMatchEvent()
+        {
+            context.Message.Returns(new MatchTimelinesFetchedMessage(
+                new Match
+                {
+                    League = new League { Id = "league:1" },
+                    MatchResult = new MatchResult { HomeScore = 1, AwayScore = 1 },
+                    TimeLines = new List<TimelineEvent>
+                    {
+                        StubAwayPenaltyShootout("1", scored: false),
+                        StubHomePenaltyShootout("2", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 0),
+
+                        StubAwayPenaltyShootout("3", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 1),
+                        StubHomePenaltyShootout("4", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 2, shootoutAwayScore: 1),
+
+                        StubAwayPenaltyShootout("5", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 2, shootoutAwayScore: 2),
+                        StubHomePenaltyShootout("6", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 3, shootoutAwayScore: 2),
+
+                        StubAwayPenaltyShootout("7", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 3, shootoutAwayScore: 3),
+                        StubHomePenaltyShootout("8", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 4, shootoutAwayScore: 3),
+
+                        StubAwayPenaltyShootout("9", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 4, shootoutAwayScore: 4),
+                        StubHomePenaltyShootout("10", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 5, shootoutAwayScore: 4),
+                    }
+                },
+                Language.en_US));
+
+            majorLeagueFilter.Filter(Arg.Any<Match>()).Returns(true);
+
+            await fetchTimelineConsumer.Consume(context);
+
+            await messageBus.Received(10).Publish<IMatchEventReceivedMessage>(Arg.Any<MatchEventReceivedMessage>());
+
+            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventReceivedMessage>(
+                m => m.MatchEvent.Timeline.Type.IsPenaltyShootout() &&
+                    m.MatchEvent.Timeline.IsHomeShootoutScored &&
+                    m.MatchEvent.Timeline.ShootoutHomeScore == 5 &&
+                    m.MatchEvent.Timeline.IsAwayShootoutScored &&
+                    m.MatchEvent.Timeline.ShootoutAwayScore == 4 &&
+                    !m.MatchEvent.Timeline.IsFirstShoot));
+        }
+
+        [Fact]
+        public async Task Consume_PenaltyHomeScored4AndAwayScored3_ShouldPublishLatestMatchEventWithFinalScore()
+        {
+            context.Message.Returns(new MatchTimelinesFetchedMessage(
+                new Match
+                {
+                    League = new League { Id = "league:1" },
+                    MatchResult = new MatchResult { HomeScore = 1, AwayScore = 1 },
+                    TimeLines = new List<TimelineEvent>
+                    {
+                        StubHomePenaltyShootout("1", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 0),
+                        StubAwayPenaltyShootout("2", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 1),
+
+                        StubHomePenaltyShootout("3", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 2, shootoutAwayScore: 1),
+                        StubAwayPenaltyShootout("4", scored: false),
+
+                        StubHomePenaltyShootout("5", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 3, shootoutAwayScore: 1),
+                        StubAwayPenaltyShootout("6", scored: false),
+
+                        StubHomePenaltyShootout("7", scored: true),
+                        StubScoreChangeInPenalty(shootoutHomeScore: 4, shootoutAwayScore: 1),
+                    }
+                },
+                Language.en_US));
+
+            majorLeagueFilter.Filter(Arg.Any<Match>()).Returns(true);
+
+            await fetchTimelineConsumer.Consume(context);
+
+            await messageBus.Received(7).Publish<IMatchEventReceivedMessage>(Arg.Any<MatchEventReceivedMessage>());
+
+            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventReceivedMessage>(
+                m => m.MatchEvent.Timeline.Type.IsPenaltyShootout() &&
+                    m.MatchEvent.Timeline.IsHomeShootoutScored &&
+                    m.MatchEvent.Timeline.ShootoutHomeScore == 4 &&
+                    !m.MatchEvent.Timeline.IsAwayShootoutScored &&
+                    m.MatchEvent.Timeline.ShootoutAwayScore == 1 &&
+                    m.MatchEvent.Timeline.IsFirstShoot));
+        }
+
+        private static TimelineEvent StubHomePenaltyShootout(string id, bool scored)
+            => StubTimeline(id, true, scored);
+
+        private static TimelineEvent StubAwayPenaltyShootout(string id, bool scored)
+            => StubTimeline(id, false, scored);
+
+        private static TimelineEvent StubScoreChangeInPenalty(int shootoutHomeScore, int shootoutAwayScore)
+            => new  TimelineEvent 
+                { 
+                    Type = EventType.ScoreChange, 
+                    PeriodType = PeriodType.Penalties, 
+                    ShootoutHomeScore = shootoutHomeScore, 
+                    ShootoutAwayScore = shootoutAwayScore
+                };
+        
+
+        private static TimelineEvent StubTimeline(string id, bool isHome, bool isScored, string playerName = "playerName")
+            => new TimelineEvent
+            {
+                Id = id,
+                Type = EventType.PenaltyShootout,
+                Team = isHome ? "home" : "away",
+                IsHomeShootoutScored = isHome && isScored,
+                IsAwayShootoutScored = !isHome && isScored,
+                PeriodType = PeriodType.Penalties,          
+                Player = new Player
+                {
+                    Id = "player_id",
+                    Name = playerName
+                }
+            };
     }
 }
