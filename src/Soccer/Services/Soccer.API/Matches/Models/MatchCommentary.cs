@@ -24,7 +24,8 @@ namespace Soccer.API.Matches.Models
             StoppageTime = timelineEvent.StoppageTime;
             Commentaries = timelineEvent.Commentaries;
             GoalScorer = timelineEvent.GoalScorer;
-            IsPenaltyShootOutScored = timelineEvent.IsAwayShootoutScored || timelineEvent.IsHomeShootoutScored;
+            IsPenaltyShootOutScored = (timelineEvent.IsHome && timelineEvent.IsHomeShootoutScored)
+                                     || (!timelineEvent.IsHome && timelineEvent.IsAwayShootoutScored);
         }
 
         [Key(0)]
