@@ -20,7 +20,7 @@
     {
         private static readonly CacheItemOptions EventCacheOptions = new CacheItemOptions
         {
-            SlidingExpiration = TimeSpan.FromMinutes(10),
+            SlidingExpiration = TimeSpan.FromHours(2),
         };
 
         private readonly ICacheManager cacheManager;
