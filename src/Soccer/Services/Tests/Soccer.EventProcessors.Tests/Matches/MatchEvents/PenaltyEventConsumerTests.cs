@@ -223,6 +223,38 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             await cacheService.Received().RemoveAsync(latestEventCacheKey);
         }
 
+        [Fact]
+        public async Task Handle_LastestAwayShootoutInCache_ReturnCombineShootEventAndRemoveCache()
+        {
+            var matchId = "CombineShootEvent";
+            var latestEventCacheKey = $"Penalty_Match_{matchId}_Latest_Event";
+            var shootoutEvent = StubTimeline("2", isHome: true, isScored: false, "homePlayerName");
+            var latestShootoutEvent = StubTimeline("1", isHome: false, isScored: true, "awayPlayerName");
+            latestShootoutEvent.AwayShootoutPlayer = latestShootoutEvent.Player;
+
+            cacheService.GetAsync<TimelineEvent>(latestEventCacheKey)
+                .Returns(Task.FromResult(latestShootoutEvent));
+
+            context.Message.Returns(new PenaltyEventMessage(new MatchEvent(
+                "sr:league",
+                matchId,
+                new MatchResult(),
+                shootoutEvent
+                )));
+
+            await consumer.Consume(context);
+
+            await messageBus.Received(1).Publish<IMatchEventProcessedMessage>(
+                Arg.Is<MatchEventProcessedMessage>(evt =>
+                    evt.MatchEvent.Timeline.AwayShootoutPlayer.Name == "awayPlayerName" &&
+                    evt.MatchEvent.Timeline.IsAwayShootoutScored &&
+                    evt.MatchEvent.Timeline.HomeShootoutPlayer.Name == "homePlayerName" &&
+                    !evt.MatchEvent.Timeline.IsHomeShootoutScored
+                   ));
+
+            await cacheService.Received().RemoveAsync(latestEventCacheKey);
+        }
+
         private static TimelineEvent StubHomePenaltyShootout(bool scored)
             => StubTimeline("1", true, scored);
 

@@ -73,9 +73,7 @@
             {
                 SetFirstShoot(shootoutEvent);
             }
-
-            if (latestShootout != null)
-            {
+            else {
                 await HandleLatestPenaltyEvent(latestEventCacheKey, shootoutEvent, latestShootout);
             }
         }
