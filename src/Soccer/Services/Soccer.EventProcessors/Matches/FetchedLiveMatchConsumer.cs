@@ -63,9 +63,11 @@ namespace Soccer.EventProcessors.Matches
                 .Filter(currentLiveMatches)
                 .Select(match => leagueGenerator.GenerateInternationalCode(match));
 
-            removedMatches.AddRange(currentRemovedMatches);
-
-            removedMatches = removedMatches.Distinct().ToList();
+            if (currentRemovedMatches != null && currentRemovedMatches.Any())
+            {
+                removedMatches.AddRange(currentRemovedMatches);
+                removedMatches = removedMatches.Distinct().ToList();
+            }
 
             var newLiveMatches = filteredMatches.Except(currentLiveMatches).ToList();
 
