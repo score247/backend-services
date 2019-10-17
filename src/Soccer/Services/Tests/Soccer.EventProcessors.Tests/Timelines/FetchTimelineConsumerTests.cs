@@ -184,7 +184,7 @@ namespace Soccer.EventProcessors.Tests.Timeline
 
             await fetchTimelineConsumer.Consume(context);
 
-            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventReceivedMessage>(
+            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventProcessedMessage>(
                 m => m.MatchEvent.Timeline.Type.IsPenaltyShootout() &&
                     m.MatchEvent.Timeline.IsHomeShootoutScored &&
                     m.MatchEvent.Timeline.ShootoutHomeScore == 1 &&
@@ -213,7 +213,7 @@ namespace Soccer.EventProcessors.Tests.Timeline
 
             await fetchTimelineConsumer.Consume(context);
 
-            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventReceivedMessage>(
+            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventProcessedMessage>(
                 m => m.MatchEvent.Timeline.Type.IsPenaltyShootout() &&
                     m.MatchEvent.Timeline.IsAwayShootoutScored &&
                     m.MatchEvent.Timeline.ShootoutAwayScore == 1 &&
@@ -244,7 +244,7 @@ namespace Soccer.EventProcessors.Tests.Timeline
 
             await fetchTimelineConsumer.Consume(context);
 
-            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventReceivedMessage>(
+            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventProcessedMessage>(
                 m => m.MatchEvent.Timeline.Type.IsPenaltyShootout()
                     && m.MatchEvent.Timeline.IsHomeShootoutScored 
                     && m.MatchEvent.Timeline.ShootoutHomeScore == 1 
@@ -274,7 +274,7 @@ namespace Soccer.EventProcessors.Tests.Timeline
 
             await fetchTimelineConsumer.Consume(context);
 
-            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventReceivedMessage>(
+            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventProcessedMessage>(
                 m => m.MatchEvent.Timeline.Type.IsPenaltyShootout() &&
                     m.MatchEvent.Timeline.IsHomeShootoutScored &&
                     m.MatchEvent.Timeline.ShootoutHomeScore == 1 &&
@@ -324,9 +324,9 @@ namespace Soccer.EventProcessors.Tests.Timeline
 
             await fetchTimelineConsumer.Consume(context);
 
-            await messageBus.Received(10).Publish<IMatchEventReceivedMessage>(Arg.Any<MatchEventReceivedMessage>());
+            await messageBus.Received(10).Publish<IMatchEventReceivedMessage>(Arg.Any<MatchEventProcessedMessage>());
 
-            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventReceivedMessage>(
+            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventProcessedMessage>(
                 m => m.MatchEvent.Timeline.Type.IsPenaltyShootout() &&
                     m.MatchEvent.Timeline.IsHomeShootoutScored &&
                     m.MatchEvent.Timeline.ShootoutHomeScore == 5 &&
@@ -368,9 +368,9 @@ namespace Soccer.EventProcessors.Tests.Timeline
 
             await fetchTimelineConsumer.Consume(context);
 
-            await messageBus.Received(7).Publish<IMatchEventReceivedMessage>(Arg.Any<MatchEventReceivedMessage>());
+            await messageBus.Received(7).Publish<IMatchEventReceivedMessage>(Arg.Any<MatchEventProcessedMessage>());
 
-            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventReceivedMessage>(
+            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventProcessedMessage>(
                 m => m.MatchEvent.Timeline.Type.IsPenaltyShootout() &&
                     m.MatchEvent.Timeline.IsHomeShootoutScored &&
                     m.MatchEvent.Timeline.ShootoutHomeScore == 4 &&
