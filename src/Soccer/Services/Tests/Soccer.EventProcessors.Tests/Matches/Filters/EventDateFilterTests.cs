@@ -129,6 +129,21 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
         }
 
         [Fact]
+        public void FilterAsync_ClosedMatchButLatestTimelineIsNull_ShouldReturnCorrectList()
+        {
+            var matches = new List<Match>
+            {
+                new Match {
+                    Id = "match:1",
+                    MatchResult = new MatchResult{ EventStatus = MatchStatus.Closed } }                
+            };
+
+            var filteredMatches = eventDateFilter.Filter(matches).ToList();
+
+            Assert.Single(filteredMatches);
+        }
+
+        [Fact]
         public void FilterAsync_AllClosedMatch_ShouldReturnCorrectList()
         {
             var matches = new List<Match>

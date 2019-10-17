@@ -22,8 +22,7 @@ namespace Soccer.EventProcessors.Matches.Filters
                 && dateTime <= DateTimeOffset.UtcNow.AddMinutes(TimeSpanInMinutes);
 
         private static bool IsValidClosedMatch(MatchStatus eventStatus, DateTimeOffset? dateTime)
-            => (dateTime != null)
-                && eventStatus.IsClosed()
-                && dateTime >= DateTimeOffset.UtcNow.AddMinutes(-TimeSpanInMinutes);
+            => eventStatus.IsClosed() 
+                &&(dateTime == null || dateTime >= DateTimeOffset.UtcNow.AddMinutes(-TimeSpanInMinutes));
     }
 }

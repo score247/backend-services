@@ -47,9 +47,11 @@
             
             var timelineEvents = await cacheManager.GetAsync<IList<TimelineEvent>>(timelineEventsCacheKey);
 
-            return timelineEvents
-                .Where(t => t.Team == teamId && (t.Type.IsRedCard() || t.Type.IsYellowRedCard()))
-                .ToList();
+            return timelineEvents == null 
+                ? new List<TimelineEvent>()
+                : timelineEvents
+                    .Where(t => t.Team == teamId && (t.Type.IsRedCard() || t.Type.IsYellowRedCard()))
+                    .ToList();
         }
     }
 }

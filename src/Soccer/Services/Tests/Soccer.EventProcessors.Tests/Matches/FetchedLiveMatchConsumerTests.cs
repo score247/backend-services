@@ -15,6 +15,7 @@ using Soccer.Database.Matches.Criteria;
 using Soccer.EventProcessors._Shared.Filters;
 using Soccer.EventProcessors.Leagues;
 using Soccer.EventProcessors.Matches;
+using Soccer.EventProcessors.Matches.Filters;
 using Xunit;
 
 namespace Soccer.EventProcessors.Tests.Matches
@@ -37,11 +38,11 @@ namespace Soccer.EventProcessors.Tests.Matches
             dynamicRepository = Substitute.For<IDynamicRepository>();
             messageBus = Substitute.For<IBus>();
             leagueFilter = Substitute.For<IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>>>();
-            eventDateFilter = Substitute.For<IFilter<IEnumerable<Match>, IEnumerable<Match>>>();
             leagueGenerator = Substitute.For<ILeagueGenerator>();
             logger = Substitute.For<ILogger>();
-
             context = Substitute.For<ConsumeContext<ILiveMatchFetchedMessage>>();
+
+            eventDateFilter = new MatchEventDateFilter();
 
             fetchedLiveMatchConsumer = new FetchedLiveMatchConsumer(messageBus, dynamicRepository, leagueFilter, eventDateFilter, leagueGenerator, logger);
         }
@@ -57,7 +58,8 @@ namespace Soccer.EventProcessors.Tests.Matches
         [Fact]
         public async Task Consume_ShouldFetchLiveMatchFromRepository()
         {
-            context.Message.Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>()));
+            context.Message
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>()));
 
             await fetchedLiveMatchConsumer.Consume(context);
 
@@ -76,9 +78,6 @@ namespace Soccer.EventProcessors.Tests.Matches
 
             leagueGenerator.GenerateInternationalCode(Arg.Is<Match>(m => m.Id == "1"))
                 .Returns(match);
-
-            eventDateFilter.Filter(Arg.Any<IEnumerable<Match>>())
-                .Returns(new List<Match> { match });
 
             await fetchedLiveMatchConsumer.Consume(context);
 
@@ -100,27 +99,69 @@ namespace Soccer.EventProcessors.Tests.Matches
         }
 
         [Fact]
-        public async Task Consume_HasBothNewAndRemovedMatches_ShouldExecuteCommand()
+        public async Task Consume_HasBothNewAndClosedMatchInRange_ShouldExecuteCommand()
         {
-            var newMatch = new Match { Id = "2", MatchResult = new MatchResult { EventStatus = MatchStatus.Live } };
+            // Arrange
+            var newMatch = StubNotStartedMatch("match:not:started", DateTimeOffset.Now.AddMinutes(3));
+            var liveMatch = StubLiveMatch("match:live");
+            var closedMatch = StubClosedMatch("match:closed", endedTime: null);
+            var matchesFromApi = new List<Match> { newMatch, liveMatch, closedMatch };
+
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { newMatch }));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi));
 
             leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
-                .Returns(new List<Match> { newMatch });
+                .Returns(matchesFromApi);
 
-            leagueGenerator.GenerateInternationalCode(Arg.Is<Match>(m => m.Id == "2"))
-                .Returns(newMatch);
-
-            eventDateFilter.Filter(Arg.Any<IEnumerable<Match>>())
-                .Returns(new List<Match> { newMatch });
+            StubLeagueGenerateInternationalCode(matchesFromApi);
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
-                .Returns(new List<Match> { new Match { Id = "1", MatchResult = new MatchResult { EventStatus = MatchStatus.Live } } });
+                .Returns(new List<Match>
+                {
+                    StubLiveMatch("match:live"),
+                    StubClosedMatch("match:closed", endedTime: DateTimeOffset.Now.AddMinutes(-5))
+                });
 
+            // Act
             await fetchedLiveMatchConsumer.Consume(context);
 
-            await dynamicRepository.Received(1).ExecuteAsync(Arg.Is<InsertOrRemoveLiveMatchesCommand>(cmd => !cmd.RemovedMatchIds.Equals("[]") && !cmd.NewMatches.Equals("[]")));
+            // Assert
+            await dynamicRepository.Received(1).ExecuteAsync(Arg.Is<InsertOrRemoveLiveMatchesCommand>(
+                cmd => !cmd.RemovedMatchIds.Contains("match:closed")
+                        && cmd.NewMatches.Contains("match:not:started")));
+        }
+
+        [Fact]
+        public async Task Consume_HasNewAndClosedMatchOutOfRange_ShouldExecuteCommand()
+        {
+            // Arrange
+            var newMatch = StubNotStartedMatch("match:not:started", DateTimeOffset.Now.AddMinutes(3));
+            var liveMatch = StubLiveMatch("match:live");
+            var closedMatch = StubClosedMatch("match:closed", endedTime: null);
+            var matchesFromApi = new List<Match> { newMatch, liveMatch, closedMatch };
+
+            context.Message
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi));
+
+            leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
+                .Returns(matchesFromApi);
+
+            StubLeagueGenerateInternationalCode(matchesFromApi);
+
+            dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
+                .Returns(new List<Match>
+                {
+                    StubLiveMatch("match:live"),
+                    StubClosedMatch("match:closed", endedTime: DateTimeOffset.Now.AddMinutes(-11))
+                });
+
+            // Act
+            await fetchedLiveMatchConsumer.Consume(context);
+
+            // Assert
+            await dynamicRepository.Received(1).ExecuteAsync(Arg.Is<InsertOrRemoveLiveMatchesCommand>(
+                cmd => cmd.RemovedMatchIds.Contains("match:closed")
+                        && cmd.NewMatches.Contains("match:not:started")));
         }
 
         [Fact]
@@ -135,9 +176,6 @@ namespace Soccer.EventProcessors.Tests.Matches
 
             leagueGenerator.GenerateInternationalCode(Arg.Is<Match>(m => m.Id == "1"))
                 .Returns(newMatch);
-
-            eventDateFilter.Filter(Arg.Any<IEnumerable<Match>>())
-                .Returns(new List<Match> { newMatch });
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match> { new Match { Id = "1", MatchResult = new MatchResult { EventStatus = MatchStatus.Live } } });
@@ -162,5 +200,57 @@ namespace Soccer.EventProcessors.Tests.Matches
 
             await logger.Received(1).ErrorAsync(Arg.Any<string>(), Arg.Any<Exception>());
         }
+
+        private void StubLeagueGenerateInternationalCode(IList<Match> matches)
+        {
+            foreach (var match in matches)
+            {
+                StubInternationalCode(match);
+            }
+        }
+
+        private void StubInternationalCode(Match newMatch)
+        => leagueGenerator.GenerateInternationalCode(Arg.Is<Match>(m => m.Id == newMatch.Id))
+                           .Returns(newMatch);
+
+        private static Match StubNotStartedMatch(string id, DateTimeOffset eventDate)
+        => new Match
+        {
+            Id = id,
+            EventDate = eventDate,
+            MatchResult = new MatchResult
+            {
+                EventStatus = MatchStatus.NotStarted
+            }
+        };
+
+        private static Match StubLiveMatch(string id)
+        => new Match
+        {
+            Id = id,
+            MatchResult = new MatchResult
+            {
+                EventStatus = MatchStatus.Live
+            }
+        };
+
+
+        private static Match StubClosedMatch(string id, DateTimeOffset? endedTime)
+           => new Match
+           {
+               Id = id,
+               MatchResult = new MatchResult
+               {
+                   EventStatus = MatchStatus.Closed,
+                   MatchStatus = MatchStatus.Ended
+               },
+               LatestTimeline = endedTime == null
+                   ? null
+                   : new TimelineEvent
+                   {
+                       Type = EventType.MatchEnded,
+                       Time = (DateTimeOffset) endedTime
+                   }
+           };
     }
 }
