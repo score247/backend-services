@@ -59,13 +59,13 @@ namespace Soccer.EventProcessors.Matches
             var removedMatches = currentLiveMatches.Except(filteredMatches).ToList();
 
             //TODO cannot get latest timeline in live api => separate logic for pre | closed match
-            var currentRemovedMatches = eventDateFilter
+            var currentValidMatches = eventDateFilter
                 .Filter(currentLiveMatches)
                 .Select(match => leagueGenerator.GenerateInternationalCode(match));
 
-            if (currentRemovedMatches != null && currentRemovedMatches.Any())
+            if (currentValidMatches != null && currentValidMatches.Any())
             {
-                removedMatches.AddRange(currentRemovedMatches);
+                removedMatches.AddRange(currentLiveMatches.Except(currentValidMatches));
                 removedMatches = removedMatches.Distinct().ToList();
             }
 
