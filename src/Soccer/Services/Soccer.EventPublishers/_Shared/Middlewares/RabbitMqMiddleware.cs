@@ -49,7 +49,6 @@
                 {
                     e.PrefetchCount = prefetCount;
                     e.UseMessageRetry(RetryAndLogError(services));
-                    e.AutoDelete = true;
 
                     e.Consumer<ProcessMatchEventPublisher>(provider);
                 });
@@ -58,7 +57,6 @@
                 {
                     e.PrefetchCount = prefetCount;
                     e.UseMessageRetry(RetryAndLogError(services));
-                    e.AutoDelete = true;
 
                     e.Consumer<OddsComparisonPublisher>(provider);
                 });
@@ -67,7 +65,6 @@
                 {
                     e.PrefetchCount = prefetCount;
                     e.UseMessageRetry(RetryAndLogError(services));
-                    e.AutoDelete = true;
 
                     e.Consumer<OddsMovementPublisher>(provider);
                 });
@@ -84,7 +81,6 @@
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_LiveMatches", e =>
                 {
                     e.PrefetchCount = prefetCount;
-                    e.AutoDelete = true;
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<UpdateLiveMatchPublisher>(provider);
