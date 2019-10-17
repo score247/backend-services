@@ -7,6 +7,6 @@ BEGIN
     LEFT JOIN Commentary AS C ON 		
 		T.Id = C.TimelineId 
         AND T.MatchId = C.MatchId
-    WHERE C.MatchId = matchId
-		AND C.Language = language;
+    WHERE T.MatchId = matchId
+		AND T.Language = language;
 END
