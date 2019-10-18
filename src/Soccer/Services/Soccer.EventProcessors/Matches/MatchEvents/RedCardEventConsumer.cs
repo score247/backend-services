@@ -1,8 +1,11 @@
 ﻿namespace Soccer.EventProcessors.Matches.MatchEvents
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Fanex.Caching;
+    using Fanex.Data.Repository;
     using MassTransit;
     using Score247.Shared;
     using Soccer.Core.Matches.Models;
@@ -10,16 +13,24 @@
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
     using Soccer.Core.Teams.Models;
     using Soccer.Core.Teams.QueueMessages;
+    using Soccer.Database.Matches.Criteria;
 
     public class RedCardEventConsumer : IConsumer<IRedCardEventMessage>
     {
+        private static readonly CacheItemOptions EventCacheOptions = new CacheItemOptions
+        {
+            SlidingExpiration = TimeSpan.FromMinutes(10),
+        };
+
         private readonly IBus messageBus;
         private readonly ICacheManager cacheManager;
+        private readonly IDynamicRepository dynamicRepository;
 
-        public RedCardEventConsumer(IBus messageBus, ICacheManager cacheManager)
+        public RedCardEventConsumer(IBus messageBus, ICacheManager cacheManager, IDynamicRepository dynamicRepository)
         {
             this.messageBus = messageBus;
             this.cacheManager = cacheManager;
+            this.dynamicRepository = dynamicRepository;
         }
 
         public async Task Consume(ConsumeContext<IRedCardEventMessage> context)
@@ -44,8 +55,15 @@
         private async Task<IList<TimelineEvent>> GetProcessedRedCards(string matchId, string teamId)
         {
             var timelineEventsCacheKey = $"MatchPushEvent_Match_{matchId}";
-            
-            var timelineEvents = await cacheManager.GetAsync<IList<TimelineEvent>>(timelineEventsCacheKey);
+
+            var timelineEvents = await cacheManager.GetOrSetAsync<IList<TimelineEvent>>(
+                timelineEventsCacheKey,
+                async () =>
+                {
+                    return (await dynamicRepository.FetchAsync<TimelineEvent>
+                                (new GetTimelineEventsCriteria(matchId))).ToList();
+                },
+                EventCacheOptions);
 
             return timelineEvents == null 
                 ? new List<TimelineEvent>()

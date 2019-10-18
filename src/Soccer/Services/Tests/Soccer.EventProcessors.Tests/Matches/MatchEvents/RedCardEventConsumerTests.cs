@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using Fanex.Caching;
+using Fanex.Data.Repository;
 using MassTransit;
 using NSubstitute;
 using Score247.Shared;
@@ -18,6 +21,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
     {
         private readonly IBus messageBus;
         private readonly ICacheManager cacheManager;
+        private readonly IDynamicRepository dynamicRepository;
         private readonly ConsumeContext<IRedCardEventMessage> context;
 
         private readonly RedCardEventConsumer consumer;
@@ -26,9 +30,10 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
         {
             messageBus = Substitute.For<IBus>();
             cacheManager = Substitute.For<ICacheManager>();
+            dynamicRepository = Substitute.For<IDynamicRepository>();
             context = Substitute.For<ConsumeContext<IRedCardEventMessage>>();
 
-            consumer = new RedCardEventConsumer(messageBus, cacheManager);
+            consumer = new RedCardEventConsumer(messageBus, cacheManager, dynamicRepository);
         }
 
         [Fact]
@@ -50,10 +55,11 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
                 StubRedCard()
                 )));
 
-            cacheManager.GetAsync<IList<TimelineEvent>>($"MatchPushEvent_Match_{matchId}").Returns(new List<TimelineEvent>
-            {
-                StubRedCard()
-            });
+            cacheManager.GetOrSetAsync(Arg.Any<string>(), Arg.Any<Func<Task<IList<TimelineEvent>>>>(), Arg.Any<CacheItemOptions>())
+                .Returns(new List<TimelineEvent>
+                {
+                    StubRedCard()
+                });
 
             await consumer.Consume(context);
 
@@ -72,11 +78,12 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
                 StubRedCard()
                 )));
 
-            cacheManager.GetAsync<IList<TimelineEvent>>($"MatchPushEvent_Match_{matchId}").Returns(new List<TimelineEvent>
-            {
-                StubRedCard(),
-                StubYellowRedCard()
-            });
+            cacheManager.GetOrSetAsync(Arg.Any<string>(), Arg.Any<Func<Task<IList<TimelineEvent>>>>(), Arg.Any<CacheItemOptions>())
+                .Returns(new List<TimelineEvent>
+                {
+                    StubRedCard(),
+                    StubYellowRedCard()
+                });
 
             await consumer.Consume(context);
                         
