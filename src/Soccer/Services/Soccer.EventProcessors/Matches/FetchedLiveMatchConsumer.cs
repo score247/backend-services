@@ -13,6 +13,7 @@ using Soccer.Database.Matches.Commands;
 using Soccer.Database.Matches.Criteria;
 using Soccer.EventProcessors._Shared.Filters;
 using Soccer.EventProcessors.Leagues;
+using Soccer.EventProcessors.Matches.Filters;
 
 namespace Soccer.EventProcessors.Matches
 {
@@ -21,7 +22,7 @@ namespace Soccer.EventProcessors.Matches
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
         private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
-        private readonly IFilter<IEnumerable<Match>, IEnumerable<Match>> eventDateFilter;
+        private readonly ILiveMatchFilter liveMatchFilter;
         private readonly ILeagueGenerator leagueGenerator;
         private readonly ILogger logger;
 
@@ -29,14 +30,14 @@ namespace Soccer.EventProcessors.Matches
             IBus messageBus,
             IDynamicRepository dynamicRepository,
             IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter,
-            IFilter<IEnumerable<Match>, IEnumerable<Match>> eventDateFilter,
+            ILiveMatchFilter liveMatchFilter,
             ILeagueGenerator leagueGenerator,
             ILogger logger)
         {
             this.messageBus = messageBus;
             this.dynamicRepository = dynamicRepository;
             this.leagueFilter = leagueFilter;
-            this.eventDateFilter = eventDateFilter;
+            this.liveMatchFilter = liveMatchFilter;
             this.leagueGenerator = leagueGenerator;
             this.logger = logger;
         }
@@ -50,7 +51,7 @@ namespace Soccer.EventProcessors.Matches
                 return;
             }            
             
-            IEnumerable<Match> filteredMatches = await FilterMatches(message);
+            IEnumerable<Match> filteredMatches = await FilterMajorLeagueAndNotStarted(message);
 
             var currentLiveMatches = (await dynamicRepository
                     .FetchAsync<Match>(new GetLiveMatchesCriteria(message.Language)))
@@ -59,8 +60,8 @@ namespace Soccer.EventProcessors.Matches
             var removedMatches = currentLiveMatches.Except(filteredMatches).ToList();
 
             //TODO cannot get latest timeline in live api => separate logic for pre | closed match
-            var currentValidMatches = eventDateFilter
-                .Filter(currentLiveMatches)
+            var currentValidMatches = liveMatchFilter
+                .FilterClosed(currentLiveMatches)
                 .Select(match => leagueGenerator.GenerateInternationalCode(match));
 
             if (currentValidMatches != null && currentValidMatches.Any())
@@ -83,12 +84,12 @@ namespace Soccer.EventProcessors.Matches
             }
         }
 
-        private async Task<IEnumerable<Match>> FilterMatches(ILiveMatchFetchedMessage message)
+        private async Task<IEnumerable<Match>> FilterMajorLeagueAndNotStarted(ILiveMatchFetchedMessage message)
         {
             var filteredMatches = await leagueFilter.Filter(message.Matches);
 
-            filteredMatches = eventDateFilter
-                .Filter(filteredMatches)
+            filteredMatches = liveMatchFilter
+                .FilterNotStarted(filteredMatches)
                 .Select(match => leagueGenerator.GenerateInternationalCode(match)).ToList();
 
             return filteredMatches;

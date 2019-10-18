@@ -1,28 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Soccer.Core.Matches.Models;
-using Soccer.Core.Shared.Enumerations;
-using Soccer.EventProcessors._Shared.Filters;
 
 namespace Soccer.EventProcessors.Matches.Filters
 {
-    public class MatchEventDateFilter : IFilter<IEnumerable<Match>, IEnumerable<Match>>
+    public interface ILiveMatchFilter
     {
-        private const int TimeSpanInMinutes = 10;
+        IEnumerable<Match> FilterNotStarted(IEnumerable<Match> matches);
 
-        public IEnumerable<Match> Filter(IEnumerable<Match> data)
-            => data.Where(m => m.MatchResult.EventStatus.IsLive()
-                                || IsValidNotStartMatch(m.MatchResult.EventStatus, m.EventDate)
-                                || IsValidClosedMatch(m.MatchResult.EventStatus, m.LatestTimeline?.Time));
+        IEnumerable<Match> FilterClosed(IEnumerable<Match> matches);
+    }
 
-        private static bool IsValidNotStartMatch(MatchStatus eventStatus, DateTimeOffset dateTime)
-            => eventStatus.IsNotStart()
-                && dateTime >= DateTimeOffset.UtcNow.AddMinutes(-TimeSpanInMinutes)
-                && dateTime <= DateTimeOffset.UtcNow.AddMinutes(TimeSpanInMinutes);
+    public class LiveMatchFilter : ILiveMatchFilter
+    {
+        private readonly ILiveMatchRangeValidator rangeValidator;
 
-        private static bool IsValidClosedMatch(MatchStatus eventStatus, DateTimeOffset? dateTime)
-            => eventStatus.IsClosed() 
-                &&(dateTime == null || dateTime >= DateTimeOffset.UtcNow.AddMinutes(-TimeSpanInMinutes));
+        public LiveMatchFilter(ILiveMatchRangeValidator rangeValidator)
+        {
+            this.rangeValidator = rangeValidator;
+        }
+
+        public IEnumerable<Match> FilterClosed(IEnumerable<Match> matches)
+         => matches.Where(m => m.MatchResult.EventStatus.IsLive()
+                                || m.MatchResult.EventStatus.IsNotStart()
+                                || rangeValidator.IsValidClosedMatch(m));
+
+        public IEnumerable<Match> FilterNotStarted(IEnumerable<Match> matches)
+        => matches.Where(m => m.MatchResult.EventStatus.IsLive()
+                                || rangeValidator.IsValidNotStartedMatch(m)
+                                || m.MatchResult.EventStatus.IsClosed());
     }
 }

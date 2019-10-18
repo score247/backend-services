@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
-using Soccer.EventProcessors._Shared.Filters;
 using Soccer.EventProcessors.Matches.Filters;
 using Xunit;
 
@@ -13,11 +12,11 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
     public class EventDateFilterTests
     {
 
-        private readonly IFilter<IEnumerable<Match>, IEnumerable<Match>> eventDateFilter;
+        private readonly ILiveMatchFilter liveMatchFilter;
 
         public EventDateFilterTests()
         {
-            eventDateFilter = new MatchEventDateFilter();
+            liveMatchFilter = new LiveMatchFilter(new LiveMatchRangeValidator());
         }
 
         [Fact]
@@ -25,7 +24,7 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
         {
             var matches = new List<Match>();
 
-            var filteredMatches = eventDateFilter.Filter(matches);
+            var filteredMatches = liveMatchFilter.FilterNotStarted(matches);
 
             Assert.Empty(filteredMatches);
         }
@@ -42,7 +41,7 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
                 new Match { Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.Live }  }
             };
 
-            var filteredMatches = eventDateFilter.Filter(matches).ToList();
+            var filteredMatches = liveMatchFilter.FilterClosed(liveMatchFilter.FilterNotStarted(matches)).ToList();            
 
             Assert.Equal(2, filteredMatches.Count);
         }
@@ -61,7 +60,7 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
 
             };
 
-            var filteredMatches = eventDateFilter.Filter(matches).ToList();
+            var filteredMatches = liveMatchFilter.FilterClosed(liveMatchFilter.FilterNotStarted(matches)).ToList();
 
             Assert.Equal(3, filteredMatches.Count);
         }
@@ -81,7 +80,7 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
                 new Match { Id = "match:2", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(20))  },
             };
 
-            var filteredMatches = eventDateFilter.Filter(matches).ToList();
+            var filteredMatches = liveMatchFilter.FilterClosed(liveMatchFilter.FilterNotStarted(matches)).ToList();
 
             Assert.Equal(3, filteredMatches.Count);
         }
@@ -101,7 +100,7 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
                 new Match { Id = "match:8", MatchResult = new MatchResult{ EventStatus = MatchStatus.NotStarted }, EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(19))  },
             };
 
-            var filteredMatches = eventDateFilter.Filter(matches).ToList();
+            var filteredMatches = liveMatchFilter.FilterClosed(liveMatchFilter.FilterNotStarted(matches)).ToList();
 
             Assert.Equal(5, filteredMatches.Count);
         }
@@ -123,7 +122,7 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
                     EventDate = (DateTimeOffset.Now - TimeSpan.FromMinutes(9))  },
             };
 
-            var filteredMatches = eventDateFilter.Filter(matches).ToList();
+            var filteredMatches = liveMatchFilter.FilterClosed(liveMatchFilter.FilterNotStarted(matches)).ToList();
 
             Assert.Equal(2, filteredMatches.Count);
         }
@@ -138,7 +137,7 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
                     MatchResult = new MatchResult{ EventStatus = MatchStatus.Closed } }                
             };
 
-            var filteredMatches = eventDateFilter.Filter(matches).ToList();
+            var filteredMatches = liveMatchFilter.FilterClosed(liveMatchFilter.FilterNotStarted(matches)).ToList();
 
             Assert.Single(filteredMatches);
         }
@@ -162,7 +161,7 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
                     LatestTimeline = new TimelineEvent{ Type = EventType.MatchEnded, Time = DateTimeOffset.Now } },
             };
 
-            var filteredMatches = eventDateFilter.Filter(matches).ToList();
+            var filteredMatches = liveMatchFilter.FilterClosed(liveMatchFilter.FilterNotStarted(matches)).ToList();
 
             Assert.Equal(3, filteredMatches.Count);
         }

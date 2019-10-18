@@ -26,7 +26,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
         private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
-        private readonly IFilter<IEnumerable<Match>, IEnumerable<Match>> eventDateFilter;
+        private readonly ILiveMatchFilter liveMatchFilter;
         private readonly ILeagueGenerator leagueGenerator;
         private readonly ILogger logger;
 
@@ -42,9 +42,9 @@ namespace Soccer.EventProcessors.Tests.Matches
             logger = Substitute.For<ILogger>();
             context = Substitute.For<ConsumeContext<ILiveMatchFetchedMessage>>();
 
-            eventDateFilter = new MatchEventDateFilter();
+            liveMatchFilter = new LiveMatchFilter(new LiveMatchRangeValidator());
 
-            fetchedLiveMatchConsumer = new FetchedLiveMatchConsumer(messageBus, dynamicRepository, leagueFilter, eventDateFilter, leagueGenerator, logger);
+            fetchedLiveMatchConsumer = new FetchedLiveMatchConsumer(messageBus, dynamicRepository, leagueFilter, liveMatchFilter, leagueGenerator, logger);
         }
 
         [Fact]
