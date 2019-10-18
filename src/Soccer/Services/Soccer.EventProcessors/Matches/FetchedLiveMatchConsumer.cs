@@ -61,7 +61,7 @@ namespace Soccer.EventProcessors.Matches
 
             //TODO cannot get latest timeline in live api => separate logic for pre | closed match
             var currentValidMatches = liveMatchFilter
-                .FilterClosed(currentLiveMatches)
+                .RemoveInvalidClosed(currentLiveMatches)
                 .Select(match => leagueGenerator.GenerateInternationalCode(match));
 
             if (currentValidMatches != null && currentValidMatches.Any())
@@ -89,7 +89,7 @@ namespace Soccer.EventProcessors.Matches
             var filteredMatches = await leagueFilter.Filter(message.Matches);
 
             filteredMatches = liveMatchFilter
-                .FilterNotStarted(filteredMatches)
+                .RemoveInvalidNotStarted(filteredMatches)
                 .Select(match => leagueGenerator.GenerateInternationalCode(match)).ToList();
 
             return filteredMatches;
