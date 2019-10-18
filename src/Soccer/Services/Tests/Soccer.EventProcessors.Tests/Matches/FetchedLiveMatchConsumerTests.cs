@@ -165,6 +165,36 @@ namespace Soccer.EventProcessors.Tests.Matches
         }
 
         [Fact]
+        public async Task Consume_ClosedMatchOutOfRange_ShouldExecuteCommand()
+        {
+            // Arrange          
+            var closedMatch = StubClosedMatch("match:closed", endedTime: null);
+            var matchesFromApi = new List<Match> { closedMatch };
+
+            context.Message
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi));
+
+            leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
+                .Returns(matchesFromApi);
+
+            StubLeagueGenerateInternationalCode(matchesFromApi);
+
+            dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
+                .Returns(new List<Match>
+                {                   
+                    StubClosedMatch("match:closed", endedTime: DateTimeOffset.Now.AddMinutes(-11))
+                });
+
+            // Act
+            await fetchedLiveMatchConsumer.Consume(context);
+
+            // Assert
+            await dynamicRepository.Received(1).ExecuteAsync(Arg.Is<InsertOrRemoveLiveMatchesCommand>(
+                cmd => cmd.RemovedMatchIds.Contains("match:closed")
+                        && cmd.NewMatches.Equals("[]")));
+        }
+
+        [Fact]
         public async Task Consume_LiveMatchedNotChanged_ShouldNotExecuteCommand()
         {
             var newMatch = new Match { Id = "1", MatchResult = new MatchResult { EventStatus = MatchStatus.Live } };

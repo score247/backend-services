@@ -49,14 +49,14 @@ namespace Soccer.EventProcessors.Matches
             if (message == null || message.Matches == null || message.Language == null)
             {
                 return;
-            }            
-            
+            }
+
             IEnumerable<Match> filteredMatches = await FilterMajorLeagueAndNotStarted(message);
 
             var currentLiveMatches = (await dynamicRepository
                     .FetchAsync<Match>(new GetLiveMatchesCriteria(message.Language)))
                     .ToList();
-            
+
             var removedMatches = currentLiveMatches.Except(filteredMatches).ToList();
 
             //TODO cannot get latest timeline in live api => separate logic for pre | closed match
@@ -69,6 +69,11 @@ namespace Soccer.EventProcessors.Matches
                 removedMatches.AddRange(currentLiveMatches.Except(currentValidMatches));
                 removedMatches = removedMatches.Distinct().ToList();
             }
+            else
+            {
+                removedMatches.AddRange(currentLiveMatches.Where(m => m.MatchResult.EventStatus.IsClosed()));
+            }
+
 
             var newLiveMatches = filteredMatches.Except(currentLiveMatches).ToList();
 
