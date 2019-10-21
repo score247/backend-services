@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `TeamStatistic` (
  CREATE TABLE `League` (
   `Id` VARCHAR(45) NOT NULL,
   `Name` VARCHAR(255) NULL,
-  `Order` INT NULL,
+  `Order` INT NULL DEFAULT 10000,
   `CategoryId` VARCHAR(45) NULL,
   `Country` VARCHAR(255) NULL,
   `Region` VARCHAR(45) NULL,
