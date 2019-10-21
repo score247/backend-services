@@ -22,7 +22,7 @@ namespace Soccer.EventProcessors.Matches
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
         private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
-        private readonly ILiveMatchFilter liveMatchFilter;
+        private readonly ILiveMatchFilter liveMatchRangeFilter;
         private readonly ILeagueGenerator leagueGenerator;
         private readonly ILogger logger;
 
@@ -37,7 +37,7 @@ namespace Soccer.EventProcessors.Matches
             this.messageBus = messageBus;
             this.dynamicRepository = dynamicRepository;
             this.leagueFilter = leagueFilter;
-            this.liveMatchFilter = liveMatchFilter;
+            this.liveMatchRangeFilter = liveMatchFilter;
             this.leagueGenerator = leagueGenerator;
             this.logger = logger;
         }
@@ -51,53 +51,55 @@ namespace Soccer.EventProcessors.Matches
                 return;
             }
 
-            IEnumerable<Match> filteredMatches = await FilterMajorLeagueAndNotStarted(message);
+            var fetchedLiveMatches = await leagueFilter.Filter(message.Matches);
+            var currentLiveMatches = await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(message.Language));
 
-            var currentLiveMatches = (await dynamicRepository
-                    .FetchAsync<Match>(new GetLiveMatchesCriteria(message.Language)))
-                    .ToList();
+            var removedMatches = GetRemovedMatches(fetchedLiveMatches, currentLiveMatches);
+            var newMatches = GetNewMatches(fetchedLiveMatches, currentLiveMatches);
 
-            var removedMatches = currentLiveMatches.Except(filteredMatches).ToList();
-
-            //TODO cannot get latest timeline in live api => separate logic for pre | closed match
-            var currentValidMatches = liveMatchFilter
-                .RemoveInvalidClosed(currentLiveMatches)
-                .Select(match => leagueGenerator.GenerateInternationalCode(match));
-
-            if (currentValidMatches != null && currentValidMatches.Any())
-            {
-                removedMatches.AddRange(currentLiveMatches.Except(currentValidMatches));
-                removedMatches = removedMatches.Distinct().ToList();
-            }
-            else
-            {
-                removedMatches.AddRange(currentLiveMatches.Where(m => m.MatchResult.EventStatus.IsClosed()));
-            }
-
-
-            var newLiveMatches = filteredMatches.Except(currentLiveMatches).ToList();
-
-            if (removedMatches.Count > 0 || newLiveMatches.Count > 0)
+            if (removedMatches.Count > 0 || newMatches.Count > 0)
             {
                 var tasks = new List<Task>
                 {
-                    InsertOrRemoveLiveMatches(message.Language, newLiveMatches, removedMatches),
-                    PublishLiveMatchUpdatedMessage(message.Language, newLiveMatches, removedMatches)
+                    InsertOrRemoveLiveMatches(message.Language, newMatches, removedMatches),
+                    PublishLiveMatchUpdatedMessage(message.Language, newMatches, removedMatches)
                 };
 
                 await Task.WhenAll(tasks);
             }
         }
 
-        private async Task<IEnumerable<Match>> FilterMajorLeagueAndNotStarted(ILiveMatchFetchedMessage message)
+        private List<Match> GetNewMatches(IEnumerable<Match> fetchedLiveMatches, IEnumerable<Match> currentLiveMatches)
         {
-            var filteredMatches = await leagueFilter.Filter(message.Matches);
-
-            filteredMatches = liveMatchFilter
-                .RemoveInvalidNotStarted(filteredMatches)
+            var inRangeNotStarted = liveMatchRangeFilter
+                .FilterNotStarted(fetchedLiveMatches)
                 .Select(match => leagueGenerator.GenerateInternationalCode(match)).ToList();
 
-            return filteredMatches;
+            return inRangeNotStarted.Except(currentLiveMatches).ToList();
+        }
+
+        private IList<Match> GetRemovedMatches(IEnumerable<Match> fetchedLiveMatches, IEnumerable<Match> currentLiveMatches)
+        {
+            // closed matches were removed from api
+            var removedMatches = currentLiveMatches.Except(fetchedLiveMatches).ToList();
+
+            // closed match still in api but out of range
+            removedMatches.AddRange(GetOutOfRangeClosedMatches(currentLiveMatches));
+
+            return removedMatches.Distinct().ToList();
+        }
+
+        private IList<Match> GetOutOfRangeClosedMatches(IEnumerable<Match> currentLiveMatches)
+        {   
+            var inRangeClosedMatches = liveMatchRangeFilter
+                .FilterClosed(currentLiveMatches)
+                .Select(match => leagueGenerator.GenerateInternationalCode(match));
+
+            var outOfRangeMatches = (inRangeClosedMatches != null && inRangeClosedMatches.Any() 
+                ? currentLiveMatches.Except(inRangeClosedMatches) 
+                : currentLiveMatches.Where(m => m.MatchResult.EventStatus.IsClosed()));
+
+            return outOfRangeMatches.ToList();
         }
 
         private async Task InsertOrRemoveLiveMatches(Language language, IEnumerable<Match> newLiveMatches, IEnumerable<Match> removedMatches)
