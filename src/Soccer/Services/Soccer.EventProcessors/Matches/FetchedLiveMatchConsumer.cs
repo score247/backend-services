@@ -12,7 +12,6 @@ using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Matches.Commands;
 using Soccer.Database.Matches.Criteria;
 using Soccer.EventProcessors._Shared.Filters;
-using Soccer.EventProcessors.Leagues;
 using Soccer.EventProcessors.Matches.Filters;
 
 namespace Soccer.EventProcessors.Matches
@@ -69,8 +68,8 @@ namespace Soccer.EventProcessors.Matches
         private List<Match> GetNewMatches(IEnumerable<Match> fetchedLiveMatches, IEnumerable<Match> currentLiveMatches)
         {
             var inRangeNotStarted = liveMatchRangeFilter
-                .FilterNotStarted(fetchedLiveMatches)
-                .Select(match => leagueGenerator.GenerateInternationalCode(match)).ToList();
+                .FilterNotStarted(fetchedLiveMatches).ToList();
+
             return inRangeNotStarted.Except(currentLiveMatches).ToList();
         }
 
@@ -88,8 +87,7 @@ namespace Soccer.EventProcessors.Matches
         private IList<Match> GetOutOfRangeClosedMatches(IEnumerable<Match> currentLiveMatches)
         {   
             var inRangeClosedMatches = liveMatchRangeFilter
-                .FilterClosed(currentLiveMatches)
-                .Select(match => leagueGenerator.GenerateInternationalCode(match));
+                .FilterClosed(currentLiveMatches);
 
             var outOfRangeMatches = (inRangeClosedMatches != null && inRangeClosedMatches.Any() 
                 ? currentLiveMatches.Except(inRangeClosedMatches) 

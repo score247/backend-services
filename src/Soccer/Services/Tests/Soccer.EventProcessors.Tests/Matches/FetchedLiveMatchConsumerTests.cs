@@ -73,9 +73,6 @@ namespace Soccer.EventProcessors.Tests.Matches
             leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
                 .Returns(new List<Match> { match });
 
-            leagueGenerator.GenerateInternationalCode(Arg.Is<Match>(m => m.Id == "match:not:started"))
-                .Returns(match);
-
             await fetchedLiveMatchConsumer.Consume(context);
 
             await dynamicRepository.Received(1).ExecuteAsync(Arg.Is<InsertOrRemoveLiveMatchesCommand>(
@@ -114,8 +111,6 @@ namespace Soccer.EventProcessors.Tests.Matches
             leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
                 .Returns(matchesFromApi);
 
-            StubLeagueGenerateInternationalCode(matchesFromApi);
-
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>
                 {
@@ -146,8 +141,6 @@ namespace Soccer.EventProcessors.Tests.Matches
 
             leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
                 .Returns(matchesFromApi);
-
-            StubLeagueGenerateInternationalCode(matchesFromApi);
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>
