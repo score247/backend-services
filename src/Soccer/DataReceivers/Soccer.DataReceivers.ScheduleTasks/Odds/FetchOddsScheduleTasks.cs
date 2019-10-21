@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
+    using Hangfire;
     using MassTransit;
     using Soccer.Core.Odds.Messages;
     using Soccer.Core.Odds.Models;
@@ -11,8 +12,10 @@
 
     public interface IFetchOddsScheduleTask
     {
+        [Queue("medium")]
         Task FetchOdds();
 
+        [Queue("medium")]
         Task FetchOddsChangeLogs();
     }
 

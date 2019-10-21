@@ -13,6 +13,7 @@
 
     public interface IFetchTimelineTask
     {
+        [Queue("medium")]
         void FetchTimelines(string matchId, string regionName);
     }
 

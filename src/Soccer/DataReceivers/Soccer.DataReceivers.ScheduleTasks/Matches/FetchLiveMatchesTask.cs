@@ -1,6 +1,7 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     using System.Threading.Tasks;
+    using Hangfire;
     using MassTransit;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Events;
@@ -9,6 +10,7 @@
 
     public interface IFetchLiveMatchesTask
     {
+        [Queue("high")]
         Task FetchLiveMatches();
     }
 

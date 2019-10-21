@@ -13,8 +13,10 @@
 
     public interface IFetchPreMatchesTask
     {
+        [Queue("medium")]
         void FetchPreMatches(int dateSpan);
 
+        [Queue("medium")]
         Task FetchPreMatchesForDate(DateTime date, Language language);
     }
 

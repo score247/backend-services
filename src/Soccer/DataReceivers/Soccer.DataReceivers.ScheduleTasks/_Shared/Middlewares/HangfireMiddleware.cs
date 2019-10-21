@@ -40,7 +40,8 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
                 IgnoreAntiforgeryToken = true
             }).UseHangfireServer(options: new BackgroundJobServerOptions
             {
-                WorkerCount = configuration.GetSection("HangfireWorkers").Get<int>()
+                WorkerCount = configuration.GetSection("HangfireWorkers").Get<int>(),
+                Queues = configuration.GetSection("HangfireQueues").Get<string[]>()
             });
 
             if (!string.IsNullOrWhiteSpace(taskSettings.FetchPreMatchesCron))

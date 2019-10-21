@@ -13,8 +13,10 @@
 
     public interface IFetchPostMatchesTask
     {
+        [Queue("medium")]
         void FetchPostMatches(int dateSpan);
 
+        [Queue("medium")]
         Task FetchPostMatchesForDate(DateTime date, Language language);
     }
 
