@@ -69,25 +69,27 @@ namespace Soccer.EventProcessors.Tests.Matches
         [Fact]
         public async Task Consume_HasNewMatches_ShouldExecuteCommand()
         {
-            var match = new Match { Id = "1", MatchResult = new MatchResult { EventStatus = MatchStatus.Live } };
+            var match = new Match { Id = "match:not:started", MatchResult = new MatchResult { EventStatus = MatchStatus.Live } };
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { match }));
 
             leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
                 .Returns(new List<Match> { match });
 
-            leagueGenerator.GenerateInternationalCode(Arg.Is<Match>(m => m.Id == "1"))
+            leagueGenerator.GenerateInternationalCode(Arg.Is<Match>(m => m.Id == "match:not:started"))
                 .Returns(match);
 
             await fetchedLiveMatchConsumer.Consume(context);
 
-            await dynamicRepository.Received(1).ExecuteAsync(Arg.Is<InsertOrRemoveLiveMatchesCommand>(cmd => !cmd.NewMatches.Equals("[]") && cmd.RemovedMatchIds.Equals("[]")));
+            await dynamicRepository.Received(1).ExecuteAsync(Arg.Is<InsertOrRemoveLiveMatchesCommand>(
+                cmd => cmd.NewMatches.Contains("match:not:started")
+                && cmd.RemovedMatchIds.Equals("[]")));
         }
 
         [Fact]
         public async Task Consume_RemoveMatches_ShouldExecuteCommand()
         {
-            var match = new Match { Id = "1", MatchResult = new MatchResult { EventStatus = MatchStatus.Live } };
+            var match = new Match { Id = "match:closed", MatchResult = new MatchResult { EventStatus = MatchStatus.Live } };
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>()));
 
@@ -95,7 +97,9 @@ namespace Soccer.EventProcessors.Tests.Matches
 
             await fetchedLiveMatchConsumer.Consume(context);
 
-            await dynamicRepository.Received(1).ExecuteAsync(Arg.Is<InsertOrRemoveLiveMatchesCommand>(cmd => !cmd.RemovedMatchIds.Equals("[]") && cmd.NewMatches.Equals("[]")));
+            await dynamicRepository.Received(1).ExecuteAsync(Arg.Is<InsertOrRemoveLiveMatchesCommand>(
+                cmd => cmd.RemovedMatchIds.Contains("match:closed") 
+                        && cmd.NewMatches.Equals("[]")));
         }
 
         [Fact]
