@@ -2,7 +2,7 @@
 
 namespace Soccer.Database.Leagues.Criteria
 {
-    public class GetActiveLeagueCriteria : CriteriaBase
+    public class GetActiveLeaguesCriteria : CriteriaBase
     {
         public override string GetSettingKey()
             => "League_GetActive";

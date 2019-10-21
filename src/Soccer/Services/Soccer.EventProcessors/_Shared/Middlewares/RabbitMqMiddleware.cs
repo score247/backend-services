@@ -10,6 +10,7 @@
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Soccer.Core.Shared.Configurations;
+    using Soccer.EventProcessors.Leagues;
     using Soccer.EventProcessors.Matches;
     using Soccer.EventProcessors.Matches.MatchEvents;
     using Soccer.EventProcessors.Odds;
@@ -41,6 +42,7 @@
                 serviceCollectionConfigurator.AddConsumer<UpdateTeamStatisticConsumer>();
                 serviceCollectionConfigurator.AddConsumer<UpdateMatchCoverageCosumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchedLiveMatchConsumer>();
+                serviceCollectionConfigurator.AddConsumer<FetchLeaguesConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchTimelinesConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchCommentaryConsumer>();
             });
@@ -148,6 +150,14 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<FetchCommentaryConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_Leagues", e =>
+                {
+                    e.PrefetchCount = PrefetchCount;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<FetchLeaguesConsumer>(provider);
                 });
             }));
 

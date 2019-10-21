@@ -65,7 +65,8 @@ CREATE TABLE IF NOT EXISTS `TeamStatistic` (
   `Region` VARCHAR(45) NULL,
   `IsActive` TINYINT NULL DEFAULT '0',
   `CountryCode` VARCHAR(45) NULL,
-  `Language` VARCHAR(45) NOT NULL DEFAULT 'en-US',
+  `IsMajor` TINYINT NULL DEFAULT '0',
+  `IsInternational` TINYINT NULL DEFAULT '0',
   PRIMARY KEY (`Id`, `Language`));
  
 CREATE TABLE IF NOT EXISTS `Match_Archived` (

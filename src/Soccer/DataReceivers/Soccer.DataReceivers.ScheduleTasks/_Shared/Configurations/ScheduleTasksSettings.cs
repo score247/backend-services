@@ -12,7 +12,8 @@
             string fetchLiveMatchCron = "*/1 * * * *",
             string fetchLiveMatchesTimelineCron = "*/5 * * * *",
             string fetchPostMatchesCron = " 0 0/6 * * *",
-            string fetchPreMatchesCron = " 0 0/6 * * *")
+            string fetchPreMatchesCron = " 0 0/6 * * *",
+            string fetchLeaguesCron = "0 0 12 1 * ?")
         {
             QueueBatchSize = queueBatchSize;
             FetchMatchResultDateSpan = fetchMatchResultDateSpan;
@@ -24,6 +25,7 @@
             FetchLiveMatchesTimelineCron = fetchLiveMatchesTimelineCron;
             FetchPostMatchesCron = fetchPostMatchesCron;
             FetchPreMatchesCron = fetchPreMatchesCron;
+            FetchLeaguesCron = fetchLeaguesCron;
         }
 
         public int QueueBatchSize { get; set; }
@@ -45,5 +47,7 @@
         public string FetchPostMatchesCron { get; set; }
 
         public string FetchPreMatchesCron { get; set; }
+
+        public string FetchLeaguesCron { get; set; }
     }
 }

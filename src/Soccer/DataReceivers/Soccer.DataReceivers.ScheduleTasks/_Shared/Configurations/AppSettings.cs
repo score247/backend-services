@@ -1,9 +1,9 @@
-﻿namespace Soccer.DataReceivers.ScheduleTasks.Shared.Configurations
-{
-    using System;
-    using System.ComponentModel;
-    using Microsoft.Extensions.Configuration;
+﻿using System;
+using System.ComponentModel;
+using Microsoft.Extensions.Configuration;
 
+namespace Soccer.DataReceivers.ScheduleTasks.Shared.Configurations
+{
     public interface IAppSettings
     {
         ScheduleTasksSettings ScheduleTasksSettings { get; set; }

@@ -23,7 +23,6 @@ namespace Soccer.EventProcessors.Matches
         private readonly IBus messageBus;
         private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
         private readonly ILiveMatchFilter liveMatchRangeFilter;
-        private readonly ILeagueGenerator leagueGenerator;
         private readonly ILogger logger;
 
         public FetchedLiveMatchConsumer(
@@ -31,14 +30,12 @@ namespace Soccer.EventProcessors.Matches
             IDynamicRepository dynamicRepository,
             IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter,
             ILiveMatchFilter liveMatchFilter,
-            ILeagueGenerator leagueGenerator,
             ILogger logger)
         {
             this.messageBus = messageBus;
             this.dynamicRepository = dynamicRepository;
             this.leagueFilter = leagueFilter;
             this.liveMatchRangeFilter = liveMatchFilter;
-            this.leagueGenerator = leagueGenerator;
             this.logger = logger;
         }
 
@@ -74,7 +71,6 @@ namespace Soccer.EventProcessors.Matches
             var inRangeNotStarted = liveMatchRangeFilter
                 .FilterNotStarted(fetchedLiveMatches)
                 .Select(match => leagueGenerator.GenerateInternationalCode(match)).ToList();
-
             return inRangeNotStarted.Except(currentLiveMatches).ToList();
         }
 

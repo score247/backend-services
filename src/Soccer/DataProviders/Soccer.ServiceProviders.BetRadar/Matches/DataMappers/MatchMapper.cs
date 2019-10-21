@@ -22,7 +22,7 @@
                 Id = sportEvent.id,
                 EventDate = sportEvent.scheduled,
                 Teams = TeamMapper.MapTeams(sportEvent),
-                League = LeagueMapper.MapLeague(sportEvent.tournament),
+                League = LeagueMapper.MapLeague(sportEvent.tournament, region),
                 LeagueRound = LeagueMapper.MapLeagueRound(sportEvent.tournament_round),
                 MatchResult = MapMatchResult(sportEvent.status, sportEventStatus),
                 Attendance = sportEventConditions == null ? 0 : sportEventConditions.attendance,

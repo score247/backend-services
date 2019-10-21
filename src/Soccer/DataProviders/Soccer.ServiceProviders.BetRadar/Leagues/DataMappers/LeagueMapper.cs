@@ -3,11 +3,11 @@
     using Score247.Shared.Enumerations;
     using Soccer.Core.Leagues.Models;
     using Soccer.Core.Shared.Enumerations;
-    using Soccer.DataProviders.SportRadar.Leagues.Dtos;
+    using Dtos;
 
     public static class LeagueMapper
     {
-        public static League MapLeague(TournamentDto tournament)
+        public static League MapLeague(TournamentDto tournament, string region)
         {
             if (tournament == null)
             {
@@ -22,8 +22,9 @@
                 0,
                 tournament.category?.id,
                 tournament.category?.name,
-                tournament.category?.country_code,
-                isInternationalLeague);
+                tournament.category?.country_code ?? "",
+                isInternationalLeague,
+                region);
         }
 
         public static LeagueRound MapLeagueRound(TournamentRoundDto tournamentRound)

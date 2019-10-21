@@ -33,7 +33,7 @@ namespace Soccer.EventProcessors.Leagues
 
             return data
                 .Where(match => majorLeagues?.Any(league => league.Id == match.League.Id) == true)
-                .Select(m => SetLeagueOrder(m, majorLeagues));
+                .Select(m => SetLeague(m, majorLeagues));
         }
 
         public async Task<bool> Filter(MatchEvent data)
@@ -56,10 +56,13 @@ namespace Soccer.EventProcessors.Leagues
             return await IsBelongMajorLeagues(data.League.Id);
         }
 
-        private static Match SetLeagueOrder(Match match, IEnumerable<League> majorLeagues)
+        private static Match SetLeague(Match match, IEnumerable<League> majorLeagues)
         {
             var matchLeague = majorLeagues.FirstOrDefault(l => l.Id == match.League.Id);
-            match.League.SetOrder(matchLeague?.Order ?? 0);
+            if (matchLeague != null)
+            {
+                match.League = matchLeague;
+            }
 
             return match;
         }
@@ -75,11 +78,23 @@ namespace Soccer.EventProcessors.Leagues
         {
             return await cacheManager.GetOrSetAsync(
                 MajorLeaguesCacheKey,
-                async () =>
-                {
-                    return await dynamicRepository.FetchAsync<League>(new GetActiveLeagueCriteria());
-                },
+                async () => await dynamicRepository.FetchAsync<League>(new GetActiveLeaguesCriteria()),
                 new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
+        }
+
+        public async Task<IEnumerable<Match>> FilterAsync(IEnumerable<Match> data)
+        {
+            var majorLeagues = await GetMajorLeagues();
+
+            return data
+                .Where(match => majorLeagues?.Any(league => league.Id == match.League.Id) == true)
+                .Select(m => SetLeague(m, majorLeagues));
+        }
+
+        public Task<bool> FilterAsync(Match data)
+        {
+            // TODO: Implement later
+            return Task.FromResult(true);
         }
     }
 }

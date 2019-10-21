@@ -15,23 +15,19 @@
     {
         private readonly IDynamicRepository dynamicRepository;
         private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
-        private readonly ILeagueGenerator leagueGenerator;
 
         public FetchPostMatchesConsumer(
             IDynamicRepository dynamicRepository,
-            IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter,
-            ILeagueGenerator leagueGenerator)
+            IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter)
         {
             this.dynamicRepository = dynamicRepository;
             this.leagueFilter = leagueFilter;
-            this.leagueGenerator = leagueGenerator;
         }
 
         public async Task Consume(ConsumeContext<IPostMatchFetchedMessage> context)
         {
             var message = context.Message;
             var filteredMatches = (await leagueFilter.Filter(message.Matches))
-                                    .Select(match => leagueGenerator.GenerateInternationalCode(match))
                                     .ToList();
 
             var command = new InsertOrUpdatePostMatchesCommand(filteredMatches, message.Language);

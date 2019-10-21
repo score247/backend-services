@@ -22,8 +22,7 @@
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"international-leagues.json", optional: true, reloadOnChange: true);
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
 
             Configuration = builder.Build();
         }
@@ -42,7 +41,6 @@
             services.AddHealthCheck();
             services.AddDatabase();
 
-            RegisterGenerators(services);
             RegisterFilters(services);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -77,11 +75,6 @@
             services.AddSingleton<IAsyncFilter<MatchEvent, bool>, LeagueFilter>();
             services.AddSingleton<IAsyncFilter<Match, bool>, LeagueFilter>();
             services.AddSingleton<ILiveMatchFilter, LiveMatchFilter>();
-        }
-
-        private static void RegisterGenerators(IServiceCollection services)
-        {
-            services.AddSingleton<ILeagueGenerator, LeagueGenerator>();
         }
     }
 }

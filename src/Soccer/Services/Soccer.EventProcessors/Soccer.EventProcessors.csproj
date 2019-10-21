@@ -19,7 +19,6 @@
     <None Remove="appsettings.local-dev1.json" />
     <None Remove="appsettings.local-dev2.json" />
     <None Remove="appsettings.ricky.json" />
-    <None Remove="international-leagues.json" />
     <None Remove="_Shared\App_Data\LOCAL\SpNames.xml" />
   </ItemGroup>
 
@@ -83,9 +82,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="appsettings.local-test.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="international-leagues.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

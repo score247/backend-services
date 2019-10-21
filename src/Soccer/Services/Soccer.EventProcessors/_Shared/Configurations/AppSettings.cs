@@ -8,13 +8,6 @@
     public interface IAppSettings
     {
         int NumOfDaysToShowOddsBeforeKickoffDate { get; }
-        IEnumerable<InternationalLeague> InternationalLeagues { get; }
-    }
-
-    public class InternationalLeague
-    {
-        public string Id { get; set; }
-        public string CountryCode { get; set; }
     }
 
     public class AppSettings : IAppSettings
@@ -27,15 +20,9 @@
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
             NumOfDaysToShowOddsBeforeKickoffDate = GetValue<int>(nameof(NumOfDaysToShowOddsBeforeKickoffDate));
-
-            var internationalLeagues = new List<InternationalLeague>();
-            configuration.Bind("InternationalLeagues", internationalLeagues);
-            InternationalLeagues = internationalLeagues;
         }
 
         public int NumOfDaysToShowOddsBeforeKickoffDate { get; }
-
-        public IEnumerable<InternationalLeague> InternationalLeagues { get; }
 
         public T GetValue<T>(string key)
         {

@@ -2,8 +2,10 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
+using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.Matches.Services;
 using Soccer.DataProviders.Odds;
+using Soccer.DataProviders.SportRadar.Leagues.Services;
 using Soccer.DataProviders.SportRadar.Matches.Services;
 using Soccer.DataProviders.SportRadar.Odds;
 using Soccer.DataProviders.SportRadar.Shared.Configurations;
@@ -29,6 +31,9 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
 
             services.AddSingleton(RestService.For<ITimelineApi>(sportRadarDataProviderSettings.ServiceUrl));
             services.AddSingleton<ITimelineService, TimelineService>();
+
+            services.AddSingleton(RestService.For<ILeagueApi>(sportRadarDataProviderSettings.DefaultServiceUrl));
+            services.AddSingleton<ILeagueService, LeagueService>();
         }
     }
 }

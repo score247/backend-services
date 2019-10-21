@@ -13,7 +13,6 @@ using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Matches.Commands;
 using Soccer.Database.Matches.Criteria;
 using Soccer.EventProcessors._Shared.Filters;
-using Soccer.EventProcessors.Leagues;
 using Soccer.EventProcessors.Matches;
 using Soccer.EventProcessors.Matches.Filters;
 using Xunit;
@@ -27,7 +26,6 @@ namespace Soccer.EventProcessors.Tests.Matches
         private readonly IBus messageBus;
         private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
         private readonly ILiveMatchFilter liveMatchFilter;
-        private readonly ILeagueGenerator leagueGenerator;
         private readonly ILogger logger;
 
         private readonly FetchedLiveMatchConsumer fetchedLiveMatchConsumer;
@@ -38,13 +36,12 @@ namespace Soccer.EventProcessors.Tests.Matches
             dynamicRepository = Substitute.For<IDynamicRepository>();
             messageBus = Substitute.For<IBus>();
             leagueFilter = Substitute.For<IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>>>();
-            leagueGenerator = Substitute.For<ILeagueGenerator>();
             logger = Substitute.For<ILogger>();
             context = Substitute.For<ConsumeContext<ILiveMatchFetchedMessage>>();
 
             liveMatchFilter = new LiveMatchFilter(new LiveMatchRangeValidator());
 
-            fetchedLiveMatchConsumer = new FetchedLiveMatchConsumer(messageBus, dynamicRepository, leagueFilter, liveMatchFilter, leagueGenerator, logger);
+            fetchedLiveMatchConsumer = new FetchedLiveMatchConsumer(messageBus, dynamicRepository, leagueFilter, liveMatchFilter, logger);
         }
 
         [Fact]
@@ -171,7 +168,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         [Fact]
         public async Task Consume_ClosedMatchOutOfRange_ShouldExecuteCommand()
         {
-            // Arrange          
+            // Arrange
             var closedMatch = StubClosedMatch("match:closed", endedTime: null);
             var matchesFromApi = new List<Match> { closedMatch };
 
@@ -181,11 +178,9 @@ namespace Soccer.EventProcessors.Tests.Matches
             leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
                 .Returns(matchesFromApi);
 
-            StubLeagueGenerateInternationalCode(matchesFromApi);
-
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>
-                {                   
+                {
                     StubClosedMatch("match:closed", endedTime: DateTimeOffset.Now.AddMinutes(-11))
                 });
 
@@ -207,9 +202,6 @@ namespace Soccer.EventProcessors.Tests.Matches
 
             leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
                 .Returns(new List<Match> { newMatch });
-
-            leagueGenerator.GenerateInternationalCode(Arg.Is<Match>(m => m.Id == "1"))
-                .Returns(newMatch);
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match> { new Match { Id = "1", MatchResult = new MatchResult { EventStatus = MatchStatus.Live } } });
@@ -235,18 +227,6 @@ namespace Soccer.EventProcessors.Tests.Matches
             await logger.Received(1).ErrorAsync(Arg.Any<string>(), Arg.Any<Exception>());
         }
 
-        private void StubLeagueGenerateInternationalCode(IList<Match> matches)
-        {
-            foreach (var match in matches)
-            {
-                StubInternationalCode(match);
-            }
-        }
-
-        private void StubInternationalCode(Match newMatch)
-        => leagueGenerator.GenerateInternationalCode(Arg.Is<Match>(m => m.Id == newMatch.Id))
-                           .Returns(newMatch);
-
         private static Match StubNotStartedMatch(string id, DateTimeOffset eventDate)
         => new Match
         {
@@ -268,7 +248,6 @@ namespace Soccer.EventProcessors.Tests.Matches
             }
         };
 
-
         private static Match StubClosedMatch(string id, DateTimeOffset? endedTime)
            => new Match
            {
@@ -283,7 +262,7 @@ namespace Soccer.EventProcessors.Tests.Matches
                    : new TimelineEvent
                    {
                        Type = EventType.MatchEnded,
-                       Time = (DateTimeOffset) endedTime
+                       Time = (DateTimeOffset)endedTime
                    }
            };
     }

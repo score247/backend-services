@@ -26,13 +26,15 @@ namespace Soccer.Core.Leagues.Models
             string categoryId,
             string countryName,
             string countryCode,
-            bool isInternational) : this(id, name)
+            bool isInternational,
+            string region) : this(id, name)
         {
             Order = order;
             CategoryId = categoryId;
             CountryName = countryName;
             CountryCode = countryCode;
             IsInternational = isInternational;
+            Region = region;
         }
 
         [Key(2)]
@@ -49,6 +51,12 @@ namespace Soccer.Core.Leagues.Models
 
         [Key(6)]
         public bool IsInternational { get; private set; }
+
+        [IgnoreMember]
+        public int IsActive { get; private set; }
+
+        [IgnoreMember]
+        public string Region { get; private set; }
 
         public void SetInternationalLeagueCode(string countryCode)
         {

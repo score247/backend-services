@@ -5,6 +5,7 @@ using Hangfire.MySql.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Soccer.DataReceivers.ScheduleTasks.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Matches;
 using Soccer.DataReceivers.ScheduleTasks.Odds;
 using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
@@ -25,6 +26,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             services.AddScoped<IFetchTimelineTask, FetchTimelineTask>();
             services.AddScoped<IFetchLiveMatchesTimelineTask, FetchLiveMatchesTimelineTask>();
             services.AddScoped<IFetchPreMatchesTimelineTask, FetchPreMatchesTimelineTask>();
+            services.AddScoped<IFetchLeaguesTask, FetchLeaguesTask>();
         }
 
         public static void UseHangfire(this IApplicationBuilder app, IConfiguration configuration)
@@ -87,6 +89,14 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
                 nameof(IFetchOddsScheduleTask.FetchOddsChangeLogs),
                 job => job.FetchOddsChangeLogs(),
                 taskSettings.FetchOddsChangeJobCron);
+            }
+
+            if (!string.IsNullOrWhiteSpace(taskSettings.FetchLeaguesCron))
+            {
+                RecurringJob.AddOrUpdate<IFetchLeaguesTask>(
+                nameof(IFetchLeaguesTask.FetchLeagues),
+                job => job.FetchLeagues(),
+                taskSettings.FetchLeaguesCron);
             }
         }
     }
