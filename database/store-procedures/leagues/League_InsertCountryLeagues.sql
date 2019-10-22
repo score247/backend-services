@@ -1,4 +1,6 @@
-CREATE DEFINER=`user`@`%` PROCEDURE `League_InsertCountryLeagues`(IN sportId INT, IN leagues MEDIUMTEXT, IN language TEXT)
+DROP procedure IF EXISTS `League_InsertCountryLeagues`;
+
+CREATE PROCEDURE `League_InsertCountryLeagues`(IN sportId INT, IN leagues MEDIUMTEXT, IN language TEXT)
 BEGIN
 	DECLARE i INT DEFAULT 0;                                                                                                                                                    
     DECLARE e INT DEFAULT JSON_LENGTH(leagues);
