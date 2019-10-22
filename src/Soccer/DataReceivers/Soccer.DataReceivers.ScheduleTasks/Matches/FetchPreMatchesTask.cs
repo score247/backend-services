@@ -42,12 +42,11 @@
             {
                 for (var date = from; date.Date <= to; date = date.AddDays(1))
                 {
-                    BackgroundJob.Enqueue(() => FetchPreMatchesForDate(date, language));
+                    BackgroundJob.Enqueue<IFetchPreMatchesTask>(t => t.FetchPreMatchesForDate(date, language));
                 }
             }
         }
-
-        [Queue("medium")]
+        
         public async Task FetchPreMatchesForDate(DateTime date, Language language)
         {
             int batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;

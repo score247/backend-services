@@ -42,11 +42,11 @@
             {
                 for (var date = from; date.Date <= to; date = date.AddDays(1))
                 {
-                    BackgroundJob.Enqueue(() => FetchPostMatchesForDate(date, language));
+                    BackgroundJob.Enqueue<IFetchPostMatchesTask>(t => t.FetchPostMatchesForDate(date, language));
                 }
             }
         }
-
+      
         public async Task FetchPostMatchesForDate(DateTime date, Language language)
         {
             int batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
