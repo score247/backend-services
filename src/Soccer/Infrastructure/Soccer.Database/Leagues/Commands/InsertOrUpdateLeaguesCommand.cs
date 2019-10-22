@@ -4,12 +4,11 @@ using Soccer.Core.Leagues.Models;
 
 namespace Soccer.Database.Leagues.Commands
 {
-    public class InsertOrUpdateLeaguesCommand : BaseCommand
+    public abstract class InsertOrUpdateLeaguesCommand : BaseCommand
     {
-        public InsertOrUpdateLeaguesCommand(
+        protected InsertOrUpdateLeaguesCommand(
                IEnumerable<League> leagues,
                string language)
-
         {
             SportId = Sport.Soccer.Value;
             Leagues = ToJsonString(leagues);
@@ -20,8 +19,6 @@ namespace Soccer.Database.Leagues.Commands
         public string Leagues { get; }
 
         public string Language { get; }
-
-        public override string GetSettingKey() => "League_InsertLeagues";
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(Leagues) && !string.IsNullOrWhiteSpace(Language);
     }
