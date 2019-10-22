@@ -6,10 +6,11 @@
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.Models;
     using Soccer.Core.Timeline.Models;
+    using Soccer.DataProviders.SportRadar.Matches.Dtos;
 
     public static class TimelineMapper
     {
-        public static TimelineEvent MapTimeline(Dtos.TimelineDto timelineDto)
+        public static TimelineEvent MapTimeline(TimelineDto timelineDto)
         {
             var timeline = new TimelineEvent();
 
@@ -44,15 +45,16 @@
 
                 timeline.GoalScorer = GetGoalScorer(timelineDto);
                 timeline.Assist = GetGoalAssist(timelineDto);
-                timeline.Player = GetPlayer(timelineDto);
+                timeline.Player = GetPlayer(timelineDto.player);
 
+                SetSubsitutionPlayers(timelineDto, timeline);
                 SetPenaltyInfo(timelineDto, timeline);
             }
 
             return timeline;
         }
 
-        private static GoalScorer GetGoalScorer(Dtos.TimelineDto timelineDto)
+        private static GoalScorer GetGoalScorer(TimelineDto timelineDto)
             => timelineDto.goal_scorer == null
                                 ? null
                                 : new GoalScorer
@@ -62,17 +64,17 @@
                                     Method = timelineDto.goal_scorer.method
                                 };
 
-        private static Player GetGoalAssist(Dtos.TimelineDto timelineDto)
+        private static Player GetGoalAssist(TimelineDto timelineDto)
             => timelineDto.assist == null
                     ? null
                     : new Player { Name = timelineDto.assist.name, Id = timelineDto.assist.id };
 
-        private static Player GetPlayer(Dtos.TimelineDto timelineDto)
-            => timelineDto.player == null
+        private static Player GetPlayer(PlayerDto playerDto)
+            => playerDto == null
                     ? null
-                    : new Player { Name = timelineDto.player.name, Id = timelineDto.player.id };
+                    : new Player { Name = playerDto.name, Id = playerDto.id };
 
-        public static TimelineCommentary MapTimelineCommentary(Dtos.TimelineDto timelineDto)
+        public static TimelineCommentary MapTimelineCommentary(TimelineDto timelineDto)
             => timelineDto.commentaries == null
                     ? null
                     : new TimelineCommentary(
@@ -84,13 +86,13 @@
                              ? 0
                              : int.Parse(matchClock.Split(':')[0]);
 
-        private static void SetPenaltyInfo(Dtos.TimelineDto timelineDto, TimelineEvent timeline)
+        private static void SetPenaltyInfo(TimelineDto timelineDto, TimelineEvent timeline)
         {
             if (timelineDto.period_type == PeriodType.Penalties.DisplayName)
             {
                 var isScored = timelineDto.status == "scored";
 
-                var player = GetPlayer(timelineDto);
+                var player = GetPlayer(timelineDto.player);
 
                 if (timelineDto.team == "home")
                 {
@@ -103,6 +105,15 @@
                     timeline.AwayShootoutPlayer = player;
                 }
                 timeline.PenaltyStatus = timelineDto.status;
+            }
+        }
+
+        private static void SetSubsitutionPlayers(TimelineDto timelineDto, TimelineEvent timeline) 
+        {
+            if (timeline.Type == EventType.Substitution)
+            {
+                timeline.PlayerIn = GetPlayer(timelineDto.player_in);
+                timeline.PlayerOut = GetPlayer(timelineDto.player_out);
             }
         }
     }

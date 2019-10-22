@@ -76,12 +76,10 @@
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public IEnumerable<Commentary> Commentaries { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        [IgnoreMember]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]        
         public Player PlayerOut { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        [IgnoreMember]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]        
         public Player PlayerIn { get; set; }
 
         public void UpdateScore(int homeScore, int awayScore)
