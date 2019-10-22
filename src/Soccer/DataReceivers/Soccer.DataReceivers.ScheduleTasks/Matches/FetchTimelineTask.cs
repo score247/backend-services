@@ -15,6 +15,9 @@
     {
         [Queue("medium")]
         void FetchTimelines(string matchId, string regionName);
+
+        [Queue("medium")]
+        Task FetchTimelines(string matchId, string region, Language language);
     }
 
     public class FetchTimelineTask : IFetchTimelineTask
@@ -34,7 +37,7 @@
         {
             foreach (var language in Enumeration.GetAll<Language>())
             {
-                BackgroundJob.Enqueue(() => FetchTimelines(matchId, regionName, language));
+                BackgroundJob.Enqueue<IFetchTimelineTask>(t => t.FetchTimelines(matchId, regionName, language));
             }
         }
 

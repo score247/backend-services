@@ -26,7 +26,7 @@
             var matches = await matchService.GetLiveMatches(Language.en_US);
 
             foreach (var match in matches)
-            {
+            {   
                 BackgroundJob.Enqueue<IFetchTimelineTask>(t => t.FetchTimelines(match.Id, match.Region));
             }
         }
