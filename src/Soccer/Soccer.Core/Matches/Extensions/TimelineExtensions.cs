@@ -19,7 +19,8 @@
                 EventType.PenaltyShootout.Value,
                 EventType.MatchEnded.Value,
                 EventType.InjuryTimeShown.Value,
-                EventType.PenaltyMissed.Value
+                EventType.PenaltyMissed.Value,
+                EventType.Substitution.Value
            };
 
         public static List<byte> ReprocessScoreEventTypes { get; }
