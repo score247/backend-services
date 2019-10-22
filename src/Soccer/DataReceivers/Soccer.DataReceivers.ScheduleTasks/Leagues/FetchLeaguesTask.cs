@@ -14,6 +14,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
     {
         [Queue("medium")]
         void FetchLeagues();
+
+        [Queue("medium")]
+        Task FetchLeaguesForLanguage(Language language);
     }
 
     public class FetchLeaguesTask : IFetchLeaguesTask
@@ -33,7 +36,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
         {
             foreach (var language in Enumeration.GetAll<Language>())
             {
-                BackgroundJob.Enqueue(() => FetchLeaguesForLanguage(language));
+                BackgroundJob.Enqueue<IFetchLeaguesTask>(t => t.FetchLeaguesForLanguage(language));
             }
         }
 
