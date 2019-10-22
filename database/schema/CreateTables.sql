@@ -113,6 +113,24 @@ CREATE TABLE `Commentary` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `Lineups` (
+    `MatchId` VARCHAR(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `Value` JSON NOT NULL,
+    `Language` varchar(10) NOT NULL,
+    `CreatedTime` TIMESTAMP NOT NULL,
+    `ModifiedTime` TIMESTAMP NOT NULL,
+    PRIMARY KEY (`MatchId`, `Language`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `Lineups_Archived` (
+    `MatchId` VARCHAR(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `Value` JSON NOT NULL,
+    `Language` varchar(10) NOT NULL,
+    `CreatedTime` TIMESTAMP NOT NULL,
+    `ModifiedTime` TIMESTAMP NOT NULL,
+    PRIMARY KEY (`MatchId`, `Language`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 

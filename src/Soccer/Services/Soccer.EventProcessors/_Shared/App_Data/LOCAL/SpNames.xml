@@ -10,6 +10,7 @@
     <Setting Key="Match_InsertOrUpdatePostMatches" SpName="Match_InsertOrUpdatePostMatches" DbName="DefaultConnection" />
     <Setting Key="Match_UpdateCoverage" SpName="Match_UpdateCoverage" DbName="DefaultConnection" />
     <Setting Key="Match_InsertCommentary" SpName="Match_InsertCommentary" DbName="DefaultConnection" />
+    <Setting Key="Match_InsertOrUpdateLineups" SpName="Match_InsertOrUpdateLineups" DbName="DefaultConnection" />
   </Function>
   <Function Name="LiveMatch">
     <Setting Key="LiveMatch_RemoveById" SpName="LiveMatch_RemoveById" DbName="DefaultConnection" />

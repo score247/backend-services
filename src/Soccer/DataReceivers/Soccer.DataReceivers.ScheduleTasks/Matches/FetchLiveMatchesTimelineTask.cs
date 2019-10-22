@@ -14,11 +14,14 @@
     public class FetchLiveMatchesTimelineTask : IFetchLiveMatchesTimelineTask
     {
         private readonly IMatchService matchService;
+        private readonly IFetchMatchLineupsTask fetchMatchLineupsTask;
 
         public FetchLiveMatchesTimelineTask(
-            IMatchService matchService)
+            IMatchService matchService,
+            IFetchMatchLineupsTask fetchMatchLineupsTask)
         {
             this.matchService = matchService;
+            this.fetchMatchLineupsTask = fetchMatchLineupsTask;
         }
 
         public async Task FetchLiveMatchesTimeline()
@@ -28,6 +31,8 @@
             foreach (var match in matches)
             {   
                 BackgroundJob.Enqueue<IFetchTimelineTask>(t => t.FetchTimelines(match.Id, match.Region));
+
+                await fetchMatchLineupsTask.FetchMatchLineups(match.Id, match.Region);
             }
         }
     }

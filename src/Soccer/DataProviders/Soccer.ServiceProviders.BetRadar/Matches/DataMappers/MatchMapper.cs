@@ -43,6 +43,24 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
             return match;
         }
 
+        public static Match MapMatch(
+            SportEventDto sportEvent,
+            string region)
+        {
+            var match = new Match
+            {
+                Id = sportEvent.id,
+                EventDate = sportEvent.scheduled,
+                Teams = TeamMapper.MapTeams(sportEvent),
+                League = LeagueMapper.MapLeague(sportEvent.tournament, region),
+                LeagueRound = LeagueMapper.MapLeagueRound(sportEvent.tournament_round),
+                Region = region,
+                Venue = MapVenue(sportEvent.venue)
+            };
+
+            return match;
+        }
+
         public static MatchResult MapMatchResult(string status, SportEventStatusDto sportEventStatus = null)
         {
             var matchResult = new MatchResult(

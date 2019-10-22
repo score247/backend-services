@@ -29,6 +29,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             services.AddScoped<IFetchPreMatchesTimelineTask, FetchPreMatchesTimelineTask>();
             services.AddScoped<IFetchLeaguesTask, FetchLeaguesTask>();
             services.AddScoped<IFetchTeamHeadToHeadTask, FetchTeamHeadToHeadTask>();
+            services.AddScoped<IFetchMatchLineupsTask, FetchMatchLineupsTask>();
         }
 
         public static void UseHangfire(this IApplicationBuilder app, IConfiguration configuration)

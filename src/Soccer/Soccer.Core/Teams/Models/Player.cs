@@ -23,13 +23,13 @@ namespace Soccer.Core.Teams.Models
         }
 
         [Key(2)]
-        public string Type { get; }
+        public PlayerType Type { get; set; }
 
         [Key(3)]
         public int JerseyNumber { get; }
 
         [Key(4)]
-        public string Position { get; }
+        public Position Position { get; set; }
 
         [Key(5)]
         public int Order { get; }

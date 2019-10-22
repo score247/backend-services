@@ -46,6 +46,7 @@
                 serviceCollectionConfigurator.AddConsumer<FetchTimelinesConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchCommentaryConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchHeadToHeadConsumer>();
+                serviceCollectionConfigurator.AddConsumer<FetchMatchLineupsConsumer>();
             });
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -168,6 +169,14 @@
 
                     e.Consumer<FetchHeadToHeadConsumer>(provider);
                 });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchLineups", e =>
+                {
+                    e.PrefetchCount = PrefetchCount;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<FetchMatchLineupsConsumer>(provider);
+                });
             }));
 
             services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
@@ -184,8 +193,7 @@
         }
 
         private static Action<IRetryConfigurator> RetryAndLogError(IServiceCollection services)
-        {
-            return x =>
+            => x =>
             {
                 x.Interval(1, 100);
                 x.Handle<Exception>((ex) =>
@@ -196,6 +204,5 @@
                     return true;
                 });
             };
-        }
     }
 }

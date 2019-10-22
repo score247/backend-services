@@ -55,5 +55,10 @@ namespace Soccer.API.Matches
         [Route("{id}/statistic")]
         public async Task<MatchStatistic> GetMatchStatistic(string id)
            => await mediator.Send(new MatchStatisticRequest(id));
+
+        [HttpGet]
+        [Route("{id}/lineups")]
+        public async Task<MatchLineups> GetMatchLineups(string id, string language = "en-US")
+           => await mediator.Send(new MatchLineupsRequest(id, language));
     }
 }

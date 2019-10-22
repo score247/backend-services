@@ -25,6 +25,9 @@
 
         [Get("/soccer-{accessLevel}{version}/{region}/{language}/schedules/live/results.json?api_key={apiKey}")]
         Task<Dtos.MatchResultDto> GetLiveResult(string accessLevel, string version, string region, string language, string apiKey);
+
+        [Get("/soccer-{accessLevel}{version}/{region}/{language}/matches/{matchId}/lineups.json?api_key={apiKey}")]
+        Task<Dtos.MatchLineupsDto> GetLineups(string accessLevel, string version, string matchId, string region, string language, string apiKey);
     }
 
     public class MatchService : IMatchService
@@ -134,6 +137,27 @@
                 var message = $"Response: {content} \r\nRequest URL: {apiException.RequestMessage.RequestUri}";
                 await logger.ErrorAsync(message, ex);
             }
+        }
+
+        public async Task<Match> GetLineups(string matchId, string region, Language language)
+        {
+            try
+            {
+                var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == region).Key;
+                var matchLineUp = await matchApi.GetLineups(soccerSettings.AccessLevel, soccerSettings.Version, matchId, region, language.ToSportRadarFormat(), apiKey);
+
+                if(matchLineUp?.sport_event != null
+                    && matchLineUp?.lineups != null)
+                {
+                    return LineupsMapper.MapLineups(matchLineUp, region);
+                }
+            }
+            catch(Exception ex)
+            {
+                await logger.ErrorAsync(ex.Message, ex);
+            }
+
+            return new Match();
         }
     }
 }

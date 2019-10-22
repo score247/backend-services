@@ -6,6 +6,7 @@
     <Setting Key="LiveMatch_GetBySportId" SpName="LiveMatch_GetBySportId" DbName="DefaultConnection" />
     <Setting Key="Match_GetCommentaries" SpName="Match_GetCommentaries" DbName="DefaultConnection" />
     <Setting Key="LiveMatch_UpdateTeamRedCards" SpName="LiveMatch_UpdateTeamRedCards" DbName="DefaultConnection" />
+    <Setting Key="Match_GetLineups" SpName="Match_GetLineups" DbName="DefaultConnection" />
   </Function>
   <Function Name="Odds">
     <Setting Key="Odds_GetOdds" SpName="Odds_GetOdds" DbName="DefaultConnection" />

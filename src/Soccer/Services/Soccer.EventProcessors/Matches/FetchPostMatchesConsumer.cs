@@ -9,7 +9,6 @@
     using Soccer.Core.Matches.Models;
     using Soccer.Database.Matches.Commands;
     using Soccer.EventProcessors._Shared.Filters;
-    using Soccer.EventProcessors.Leagues;
 
     public class FetchPostMatchesConsumer : IConsumer<IPostMatchFetchedMessage>
     {

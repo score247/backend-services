@@ -29,16 +29,18 @@
         Task<IEnumerable<MatchCommentary>> GetMatchCommentary(string id, Language language);
 
         Task<MatchStatistic> GetMatchStatistic(string id);
+
+        Task<Match> GetMatchLineups(string id, Language language);
     }
 
     public class MatchQueryService : IMatchQueryService
     {
-        private const int StatisticCacheInMinutes = 3;
-        private const int CommentaryCacheInMinutes = 3;
+        private const int MatchDataCacheInMinutes = 3;
         private const string MatchStatisticCacheKey = "MatchQuery_MatchStatisticCacheKey";
         private const string MatchInfoCacheKey = "MatchQuery_MatchInfoCacheKey";
         private const string MatchListCacheKey = "MatchQuery_MatchListCacheKey";
         private const string MatchCommentaryCacheKey = "MatchQuery_MatchCommentaryCacheKey";
+        private const string MatchLineupCacheKey = "MatchQuery_MatchLineupCacheKey";
         private const string FormatDate = "yyyyMMdd-hhmmss";
         private readonly IDynamicRepository dynamicRepository;
         private readonly ICacheManager cacheManager;
@@ -102,16 +104,37 @@
             var timelineEvents = await cacheManager.GetOrSetAsync(
                 $"{MatchCommentaryCacheKey}_{id}",
                 async () => await dynamicRepository.FetchAsync<TimelineEvent>(new GetCommentaryCriteria(id, language)),
-                new CacheItemOptions().SetAbsoluteExpiration(dateTimeNowFunc().AddMinutes(CommentaryCacheInMinutes)));
+                GetCacheOptions());
 
             return timelineEvents.Select(t => new MatchCommentary(t));
         }
 
+        private CacheItemOptions GetCacheOptions()
+            => new CacheItemOptions().SetAbsoluteExpiration(dateTimeNowFunc().AddMinutes(MatchDataCacheInMinutes));
         public async Task<MatchStatistic> GetMatchStatistic(string id)
             => await cacheManager.GetOrSetAsync(
                 $"{MatchStatisticCacheKey}_{id}",
                 async () => await GetMatchStatisticData(id),
-                new CacheItemOptions().SetAbsoluteExpiration(dateTimeNowFunc().AddMinutes(StatisticCacheInMinutes)));
+                GetCacheOptions());
+
+
+        public async Task<Match> GetMatchLineups(string id, Language language)
+            => await cacheManager.GetOrSetAsync(
+                $"{MatchLineupCacheKey}_{id}_{language.Value}",
+                async () => await GetMatchLineupsData(id, language),
+                GetCacheOptions());
+
+        private async Task<Match> GetMatchLineupsData(string id, Language language)
+        {
+            var match = await dynamicRepository.GetAsync<Match>(new GetMatchLineupsCriteria(id, language));
+
+            if (match == null)
+            {
+                return new Match();
+            }
+
+            return match;
+        }
 
         private async Task<MatchStatistic> GetMatchStatisticData(string id)
         {
@@ -174,5 +197,6 @@
 
         private static string BuildCacheKey(string key, DateTime from, DateTime to)
             => $"{key}_{from.ToString(FormatDate)}_{to.ToString(FormatDate)}";
+
     }
 }
