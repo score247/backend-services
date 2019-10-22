@@ -27,6 +27,7 @@
   </Function>
   <Function Name="League">
     <Setting Key="League_GetActive" SpName="League_GetActive" DbName="DefaultConnection" />
-    <Setting Key="League_InsertLeagues" SpName="League_InsertLeagues" DbName="DefaultConnection" />
+    <Setting Key="League_InsertInternationalLeagues" SpName="League_InsertInternationalLeagues" DbName="DefaultConnection" />
+    <Setting Key="League_InsertCountryLeagues" SpName="League_InsertCountryLeagues" DbName="DefaultConnection" />
   </Function>
 </Functions>
