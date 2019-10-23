@@ -40,8 +40,6 @@
 
         public async Task<Match> GetTimelines(string matchId, string region, Language language)
         {
-            var match = new Match { Id = matchId, Region = region };
-
             var sportRadarLanguage = language.ToSportRadarFormat();
 
             try
@@ -52,11 +50,14 @@
 
                 if (timelineDto.sport_event.competitors != null)
                 {
-                    match = MatchMapper.MapMatch(timelineDto.sport_event, timelineDto.sport_event_status, timelineDto.sport_event_conditions, region);
-
-                    match.TimeLines = GetTimelines(timelineDto);
-                    match.Coverage = GetCoverageInfo(timelineDto);
-                    match.TimelineCommentaries = GetTimelineCommentaries(timelineDto);
+                    var match = MatchMapper.MapMatch(
+                          timelineDto.sport_event,
+                          timelineDto.sport_event_status,
+                          timelineDto.sport_event_conditions,
+                          region,
+                          GetTimelines(timelineDto),
+                          GetCoverageInfo(timelineDto),
+                          GetTimelineCommentaries(timelineDto));
 
                     foreach (var team in match.Teams)
                     {
@@ -69,7 +70,7 @@
                 await logger.ErrorAsync(ex.Message, ex);
             }
 
-            return match;
+            return null;
         }
 
         private static IEnumerable<TimelineEvent> GetTimelines(MatchTimelineDto timelineDto)

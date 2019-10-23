@@ -7,13 +7,15 @@
     /// <![CDATA[https://enterprisecraftsmanship.com/2014/11/08/domain-object-base-class/]]>
     /// </summary>
     [MessagePackObject]
-    public abstract class BaseEntity
+    public class BaseEntity
     {
-        protected BaseEntity()
-        { }
+        protected BaseEntity(string id)
+        {
+            Id = id;
+        }
 
         [Key(0)]
-        public string Id { get; set; }
+        public string Id { get; }
 
         [IgnoreMember]
         public DateTimeOffset CreatedTime { get; set; }

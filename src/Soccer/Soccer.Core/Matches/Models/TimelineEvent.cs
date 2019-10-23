@@ -11,40 +11,87 @@
     [MessagePackObject(keyAsPropertyName: true)]
     public class TimelineEvent : BaseEntity
     {
-        public string Name { get; set; }
+#pragma warning disable S107 // Methods should not have too many parameters
 
-        public EventType Type { get; set; }
+        [JsonConstructor]
+        public TimelineEvent(
+            string id,
+            EventType type,
+            DateTimeOffset time,
+            byte matchTime,
+            string stoppageTime,
+            string team,
+            int period,
+            PeriodType periodType,
+            int homeScore,
+            int awayScore,
+            GoalScorer goalScorer,
+            Player assist,
+            Player player,
+            int injuryTimeAnnounced,
+            IEnumerable<Commentary> commentaries,
+            Player playerOut,
+            Player playerIn) : base(id)
+#pragma warning restore S107 // Methods should not have too many parameters
+        {
+            Type = type;
+            Time = time;
+            MatchTime = matchTime;
+            StoppageTime = stoppageTime;
+            Team = team;
+            Period = period;
+            PeriodType = periodType;
+            HomeScore = homeScore;
+            AwayScore = awayScore;
+            GoalScorer = goalScorer;
+            Assist = assist;
+            Player = player;
+            InjuryTimeAnnounced = injuryTimeAnnounced;
+            Commentaries = commentaries;
+            PlayerOut = playerOut;
+            PlayerIn = playerIn;
+        }
 
-        public DateTimeOffset Time { get; set; }
+        public EventType Type { get; }
 
-        public byte MatchTime { get; set; }
+        public DateTimeOffset Time { get; }
 
-        public string StoppageTime { get; set; }
+        public byte MatchTime { get; }
+
+        public string StoppageTime { get; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string MatchClock { get; set; }
+        public string Team { get; }
+
+        public int Period { get; }
+
+        public PeriodType PeriodType { get; }
+
+        public int HomeScore { get; private set; }
+
+        public int AwayScore { get; private set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string Team { get; set; }
-
-        public int Period { get; set; }
-
-        public PeriodType PeriodType { get; set; }
-
-        public int HomeScore { get; set; }
-
-        public int AwayScore { get; set; }
+        public GoalScorer GoalScorer { get; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public GoalScorer GoalScorer { get; set; }
+        public Player Assist { get; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Player Assist { get; set; }
+        public Player Player { get; }
+
+        public int InjuryTimeAnnounced { get; }
+
+        public bool IsHome => Team?.ToLowerInvariant() == "home";
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Player Player { get; set; }
+        public IEnumerable<Commentary> Commentaries { get; }
 
-        public int InjuryTimeAnnounced { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public Player PlayerOut { get; }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public Player PlayerIn { get; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Player HomeShootoutPlayer { get; set; }
@@ -62,25 +109,8 @@
 
         public bool IsFirstShoot { get; set; }
 
-        public bool IsHome => Team?.ToLowerInvariant() == "home";
-
-        [IgnoreMember]
-        public string Description { get; set; }
-
-        [IgnoreMember]
-        public string Outcome { get; set; }
-
         [IgnoreMember]
         public string PenaltyStatus { get; set; }
-
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public IEnumerable<Commentary> Commentaries { get; set; }
-
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]        
-        public Player PlayerOut { get; set; }
-
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]        
-        public Player PlayerIn { get; set; }
 
         public void UpdateScore(int homeScore, int awayScore)
         {

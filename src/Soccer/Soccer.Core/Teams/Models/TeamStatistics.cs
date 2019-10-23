@@ -6,7 +6,9 @@
     [MessagePackObject]
     public class TeamStatistic
     {
-        public TeamStatistic() { }
+        public TeamStatistic()
+        {
+        }
 
         public TeamStatistic(
             int redCards,
@@ -16,8 +18,8 @@
             YellowRedCards = yellowRedCards;
         }
 
-
 #pragma warning disable S107 // Methods should not have too many parameters
+
         [SerializationConstructor, JsonConstructor]
         public TeamStatistic(
             int possession,
@@ -30,7 +32,7 @@
             int cornerKicks,
             int fouls,
             int shotsSaved,
-            int offsides,
+            int offSides,
             int yellowCards,
             int injuries,
             int redCards,
@@ -47,7 +49,7 @@
             CornerKicks = cornerKicks;
             Fouls = fouls;
             ShotsSaved = shotsSaved;
-            Offsides = offsides;
+            OffSides = offSides;
             YellowCards = yellowCards;
             Injuries = injuries;
             RedCards = redCards;
@@ -75,34 +77,26 @@
         [Key(6)]
         public int ShotsOffTarget { get; }
 
-
         [Key(7)]
         public int CornerKicks { get; }
-
 
         [Key(8)]
         public int Fouls { get; }
 
-
         [Key(9)]
         public int ShotsSaved { get; }
 
-
         [Key(10)]
-        public int Offsides { get; }
-
+        public int OffSides { get; }
 
         [Key(11)]
         public int YellowCards { get; }
 
-
         [Key(12)]
         public int Injuries { get; }
 
-
         [Key(13)]
         public int RedCards { get; }
-
 
         [Key(14)]
         public int YellowRedCards { get; }

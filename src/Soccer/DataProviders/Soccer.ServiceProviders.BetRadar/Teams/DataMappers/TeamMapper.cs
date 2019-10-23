@@ -16,16 +16,16 @@
 
             foreach (var competitor in sportEventDto.competitors)
             {
-                teams.Add(new Team
-                {
-                    Id = competitor.id,
-                    Country = competitor.country,
-                    CountryCode = competitor.country_code,
-                    Name = competitor.name,
-                    Abbreviation = competitor.abbreviation,
-                    IsHome = string.Compare(competitor.qualifier, Home, true, CultureInfo.InvariantCulture) == 0,
-                    Statistic = new TeamStatistic()
-                });
+                teams.Add(new Team(
+                    competitor.id,
+                    competitor.name,
+                    competitor.country,
+                    competitor.country_code,
+                    string.Empty,
+                    string.Compare(competitor.qualifier, Home, true, CultureInfo.InvariantCulture) == 0,
+                    null,
+                    competitor.abbreviation)
+                );
             }
 
             return teams.OrderBy(team => team.IsHome ? 0 : 1).ToList();

@@ -1,17 +1,17 @@
-﻿namespace Soccer.EventPublishers.Shared.Middlewares
-{
-    using System.Collections.Generic;
-    using Fanex.Logging;
-    using Fanex.Logging.Extensions.AspNetCore;
-    using Fanex.Logging.Sentry;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Diagnostics;
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Sentry;
+﻿using System.Collections.Generic;
+using Fanex.Logging;
+using Fanex.Logging.Extensions.AspNetCore;
+using Fanex.Logging.Sentry;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Sentry;
 
+namespace Soccer.EventPublishers._Shared.Middlewares
+{
     public static class ErrorHandlingMiddleware
     {
         private const int InternalErrorServerCode = 500;

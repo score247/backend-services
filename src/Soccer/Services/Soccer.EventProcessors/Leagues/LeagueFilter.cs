@@ -59,9 +59,11 @@ namespace Soccer.EventProcessors.Leagues
         private static Match SetLeague(Match match, IEnumerable<League> majorLeagues)
         {
             var matchLeague = majorLeagues.FirstOrDefault(l => l.Id == match.League.Id);
+
             if (matchLeague != null)
             {
-                match.League = matchLeague;
+                // TODO: check what property need to set
+                match.SetLeague(matchLeague);
             }
 
             return match;

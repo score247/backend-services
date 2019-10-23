@@ -1,11 +1,23 @@
-﻿namespace Soccer.Core.Teams.Models
-{
-    using Score247.Shared.Base;
+﻿using MessagePack;
+using Newtonsoft.Json;
+using Score247.Shared.Base;
 
+namespace Soccer.Core.Teams.Models
+{
+    [MessagePackObject]
     public class Coach : BaseModel
     {
-        public string Nationality { get; set; }
+        [JsonConstructor]
+        public Coach(string id, string name, string nationality, string countryCode) : base(id, name)
+        {
+            Nationality = nationality;
+            CountryCode = countryCode;
+        }
 
-        public string CountryCode { get; set; }
+        [Key(2)]
+        public string Nationality { get; }
+
+        [Key(3)]
+        public string CountryCode { get; }
     }
 }

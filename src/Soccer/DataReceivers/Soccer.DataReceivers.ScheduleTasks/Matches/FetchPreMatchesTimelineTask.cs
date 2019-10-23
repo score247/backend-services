@@ -44,7 +44,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             //Note: since we only need coverage_info which does not have language
             var match = await timelineService.GetTimelines(matchId, region, Language.en_US);
 
-            if (match.Teams == null)
+            if (match?.Teams == null)
             {
                 return;
             }

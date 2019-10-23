@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using AutoFixture;
 using MassTransit;
 using NSubstitute;
+using Score247.Shared.Tests;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
@@ -16,14 +19,13 @@ using Xunit;
 
 namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
 {
-
     [Trait("Soccer.DataReceivers", "FetchTimelineTask")]
     public class FetchTimelineTaskTests
     {
         private readonly ITimelineService timelineService;
         private readonly IBus messageBus;
-
         private readonly FetchTimelineTask fetchTimelineTask;
+        private static readonly Fixture fixture = new Fixture();
 
         public FetchTimelineTaskTests()
         {
@@ -49,11 +51,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_HasReferee_ShouldPublishMatchUpdatedConditionsMessage()
         {
             // Arrange
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(new Match
-            {
-                Teams = new List<Team>(),
-                Referee = "AAA"
-            });
+            var match = fixture.For<Match>()
+                .With(m => m.Teams, new List<Team>())
+                .With(m => m.Referee, "AAA")
+                .Create();
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -66,11 +68,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_HasAttendance_ShouldPublishMatchUpdatedConditionsMessage()
         {
             // Arrange
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(new Match
-            {
-                Teams = new List<Team>(),
-                Attendance = 10000
-            });
+            var match = fixture.For<Match>()
+                .With(m => m.Teams, new List<Team>())
+                .With(m => m.Attendance, 10000)
+                .Create();
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -83,12 +85,13 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_HasBothAttendanceAndReferee_ShouldPublishMatchUpdatedConditionsMessage()
         {
             // Arrange
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(new Match
-            {
-                Teams = new List<Team>(),
-                Referee = "AAA",
-                Attendance = 10000
-            });
+            var match = fixture.For<Match>()
+                .With(m => m.Teams, new List<Team>())
+                .With(m => m.Attendance, 10000)
+                .With(m => m.Referee, "AAA")
+                .Create();
+
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -102,10 +105,12 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_NotHaveRef_ShouldNotPublishMatchUpdatedConditionsMessage()
         {
             // Arrange
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(new Match
-            {
-                Teams = new List<Team>()
-            });
+            var match = fixture.For<Match>()
+                .With(m => m.Teams, new List<Team>())
+                .With(m => m.Referee, null)
+                .With(m => m.Attendance, 0)
+                .Create();
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -118,14 +123,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_TeamStatisticNull_ShouldNotPublishTeamStatisticMessage()
         {
             // Arrange
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(new Match
-            {
-                Teams = new List<Team>
+            var match = fixture.For<Match>()
+                .With(m => m.Teams, new List<Team>
                 {
-                    new Team{ IsHome = true, Name ="AC Milan" },
-                    new Team{ IsHome = false, Name ="Juventus" }
-                }
-            });
+                    new Team("", "AC Milan", true),
+                    new Team("", "Juventus")
+                })
+                .Create();
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -138,14 +143,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_BothTeamStatisticNotNull_ShouldPublishTeamStatisticMessage()
         {
             // Arrange
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(new Match
-            {
-                Teams = new List<Team>
+            var match = fixture.For<Match>()
+                .With(m => m.Teams, new List<Team>
                 {
-                    new Team{ IsHome = true, Name ="AC Milan", Statistic = new TeamStatistic(0, 2) },
-                    new Team{ IsHome = false, Name ="Juventus", Statistic = new TeamStatistic(0, 0) }
-                }
-            });
+                    new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
+                    new Team("", "Juventus", false, new TeamStatistic(0, 0))
+                })
+                .Create();
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -158,34 +163,36 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_TeamStatisticNotNull_ShouldPublishTeamStatisticMessage()
         {
             // Arrange
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(new Match
-            {
-                Teams = new List<Team>
+            var match = fixture.For<Match>()
+                .With(m => m.Teams, new List<Team>
                 {
-                    new Team{ IsHome = true, Name ="AC Milan", Statistic = new TeamStatistic(0, 2) },
-                    new Team{ IsHome = false, Name ="Juventus" }
-                }
-            });
+                    new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
+                    new Team("", "Juventus", false, null)
+                })
+                .Create();
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
 
             // Assert
-            await messageBus.Received(1).Publish<ITeamStatisticUpdatedMessage>(Arg.Any<TeamStatisticUpdatedMessage>());
+            await messageBus.Received().Publish<ITeamStatisticUpdatedMessage>(Arg.Any<TeamStatisticUpdatedMessage>());
         }
 
         [Fact]
         public async Task FetchTimelines_TimelinesNull_ShouldNotPublishMatchTimelinesFetchedMessage()
         {
             // Arrange
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(new Match
-            {
-                Teams = new List<Team>
+            var match = fixture.For<Match>()
+                .With(m => m.Teams, new List<Team>
                 {
-                    new Team{ IsHome = true, Name ="AC Milan", Statistic = new TeamStatistic(0, 2) },
-                    new Team{ IsHome = false, Name ="Juventus", Statistic = new TeamStatistic(0, 0) }
-                }
-            });
+                    new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
+                    new Team("", "Juventus", false, new TeamStatistic(0, 0))
+                })
+                .Create();
+
+            match.TimeLines = null;
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -198,15 +205,16 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_TimelinesEmpty_ShouldNotPublishMatchTimelinesFetchedMessage()
         {
             // Arrange
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(new Match
-            {
-                Teams = new List<Team>
+            var match = fixture.For<Match>()
+                .With(m => m.Teams, new List<Team>
                 {
-                    new Team{ IsHome = true, Name ="AC Milan", Statistic = new TeamStatistic(0, 2) },
-                    new Team{ IsHome = false, Name ="Juventus", Statistic = new TeamStatistic(0, 0) }
-                },
-                TimeLines = new List<TimelineEvent>()
-            });
+                    new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
+                    new Team("", "Juventus", false, new TeamStatistic(0, 0))
+                })
+                .With(m => m.TimeLines, new List<TimelineEvent>())
+                .Create();
+            match.TimeLines = Enumerable.Empty<TimelineEvent>();
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -219,18 +227,18 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_TimelinesNotEmpty_ShouldPublishMatchTimelinesFetchedMessage()
         {
             // Arrange
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(new Match
-            {
-                Teams = new List<Team>
+            var match = fixture.For<Match>()
+                .With(m => m.Teams, new List<Team>
                 {
-                    new Team{ IsHome = true, Name ="AC Milan", Statistic = new TeamStatistic(0, 2) },
-                    new Team{ IsHome = false, Name ="Juventus", Statistic = new TeamStatistic(0, 0) }
-                },
-                TimeLines = new List<TimelineEvent>
+                    new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
+                    new Team("", "Juventus", false, new TeamStatistic(0, 0))
+                })
+                .With(m => m.TimeLines, new List<TimelineEvent>
                 {
-                    new TimelineEvent{ Type = EventType.MatchStarted }
-                }
-            });
+                    fixture.For<TimelineEvent>().With(t => t.Type, EventType.MatchStarted).Create()
+                })
+                .Create();
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -243,14 +251,15 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_CommentariesNull_ShouldNotPublishMatchCommentaryFetchedMessage()
         {
             // Arrange
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(new Match
-            {
-                Teams = new List<Team>
+            var match = fixture.For<Match>()
+                .With(m => m.Teams, new List<Team>
                 {
-                    new Team{ IsHome = true, Name ="AC Milan", Statistic = new TeamStatistic(0, 2) },
-                    new Team{ IsHome = false, Name ="Juventus", Statistic = new TeamStatistic(0, 0) }
-                }
-            });
+                    new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
+                    new Team("", "Juventus", false, new TeamStatistic(0, 0))
+                })
+                .With(m => m.TimelineCommentaries, null)
+                .Create();
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -263,18 +272,22 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_CommentariesEmpty_ShouldNotPublishMatchCommentaryFetchedMessage()
         {
             // Arrange
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(new Match
-            {
-                Teams = new List<Team>
+            var match = fixture.For<Match>()
+                .With(m => m.Teams, new List<Team>
                 {
-                    new Team{ IsHome = true, Name ="AC Milan", Statistic = new TeamStatistic(0, 2) },
-                    new Team{ IsHome = false, Name ="Juventus", Statistic = new TeamStatistic(0, 0) }
-                },
-                TimeLines = new List<TimelineEvent>
+                    new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
+                    new Team("", "Juventus", false, new TeamStatistic(0, 0))
+                })
+                .With(m => m.TimelineCommentaries, Enumerable.Empty<TimelineCommentary>())
+                .With(m => m.TimeLines, new List<TimelineEvent>
                 {
-                    new TimelineEvent{ Type = EventType.MatchStarted, Commentaries = new List<Commentary>() }
-                }
-            });
+                    fixture.For<TimelineEvent>()
+                        .With(t => t.Type, EventType.MatchStarted)
+                        .With(t => t.Commentaries, new List<Commentary>())
+                        .Create()
+                })
+                .Create();
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -287,31 +300,36 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_CommentariesNotEmpty_ShouldPublishMatchCommentaryFetchedMessage()
         {
             // Arrange
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(new Match
-            {
-                League = new League { Id = "sr:league" },
-                Teams = new List<Team>
+            var match = fixture.For<Match>()
+                .With(m => m.League, new League("sr:league", ""))
+                .With(m => m.Teams, new List<Team>
                 {
-                    new Team{ IsHome = true, Name ="AC Milan", Statistic = new TeamStatistic(0, 2) },
-                    new Team{ IsHome = false, Name ="Juventus", Statistic = new TeamStatistic(0, 0) }
-                },
-                TimeLines = new List<TimelineEvent>
+                    new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
+                    new Team("", "Juventus", false, new TeamStatistic(0, 0))
+                })
+                .With(m => m.TimeLines, new List<TimelineEvent>
                 {
-                    new TimelineEvent{ Id = "1", Type = EventType.MatchStarted},
-                    new TimelineEvent{ Id = "2", Type = EventType.ScoreChange}
-                },
-                TimelineCommentaries = new List<TimelineCommentary> {
+                    fixture.For<TimelineEvent>()
+                        .With(t => t.Id, "1")
+                        .With(t => t.Type, EventType.MatchStarted)
+                        .Create(),
+                    fixture.For<TimelineEvent>()
+                        .With(t => t.Id, "2")
+                        .With(t => t.Type, EventType.ScoreChange)
+                        .Create()
+                })
+                .With(m => m.TimelineCommentaries, new List<TimelineCommentary> {
                     new TimelineCommentary (1, new List<Commentary>
-                        {
-                            new Commentary{ Text = "match has started"}
-                        }),
+                    {
+                        new Commentary("match has started")
+                    }),
                     new TimelineCommentary (1, new List<Commentary>
-                        {
-                            new Commentary{ Text = "Goal! Cucuta Deportivo FC have got their heads in front thanks to a James Castro strike."},
-                            new Commentary{ Text = "Carmelo Valencia with an assist there."}
-                        })
-                }
-            });
+                    {
+                        new Commentary( "Goal! Cucuta Deportivo FC have got their heads in front thanks to a James Castro strike."),
+                        new Commentary("Carmelo Valencia with an assist there.")
+                    })})
+                .Create();
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);

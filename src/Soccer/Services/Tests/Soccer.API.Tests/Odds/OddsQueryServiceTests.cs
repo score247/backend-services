@@ -1,29 +1,31 @@
-﻿namespace Soccer.API.Tests.Odds
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Fanex.Caching;
-    using Fanex.Data.Repository;
-    using NSubstitute;
-    using Score247.Shared;
-    using Soccer.API.Odds;
-    using Soccer.API.Shared.Configurations;
-    using Soccer.Core.Matches.Models;
-    using Soccer.Core.Odds.Models;
-    using Soccer.Core.Shared.Enumerations;
-    using Soccer.Database.Matches.Criteria;
-    using Soccer.Database.Odds.Criteria;
-    using Xunit;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoFixture;
+using Fanex.Caching;
+using Fanex.Data.Repository;
+using NSubstitute;
+using Score247.Shared;
+using Score247.Shared.Tests;
+using Soccer.API.Odds;
+using Soccer.API.Shared.Configurations;
+using Soccer.Core.Matches.Models;
+using Soccer.Core.Odds.Models;
+using Soccer.Core.Shared.Enumerations;
+using Soccer.Database.Matches.Criteria;
+using Soccer.Database.Odds.Criteria;
+using Xunit;
 
+namespace Soccer.API.Tests.Odds
+{
     [Trait("Soccer.API", "Odds")]
     public class OddsQueryServiceTests
     {
         private readonly OddsQueryService oddsServiceImpl;
         private readonly IDynamicRepository dynamicRepository;
-        private readonly IAppSettings appSettings;
         private readonly ICacheManager cacheManager;
+        private static readonly Fixture fixture = new Fixture();
 
         private const string globalMatchId = "matchId1";
         private const int globalBetTypeId = 1;
@@ -32,8 +34,8 @@
         public OddsQueryServiceTests()
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
-            appSettings = Substitute.For<IAppSettings>();
             cacheManager = Substitute.For<ICacheManager>();
+            var appSettings = Substitute.For<IAppSettings>();
             appSettings.NumOfDaysToShowOddsBeforeKickoffDate.Returns(356);
             oddsServiceImpl = new OddsQueryService(dynamicRepository, appSettings, cacheManager);
         }
@@ -55,11 +57,9 @@
             string bookmakerId = null,
             DateTimeOffset? eventDate = null)
         {
-            betTypeOddsList = betTypeOddsList ?? StubMatchOdds().BetTypeOddsList;
-            stubMatchId = stubMatchId ?? globalMatchId;
-            eventDate = eventDate.HasValue
-                            ? eventDate.Value
-                            : new DateTimeOffset(new DateTime(2019, 2, 3));
+            betTypeOddsList ??= StubMatchOdds().BetTypeOddsList;
+            stubMatchId ??= globalMatchId;
+            eventDate ??= new DateTimeOffset(new DateTime(2019, 2, 3));
 
             dynamicRepository
                 .FetchAsync<BetTypeOdds>(
@@ -245,7 +245,12 @@
             var bookMakerId = "bookMakerId";
             var timeLines = new List<TimelineEvent>
             {
-                new TimelineEvent { Type = EventType.PeriodStart, Period = 1, Time = eventDate, PeriodType = PeriodType.RegularPeriod }
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.PeriodStart)
+                    .With(t => t.Period, 1)
+                    .With(t => t.Time, eventDate)
+                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
+                    .Create(),
             };
             var match = StubMatch(matchId, eventDate, timeLines);
 
@@ -281,8 +286,21 @@
             var bookMakerId = "bookMakerId";
             var timeLines = new List<TimelineEvent>
             {
-                new TimelineEvent { Type = EventType.PeriodStart, Period = 1, Time = eventDate, PeriodType = PeriodType.RegularPeriod },
-                new TimelineEvent { Type = EventType.ScoreChange, PeriodType = PeriodType.RegularPeriod, HomeScore = 1, AwayScore = 1, MatchTime = 20, Time = eventDate.AddMinutes(20) }
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.PeriodStart)
+                    .With(t => t.Period, 1)
+                    .With(t => t.Time, eventDate)
+                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
+                    .Create(),
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.ScoreChange)
+                    .With(t => t.Period, 1)
+                    .With(t => t.Time, eventDate.AddMinutes(20))
+                    .With(t => t.MatchTime, 20)
+                    .With(t => t.HomeScore, 1)
+                    .With(t => t.AwayScore, 1)
+                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
+                    .Create()
             };
             var match = StubMatch(matchId, eventDate, timeLines);
 
@@ -318,8 +336,17 @@
             var bookMakerId = "bookMakerId";
             var timeLines = new List<TimelineEvent>
             {
-                new TimelineEvent { Type = EventType.PeriodStart, Period = 1, Time = eventDate, PeriodType = PeriodType.RegularPeriod },
-                new TimelineEvent { Type = EventType.BreakStart, PeriodType = PeriodType.Pause, Time = eventDate.AddMinutes(55) }
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.PeriodStart)
+                    .With(t => t.Period, 1)
+                    .With(t => t.Time, eventDate)
+                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
+                    .Create(),
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.BreakStart)
+                    .With(t => t.Time, eventDate.AddMinutes(55) )
+                    .With(t => t.PeriodType,  PeriodType.Pause)
+                    .Create(),
             };
             var match = StubMatch(matchId, eventDate, timeLines);
 
@@ -354,10 +381,31 @@
             var bookMakerId = "bookMakerId";
             var timeLines = new List<TimelineEvent>
             {
-                new TimelineEvent { Type = EventType.PeriodStart, Period = 1, Time = eventDate, PeriodType = PeriodType.RegularPeriod },
-                new TimelineEvent { Type = EventType.ScoreChange, PeriodType = PeriodType.RegularPeriod, HomeScore = 1, AwayScore = 1, MatchTime = 20, Time = eventDate.AddMinutes(20) },
-                new TimelineEvent { Type = EventType.BreakStart, PeriodType = PeriodType.Pause, Time = eventDate.AddMinutes(55) },
-                new TimelineEvent { Type = EventType.PeriodStart, Period = 2, Time = eventDate.AddMinutes(70), PeriodType = PeriodType.RegularPeriod }
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.PeriodStart)
+                    .With(t => t.Period, 1)
+                    .With(t => t.Time, eventDate)
+                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
+                    .Create(),
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.ScoreChange)
+                    .With(t => t.MatchTime, 20)
+                    .With(t => t.HomeScore, 1)
+                    .With(t => t.AwayScore, 1)
+                    .With(t => t.Time, eventDate.AddMinutes(20))
+                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
+                    .Create(),
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.BreakStart)
+                    .With(t => t.Time, eventDate.AddMinutes(55))
+                    .With(t => t.PeriodType,  PeriodType.Pause)
+                    .Create(),
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.PeriodStart)
+                    .With(t => t.Period, 2)
+                    .With(t => t.Time, eventDate.AddMinutes(70))
+                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
+                    .Create(),
             };
             var match = StubMatch(matchId, eventDate, timeLines);
 
@@ -394,10 +442,32 @@
             var bookMakerId = "bookMakerId";
             var timeLines = new List<TimelineEvent>
             {
-                new TimelineEvent { Type = EventType.PeriodStart, Period = 1, Time = eventDate, PeriodType = PeriodType.RegularPeriod },
-                new TimelineEvent { Type = EventType.BreakStart, PeriodType = PeriodType.Pause, Time = eventDate.AddMinutes(55) },
-                new TimelineEvent { Type = EventType.PeriodStart, Period = 2, Time = eventDate.AddMinutes(70), PeriodType = PeriodType.RegularPeriod },
-                new TimelineEvent { Type = EventType.ScoreChange, PeriodType = PeriodType.RegularPeriod, HomeScore = 2, AwayScore = 1, MatchTime = 56, Time = eventDate.AddMinutes(80) }
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.PeriodStart)
+                    .With(t => t.Period, 1)
+                    .With(t => t.Time, eventDate)
+                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
+                    .Create(),
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.BreakStart)
+                    .With(t => t.Time, eventDate.AddMinutes(55))
+                    .With(t => t.PeriodType,  PeriodType.Pause)
+                    .Create(),
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.PeriodStart)
+                    .With(t => t.Period, 2)
+                    .With(t => t.Time, eventDate.AddMinutes(70))
+                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
+                    .Create(),
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.ScoreChange)
+                    .With(t => t.Period, 1)
+                    .With(t => t.Time, eventDate.AddMinutes(80))
+                    .With(t => t.HomeScore, 2)
+                    .With(t => t.AwayScore, 1)
+                    .With(t => t.MatchTime, 56)
+                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
+                    .Create(),
             };
             var match = StubMatch(matchId, eventDate, timeLines);
 
@@ -434,10 +504,32 @@
             var bookMakerId = "bookMakerId";
             var timeLines = new List<TimelineEvent>
             {
-                new TimelineEvent { Type = EventType.PeriodStart, Period = 1, Time = eventDate, PeriodType = PeriodType.RegularPeriod },
-                new TimelineEvent { Type = EventType.BreakStart, PeriodType = PeriodType.Pause, Time = eventDate.AddMinutes(55) },
-                new TimelineEvent { Type = EventType.PeriodStart, Period = 2, Time = eventDate.AddMinutes(70), PeriodType = PeriodType.RegularPeriod },
-                new TimelineEvent { Type = EventType.ScoreChange, PeriodType = PeriodType.RegularPeriod, HomeScore = 2, AwayScore = 1, MatchTime = 56, Time = eventDate.AddMinutes(80) }
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.PeriodStart)
+                    .With(t => t.Period, 1)
+                    .With(t => t.Time, eventDate)
+                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
+                    .Create(),
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.BreakStart)
+                    .With(t => t.Time, eventDate.AddMinutes(55))
+                    .With(t => t.PeriodType,  PeriodType.Pause)
+                    .Create(),
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.PeriodStart)
+                    .With(t => t.Period, 2)
+                    .With(t => t.Time, eventDate.AddMinutes(70))
+                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
+                    .Create(),
+                fixture.For<TimelineEvent>()
+                    .With(t => t.Type, EventType.ScoreChange)
+                    .With(t => t.Period, 1)
+                    .With(t => t.Time, eventDate.AddMinutes(80))
+                    .With(t => t.HomeScore, 2)
+                    .With(t => t.AwayScore, 1)
+                    .With(t => t.MatchTime, 56)
+                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
+                    .Create(),
             };
             var match = StubMatch(matchId, eventDate, timeLines);
 
@@ -472,13 +564,12 @@
             DateTime? eventDate = null,
             IEnumerable<TimelineEvent> timelines = null)
         {
-            var match = new Match
-            {
-                Id = matchId,
-                EventDate = eventDate.HasValue
+            var match = fixture.For<Match>()
+                .With(m => m.Id, matchId)
+                .With(m => m.EventDate, eventDate.HasValue
                     ? eventDate.Value
-                    : new DateTime(2019, 2, 3),
-            };
+                    : new DateTime(2019, 2, 3))
+                .Create();
 
             dynamicRepository
                 .GetAsync<Match>(Arg.Is<GetMatchByIdCriteria>(c => c.Id == matchId && c.Language == Language.en_US.DisplayName))

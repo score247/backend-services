@@ -1,4 +1,5 @@
 ﻿using MessagePack;
+using Newtonsoft.Json;
 using Score247.Shared.Base;
 
 namespace Soccer.Core.Leagues.Models
@@ -6,19 +7,12 @@ namespace Soccer.Core.Leagues.Models
     [MessagePackObject]
     public class League : BaseModel
     {
-        public League()
+        public League(string id, string name) : base(id, name)
         {
         }
 
-        public League(
-            string id,
-            string name)
-        {
-            Id = id;
-            Name = name;
-        }
-
-        [SerializationConstructor]
+        [SerializationConstructor, JsonConstructor]
+#pragma warning disable S107 // Methods should not have too many parameters
         public League(
             string id,
             string name,
@@ -27,7 +21,7 @@ namespace Soccer.Core.Leagues.Models
             string countryName,
             string countryCode,
             bool isInternational,
-            string region) : this(id, name)
+            string region) : base(id, name)
         {
             Order = order;
             CategoryId = categoryId;
@@ -37,14 +31,16 @@ namespace Soccer.Core.Leagues.Models
             Region = region;
         }
 
+#pragma warning restore S107 // Methods should not have too many parameters
+
         [Key(2)]
         public int Order { get; private set; }
 
         [Key(3)]
-        public string CategoryId { get; private set; }
+        public string CategoryId { get; }
 
         [Key(4)]
-        public string CountryName { get; private set; }
+        public string CountryName { get; }
 
         [Key(5)]
         public string CountryCode { get; private set; }
@@ -53,10 +49,10 @@ namespace Soccer.Core.Leagues.Models
         public bool IsInternational { get; private set; }
 
         [IgnoreMember]
-        public int IsActive { get; private set; }
+        public int IsActive { get; }
 
         [IgnoreMember]
-        public string Region { get; private set; }
+        public string Region { get; }
 
         public void SetInternationalLeagueCode(string countryCode)
         {

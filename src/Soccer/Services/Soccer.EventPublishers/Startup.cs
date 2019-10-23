@@ -5,8 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using Soccer.EventPublishers._Shared.Middlewares;
 using Soccer.EventPublishers.Hubs;
-using Soccer.EventPublishers.Shared.Middlewares;
 
 namespace Soccer.EventPublishers
 {

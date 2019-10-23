@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoFixture;
 using Fanex.Caching;
 using Fanex.Data.Repository;
 using NSubstitute;
 using Score247.Shared;
+using Score247.Shared.Tests;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
 using Soccer.EventProcessors._Shared.Filters;
@@ -17,8 +19,8 @@ namespace Soccer.EventProcessors.Tests.Leagues
     [Trait("Soccer.EventProcessors", "LeagueFilter")]
     public class LeagueFilterTests
     {
+        private static readonly Fixture fixture = new Fixture();
         private const string MajorLeaguesCacheKey = "Major_Leagues";
-        private readonly IDynamicRepository dynamicRepository;
         private readonly ICacheManager cacheService;
         private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> matchListFilter;
         private readonly IAsyncFilter<Match, bool> matchFilter;
@@ -26,7 +28,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
 
         public LeagueFilterTests()
         {
-            dynamicRepository = Substitute.For<IDynamicRepository>();
+            var dynamicRepository = Substitute.For<IDynamicRepository>();
             cacheService = Substitute.For<ICacheManager>();
 
             matchListFilter = new LeagueFilter(dynamicRepository, cacheService);
@@ -39,14 +41,20 @@ namespace Soccer.EventProcessors.Tests.Leagues
         {
             cacheService.GetOrSetAsync(MajorLeaguesCacheKey, Arg.Any<Func<Task<IEnumerable<League>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<League> {
-                    new League{ Id = "league:1" },
-                    new League{ Id = "league:2" }
+                    new League("league:1", ""),
+                    new League("league:2", "")
                 });
 
             var matches = new List<Match>
             {
-                new Match { Id = "match:1", League = new League{ Id = "league:3" }  },
-                new Match { Id = "match:2", League = new League{ Id = "league:4" }  }
+                fixture.For<Match>()
+                    .With(m => m.Id, "match:1")
+                    .With(m => m.League, new League("league:3", ""))
+                    .Create(),
+                fixture.For<Match>()
+                    .With(m => m.Id, "match:2")
+                    .With(m => m.League, new League("league:4", ""))
+                    .Create(),
             };
 
             var filteredMatches = await matchListFilter.Filter(matches);
@@ -59,17 +67,32 @@ namespace Soccer.EventProcessors.Tests.Leagues
         {
             cacheService.GetOrSetAsync(MajorLeaguesCacheKey, Arg.Any<Func<Task<IEnumerable<League>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<League> {
-                    new League{ Id = "league:1" },
-                    new League{ Id = "league:2" }
+                    new League("league:1", ""),
+                    new League("league:2", "")
                 });
 
             var matches = new List<Match>
             {
-                new Match { Id = "match:1", League = new League{ Id = "league:3" }  },
-                new Match { Id = "match:2", League = new League{ Id = "league:4" }  },
-                new Match { Id = "match:3", League = new League{ Id = "league:1" }  },
-                new Match { Id = "match:5", League = new League{ Id = "league:2" }  },
-                new Match { Id = "match:4", League = new League{ Id = "league:6" }  }
+                fixture.For<Match>()
+                    .With(m => m.Id, "match:1")
+                    .With(m => m.League, new League("league:3", ""))
+                    .Create(),
+                fixture.For<Match>()
+                    .With(m => m.Id, "match:2")
+                    .With(m => m.League, new League("league:4", ""))
+                    .Create(),
+                fixture.For<Match>()
+                    .With(m => m.Id, "match:3")
+                    .With(m => m.League, new League("league:1", ""))
+                    .Create(),
+                fixture.For<Match>()
+                    .With(m => m.Id, "match:5")
+                    .With(m => m.League, new League("league:2", ""))
+                    .Create(),
+                fixture.For<Match>()
+                    .With(m => m.Id, "match:4")
+                    .With(m => m.League, new League("league:6", ""))
+                    .Create()
             };
 
             var filteredMatches = (await matchListFilter.Filter(matches)).ToList();
@@ -84,8 +107,8 @@ namespace Soccer.EventProcessors.Tests.Leagues
         {
             cacheService.GetOrSetAsync(MajorLeaguesCacheKey, Arg.Any<Func<Task<IEnumerable<League>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<League> {
-                    new League{ Id = "league:1" },
-                    new League{ Id = "league:2" }
+                    new League("league:1", ""),
+                    new League("league:2", "")
                 });
 
             var result = (await matchFilter.Filter(null));
@@ -98,11 +121,14 @@ namespace Soccer.EventProcessors.Tests.Leagues
         {
             cacheService.GetOrSetAsync(MajorLeaguesCacheKey, Arg.Any<Func<Task<IEnumerable<League>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<League> {
-                    new League{ Id = "league:1" },
-                    new League{ Id = "league:2" }
+                    new League("league:1", ""),
+                    new League("league:2", "")
                 });
 
-            var match = new Match { Id = "match:1", League = new League { Id = "league:3" } };
+            var match = fixture.For<Match>()
+                .With(m => m.Id, "match:1")
+                .With(m => m.League, new League("league:6", ""))
+                .Create();
 
             var result = (await matchFilter.Filter(match));
 
@@ -114,11 +140,14 @@ namespace Soccer.EventProcessors.Tests.Leagues
         {
             cacheService.GetOrSetAsync(MajorLeaguesCacheKey, Arg.Any<Func<Task<IEnumerable<League>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<League> {
-                    new League{ Id = "league:1" },
-                    new League{ Id = "league:2" }
+                    new League("league:1", ""),
+                    new League("league:2", "")
                 });
 
-            var match = new Match { Id = "match:1", League = new League { Id = "league:1" } };
+            var match = fixture.For<Match>()
+                .With(m => m.Id, "match:1")
+                .With(m => m.League, new League("league:1", ""))
+                .Create();
 
             var result = (await matchFilter.Filter(match));
 
@@ -130,8 +159,8 @@ namespace Soccer.EventProcessors.Tests.Leagues
         {
             cacheService.GetOrSetAsync(MajorLeaguesCacheKey, Arg.Any<Func<Task<IEnumerable<League>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<League> {
-                    new League{ Id = "league:1" },
-                    new League{ Id = "league:2" }
+                    new League("league:1", ""),
+                    new League("league:2", "")
                 });
 
             var result = (await matchEventFilter.Filter(null));
@@ -144,8 +173,8 @@ namespace Soccer.EventProcessors.Tests.Leagues
         {
             cacheService.GetOrSetAsync(MajorLeaguesCacheKey, Arg.Any<Func<Task<IEnumerable<League>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<League> {
-                    new League{ Id = "league:1" },
-                    new League{ Id = "league:2" }
+                    new League("league:1", ""),
+                    new League("league:2", "")
                 });
 
             var match = new MatchEvent("league:3", "match:1", null, null);
@@ -160,8 +189,8 @@ namespace Soccer.EventProcessors.Tests.Leagues
         {
             cacheService.GetOrSetAsync(MajorLeaguesCacheKey, Arg.Any<Func<Task<IEnumerable<League>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<League> {
-                    new League{ Id = "league:1" },
-                    new League{ Id = "league:2" }
+                    new League("league:1", ""),
+                    new League("league:2", "")
                 });
 
             var match = new MatchEvent("league:1", "match:1", null, null);

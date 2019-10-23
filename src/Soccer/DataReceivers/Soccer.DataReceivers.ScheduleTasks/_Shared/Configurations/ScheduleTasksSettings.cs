@@ -2,6 +2,8 @@
 {
     public class ScheduleTasksSettings
     {
+#pragma warning disable S107 // Methods should not have too many parameters
+
         public ScheduleTasksSettings(
             int queueBatchSize = 0,
             int fetchMatchResultDateSpan = 0,
@@ -27,6 +29,8 @@
             FetchPreMatchesCron = fetchPreMatchesCron;
             FetchLeaguesCron = fetchLeaguesCron;
         }
+
+#pragma warning restore S107 // Methods should not have too many parameters
 
         public int QueueBatchSize { get; set; }
 

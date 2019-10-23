@@ -9,6 +9,8 @@ using Soccer.DataProviders.SportRadar.Leagues.Services;
 using Soccer.DataProviders.SportRadar.Matches.Services;
 using Soccer.DataProviders.SportRadar.Odds;
 using Soccer.DataProviders.SportRadar.Shared.Configurations;
+using Soccer.DataProviders.SportRadar.Teams.Services;
+using Soccer.DataProviders.Teams.Services;
 
 namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
 {
@@ -34,6 +36,9 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
 
             services.AddSingleton(RestService.For<ILeagueApi>(sportRadarDataProviderSettings.DefaultServiceUrl));
             services.AddSingleton<ILeagueService, LeagueService>();
+
+            services.AddSingleton(RestService.For<ITeamHeadToHeadApi>(sportRadarDataProviderSettings.ServiceUrl));
+            services.AddSingleton<ITeamHeadToHeadService, TeamHeadToHeadService>();
         }
     }
 }

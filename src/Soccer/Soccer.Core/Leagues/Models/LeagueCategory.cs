@@ -4,6 +4,11 @@
 
     public class LeagueCategory : BaseModel
     {
-        public string CountryCode { get; set; }
+        public LeagueCategory(string id, string name, string countryCode) : base(id, name)
+        {
+            CountryCode = countryCode;
+        }
+
+        public string CountryCode { get; }
     }
 }

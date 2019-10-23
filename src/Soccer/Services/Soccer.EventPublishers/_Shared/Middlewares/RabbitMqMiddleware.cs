@@ -1,20 +1,19 @@
-﻿namespace Soccer.EventPublishers.Shared.Middlewares
-{
-    using System;
-    using Fanex.Logging;
-    using GreenPipes;
-    using GreenPipes.Configurators;
-    using MassTransit;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Hosting;
-    using Soccer.Core.Shared.Configurations;
-    using Soccer.EventPublishers.Matches;
-    using Soccer.EventPublishers.Odds;
-    using Soccer.EventPublishers.Teams;
+﻿using System;
+using Fanex.Logging;
+using GreenPipes;
+using GreenPipes.Configurators;
+using MassTransit;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Soccer.Core.Shared.Configurations;
+using Soccer.EventPublishers.Matches;
+using Soccer.EventPublishers.Odds;
+using Soccer.EventPublishers.Teams;
 
+namespace Soccer.EventPublishers._Shared.Middlewares
+{
     public static class RabbitMqMiddleware
     {
         private const int prefetCount = 16;

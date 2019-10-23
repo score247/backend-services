@@ -9,6 +9,7 @@ using Soccer.DataReceivers.ScheduleTasks.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Matches;
 using Soccer.DataReceivers.ScheduleTasks.Odds;
 using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
+using Soccer.DataReceivers.ScheduleTasks.Teams;
 
 namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
 {
@@ -27,6 +28,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             services.AddScoped<IFetchLiveMatchesTimelineTask, FetchLiveMatchesTimelineTask>();
             services.AddScoped<IFetchPreMatchesTimelineTask, FetchPreMatchesTimelineTask>();
             services.AddScoped<IFetchLeaguesTask, FetchLeaguesTask>();
+            services.AddScoped<IFetchTeamHeadToHeadTask, FetchTeamHeadToHeadTask>();
         }
 
         public static void UseHangfire(this IApplicationBuilder app, IConfiguration configuration)

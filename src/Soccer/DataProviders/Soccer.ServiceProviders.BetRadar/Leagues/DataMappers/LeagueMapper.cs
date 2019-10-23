@@ -1,4 +1,6 @@
-﻿namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
+﻿using System;
+
+namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
 {
     using Score247.Shared.Enumerations;
     using Soccer.Core.Leagues.Models;
@@ -29,18 +31,37 @@
 
         public static LeagueRound MapLeagueRound(TournamentRoundDto tournamentRound)
         {
-            var leagueRound = new LeagueRound();
-
-            if (tournamentRound != null)
+            if (tournamentRound == null)
             {
-                leagueRound.Type = Enumeration.FromDisplayName<LeagueRoundType>(tournamentRound.type);
-                leagueRound.Name = tournamentRound.name;
-                leagueRound.Number = tournamentRound.number;
-                leagueRound.Phase = tournamentRound.phase;
-                leagueRound.Group = tournamentRound.group;
+                return null;
             }
 
+            var leagueRound = new LeagueRound(
+                Enumeration.FromDisplayName<LeagueRoundType>(tournamentRound.type),
+                tournamentRound.name,
+                tournamentRound.number,
+                tournamentRound.phase,
+                tournamentRound.group);
+
             return leagueRound;
+        }
+
+        public static LeagueSeason MapLeagueSeason(SeasonDto seasonDto)
+        {
+            if (seasonDto == null)
+            {
+                return null;
+            }
+
+            var leagueSeason = new LeagueSeason(
+                seasonDto.id,
+                seasonDto.name,
+                Convert.ToDateTime(seasonDto.start_date),
+                Convert.ToDateTime(seasonDto.end_date),
+                seasonDto.year,
+                seasonDto.tournament_id);
+
+            return leagueSeason;
         }
     }
 }

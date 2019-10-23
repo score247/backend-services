@@ -1,16 +1,19 @@
-﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
-{
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Hangfire;
-    using MassTransit;
-    using Score247.Shared.Enumerations;
-    using Soccer.Core.Matches.Events;
-    using Soccer.Core.Shared.Enumerations;
-    using Soccer.DataProviders.Matches.Services;
-    using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Hangfire;
+using MassTransit;
+using Score247.Shared.Enumerations;
+using Soccer.Core.Matches.Events;
+using Soccer.Core.Matches.Models;
+using Soccer.Core.Shared.Enumerations;
+using Soccer.DataProviders.Matches.Services;
+using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
+using Soccer.DataReceivers.ScheduleTasks.Teams;
 
+namespace Soccer.DataReceivers.ScheduleTasks.Matches
+{
     public interface IFetchPreMatchesTask
     {
         [Queue("medium")]
@@ -46,7 +49,7 @@
                 }
             }
         }
-        
+
         public async Task FetchPreMatchesForDate(DateTime date, Language language)
         {
             int batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
@@ -55,13 +58,33 @@
                                 .Where(x => x.MatchResult.EventStatus != MatchStatus.Live &&
                                             x.MatchResult.EventStatus != MatchStatus.Closed).ToList();
 
+            FetchTeamHeadToHead(language, matches);
+
+            await PublishPreMatchFetchedMessage(language, batchSize, matches);
+        }
+
+        private async Task PublishPreMatchFetchedMessage(Language language, int batchSize, IList<Match> matches)
+        {
             for (var i = 0; i * batchSize < matches.Count; i++)
             {
                 var matchesBatch = matches.Skip(i * batchSize).Take(batchSize);
 
-                await messageBus.Publish<IPreMatchesFetchedMessage>(new PreMatchesFetchedMessage(matchesBatch, language.DisplayName));
+                await messageBus.Publish<IPreMatchesFetchedMessage>(
+                    new PreMatchesFetchedMessage(matchesBatch, language.DisplayName));
 
                 BackgroundJob.Enqueue<IFetchPreMatchesTimelineTask>(t => t.FetchPreMatchTimeline(matchesBatch.ToList()));
+            }
+        }
+
+        private static void FetchTeamHeadToHead(Language language, IEnumerable<Match> matches)
+        {
+            foreach (var match in matches)
+            {
+                var homeTeamId = match.Teams.FirstOrDefault(t => t.IsHome)?.Id;
+                var awayTeamId = match.Teams.FirstOrDefault(t => !t.IsHome)?.Id;
+
+                BackgroundJob.Enqueue<IFetchTeamHeadToHeadTask>(t =>
+                    t.FetchTeamHeadToHead(homeTeamId, awayTeamId, language));
             }
         }
     }

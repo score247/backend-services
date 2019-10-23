@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoFixture;
 using Fanex.Data.Repository;
 using Fanex.Logging;
 using MassTransit;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
+using Score247.Shared.Tests;
+using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
@@ -22,24 +25,22 @@ namespace Soccer.EventProcessors.Tests.Matches
     [Trait("Soccer.EventProcessors", "FetchedLiveMatchConsumer")]
     public class FetchedLiveMatchConsumerTests
     {
-        private readonly IDynamicRepository dynamicRepository;
-        private readonly IBus messageBus;
-        private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
-        private readonly ILiveMatchFilter liveMatchFilter;
-        private readonly ILogger logger;
+        private static readonly Fixture fixture = new Fixture();
 
+        private readonly IDynamicRepository dynamicRepository;
+        private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
+        private readonly ILogger logger;
         private readonly FetchedLiveMatchConsumer fetchedLiveMatchConsumer;
         private readonly ConsumeContext<ILiveMatchFetchedMessage> context;
 
         public FetchedLiveMatchConsumerTests()
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
-            messageBus = Substitute.For<IBus>();
             leagueFilter = Substitute.For<IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>>>();
             logger = Substitute.For<ILogger>();
             context = Substitute.For<ConsumeContext<ILiveMatchFetchedMessage>>();
-
-            liveMatchFilter = new LiveMatchFilter(new LiveMatchRangeValidator());
+            var messageBus = Substitute.For<IBus>();
+            var liveMatchFilter = new LiveMatchFilter(new LiveMatchRangeValidator());
 
             fetchedLiveMatchConsumer = new FetchedLiveMatchConsumer(messageBus, dynamicRepository, leagueFilter, liveMatchFilter, logger);
         }
@@ -66,7 +67,10 @@ namespace Soccer.EventProcessors.Tests.Matches
         [Fact]
         public async Task Consume_HasNewMatches_ShouldExecuteCommand()
         {
-            var match = new Match { Id = "match:not:started", MatchResult = new MatchResult { EventStatus = MatchStatus.Live } };
+            var match = fixture.For<Match>()
+                .With(m => m.Id, "match:not:started")
+                .With(m => m.MatchResult, fixture.For<MatchResult>().With(r => r.EventStatus, MatchStatus.Live).Create())
+                .Create();
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { match }));
 
@@ -83,7 +87,10 @@ namespace Soccer.EventProcessors.Tests.Matches
         [Fact]
         public async Task Consume_RemoveMatches_ShouldExecuteCommand()
         {
-            var match = new Match { Id = "match:closed", MatchResult = new MatchResult { EventStatus = MatchStatus.Live } };
+            var match = fixture.For<Match>()
+                .With(m => m.Id, "match:closed")
+                .With(m => m.MatchResult, fixture.For<MatchResult>().With(r => r.EventStatus, MatchStatus.Live).Create())
+                .Create();
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>()));
 
@@ -92,7 +99,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             await fetchedLiveMatchConsumer.Consume(context);
 
             await dynamicRepository.Received(1).ExecuteAsync(Arg.Is<InsertOrRemoveLiveMatchesCommand>(
-                cmd => cmd.RemovedMatchIds.Contains("match:closed") 
+                cmd => cmd.RemovedMatchIds.Contains("match:closed")
                         && cmd.NewMatches.Equals("[]")));
         }
 
@@ -216,7 +223,10 @@ namespace Soccer.EventProcessors.Tests.Matches
         [Fact]
         public async Task Consume_LiveMatchedNotChanged_ShouldNotExecuteCommand()
         {
-            var newMatch = new Match { Id = "1", MatchResult = new MatchResult { EventStatus = MatchStatus.Live } };
+            var newMatch = fixture.For<Match>()
+                .With(m => m.Id, "1")
+                .With(m => m.MatchResult, fixture.For<MatchResult>().With(r => r.EventStatus, MatchStatus.Live).Create())
+                .Create();
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { newMatch }));
 
@@ -224,7 +234,7 @@ namespace Soccer.EventProcessors.Tests.Matches
                 .Returns(new List<Match> { newMatch });
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
-                .Returns(new List<Match> { new Match { Id = "1", MatchResult = new MatchResult { EventStatus = MatchStatus.Live } } });
+                .Returns(new List<Match> { newMatch });
 
             await fetchedLiveMatchConsumer.Consume(context);
 
@@ -234,7 +244,10 @@ namespace Soccer.EventProcessors.Tests.Matches
         [Fact]
         public async Task Consume_ExecuteCommandThrowsException_ShouldLogError()
         {
-            var match = new Match { Id = "1", MatchResult = new MatchResult { EventStatus = MatchStatus.Live } };
+            var match = fixture.For<Match>()
+                .With(m => m.Id, "1")
+                .With(m => m.MatchResult, fixture.For<MatchResult>().With(r => r.EventStatus, MatchStatus.Live).Create())
+                .Create();
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>()));
 
@@ -248,42 +261,31 @@ namespace Soccer.EventProcessors.Tests.Matches
         }
 
         private static Match StubNotStartedMatch(string id, DateTimeOffset eventDate)
-        => new Match
-        {
-            Id = id,
-            EventDate = eventDate,
-            MatchResult = new MatchResult
-            {
-                EventStatus = MatchStatus.NotStarted
-            }
-        };
+            => fixture.For<Match>()
+                .With(m => m.Id, id)
+                .With(m => m.EventDate, eventDate)
+                .With(m => m.MatchResult, fixture.For<MatchResult>().With(r => r.EventStatus, MatchStatus.NotStarted).Create())
+                .Create();
 
         private static Match StubLiveMatch(string id)
-        => new Match
-        {
-            Id = id,
-            MatchResult = new MatchResult
-            {
-                EventStatus = MatchStatus.Live
-            }
-        };
+            => fixture.For<Match>()
+                .With(m => m.Id, id)
+                .With(m => m.MatchResult, fixture.For<MatchResult>().With(r => r.EventStatus, MatchStatus.Live).Create())
+                .Create();
 
         private static Match StubClosedMatch(string id, DateTimeOffset? endedTime)
-           => new Match
-           {
-               Id = id,
-               MatchResult = new MatchResult
-               {
-                   EventStatus = MatchStatus.Closed,
-                   MatchStatus = MatchStatus.Ended
-               },
-               LatestTimeline = endedTime == null
-                   ? null
-                   : new TimelineEvent
-                   {
-                       Type = EventType.MatchEnded,
-                       Time = (DateTimeOffset)endedTime
-                   }
-           };
+            => fixture.For<Match>()
+                .With(m => m.Id, id)
+                .With(m => m.MatchResult, fixture.For<MatchResult>()
+                    .With(r => r.EventStatus, MatchStatus.Live)
+                    .With(r => r.MatchStatus, MatchStatus.Ended)
+                    .Create())
+                .With(m => m.LatestTimeline, endedTime == null
+                    ? null
+                    : fixture.For<TimelineEvent>()
+                        .With(t => t.Type, EventType.MatchEnded)
+                        .With(t => t.Time, (DateTimeOffset)endedTime)
+                        .Create())
+                .Create();
     }
 }

@@ -1,14 +1,22 @@
-﻿namespace Score247.Shared.Base
-{
-    using MessagePack;
+﻿using Newtonsoft.Json;
+using MessagePack;
 
+namespace Score247.Shared.Base
+{
     [MessagePackObject]
-    public abstract class BaseModel
+    public class BaseModel
     {
+        [SerializationConstructor, JsonConstructor]
+        protected BaseModel(string id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
+
         [Key(0)]
-        public string Id { get; set; }
+        public string Id { get; }
 
         [Key(1)]
-        public string Name { get; set; }
+        public string Name { get; }
     }
 }

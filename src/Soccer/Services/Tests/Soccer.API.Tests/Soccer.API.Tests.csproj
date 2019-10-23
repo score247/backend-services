@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\tests\Score247.Shared.Tests\Score247.Shared.Tests.csproj" />
     <ProjectReference Include="..\..\..\..\_Shared\Score247.Shared.csproj" />
     <ProjectReference Include="..\..\..\Soccer.Core\Soccer.Core.csproj" />
     <ProjectReference Include="..\..\Soccer.API\Soccer.API.csproj" />

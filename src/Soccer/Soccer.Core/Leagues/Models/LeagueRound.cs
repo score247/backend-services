@@ -1,17 +1,28 @@
-﻿namespace Soccer.Core.Leagues.Models
-{
-    using Soccer.Core.Shared.Enumerations;
+﻿using Newtonsoft.Json;
+using Soccer.Core.Shared.Enumerations;
 
+namespace Soccer.Core.Leagues.Models
+{
     public class LeagueRound
     {
-        public LeagueRoundType Type { get; set; }
+        [JsonConstructor]
+        public LeagueRound(LeagueRoundType type, string name, int number, string phase, string group)
+        {
+            Type = type;
+            Name = name;
+            Number = number;
+            Phase = phase;
+            Group = group;
+        }
 
-        public string Name { get; set; }
+        public LeagueRoundType Type { get; }
 
-        public int Number { get; set; }
+        public string Name { get; }
 
-        public string Phase { get; set; }
+        public int Number { get; }
 
-        public string Group { get; set; }
+        public string Phase { get; }
+
+        public string Group { get; }
     }
 }

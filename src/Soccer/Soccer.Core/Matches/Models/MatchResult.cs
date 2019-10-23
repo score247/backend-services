@@ -1,32 +1,69 @@
-﻿namespace Soccer.Core.Matches.Models
-{
-    using System.Collections.Generic;
-    using Soccer.Core.Shared.Enumerations;
+﻿using System.Collections.Generic;
+using Soccer.Core.Shared.Enumerations;
 
+namespace Soccer.Core.Matches.Models
+{
     public class MatchResult
     {
-        // TODO: Move out
-        public MatchStatus MatchStatus { get; set; }
+        public MatchResult(
+            MatchStatus eventStatus,
+            MatchStatus matchStatus)
+        {
+            EventStatus = eventStatus;
+            MatchStatus = matchStatus;
+        }
 
         // TODO: Move out
-        public MatchStatus EventStatus { get; set; }
+#pragma warning disable S107 // Methods should not have too many parameters
 
-        public int Period { get; set; }
+        public MatchResult(
+            MatchStatus eventStatus,
+            MatchStatus matchStatus,
+            int period,
+            IEnumerable<MatchPeriod> matchPeriods,
+            int matchTime,
+            string winnerId,
+            int homeScore,
+            int awayScore,
+            int aggregateHomeScore,
+            int aggregateAwayScore,
+            string aggregateWinnerId)
+#pragma warning restore S107 // Methods should not have too many parameters
+        {
+            EventStatus = eventStatus;
+            MatchStatus = matchStatus;
+            Period = period;
+            MatchPeriods = matchPeriods;
+            MatchTime = matchTime;
+            WinnerId = winnerId;
+            HomeScore = homeScore;
+            AwayScore = awayScore;
+            AggregateHomeScore = aggregateHomeScore;
+            AggregateAwayScore = aggregateAwayScore;
+            AggregateWinnerId = aggregateWinnerId;
+        }
 
-        public IEnumerable<MatchPeriod> MatchPeriods { get; set; }
+        // TODO: Move out
+        public MatchStatus EventStatus { get; }
 
-        public int MatchTime { get; set; }
+        public MatchStatus MatchStatus { get; }
 
-        public string WinnerId { get; set; }
+        public int Period { get; }
 
-        public int HomeScore { get; set; }
+        public IEnumerable<MatchPeriod> MatchPeriods { get; }
 
-        public int AwayScore { get; set; }
+        public int MatchTime { get; }
 
-        public int AggregateHomeScore { get; set; }
+        public string WinnerId { get; }
 
-        public int AggregateAwayScore { get; set; }
+        public int HomeScore { get; }
 
-        public string AggregateWinnerId { get; set; }
+        public int AwayScore { get; }
+
+        public int AggregateHomeScore { get; }
+
+        public int AggregateAwayScore { get; }
+
+        public string AggregateWinnerId { get; }
     }
 }

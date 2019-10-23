@@ -51,7 +51,8 @@
             {
                 try
                 {
-                    var matchResult = await matchApi.GetResult(soccerSettings.AccessLevel, soccerSettings.Version, region.Name, sportRadarLanguage, date.ToSportRadarFormat(), region.Key);
+                    var matchResult = await matchApi.GetResult(
+                        soccerSettings.AccessLevel, soccerSettings.Version, region.Name, sportRadarLanguage, date.ToSportRadarFormat(), region.Key);
 
                     if (matchResult?.results?.Any() == true)
                     {

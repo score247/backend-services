@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoFixture;
 using Fanex.Caching;
 using MassTransit;
 using NSubstitute;
+using Score247.Shared.Tests;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Matches.QueueMessages.MatchEvents;
@@ -16,13 +18,14 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
     [Trait("Soccer.EventProcessors", "PenaltyEventConsumer")]
     public class PenaltyEventConsumerTests
     {
+        private static readonly Fixture fixture = new Fixture();
         private readonly IBus messageBus;
         private readonly ICacheService cacheService;
         private readonly ConsumeContext<IPenaltyEventMessage> context;
 
         private readonly PenaltyEventConsumer consumer;
 
-        public PenaltyEventConsumerTests() 
+        public PenaltyEventConsumerTests()
         {
             messageBus = Substitute.For<IBus>();
             cacheService = Substitute.For<ICacheService>();
@@ -45,12 +48,12 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             context.Message.Returns(new PenaltyEventMessage(new MatchEvent(
                 "sr:league",
                 "sr:match",
-                new MatchResult(),
-                new TimelineEvent { Id = "1" }
+                fixture.Create<MatchResult>(),
+                fixture.For<TimelineEvent>().With(t => t.Id, "1").Create()
                 )));
 
             cacheService.GetAsync<IList<TimelineEvent>>(Arg.Any<string>()).Returns(new List<TimelineEvent> {
-                new TimelineEvent { Id = "1" }
+                fixture.For<TimelineEvent>().With(t => t.Id, "1").Create()
             });
 
             await consumer.Consume(context);
@@ -64,8 +67,8 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             context.Message.Returns(new PenaltyEventMessage(new MatchEvent(
                 "sr:league",
                 "sr:match",
-                new MatchResult(),
-                new TimelineEvent { Id = "1" }
+                fixture.Create<MatchResult>(),
+                fixture.For<TimelineEvent>().With(t => t.Id, "1").Create()
                 )));
 
             await consumer.Consume(context);
@@ -79,8 +82,8 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             context.Message.Returns(new PenaltyEventMessage(new MatchEvent(
                 "sr:league",
                 "sr:match",
-                new MatchResult(),
-                new TimelineEvent { Id = "1" }
+                fixture.Create<MatchResult>(),
+                fixture.For<TimelineEvent>().With(t => t.Id, "1").Create()
                 )));
 
             await consumer.Consume(context);
@@ -95,7 +98,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             context.Message.Returns(new PenaltyEventMessage(new MatchEvent(
                 "sr:league",
                 "sr:match",
-                new MatchResult(),
+                fixture.Create<MatchResult>(),
                 StubHomePenaltyShootout(true)
                 )));
 
@@ -117,7 +120,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             context.Message.Returns(new PenaltyEventMessage(new MatchEvent(
                 "sr:league",
                 "sr:match",
-                new MatchResult(),
+                fixture.Create<MatchResult>(),
                 StubAwayPenaltyShootout(true)
                 )));
 
@@ -150,7 +153,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             context.Message.Returns(new PenaltyEventMessage(new MatchEvent(
               "sr:league",
               matchId,
-              new MatchResult(),
+              fixture.Create<MatchResult>(),
               shootoutEvent
               )));
 
@@ -176,7 +179,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             context.Message.Returns(new PenaltyEventMessage(new MatchEvent(
                "sr:league",
                matchId,
-               new MatchResult(),
+               fixture.Create<MatchResult>(),
                shootoutEvent
                )));
 
@@ -206,20 +209,20 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             context.Message.Returns(new PenaltyEventMessage(new MatchEvent(
                 "sr:league",
                 matchId,
-                new MatchResult(),
+                fixture.Create<MatchResult>(),
                 shootoutEvent
                 )));
 
             await consumer.Consume(context);
 
             await messageBus.Received(1).Publish<IMatchEventProcessedMessage>(
-                Arg.Is<MatchEventProcessedMessage>(evt =>                   
+                Arg.Is<MatchEventProcessedMessage>(evt =>
                     evt.MatchEvent.Timeline.AwayShootoutPlayer.Name == "awayPlayerName" &&
                     !evt.MatchEvent.Timeline.IsAwayShootoutScored &&
                     evt.MatchEvent.Timeline.HomeShootoutPlayer.Name == "homePlayerName" &&
                     evt.MatchEvent.Timeline.IsHomeShootoutScored
                    ));
-           
+
             await cacheService.Received().RemoveAsync(latestEventCacheKey);
         }
 
@@ -238,7 +241,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             context.Message.Returns(new PenaltyEventMessage(new MatchEvent(
                 "sr:league",
                 matchId,
-                new MatchResult(),
+                fixture.Create<MatchResult>(),
                 shootoutEvent
                 )));
 
@@ -259,22 +262,16 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             => StubTimeline("1", true, scored);
 
         private static TimelineEvent StubAwayPenaltyShootout(bool scored)
-            => StubTimeline("1", false, scored);      
+            => StubTimeline("1", false, scored);
 
-        private static TimelineEvent StubTimeline(string id, bool isHome, bool isScored, string playerName = "playerName")
-            => new TimelineEvent
-            {
-                Id = id,
-                Team = isHome ? "home" : "away",
-                IsHomeShootoutScored = isHome && isScored,
-                IsAwayShootoutScored = !isHome && isScored,
-                Player = new Player
-                {
-                    Id = "player_id",
-                    Name = playerName
-                }
-            };
-
-       
+        private static TimelineEvent StubTimeline(string id, bool isHome, bool isScored,
+            string playerName = "playerName")
+            => fixture.For<TimelineEvent>()
+                .With(t => t.Id, id)
+                .With(t => t.Team, isHome ? "home" : "away")
+                .With(t => t.IsHomeShootoutScored, isHome && isScored)
+                .With(t => t.IsAwayShootoutScored, !isHome && isScored)
+                .With(t => t.Player, new Player("player_id", playerName))
+                .Create();
     }
 }

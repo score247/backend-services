@@ -5,7 +5,14 @@ namespace Soccer.Core.Matches.Models
     [MessagePackObject(keyAsPropertyName: true)]
     public class Coverage
     {
-        public Coverage(bool live, string trackerWidgetLink, bool basicScore = false, bool keyEvents = false, bool detailedEvents = false, bool lineups = false, bool commentary = false)
+        public Coverage(
+            bool live,
+            string trackerWidgetLink,
+            bool basicScore = false,
+            bool keyEvents = false,
+            bool detailedEvents = false,
+            bool lineups = false,
+            bool commentary = false)
         {
             Live = live;
             BasicScore = basicScore;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoFixture;
 using Fanex.Caching;
 using Fanex.Data.Repository;
 using MassTransit;
@@ -19,20 +20,19 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
     [Trait("Soccer.EventProcessors", "RedCardEventConsumer")]
     public class RedCardEventConsumerTests
     {
+        private static readonly Fixture fixture = new Fixture();
         private readonly IBus messageBus;
         private readonly ICacheManager cacheManager;
-        private readonly IDynamicRepository dynamicRepository;
         private readonly ConsumeContext<IRedCardEventMessage> context;
-
         private readonly RedCardEventConsumer consumer;
 
         public RedCardEventConsumerTests()
         {
             messageBus = Substitute.For<IBus>();
             cacheManager = Substitute.For<ICacheManager>();
-            dynamicRepository = Substitute.For<IDynamicRepository>();
             context = Substitute.For<ConsumeContext<IRedCardEventMessage>>();
 
+            var dynamicRepository = Substitute.For<IDynamicRepository>();
             consumer = new RedCardEventConsumer(messageBus, cacheManager, dynamicRepository);
         }
 
@@ -51,7 +51,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             context.Message.Returns(new RedCardEventMessage(new MatchEvent(
                 "sr:league",
                 matchId,
-                new MatchResult(),
+                fixture.Create<MatchResult>(),
                 StubRedCard()
                 )));
 
@@ -74,7 +74,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             context.Message.Returns(new RedCardEventMessage(new MatchEvent(
                 "sr:league",
                 matchId,
-                new MatchResult(),
+                fixture.Create<MatchResult>(),
                 StubRedCard()
                 )));
 
@@ -86,17 +86,21 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
                 });
 
             await consumer.Consume(context);
-                        
+
             await messageBus.Received(1).Publish(Arg.Any<MatchEventProcessedMessage>());
             await messageBus.Received(1).Publish(Arg.Is<TeamStatisticUpdatedMessage>(
-                stats => stats.TeamStatistic.RedCards == 1 
+                stats => stats.TeamStatistic.RedCards == 1
                         && stats.TeamStatistic.YellowRedCards == 1));
         }
 
         private static TimelineEvent StubRedCard()
-            => new TimelineEvent { Type = EventType.RedCard };
+            => fixture.Build<TimelineEvent>()
+                .With(t => t.Type, EventType.RedCard)
+                .Create();
 
         private static TimelineEvent StubYellowRedCard()
-           => new TimelineEvent { Type = EventType.YellowRedCard };
+            => fixture.Build<TimelineEvent>()
+                .With(t => t.Type, EventType.YellowCard)
+                .Create();
     }
 }
