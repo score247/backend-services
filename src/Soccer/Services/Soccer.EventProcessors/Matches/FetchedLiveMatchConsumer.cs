@@ -81,6 +81,9 @@ namespace Soccer.EventProcessors.Matches
             // closed match still in api but out of range
             removedMatches.AddRange(GetOutOfRangeClosedMatches(currentLiveMatches));
 
+            // not started match still in api but out of range
+            removedMatches.AddRange(GetOutOfRangeNotStartedMatches(currentLiveMatches));
+
             return removedMatches.Distinct().ToList();
         }
 
@@ -92,6 +95,18 @@ namespace Soccer.EventProcessors.Matches
             var outOfRangeMatches = (inRangeClosedMatches != null && inRangeClosedMatches.Any() 
                 ? currentLiveMatches.Except(inRangeClosedMatches) 
                 : currentLiveMatches.Where(m => m.MatchResult.EventStatus.IsClosed()));
+
+            return outOfRangeMatches.ToList();
+        }
+
+        private IList<Match> GetOutOfRangeNotStartedMatches(IEnumerable<Match> currentLiveMatches)
+        {
+            var inRangeNotStartedMatches = liveMatchRangeFilter
+                .FilterNotStarted(currentLiveMatches);
+
+            var outOfRangeMatches = (inRangeNotStartedMatches != null && inRangeNotStartedMatches.Any()
+                ? currentLiveMatches.Except(inRangeNotStartedMatches)
+                : currentLiveMatches.Where(m => m.MatchResult.EventStatus.IsNotStart()));
 
             return outOfRangeMatches.ToList();
         }

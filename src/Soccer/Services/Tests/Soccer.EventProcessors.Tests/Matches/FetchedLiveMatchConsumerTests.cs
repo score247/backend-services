@@ -97,6 +97,33 @@ namespace Soccer.EventProcessors.Tests.Matches
         }
 
         [Fact]
+        public async Task Consume_HasNewMatchesButOutOfRange_ShouldNotInsert()
+        {
+            // Arrange            
+            var matchesFromApi = new List<Match> { StubNotStartedMatch("match:not:started", DateTimeOffset.Now.AddMinutes(11)) };
+
+            context.Message
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi));
+
+            leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
+                .Returns(matchesFromApi);
+
+            dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
+                .Returns(new List<Match>
+                {
+                    StubNotStartedMatch("match:not:started", DateTimeOffset.Now.AddMinutes(11))
+                });
+
+            // Act
+            await fetchedLiveMatchConsumer.Consume(context);
+
+            // Assert
+            await dynamicRepository.Received(1).ExecuteAsync(Arg.Is<InsertOrRemoveLiveMatchesCommand>(
+                cmd => cmd.RemovedMatchIds.Contains("match:not:started")
+                        && cmd.NewMatches.Equals("[]")));
+        }
+
+        [Fact]
         public async Task Consume_HasBothNewAndClosedMatchInRange_ShouldExecuteCommand()
         {
             // Arrange
