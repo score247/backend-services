@@ -131,6 +131,18 @@ CREATE TABLE IF NOT EXISTS `Lineups_Archived` (
     PRIMARY KEY (`MatchId`, `Language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `HeadToHead` (
+  `HomeTeamId` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `AwayTeamId` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `MatchId` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Language` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'en-US',
+  `Value` json NOT NULL,
+  `CreatedTime` timestamp NULL DEFAULT NULL,
+  `ModifiedTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`HomeTeamId`,`AwayTeamId`,`MatchId`,`Language`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
 
 
 
