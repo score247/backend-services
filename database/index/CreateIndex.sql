@@ -1,0 +1,1 @@
+CREATE INDEX commentary_match_index ON Commentary (MatchId);
