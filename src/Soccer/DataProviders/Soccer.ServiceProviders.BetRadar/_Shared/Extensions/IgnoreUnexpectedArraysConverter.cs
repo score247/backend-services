@@ -56,8 +56,12 @@ namespace Soccer.DataProviders.SportRadar._Shared.Extensions
                 else if (reader.TokenType == JsonToken.StartArray)
                 {
                     var array = JArray.Load(reader);
+
                     if (array.Count > 0)
+                    {
                         throw new JsonSerializationException("Array was not empty.");
+                    }
+
                     return null;
                 }
                 else if (reader.TokenType == JsonToken.StartObject)

@@ -5,7 +5,7 @@ using Soccer.DataProviders.SportRadar.Matches.Dtos;
 
 namespace Soccer.DataProviders.SportRadar.Teams.Dtos
 {
-    public class TeamHeadToHeadsDto
+    public class HeadToHeadsDto
     {
         public IEnumerable<Team> teams { get; set; }
 

@@ -37,8 +37,8 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             services.AddSingleton(RestService.For<ILeagueApi>(sportRadarDataProviderSettings.DefaultServiceUrl));
             services.AddSingleton<ILeagueService, LeagueService>();
 
-            services.AddSingleton(RestService.For<ITeamHeadToHeadApi>(sportRadarDataProviderSettings.ServiceUrl));
-            services.AddSingleton<ITeamHeadToHeadService, TeamHeadToHeadService>();
+            services.AddSingleton(RestService.For<IHeadToHeadApi>(sportRadarDataProviderSettings.ServiceUrl));
+            services.AddSingleton<IHeadToHeadService, HeadToHeadService>();
         }
     }
 }

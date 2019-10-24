@@ -26,7 +26,8 @@
             string referee,
             string region,
             Coverage coverage,
-            IEnumerable<TimelineCommentary> timelineCommentaries) : base(id)
+            IEnumerable<TimelineCommentary> timelineCommentaries,
+            LeagueSeason leagueSeason) : base(id)
         {
             EventDate = eventDate;
             CurrentPeriodStartTime = currentPeriodStartTime;
@@ -42,6 +43,7 @@
             Region = region;
             Coverage = coverage;
             TimelineCommentaries = timelineCommentaries;
+            LeagueSeason = leagueSeason;
         }
 
 #pragma warning restore S107 // Methods should not have too many parameters
@@ -73,6 +75,8 @@
         public Coverage Coverage { get; }
 
         public IEnumerable<TimelineCommentary> TimelineCommentaries { get; }
+
+        public LeagueSeason LeagueSeason { get; }
 
         public void SetLeague(League league) => League = league;
     }

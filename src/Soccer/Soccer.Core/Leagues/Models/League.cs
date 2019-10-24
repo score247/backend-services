@@ -11,7 +11,19 @@ namespace Soccer.Core.Leagues.Models
         {
         }
 
-        [SerializationConstructor, JsonConstructor]
+        [JsonConstructor]
+#pragma warning disable S107 // Methods should not have too many parameters
+        public League(
+            string id,
+            string name,
+            int order,
+            string countryCode) : base(id, name)
+        {
+            Order = order;
+            CountryCode = countryCode;
+        }
+
+        [SerializationConstructor]
 #pragma warning disable S107 // Methods should not have too many parameters
         public League(
             string id,
@@ -21,12 +33,10 @@ namespace Soccer.Core.Leagues.Models
             string countryName,
             string countryCode,
             bool isInternational,
-            string region) : base(id, name)
+            string region) : this(id, name, order, countryCode)
         {
-            Order = order;
             CategoryId = categoryId;
             CountryName = countryName;
-            CountryCode = countryCode;
             IsInternational = isInternational;
             Region = region;
         }

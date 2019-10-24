@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Hangfire;
 using MassTransit;
+using Microsoft.EntityFrameworkCore.Internal;
 using Soccer.Core.Shared.Enumerations;
-using Soccer.DataProviders.Matches.Services;
+using Soccer.Core.Teams.QueueMessages;
 using Soccer.DataProviders.Teams.Services;
-using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
 
 namespace Soccer.DataReceivers.ScheduleTasks.Teams
 {
@@ -19,20 +16,26 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
 
     public class FetchTeamHeadToHeadTask : IFetchTeamHeadToHeadTask
     {
-        private readonly ITeamHeadToHeadService teamHeadToHeadService;
+        private readonly IHeadToHeadService headToHeadService;
         private readonly IBus messageBus;
 
         public FetchTeamHeadToHeadTask(
-            ITeamHeadToHeadService teamHeadToHeadService,
+            IHeadToHeadService headToHeadService,
             IBus messageBus)
         {
-            this.teamHeadToHeadService = teamHeadToHeadService;
+            this.headToHeadService = headToHeadService;
             this.messageBus = messageBus;
         }
 
         public async Task FetchTeamHeadToHead(string homeTeamId, string awayTeamId, Language language)
         {
-            var teamHeadToHeads = await teamHeadToHeadService.GetTeamHeadToHeads(homeTeamId, awayTeamId, language);
+            var headToHeads = await headToHeadService.GetTeamHeadToHeads(homeTeamId, awayTeamId, language);
+
+            if (headToHeads?.Any() == true)
+            {
+                await messageBus.Publish<IHeadToHeadFetchedMessage>(
+                     new HeadToHeadFetchedMessage(homeTeamId, awayTeamId, headToHeads));
+            }
         }
     }
 }

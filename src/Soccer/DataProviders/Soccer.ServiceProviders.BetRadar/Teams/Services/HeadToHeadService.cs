@@ -15,35 +15,35 @@ using Soccer.DataProviders.Teams.Services;
 
 namespace Soccer.DataProviders.SportRadar.Teams.Services
 {
-    public interface ITeamHeadToHeadApi
+    public interface IHeadToHeadApi
     {
         [Get("/soccer-{accessLevel}{version}/{region}/{language}/teams/{homeTeamId}/versus/{awayTeamId}/matches.json?api_key={apiKey}")]
-        Task<TeamHeadToHeadsDto> GetHeadToHead(string accessLevel, string version, string region, string language, string homeTeamId, string awayTeamId, string apiKey);
+        Task<HeadToHeadsDto> GetHeadToHead(string accessLevel, string version, string region, string language, string homeTeamId, string awayTeamId, string apiKey);
     }
 
-    public class TeamHeadToHeadService : ITeamHeadToHeadService
+    public class HeadToHeadService : IHeadToHeadService
     {
-        private readonly ITeamHeadToHeadApi teamHeadToHeadApi;
+        private readonly IHeadToHeadApi headToHeadApi;
         private readonly SportSettings soccerSettings;
         private readonly ILogger logger;
 
-        public TeamHeadToHeadService(ISportRadarSettings sportRadarSettings, ITeamHeadToHeadApi teamHeadToHeadApi, ILogger logger)
+        public HeadToHeadService(ISportRadarSettings sportRadarSettings, IHeadToHeadApi headToHeadApi, ILogger logger)
         {
-            this.teamHeadToHeadApi = teamHeadToHeadApi;
+            this.headToHeadApi = headToHeadApi;
             soccerSettings = sportRadarSettings.Sports.FirstOrDefault(s => s.Id == Sport.Soccer.Value);
             this.logger = logger;
         }
 
-        public async Task<IReadOnlyList<TeamHeadToHead>> GetTeamHeadToHeads(string homeTeamId, string awayTeamId, Language language)
+        public async Task<IReadOnlyList<HeadToHead>> GetTeamHeadToHeads(string homeTeamId, string awayTeamId, Language language)
         {
-            IReadOnlyList<TeamHeadToHead> teamHeadToHeads = null;
+            IReadOnlyList<HeadToHead> teamHeadToHeads = null;
             var sportRadarLanguage = language.ToSportRadarFormat();
 
             foreach (var region in soccerSettings.Regions)
             {
                 try
                 {
-                    var headToHeadDto = await teamHeadToHeadApi.GetHeadToHead(
+                    var headToHeadDto = await headToHeadApi.GetHeadToHead(
                          soccerSettings.AccessLevel,
                          soccerSettings.Version,
                          region.Name,
@@ -52,7 +52,7 @@ namespace Soccer.DataProviders.SportRadar.Teams.Services
                          awayTeamId,
                          region.Key);
 
-                    teamHeadToHeads = TeamHeadToHeadMapper.MapHeadToHeads(headToHeadDto, region.Name);
+                    teamHeadToHeads = HeadToHeadMapper.MapHeadToHeads(headToHeadDto, region.Name);
                 }
                 catch (Exception ex)
                 {

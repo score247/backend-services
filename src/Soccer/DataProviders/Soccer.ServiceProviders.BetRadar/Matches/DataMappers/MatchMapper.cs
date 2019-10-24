@@ -37,7 +37,8 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                 sportEventConditions?.referee?.name,
                 region,
                 coverage,
-                timelineCommentaries);
+                timelineCommentaries,
+                LeagueMapper.MapLeagueSeason(sportEvent.season));
 
             return match;
         }

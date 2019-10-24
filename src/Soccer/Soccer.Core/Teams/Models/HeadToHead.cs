@@ -4,10 +4,10 @@ using Soccer.Core.Matches.Models;
 
 namespace Soccer.Core.Teams.Models
 {
-    public class TeamHeadToHead : BaseEntity
+    public class HeadToHead : BaseEntity
     {
         [JsonConstructor]
-        public TeamHeadToHead(string homeTeamId, string awayTeamId, Match match) : base(string.Empty)
+        public HeadToHead(string homeTeamId, string awayTeamId, Match match) : base(string.Empty)
         {
             HomeTeamId = homeTeamId;
             AwayTeamId = awayTeamId;

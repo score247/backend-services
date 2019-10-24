@@ -5,8 +5,8 @@ using Soccer.Core.Teams.Models;
 
 namespace Soccer.DataProviders.Teams.Services
 {
-    public interface ITeamHeadToHeadService
+    public interface IHeadToHeadService
     {
-        Task<IReadOnlyList<TeamHeadToHead>> GetTeamHeadToHeads(string homeTeamId, string awayTeamId, Language language);
+        Task<IReadOnlyList<HeadToHead>> GetTeamHeadToHeads(string homeTeamId, string awayTeamId, Language language);
     }
 }
