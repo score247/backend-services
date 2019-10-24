@@ -9,6 +9,7 @@ namespace Soccer.Database.Teams
             HomeTeamId = homeTeamId;
             AwayTeamId = awayTeamId;
             Match = ToJsonString(match);
+            MatchId = match.Id;
         }
 
         public string HomeTeamId { get; }
@@ -17,12 +18,15 @@ namespace Soccer.Database.Teams
 
         public string Match { get; }
 
+        public string MatchId { get; }
+
         public override string GetSettingKey()
             => "Team_InsertOrUpdateHeadToHead";
 
         public override bool IsValid()
             => !string.IsNullOrWhiteSpace(HomeTeamId)
                && !string.IsNullOrWhiteSpace(AwayTeamId)
+               && !string.IsNullOrWhiteSpace(MatchId)
                && !string.IsNullOrWhiteSpace(Match);
     }
 }

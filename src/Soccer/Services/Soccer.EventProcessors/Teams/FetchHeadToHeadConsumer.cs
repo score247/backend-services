@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Data.Repository;
 using MassTransit;
@@ -16,19 +17,21 @@ namespace Soccer.EventProcessors.Teams
             this.dynamicRepository = dynamicRepository;
         }
 
-        public async Task Consume(ConsumeContext<IHeadToHeadFetchedMessage> context)
+        public Task Consume(ConsumeContext<IHeadToHeadFetchedMessage> context)
         {
             var message = context?.Message;
 
             if (message != null)
             {
-                var headToHeads = message.HeadToHeads;
+                var headToHeads = message.HeadToHeads.ToList();
 
-                await foreach (var headToHead in message.HeadToHeads)
-                {
-                }
-                await dynamicRepository.ExecuteAsync(new InsertOrUpdateHeadToHeadCommand(message.HomeTeamId, message.AwayTeamId, ))
+                var insertHeadToHeadTasks = headToHeads.Select(h
+                    => dynamicRepository.ExecuteAsync(new InsertOrUpdateHeadToHeadCommand(message.HomeTeamId, message.AwayTeamId, h.Match)));
+
+                return Task.WhenAll(insertHeadToHeadTasks);
             }
+
+            return Task.CompletedTask;
         }
     }
 }
