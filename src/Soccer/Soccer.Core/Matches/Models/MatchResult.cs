@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.Core.Matches.Models
@@ -16,6 +17,7 @@ namespace Soccer.Core.Matches.Models
         // TODO: Move out
 #pragma warning disable S107 // Methods should not have too many parameters
 
+        [JsonConstructor]
         public MatchResult(
             MatchStatus eventStatus,
             MatchStatus matchStatus,

@@ -23,8 +23,8 @@ namespace Soccer.DataProviders.SportRadar.Teams.DataMappers
             var homeTeamId = matchTeams[0].id;
             var awayTeamId = matchTeams[1].id;
 
-            teamHeadToHeads.AddRange(MapTeamResults(teamHeadToHeadsDto.last_meetings.results, region, homeTeamId, awayTeamId));
-            teamHeadToHeads.AddRange(MapTeamSchedules(teamHeadToHeadsDto.next_meetings.Select(m => m.sport_event), region, homeTeamId, awayTeamId));
+            teamHeadToHeads.AddRange(MapTeamResults(teamHeadToHeadsDto.last_meetings?.results, region, homeTeamId, awayTeamId));
+            teamHeadToHeads.AddRange(MapTeamSchedules(teamHeadToHeadsDto.next_meetings?.Select(m => m.sport_event), region, homeTeamId, awayTeamId));
 
             return teamHeadToHeads;
         }
@@ -52,6 +52,11 @@ namespace Soccer.DataProviders.SportRadar.Teams.DataMappers
             IEnumerable<ResultDto> teamResults, string region, string homeTeamId, string awayTeamId)
         {
             var teamHeadToHeads = new List<TeamHeadToHead>();
+
+            if (teamResults == null)
+            {
+                return teamHeadToHeads;
+            }
 
             foreach (var teamResult in teamResults)
             {
