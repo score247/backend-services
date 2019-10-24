@@ -44,8 +44,7 @@
             Venue venue,
             string referee,
             string region,
-            Coverage coverage,
-            IEnumerable<TimelineCommentary> timelineCommentaries,
+            Coverage coverage,            
             LeagueSeason leagueSeason) : base(id)
         {
             EventDate = eventDate;
@@ -60,8 +59,7 @@
             Venue = venue;
             Referee = referee;
             Region = region;
-            Coverage = coverage;
-            TimelineCommentaries = timelineCommentaries;
+            Coverage = coverage;            
             LeagueSeason = leagueSeason;
         }
 
@@ -92,8 +90,6 @@
         public string Region { get; }
 
         public Coverage Coverage { get; }
-
-        public IEnumerable<TimelineCommentary> TimelineCommentaries { get; }
 
         public LeagueSeason LeagueSeason { get; }
 

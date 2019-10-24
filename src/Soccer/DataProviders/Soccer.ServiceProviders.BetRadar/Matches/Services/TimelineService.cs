@@ -14,6 +14,7 @@
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataProviders.SportRadar.Matches.DataMappers;
     using Soccer.DataProviders.SportRadar.Matches.Dtos;
+    using Soccer.DataProviders.SportRadar.Matches.Models;
     using Soccer.DataProviders.SportRadar.Shared.Configurations;
     using Soccer.DataProviders.SportRadar.Shared.Extensions;
 
@@ -38,7 +39,7 @@
             this.logger = logger;
         }
 
-        public async Task<Match> GetTimelines(string matchId, string region, Language language)
+        public async Task<Tuple<Match, IEnumerable<TimelineCommentary>>> GetTimelines(string matchId, string region, Language language)
         {
             var sportRadarLanguage = language.ToSportRadarFormat();
 
@@ -56,13 +57,14 @@
                           timelineDto.sport_event_conditions,
                           region,
                           GetTimelines(timelineDto),
-                          GetCoverageInfo(timelineDto),
-                          GetTimelineCommentaries(timelineDto));
+                          GetCoverageInfo(timelineDto));
 
                     foreach (var team in match.Teams)
                     {
                         team.Statistic = GetStatistic(team.Id, timelineDto.statistics);
                     }
+
+                    return new Tuple<Match, IEnumerable<TimelineCommentary>>(match, GetTimelineCommentaries(timelineDto));
                 }
             }
             catch (Exception ex)

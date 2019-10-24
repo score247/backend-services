@@ -42,17 +42,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         public async Task FetchPreMatchTimeline(string matchId, string region)
         {
             //Note: since we only need coverage_info which does not have language
-            var match = await timelineService.GetTimelines(matchId, region, Language.en_US);
+            var matchCommentaries = await timelineService.GetTimelines(matchId, region, Language.en_US);
 
-            if (match?.Teams == null)
+            if (matchCommentaries?.Item1?.Teams == null || matchCommentaries?.Item1?.Coverage == null)
             {
                 return;
             }
 
-            if (match.Coverage != null)
-            {
-                await messageBus.Publish<IMatchUpdatedCoverageInfo>(new MatchUpdatedCoverageInfo(matchId, match.Coverage));
-            }
+            await messageBus.Publish<IMatchUpdatedCoverageInfo>(new MatchUpdatedCoverageInfo(matchId, matchCommentaries.Item1.Coverage));
         }
     }
 }

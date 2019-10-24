@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using Score247.Shared.Enumerations;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
-using Soccer.Core.Timeline.Models;
 using Soccer.DataProviders.SportRadar.Leagues.DataMappers;
 using Soccer.DataProviders.SportRadar.Matches.Dtos;
 using Soccer.DataProviders.SportRadar.Teams.DataMappers;
@@ -19,8 +18,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
             SportEventConditions sportEventConditions,
             string region,
             IEnumerable<TimelineEvent> timelineEvents = null,
-            Coverage coverage = null,
-            IEnumerable<TimelineCommentary> timelineCommentaries = null)
+            Coverage coverage = null)
         {
             var match = new Match(
                 sportEvent.id,
@@ -37,7 +35,6 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                 sportEventConditions?.referee?.name,
                 region,
                 coverage,
-                timelineCommentaries,
                 LeagueMapper.MapLeagueSeason(sportEvent.season));
 
             return match;

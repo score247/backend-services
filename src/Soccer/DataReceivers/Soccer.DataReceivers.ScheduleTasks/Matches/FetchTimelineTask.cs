@@ -1,5 +1,6 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Hangfire;
@@ -8,6 +9,7 @@
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.QueueMessages;
+    using Soccer.Core.Timeline.Models;
     using Soccer.Core.Timeline.QueueMessages;
     using Soccer.DataProviders.Matches.Services;
 
@@ -43,7 +45,9 @@
 
         public async Task FetchTimelines(string matchId, string region, Language language)
         {
-            var match = await timelineService.GetTimelines(matchId, region, language);
+            var matchCommentaries = await timelineService.GetTimelines(matchId, region, language);
+            var match = matchCommentaries.Item1;
+            var commentaries = matchCommentaries.Item2;
 
             if (match == null || match.Teams == null)
             {
@@ -62,9 +66,9 @@
                 await messageBus.Publish<IMatchTimelinesFetchedMessage>(new MatchTimelinesFetchedMessage(match, language));
             }
 
-            if (match.TimelineCommentaries != null)
+            if (commentaries != null)
             {
-                await PublishCommentaries(matchId, language, match);
+                await PublishCommentaries(matchId, match.League.Id, language, commentaries);
             }
         }
 
@@ -77,14 +81,14 @@
             }
         }
 
-        private async Task PublishCommentaries(string matchId, Language language, Core.Matches.Models.Match match)
+        private async Task PublishCommentaries(string matchId, string leagueId, Language language, IEnumerable<TimelineCommentary> commentaries)
         {
-            foreach (var commentary in from commentary in match.TimelineCommentaries
+            foreach (var commentary in from commentary in commentaries
                                        where commentary.Commentaries.Any()
                                        select commentary)
             {
                 await messageBus.Publish<IMatchCommentaryFetchedMessage>(
-                    new MatchCommentaryFetchedMessage(match.League.Id, matchId, commentary, language));
+                    new MatchCommentaryFetchedMessage(leagueId, matchId, commentary, language));
             }
         }
     }
