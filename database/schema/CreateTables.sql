@@ -142,6 +142,17 @@ CREATE TABLE `HeadToHead` (
   PRIMARY KEY (`HomeTeamId`,`AwayTeamId`,`MatchId`,`Language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `Commentary_Archived` (
+  `TimelineId` bigint(20) NOT NULL,
+  `MatchId` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Value` json NOT NULL,
+  `Language` varchar(10) NOT NULL,
+  `CreatedTime` timestamp NOT NULL,
+  `ModifiedTime` timestamp NOT NULL,
+  `Id` bigint(20) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 
 
