@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Fanex.Logging;
 using Refit;
 using Score247.Shared.Enumerations;
+using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.Models;
 using Soccer.DataProviders.SportRadar.Shared.Configurations;
@@ -34,9 +35,9 @@ namespace Soccer.DataProviders.SportRadar.Teams.Services
             this.logger = logger;
         }
 
-        public async Task<IReadOnlyList<HeadToHead>> GetTeamHeadToHeads(string homeTeamId, string awayTeamId, Language language)
+        public async Task<IReadOnlyList<Match>> GetTeamHeadToHeads(string homeTeamId, string awayTeamId, Language language)
         {
-            IReadOnlyList<HeadToHead> teamHeadToHeads = null;
+            IReadOnlyList<Match> teamHeadToHeads = null;
             var sportRadarLanguage = language.ToSportRadarFormat();
 
             foreach (var region in soccerSettings.Regions)

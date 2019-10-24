@@ -1,18 +1,15 @@
-﻿using Soccer.API.Leagues;
+﻿using System;
+using Fanex.Caching;
+using Fanex.Data.Repository;
+using Microsoft.Extensions.DependencyInjection;
+using Score247.Shared;
+using Soccer.API.Leagues;
+using Soccer.API.Matches;
+using Soccer.API.Odds;
+using Soccer.API.Teams;
 
 namespace Soccer.API.Shared.Middlewares
 {
-    using System;
-    using System.IO;
-    using Fanex.Caching;
-    using Fanex.Data.Repository;
-    using Microsoft.Extensions.DependencyInjection;
-    using Score247.Shared;
-    using Soccer.API.Matches;
-    using Soccer.API.Matches.Helpers;
-    using Soccer.API.Odds;
-    using Svg;
-
     public static class ServiceMiddleware
     {
         public static void AddServices(this IServiceCollection services)
@@ -23,6 +20,7 @@ namespace Soccer.API.Shared.Middlewares
             services.AddScoped<IMatchQueryService, MatchQueryService>();
             services.AddScoped<IOddsQueryService, OddsQueryService>();
             services.AddScoped<ILeagueQueryService, LeagueQueryService>();
+            services.AddScoped<ITeamQueryService, TeamQueryService>();
             services.AddScoped<ICacheManager, CacheManager>();
             services.AddSingleton<Func<DateTimeOffset>>(() => DateTimeOffset.Now);
             services.AddSingleton<IMatchLineupsGenerator>(new MatchLineupsSvgGenerator(

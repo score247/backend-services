@@ -83,8 +83,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                 var homeTeamId = match.Teams.FirstOrDefault(t => t.IsHome)?.Id;
                 var awayTeamId = match.Teams.FirstOrDefault(t => !t.IsHome)?.Id;
 
-                BackgroundJob.Enqueue<IFetchTeamHeadToHeadTask>(t =>
-                    t.FetchTeamHeadToHead(homeTeamId, awayTeamId, language));
+                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
+                    t.FetchHeadToHeads(homeTeamId, awayTeamId, language));
             }
         }
     }

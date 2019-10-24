@@ -1,15 +1,17 @@
 ﻿using Soccer.Core.Matches.Models;
+using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.Database.Teams
 {
     public class InsertOrUpdateHeadToHeadCommand : BaseCommand
     {
-        public InsertOrUpdateHeadToHeadCommand(string homeTeamId, string awayTeamId, Match match)
+        public InsertOrUpdateHeadToHeadCommand(string homeTeamId, string awayTeamId, Match match, Language language)
         {
             HomeTeamId = homeTeamId;
             AwayTeamId = awayTeamId;
             Match = ToJsonString(match);
             MatchId = match.Id;
+            Language = language.DisplayName;
         }
 
         public string HomeTeamId { get; }
@@ -19,6 +21,8 @@ namespace Soccer.Database.Teams
         public string Match { get; }
 
         public string MatchId { get; }
+
+        public string Language { get; }
 
         public override string GetSettingKey()
             => "Team_InsertOrUpdateHeadToHead";

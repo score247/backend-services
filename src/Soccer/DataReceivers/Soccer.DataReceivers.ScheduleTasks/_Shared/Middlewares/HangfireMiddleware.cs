@@ -28,7 +28,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             services.AddScoped<IFetchLiveMatchesTimelineTask, FetchLiveMatchesTimelineTask>();
             services.AddScoped<IFetchPreMatchesTimelineTask, FetchPreMatchesTimelineTask>();
             services.AddScoped<IFetchLeaguesTask, FetchLeaguesTask>();
-            services.AddScoped<IFetchTeamHeadToHeadTask, FetchTeamHeadToHeadTask>();
+            services.AddScoped<IFetchHeadToHeadsTask, FetchHeadToHeadsTask>();
             services.AddScoped<IFetchMatchLineupsTask, FetchMatchLineupsTask>();
         }
 

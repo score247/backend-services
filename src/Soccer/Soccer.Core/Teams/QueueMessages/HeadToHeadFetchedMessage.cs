@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using Soccer.Core.Teams.Models;
+﻿using System.Linq;
+using Soccer.Core.Matches.Models;
+using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.Core.Teams.QueueMessages
 {
@@ -9,22 +10,31 @@ namespace Soccer.Core.Teams.QueueMessages
 
         string AwayTeamId { get; }
 
-        IReadOnlyList<HeadToHead> HeadToHeads { get; }
+        Match HeadToHeadMatch { get; }
+
+        Language Language { get; }
     }
 
     public class HeadToHeadFetchedMessage : IHeadToHeadFetchedMessage
     {
-        public HeadToHeadFetchedMessage(string homeTeamId, string awayTeamId, IReadOnlyList<HeadToHead> headToHeads)
+        public HeadToHeadFetchedMessage(string homeTeamId, string awayTeamId, Match headToHeadMatch, Language language)
         {
-            HomeTeamId = homeTeamId;
-            AwayTeamId = awayTeamId;
-            HeadToHeads = headToHeads;
+            HomeTeamId = string.IsNullOrWhiteSpace(homeTeamId)
+                ? headToHeadMatch?.Teams.FirstOrDefault(t => t.IsHome)?.Id
+                : homeTeamId;
+            AwayTeamId = string.IsNullOrWhiteSpace(awayTeamId)
+                ? headToHeadMatch?.Teams.FirstOrDefault(t => !t.IsHome)?.Id
+                : awayTeamId;
+            HeadToHeadMatch = headToHeadMatch;
+            Language = language;
         }
 
         public string HomeTeamId { get; }
 
         public string AwayTeamId { get; }
 
-        public IReadOnlyList<HeadToHead> HeadToHeads { get; }
+        public Match HeadToHeadMatch { get; }
+
+        public Language Language { get; }
     }
 }

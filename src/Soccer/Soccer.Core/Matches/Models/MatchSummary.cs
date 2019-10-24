@@ -44,7 +44,8 @@
             string countryName,
             DateTimeOffset modifiedTime,
             bool isInternationalLeague,
-            int leagueOrder)
+            int leagueOrder,
+            string leagueSeasonId)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             Id = id;
@@ -78,6 +79,7 @@
             ModifiedTime = modifiedTime;
             IsInternationalLeague = isInternationalLeague;
             LeagueOrder = leagueOrder;
+            LeagueSeasonId = leagueSeasonId;
         }
 
         public MatchSummary()
@@ -107,6 +109,7 @@
                 CountryName = match.League.CountryName;
                 IsInternationalLeague = match.League.IsInternational;
                 LeagueOrder = match.League.Order;
+                LeagueSeasonId = match.LeagueSeason?.Id;
             }
         }
 
@@ -173,13 +176,13 @@
         }
 
         [Key(0)]
-        public string Id { get; private set; }
+        public string Id { get; }
 
         [Key(1)]
-        public DateTimeOffset EventDate { get; private set; }
+        public DateTimeOffset EventDate { get; }
 
         [Key(2)]
-        public DateTimeOffset CurrentPeriodStartTime { get; private set; }
+        public DateTimeOffset CurrentPeriodStartTime { get; }
 
         [Key(3)]
         public string LeagueId { get; private set; }
@@ -264,6 +267,9 @@
 
         [Key(30)]
         public int LeagueOrder { get; private set; }
+
+        [Key(31)]
+        public string LeagueSeasonId { get; private set; }
     }
 
 #pragma warning restore S109 // Magic numbers should not be used
