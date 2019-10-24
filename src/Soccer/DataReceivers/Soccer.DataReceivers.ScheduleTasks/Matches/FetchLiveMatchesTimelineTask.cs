@@ -15,13 +15,16 @@
     {
         private readonly IMatchService matchService;
         private readonly IFetchMatchLineupsTask fetchMatchLineupsTask;
+        private readonly IFetchTimelineTask fetchTimelineTask;
 
         public FetchLiveMatchesTimelineTask(
             IMatchService matchService,
-            IFetchMatchLineupsTask fetchMatchLineupsTask)
+            IFetchMatchLineupsTask fetchMatchLineupsTask,
+            IFetchTimelineTask fetchTimelineTask)
         {
             this.matchService = matchService;
             this.fetchMatchLineupsTask = fetchMatchLineupsTask;
+            this.fetchTimelineTask = fetchTimelineTask;
         }
 
         public async Task FetchLiveMatchesTimeline()
@@ -29,10 +32,10 @@
             var matches = await matchService.GetLiveMatches(Language.en_US);
 
             foreach (var match in matches)
-            {   
-                BackgroundJob.Enqueue<IFetchTimelineTask>(t => t.FetchTimelines(match.Id, match.Region));
-
-                await fetchMatchLineupsTask.FetchMatchLineups(match.Id, match.Region);
+            {
+                await Task.WhenAll(
+                    fetchTimelineTask.FetchTimelines(match.Id, match.Region),
+                    fetchMatchLineupsTask.FetchMatchLineups(match.Id, match.Region));
             }
         }
     }

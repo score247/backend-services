@@ -14,7 +14,7 @@
     public interface IFetchTimelineTask
     {
         [Queue("medium")]
-        void FetchTimelines(string matchId, string regionName);
+        Task FetchTimelines(string matchId, string regionName);
 
         [Queue("medium")]
         Task FetchTimelines(string matchId, string region, Language language);
@@ -33,11 +33,11 @@
             this.timelineService = timelineService;
         }
 
-        public void FetchTimelines(string matchId, string regionName)
+        public async Task FetchTimelines(string matchId, string regionName)
         {
             foreach (var language in Enumeration.GetAll<Language>())
             {
-                BackgroundJob.Enqueue<IFetchTimelineTask>(t => t.FetchTimelines(matchId, regionName, language));
+                await FetchTimelines(matchId, regionName, language);
             }
         }
 

@@ -14,6 +14,7 @@
         public static readonly Position CentralMidfielder = new Position(6, "Central midfielder");
         public static readonly Position LeftWinger = new Position(7, "Left winger");
         public static readonly Position Striker = new Position(8, "Striker");
+        public static readonly Position Unknown = new Position(9, "Unknown");
 
         public Position()
         {

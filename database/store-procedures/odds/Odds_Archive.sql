@@ -1,6 +1,6 @@
 DROP procedure IF EXISTS `Odds_Archive`;
 
-CREATE DEFINER=`root`@`%` PROCEDURE `Odds_Archive`()
+CREATE DEFINER=`user`@`%` PROCEDURE `Odds_Archive`()
 BEGIN
 	INSERT INTO Odds_Archived
 						(`CreatedTime`,

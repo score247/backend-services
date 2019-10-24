@@ -30,7 +30,7 @@
 
         Task<MatchStatistic> GetMatchStatistic(string id);
 
-        Task<Match> GetMatchLineups(string id, Language language);
+        Task<MatchLineups> GetMatchLineups(string id, Language language);
     }
 
     public class MatchQueryService : IMatchQueryService
@@ -111,29 +111,29 @@
 
         private CacheItemOptions GetCacheOptions()
             => new CacheItemOptions().SetAbsoluteExpiration(dateTimeNowFunc().AddMinutes(MatchDataCacheInMinutes));
+
         public async Task<MatchStatistic> GetMatchStatistic(string id)
             => await cacheManager.GetOrSetAsync(
                 $"{MatchStatisticCacheKey}_{id}",
                 async () => await GetMatchStatisticData(id),
                 GetCacheOptions());
 
-
-        public async Task<Match> GetMatchLineups(string id, Language language)
+        public async Task<MatchLineups> GetMatchLineups(string id, Language language)
             => await cacheManager.GetOrSetAsync(
                 $"{MatchLineupCacheKey}_{id}_{language.Value}",
                 async () => await GetMatchLineupsData(id, language),
                 GetCacheOptions());
 
-        private async Task<Match> GetMatchLineupsData(string id, Language language)
+        private async Task<MatchLineups> GetMatchLineupsData(string id, Language language)
         {
-            var match = await dynamicRepository.GetAsync<Match>(new GetMatchLineupsCriteria(id, language));
+            var matchLineups = await dynamicRepository.GetAsync<MatchLineups>(new GetMatchLineupsCriteria(id, language));
 
-            if (match == null)
+            if (matchLineups == null)
             {
-                return new Match();
+                return new MatchLineups();
             }
 
-            return match;
+            return matchLineups;
         }
 
         private async Task<MatchStatistic> GetMatchStatisticData(string id)
@@ -197,6 +197,5 @@
 
         private static string BuildCacheKey(string key, DateTime from, DateTime to)
             => $"{key}_{from.ToString(FormatDate)}_{to.ToString(FormatDate)}";
-
     }
 }

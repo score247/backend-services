@@ -14,7 +14,7 @@ namespace Soccer.Core.Teams.Models
         }
 
         [SerializationConstructor, JsonConstructor]
-        public Player(string id, string name, string type, int jerseyNumber, string position, int order) : base(id, name)
+        public Player(string id, string name, PlayerType type, int jerseyNumber, Position position, int order) : base(id, name)
         {
             Type = type;
             JerseyNumber = jerseyNumber;
@@ -23,13 +23,13 @@ namespace Soccer.Core.Teams.Models
         }
 
         [Key(2)]
-        public PlayerType Type { get; set; }
+        public PlayerType Type { get; }
 
         [Key(3)]
         public int JerseyNumber { get; }
 
         [Key(4)]
-        public Position Position { get; set; }
+        public Position Position { get; }
 
         [Key(5)]
         public int Order { get; }

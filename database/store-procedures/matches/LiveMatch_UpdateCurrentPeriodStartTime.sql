@@ -1,6 +1,6 @@
 DROP procedure IF EXISTS `LiveMatch_UpdateCurrentPeriodStartTime`;
 
-CREATE DEFINER=`root`@`%` PROCEDURE `LiveMatch_UpdateCurrentPeriodStartTime`(IN sportId INT, IN matchId VARCHAR(45), IN currentPeriodStartTime TINYTEXT)
+CREATE DEFINER=`user`@`%` PROCEDURE `LiveMatch_UpdateCurrentPeriodStartTime`(IN sportId INT, IN matchId VARCHAR(45), IN currentPeriodStartTime TINYTEXT)
 BEGIN
 	UPDATE `LiveMatch` as LM
 	SET `Value` = JSON_SET(`Value`,  '$.CurrentPeriodStartTime', JSON_UNQUOTE(currentPeriodStartTime))

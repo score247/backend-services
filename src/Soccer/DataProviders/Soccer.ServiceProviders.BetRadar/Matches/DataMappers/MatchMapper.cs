@@ -47,16 +47,14 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
             SportEventDto sportEvent,
             string region)
         {
-            var match = new Match
-            {
-                Id = sportEvent.id,
-                EventDate = sportEvent.scheduled,
-                Teams = TeamMapper.MapTeams(sportEvent),
-                League = LeagueMapper.MapLeague(sportEvent.tournament, region),
-                LeagueRound = LeagueMapper.MapLeagueRound(sportEvent.tournament_round),
-                Region = region,
-                Venue = MapVenue(sportEvent.venue)
-            };
+            var match = new Match(
+                sportEvent.id,
+                sportEvent.scheduled,
+                TeamMapper.MapTeams(sportEvent),
+                LeagueMapper.MapLeague(sportEvent.tournament, region),
+                LeagueMapper.MapLeagueRound(sportEvent.tournament_round),
+                MapVenue(sportEvent.venue),
+                region);
 
             return match;
         }

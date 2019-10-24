@@ -1,22 +1,26 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using MessagePack;
+using Newtonsoft.Json;
 
 namespace Soccer.Core.Teams.Models
 {
+    [MessagePackObject(keyAsPropertyName: true)]
     public class TeamLineups : Team
     {
+        private const char formationSplitChar = '-';
+
+#pragma warning disable S107 // Methods should not have too many parameters
+        [SerializationConstructor, JsonConstructor]
         public TeamLineups(
             string id,
             string name,
-            string country,
-            string countryCode,
-            string flag,
             bool isHome,
-            TeamStatistic statistic,
             Coach coach,
             string formation,
-            string abbreviation,
             IEnumerable<Player> players,
-            IEnumerable<Player> substitutions) : base(id, name, country, countryCode, flag, isHome, statistic, abbreviation)
+            IEnumerable<Player> substitutions) : base(id, name, isHome)
+#pragma warning restore S107 // Methods should not have too many parameters
         {
             Coach = coach;
             Formation = formation;
@@ -31,5 +35,12 @@ namespace Soccer.Core.Teams.Models
         public IEnumerable<Player> Players { get; }
 
         public IEnumerable<Player> Substitutions { get; }
+
+        public IEnumerable<byte> FormationToArray() => (Formation ?? string.Empty)
+            .Split(formationSplitChar)
+            .Where(fm => !string.IsNullOrWhiteSpace(fm))
+            .Select(fm => byte.Parse(fm));
+
+        public byte TotalFormationLine() => (byte)(1 + FormationToArray().Count());
     }
 }

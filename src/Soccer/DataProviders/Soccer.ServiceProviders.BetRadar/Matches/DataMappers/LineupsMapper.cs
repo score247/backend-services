@@ -11,17 +11,17 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
     {
         private const string Home = "home";
 
-        public static Match MapLineups(MatchLineupsDto matchLineupsDto, string region)
+        public static MatchLineups MapLineups(MatchLineupsDto matchLineupsDto, string region)
         {
             var match = MatchMapper.MapMatch(matchLineupsDto.sport_event, region);
 
-            SetTeamLineups(match.Teams.FirstOrDefault(t => t.IsHome), matchLineupsDto.lineups);
-            SetTeamLineups(match.Teams.FirstOrDefault(t => !t.IsHome), matchLineupsDto.lineups);
+            var homeTeam = MapTeamLineups(match.Teams.FirstOrDefault(t => t.IsHome), matchLineupsDto.lineups);
+            var awayTeam = MapTeamLineups(match.Teams.FirstOrDefault(t => !t.IsHome), matchLineupsDto.lineups);
 
-            return match;
+            return new MatchLineups(match.Id, match.EventDate, homeTeam, awayTeam);
         }
 
-        private static void SetTeamLineups(Team team, IEnumerable<Lineup> lineups)
+        private static TeamLineups MapTeamLineups(Team team, IEnumerable<Lineup> lineups)
         {
             if (team != null)
             {
@@ -29,34 +29,41 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 
                 if (teamLineups != null)
                 {
-                    team.Formation = teamLineups.formation;
-                    team.Coach = new Coach
-                    {
-                        Id = teamLineups.manager?.id,
-                        CountryCode = teamLineups.manager?.country_code,
-                        Nationality = teamLineups.manager?.nationality,
-                        Name = teamLineups.manager?.name
-                    };
+                    var startingLineups = teamLineups.starting_lineup.Select(pl =>
+                            new Player(
+                                pl.id,
+                                pl.name,
+                                Enumeration.FromDisplayName<PlayerType>(pl.type),
+                                pl.jersey_number,
+                                Enumeration.FromDisplayName<Position>(pl.position),
+                                pl.order));
 
-                    team.Players = teamLineups.starting_lineup.Select(pl => new Player
-                    {
-                        Id = pl.id,
-                        Name = pl.name,
-                        Order = pl.order,
-                        Position = Enumeration.FromDisplayName<Position>(pl.position),
-                        Type = Enumeration.FromDisplayName<PlayerType>(pl.type),
-                        JerseyNumber = pl.jersey_number,
-                    });
+                    var substitutesLineups = teamLineups.substitutes.Select(pl => new Player(
+                            pl.id,
+                            pl.name,
+                            Enumeration.FromDisplayName<PlayerType>(pl.type),
+                            pl.jersey_number,
+                            Position.Unknown,
+                            0));
+                    var coach = new Coach(
+                            teamLineups.manager?.id,
+                            teamLineups.manager?.country_code,
+                            teamLineups.manager?.nationality,
+                            teamLineups.manager?.name
+                        );
 
-                    team.Substitutions = teamLineups.substitutes.Select(pl => new Player
-                    {
-                        Id = pl.id,
-                        Name = pl.name,
-                        Type = Enumeration.FromDisplayName<PlayerType>(pl.type),
-                        JerseyNumber = pl.jersey_number
-                    });
+                    return new TeamLineups(
+                        team.Id,
+                        team.Name,
+                        team.IsHome,
+                        coach,
+                        teamLineups.formation,
+                        startingLineups,
+                        substitutesLineups);
                 }
             }
+
+            return default(TeamLineups);
         }
     }
 }

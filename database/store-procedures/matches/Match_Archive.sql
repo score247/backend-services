@@ -1,6 +1,6 @@
 DROP procedure IF EXISTS `Match_Archive`;
 
-CREATE DEFINER=`root`@`%` PROCEDURE `Match_Archive`()
+CREATE DEFINER=`user`@`%` PROCEDURE `Match_Archive`()
 BEGIN
 	INSERT INTO Match_Archived
 		SELECT * FROM `Match` as M

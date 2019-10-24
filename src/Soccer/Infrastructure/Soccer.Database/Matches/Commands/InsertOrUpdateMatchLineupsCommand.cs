@@ -5,11 +5,11 @@ namespace Soccer.Database.Matches.Commands
 {
     public class InsertOrUpdateMatchLineupsCommand : BaseCommand
     {
-        public InsertOrUpdateMatchLineupsCommand(Match match, Language language)
+        public InsertOrUpdateMatchLineupsCommand(MatchLineups match, Language language)
         {
             MatchId = match.Id;
             Lineups = ToJsonString(match);
-
+            Language = language.DisplayName;
         }
 
         public string Lineups { get; }

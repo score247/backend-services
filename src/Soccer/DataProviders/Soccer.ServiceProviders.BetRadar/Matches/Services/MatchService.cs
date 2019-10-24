@@ -139,7 +139,7 @@
             }
         }
 
-        public async Task<Match> GetLineups(string matchId, string region, Language language)
+        public async Task<MatchLineups> GetLineups(string matchId, string region, Language language)
         {
             try
             {
@@ -157,7 +157,7 @@
                 await logger.ErrorAsync(ex.Message, ex);
             }
 
-            return new Match();
+            return default(MatchLineups);
         }
     }
 }

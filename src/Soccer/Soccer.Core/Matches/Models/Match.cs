@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using Newtonsoft.Json;
     using Score247.Shared.Base;
     using Soccer.Core.Leagues.Models;
     using Soccer.Core.Teams.Models;
@@ -9,8 +10,26 @@
 
     public sealed class Match : BaseEntity
     {
-#pragma warning disable S107 // Methods should not have too many parameters
+        public Match(
+            string id,
+            DateTimeOffset eventDate,
+            IEnumerable<Team> teams,
+            League league,
+            LeagueRound leagueRound,
+            Venue venue,
+            string region) : base(id)
+        {
+            EventDate = eventDate;
+            Teams = teams;
+            League = league;
+            LeagueRound = leagueRound;
+            Venue = venue;
+            Region = region;
+        }
+                
 
+#pragma warning disable S107 // Methods should not have too many parameters
+        [JsonConstructor]
         public Match(
             string id,
             DateTimeOffset eventDate,

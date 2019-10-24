@@ -10,6 +10,7 @@
         public static readonly PlayerType Defender = new PlayerType(2, "defender");
         public static readonly PlayerType Midfielder = new PlayerType(3, "midfielder");
         public static readonly PlayerType Forward = new PlayerType(4, "forward");
+        public static readonly PlayerType Unknown = new PlayerType(5, "Unknown");
 
         public PlayerType()
         {

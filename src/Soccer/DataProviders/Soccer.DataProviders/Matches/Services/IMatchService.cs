@@ -14,6 +14,6 @@
 
         Task<IReadOnlyList<Match>> GetLiveMatches(Language language);
 
-        Task<Match> GetLineups(string matchId, string region, Language language);
+        Task<MatchLineups> GetLineups(string matchId, string region, Language language);
     }
 }

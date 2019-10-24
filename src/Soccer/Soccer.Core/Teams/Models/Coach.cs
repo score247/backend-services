@@ -1,6 +1,5 @@
 ﻿using MessagePack;
 using Newtonsoft.Json;
-    using MessagePack;
 using Score247.Shared.Base;
 
 namespace Soccer.Core.Teams.Models
