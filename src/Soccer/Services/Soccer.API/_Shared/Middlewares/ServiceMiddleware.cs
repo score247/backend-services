@@ -1,12 +1,15 @@
 ﻿using System;
+using System.IO;
 using Fanex.Caching;
 using Fanex.Data.Repository;
 using Microsoft.Extensions.DependencyInjection;
 using Score247.Shared;
 using Soccer.API.Leagues;
 using Soccer.API.Matches;
+using Soccer.API.Matches.Helpers;
 using Soccer.API.Odds;
 using Soccer.API.Teams;
+using Svg;
 
 namespace Soccer.API.Shared.Middlewares
 {
