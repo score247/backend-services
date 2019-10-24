@@ -6,7 +6,7 @@ using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.API.Matches.Requests
 {
-    public class MatchLineupsRequest : IRequest<MatchLineups>
+    public class MatchLineupsRequest : IRequest<MatchPitchViewLineups>
     {
         public MatchLineupsRequest(string id, string language)
         {

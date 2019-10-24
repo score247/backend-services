@@ -1,21 +1,39 @@
-﻿using MessagePack;
-using Soccer.Core.Matches.Models;
+﻿using System;
+using MessagePack;
+using Soccer.Core.Teams.Models;
 
 namespace Soccer.API.Matches.Models
 {
     [MessagePackObject]
     public class MatchPitchViewLineups
     {
-        public MatchPitchViewLineups(MatchLineups matchLineups, string pitchView)
+        public MatchPitchViewLineups(
+            string id,
+            DateTimeOffset eventDate,
+            TeamLineups home,
+            TeamLineups away,
+            string pitchView)
         {
-            MatchLineups = matchLineups;
+            Id = id;
+            EventDate = eventDate;
+            Home = home;
+            Away = away;
             PitchView = pitchView;
         }
 
         [Key(0)]
-        public MatchLineups MatchLineups { get; }
+        public string Id { get; }
 
         [Key(1)]
+        public DateTimeOffset EventDate { get; }
+
+        [Key(2)]
+        public TeamLineups Home { get; }
+
+        [Key(3)]
+        public TeamLineups Away { get; }
+
+        [Key(4)]
         public string PitchView { get; }
     }
 }

@@ -6,6 +6,7 @@
     using MediatR;
     using Models;
     using Requests;
+    using Soccer.API.Matches.Helpers;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Teams.Models;
 
@@ -17,13 +18,17 @@
         IRequestHandler<MatchCoverageByIdRequest, MatchCoverage>,
         IRequestHandler<MatchCommentaryByIdRequest, IEnumerable<MatchCommentary>>,
         IRequestHandler<MatchStatisticRequest, MatchStatistic>,
-        IRequestHandler<MatchLineupsRequest, MatchLineups>
+        IRequestHandler<MatchLineupsRequest, MatchPitchViewLineups>
     {
         private readonly IMatchQueryService matchQueryService;
+        private readonly IMatchLineupsGenerator matchLineupsGenerator;
 
-        public MatchHandler(IMatchQueryService matchQueryService)
+        public MatchHandler(
+            IMatchQueryService matchQueryService,
+            IMatchLineupsGenerator matchLineupsGenerator)
         {
             this.matchQueryService = matchQueryService;
+            this.matchLineupsGenerator = matchLineupsGenerator;
         }
 
         public async Task<IEnumerable<MatchSummary>> Handle(MatchesByDateRequest request, CancellationToken cancellationToken)
@@ -47,11 +52,18 @@
         public async Task<MatchStatistic> Handle(MatchStatisticRequest request, CancellationToken cancellationToken)
             => await matchQueryService.GetMatchStatistic(request.Id);
 
-        public async Task<MatchLineups> Handle(MatchLineupsRequest request, CancellationToken cancellationToken)
+        public async Task<MatchPitchViewLineups> Handle(MatchLineupsRequest request, CancellationToken cancellationToken)
         {
-            var match = await matchQueryService.GetMatchLineups(request.Id, request.Language);
-            // Please Ignore this temporaty code here
-            return match; //new MatchLineups(StubLineUp(true), StubLineUp(false), string.Empty);
+            var matchLineups = await matchQueryService.GetMatchLineups(request.Id, request.Language);
+
+            var lineupsSvg = matchLineupsGenerator.Generate(matchLineups);
+
+            return new MatchPitchViewLineups(
+                matchLineups.Id,
+                matchLineups.EventDate,
+                matchLineups.Home,
+                matchLineups.Away,
+                lineupsSvg); //new MatchLineups(StubLineUp(true), StubLineUp(false), string.Empty);
         }
     }
 }
