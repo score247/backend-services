@@ -11,5 +11,6 @@ CREATE EVENT Event_ArchiveData
 		CALL Match_Archive();
         CALL Timeline_Archive();
         CALL Odds_Archive();
+		CALL Commentary_Archive();
     END
     | DELIMITER ;
