@@ -585,7 +585,7 @@ namespace Soccer.API.Tests.Odds
                 .FetchAsync<TimelineEvent>(Arg.Is<GetTimelineEventsCriteria>(c => c.MatchId == matchId))
                 .Returns(timelines);
 
-            match.TimeLines = timelines ?? Enumerable.Empty<TimelineEvent>();
+            match.SetTimelines(timelines ?? Enumerable.Empty<TimelineEvent>());
 
             return match;
         }

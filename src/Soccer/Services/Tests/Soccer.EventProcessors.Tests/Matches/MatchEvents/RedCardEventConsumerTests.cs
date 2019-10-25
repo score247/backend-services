@@ -7,6 +7,7 @@ using Fanex.Data.Repository;
 using MassTransit;
 using NSubstitute;
 using Score247.Shared;
+using Score247.Shared.Tests;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Matches.QueueMessages.MatchEvents;
@@ -94,12 +95,12 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
         }
 
         private static TimelineEvent StubRedCard()
-            => fixture.Build<TimelineEvent>()
+            => fixture.For<TimelineEvent>()
                 .With(t => t.Type, EventType.RedCard)
                 .Create();
 
         private static TimelineEvent StubYellowRedCard()
-            => fixture.Build<TimelineEvent>()
+            => fixture.For<TimelineEvent>()
                 .With(t => t.Type, EventType.YellowCard)
                 .Create();
     }

@@ -61,7 +61,7 @@
 
                     foreach (var team in match.Teams)
                     {
-                        team.Statistic = GetStatistic(team.Id, timelineDto.statistics);
+                        team.SetStatistics(GetStatistic(team.Id, timelineDto.statistics));
                     }
 
                     return new Tuple<Match, IEnumerable<TimelineCommentary>>(match, GetTimelineCommentaries(timelineDto));

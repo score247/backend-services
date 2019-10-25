@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using Score247.Shared.Enumerations;
 using Score247.Shared.Tests;
 using Soccer.Core.Matches.Extensions;
 using Soccer.Core.Matches.Models;
@@ -39,7 +40,7 @@ namespace Soccer.Core.Tests.Matches.Extensions
         {
             var timeline = fixture
                 .For<TimelineEvent>()
-                .With(t => t.Type, EventType.PenaltyMissed)
+                .With(t => t.Type, Enumeration.FromDisplayName<EventType>("penalty_missed"))
                 .Create();
 
             Assert.True(timeline.ShouldReprocessScore());
@@ -50,7 +51,7 @@ namespace Soccer.Core.Tests.Matches.Extensions
         {
             var timeline = fixture
                 .For<TimelineEvent>()
-                .With(t => t.Type, EventType.ScoreChange)
+                .With(t => t.Type, Enumeration.FromDisplayName<EventType>("score_change"))
                 .Create();
 
             Assert.False(timeline.ShouldReprocessScore());
@@ -61,7 +62,7 @@ namespace Soccer.Core.Tests.Matches.Extensions
         {
             var timeline = fixture
                 .For<TimelineEvent>()
-                .With(t => t.Type, EventType.PenaltyMissed)
+                .With(t => t.Type, Enumeration.FromDisplayName<EventType>("penalty_missed"))
                 .Create();
 
             Assert.False(timeline.IsScoreChangeInPenalty());
@@ -72,8 +73,8 @@ namespace Soccer.Core.Tests.Matches.Extensions
         {
             var timeline = fixture
                 .For<TimelineEvent>()
-                .With(t => t.Type, EventType.ScoreChange)
-                .With(t => t.PeriodType, PeriodType.RegularPeriod)
+                .With(t => t.Type, Enumeration.FromDisplayName<EventType>("score_change"))
+                .With(t => t.PeriodType, Enumeration.FromDisplayName<PeriodType>("regular_period"))
                 .Create();
 
             Assert.False(timeline.IsScoreChangeInPenalty());

@@ -13,7 +13,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 
         public static MatchLineups MapLineups(MatchLineupsDto matchLineupsDto, string region)
         {
-            var match = MatchMapper.MapMatch(matchLineupsDto.sport_event, region);
+            var match = MatchMapper.MapMatch(matchLineupsDto.sport_event, null, null, region);
 
             var homeTeam = MapTeamLineups(match.Teams.FirstOrDefault(t => t.IsHome), matchLineupsDto.lineups);
             var awayTeam = MapTeamLineups(match.Teams.FirstOrDefault(t => !t.IsHome), matchLineupsDto.lineups);
@@ -55,7 +55,12 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                     return new TeamLineups(
                         team.Id,
                         team.Name,
+                        team.Country,
+                        team.CountryCode,
+                        team.Flag,
                         team.IsHome,
+                        team.Statistic,
+                        team.Abbreviation,
                         coach,
                         teamLineups.formation,
                         startingLineups,

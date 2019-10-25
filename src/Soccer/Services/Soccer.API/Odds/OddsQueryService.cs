@@ -132,7 +132,7 @@
 
             if (timelineEvents?.Count() > 0)
             {
-                match.TimeLines = timelineEvents.OrderBy(t => t.Time);
+                match.SetTimelines(timelineEvents.OrderBy(t => t.Time));
             }
         }
 

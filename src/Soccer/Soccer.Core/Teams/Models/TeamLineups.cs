@@ -10,17 +10,20 @@ namespace Soccer.Core.Teams.Models
     {
         private const char formationSplitChar = '-';
 
-#pragma warning disable S107 // Methods should not have too many parameters
         [SerializationConstructor, JsonConstructor]
         public TeamLineups(
             string id,
             string name,
+            string country,
+            string countryCode,
+            string flag,
             bool isHome,
+            TeamStatistic statistic,
+            string abbreviation,
             Coach coach,
             string formation,
             IEnumerable<Player> players,
-            IEnumerable<Player> substitutions) : base(id, name, isHome)
-#pragma warning restore S107 // Methods should not have too many parameters
+            IEnumerable<Player> substitutions) : base(id, name, country, countryCode, flag, isHome, statistic, abbreviation)
         {
             Coach = coach;
             Formation = formation;

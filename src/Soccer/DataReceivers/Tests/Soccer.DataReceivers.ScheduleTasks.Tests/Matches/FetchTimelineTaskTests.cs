@@ -71,7 +71,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_HasAttendance_ShouldPublishMatchUpdatedConditionsMessage()
         {
             // Arrange
-            var match = fixture.For<Match>()                
+            var match = fixture.For<Match>()
                 .With(m => m.Attendance, 10000)
                 .Create();
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
@@ -131,8 +131,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             var match = fixture.For<Match>()
                 .With(m => m.Teams, new List<Team>
                 {
-                    new Team("", "AC Milan", true),
-                    new Team("", "Juventus")
+                    fixture.For<Team>()
+                        .With(t => t.Name, "AC Milan")
+                        .With(t => t.IsHome, true)
+                        .With(t => t.Statistic, null).Create(),
+                    fixture.For<Team>()
+                        .With(t => t.Name, "Juventus")
+                        .With(t => t.IsHome, false)
+                        .With(t => t.Statistic, null).Create(),
                 })
                 .Create();
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
@@ -152,8 +158,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             var match = fixture.For<Match>()
                 .With(m => m.Teams, new List<Team>
                 {
-                    new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
-                    new Team("", "Juventus", false, new TeamStatistic(0, 0))
+                    fixture.For<Team>()
+                        .With(t => t.Name, "AC Milan")
+                        .With(t => t.IsHome, true)
+                        .With(t => t.Statistic, new TeamStatistic(0, 2)).Create(),
+                    fixture.For<Team>()
+                        .With(t => t.Name, "Juventus")
+                        .With(t => t.IsHome, false)
+                        .With(t => t.Statistic, new TeamStatistic(0, 0)).Create(),
                 })
                 .Create();
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
@@ -173,8 +185,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             var match = fixture.For<Match>()
                 .With(m => m.Teams, new List<Team>
                 {
-                    new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
-                    new Team("", "Juventus", false, null)
+                    fixture.For<Team>()
+                        .With(t => t.Name, "AC Milan")
+                        .With(t => t.IsHome, true)
+                        .With(t => t.Statistic, new TeamStatistic(0, 2)).Create(),
+                    fixture.For<Team>()
+                        .With(t => t.Name, "Juventus")
+                        .With(t => t.IsHome, false)
+                        .With(t => t.Statistic, null).Create(),
                 })
                 .Create();
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
@@ -194,12 +212,18 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             var match = fixture.For<Match>()
                 .With(m => m.Teams, new List<Team>
                 {
-                    new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
-                    new Team("", "Juventus", false, new TeamStatistic(0, 0))
+                    fixture.For<Team>()
+                        .With(t => t.Name, "AC Milan")
+                        .With(t => t.IsHome, true)
+                        .With(t => t.Statistic, new TeamStatistic(0, 2)).Create(),
+                    fixture.For<Team>()
+                        .With(t => t.Name, "Juventus")
+                        .With(t => t.IsHome, false)
+                        .With(t => t.Statistic, new TeamStatistic(0, 0)).Create(),
                 })
+                .With(m => m.TimeLines, null)
                 .Create();
 
-            match.TimeLines = null;
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
@@ -217,12 +241,18 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             var match = fixture.For<Match>()
                 .With(m => m.Teams, new List<Team>
                 {
-                    new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
-                    new Team("", "Juventus", false, new TeamStatistic(0, 0))
+                    fixture.For<Team>()
+                        .With(t => t.Name, "AC Milan")
+                        .With(t => t.IsHome, true)
+                        .With(t => t.Statistic, new TeamStatistic(0, 2)).Create(),
+                    fixture.For<Team>()
+                        .With(t => t.Name, "Juventus")
+                        .With(t => t.IsHome, false)
+                        .With(t => t.Statistic, new TeamStatistic(0, 0)).Create(),
                 })
                 .With(m => m.TimeLines, new List<TimelineEvent>())
                 .Create();
-            match.TimeLines = Enumerable.Empty<TimelineEvent>();
+
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
@@ -240,8 +270,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             var match = fixture.For<Match>()
                 .With(m => m.Teams, new List<Team>
                 {
-                    new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
-                    new Team("", "Juventus", false, new TeamStatistic(0, 0))
+                    fixture.For<Team>()
+                        .With(t => t.Name, "AC Milan")
+                        .With(t => t.IsHome, true)
+                        .With(t => t.Statistic, new TeamStatistic(0, 2)).Create(),
+                    fixture.For<Team>()
+                        .With(t => t.Name, "Juventus")
+                        .With(t => t.IsHome, false)
+                        .With(t => t.Statistic, new TeamStatistic(0, 0)).Create(),
                 })
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
@@ -266,8 +302,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             var match = fixture.For<Match>()
                 .With(m => m.Teams, new List<Team>
                 {
-                    new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
-                    new Team("", "Juventus", false, new TeamStatistic(0, 0))
+                    fixture.For<Team>()
+                        .With(t => t.Name, "AC Milan")
+                        .With(t => t.IsHome, true)
+                        .With(t => t.Statistic, new TeamStatistic(0, 2)).Create(),
+                    fixture.For<Team>()
+                        .With(t => t.Name, "Juventus")
+                        .With(t => t.IsHome, false)
+                        .With(t => t.Statistic, new TeamStatistic(0, 0)).Create(),
                 })
                 .Create();
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
@@ -287,8 +329,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             var match = fixture.For<Match>()
                 .With(m => m.Teams, new List<Team>
                 {
-                    new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
-                    new Team("", "Juventus", false, new TeamStatistic(0, 0))
+                    fixture.For<Team>()
+                        .With(t => t.Name, "AC Milan")
+                        .With(t => t.IsHome, true)
+                        .With(t => t.Statistic, new TeamStatistic(0, 2)).Create(),
+                    fixture.For<Team>()
+                        .With(t => t.Name, "Juventus")
+                        .With(t => t.IsHome, false)
+                        .With(t => t.Statistic, new TeamStatistic(0, 0)).Create(),
                 })
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
@@ -316,8 +364,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 .With(m => m.League, new League("sr:league", ""))
                 .With(m => m.Teams, new List<Team>
                 {
-                    new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
-                    new Team("", "Juventus", false, new TeamStatistic(0, 0))
+                    fixture.For<Team>()
+                        .With(t => t.Name, "AC Milan")
+                        .With(t => t.IsHome, true)
+                        .With(t => t.Statistic, new TeamStatistic(0, 2)).Create(),
+                    fixture.For<Team>()
+                        .With(t => t.Name, "Juventus")
+                        .With(t => t.IsHome, false)
+                        .With(t => t.Statistic, new TeamStatistic(0, 0)).Create(),
                 })
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {

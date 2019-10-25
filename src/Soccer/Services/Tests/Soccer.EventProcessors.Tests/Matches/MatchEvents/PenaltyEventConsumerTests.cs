@@ -264,14 +264,18 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
         private static TimelineEvent StubAwayPenaltyShootout(bool scored)
             => StubTimeline("1", false, scored);
 
-        private static TimelineEvent StubTimeline(string id, bool isHome, bool isScored,
-            string playerName = "playerName")
-            => fixture.For<TimelineEvent>()
-                .With(t => t.Id, id)
-                .With(t => t.Team, isHome ? "home" : "away")
-                .With(t => t.IsHomeShootoutScored, isHome && isScored)
-                .With(t => t.IsAwayShootoutScored, !isHome && isScored)
-                .With(t => t.Player, new Player("player_id", playerName))
-                .Create();
+        private static TimelineEvent StubTimeline(string id, bool isHome, bool isScored, string playerName = "playerName")
+        {
+            var timeline = fixture.For<TimelineEvent>()
+                  .With(t => t.Id, id)
+                  .With(t => t.Team, isHome ? "home" : "away")
+                  .With(t => t.Player, new Player("player_id", playerName))
+                  .Create();
+
+            timeline.IsHomeShootoutScored = isHome && isScored;
+            timeline.IsAwayShootoutScored = !isHome && isScored;
+
+            return timeline;
+        }
     }
 }

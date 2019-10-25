@@ -40,28 +40,21 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
             return match;
         }
 
-        public static Match MapMatch(
-            SportEventDto sportEvent,
-            string region)
-        {
-            var match = new Match(
-                sportEvent.id,
-                sportEvent.scheduled,
-                TeamMapper.MapTeams(sportEvent),
-                LeagueMapper.MapLeague(sportEvent.tournament, region),
-                LeagueMapper.MapLeagueRound(sportEvent.tournament_round),
-                MapVenue(sportEvent.venue),
-                region);
-
-            return match;
-        }
-
         public static MatchResult MapMatchResult(string status, SportEventStatusDto sportEventStatus = null)
         {
             var matchResult = new MatchResult(
                 !string.IsNullOrWhiteSpace(status)
                     ? Enumeration.FromDisplayName<MatchStatus>(status) : MatchStatus.NotStarted,
-                MatchStatus.NotStarted);
+                MatchStatus.NotStarted,
+                0,
+                new List<MatchPeriod>(),
+                0,
+                string.Empty,
+                0,
+                0,
+                0,
+                0,
+                string.Empty);
 
             if (sportEventStatus != null)
             {

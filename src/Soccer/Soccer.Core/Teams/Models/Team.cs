@@ -7,13 +7,6 @@ namespace Soccer.Core.Teams.Models
     [MessagePackObject(keyAsPropertyName: true)]
     public class Team : BaseModel
     {
-        public Team(string id, string name, bool isHome = false, TeamStatistic teamStatistic = null) : base(id, name)
-        {
-            IsHome = isHome;
-
-            Statistic = teamStatistic;
-        }
-
 #pragma warning disable S107 // Methods should not have too many parameters
 
         [SerializationConstructor, JsonConstructor]
@@ -45,8 +38,10 @@ namespace Soccer.Core.Teams.Models
 
         public bool IsHome { get; }
 
-        public TeamStatistic Statistic { get; set; }
+        public TeamStatistic Statistic { get; private set; }
 
         public string Abbreviation { get; }
+
+        public void SetStatistics(TeamStatistic statistic) => Statistic = statistic;
     }
 }

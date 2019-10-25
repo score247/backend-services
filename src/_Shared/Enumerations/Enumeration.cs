@@ -1,4 +1,6 @@
-﻿namespace Score247.Shared.Enumerations
+﻿using Newtonsoft.Json;
+
+namespace Score247.Shared.Enumerations
 {
     using System;
     using System.Collections;

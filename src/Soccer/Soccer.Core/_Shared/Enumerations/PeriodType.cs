@@ -24,11 +24,6 @@
         {
         }
 
-        public PeriodType(byte value)
-            : base(value, value.ToString())
-        {
-        }
-
         public bool IsPenalties() => this == Penalties;
     }
 }

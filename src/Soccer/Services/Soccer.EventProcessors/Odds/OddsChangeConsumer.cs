@@ -148,7 +148,7 @@
         {
             var oddsEvents = new List<OddsMovementEvent>();
 
-            match.TimeLines = await GetMatchTimelines(match.Id, matchEvent);
+            match.SetTimelines(await GetMatchTimelines(match.Id, matchEvent));
 
             foreach (var betTypeOdds in betTypeOddsList)
             {

@@ -10,25 +10,8 @@
 
     public sealed class Match : BaseEntity
     {
-        public Match(
-            string id,
-            DateTimeOffset eventDate,
-            IEnumerable<Team> teams,
-            League league,
-            LeagueRound leagueRound,
-            Venue venue,
-            string region) : base(id)
-        {
-            EventDate = eventDate;
-            Teams = teams;
-            League = league;
-            LeagueRound = leagueRound;
-            Venue = venue;
-            Region = region;
-        }
-                
-
 #pragma warning disable S107 // Methods should not have too many parameters
+
         [JsonConstructor]
         public Match(
             string id,
@@ -44,7 +27,7 @@
             Venue venue,
             string referee,
             string region,
-            Coverage coverage,            
+            Coverage coverage,
             LeagueSeason leagueSeason) : base(id)
         {
             EventDate = eventDate;
@@ -59,7 +42,7 @@
             Venue = venue;
             Referee = referee;
             Region = region;
-            Coverage = coverage;            
+            Coverage = coverage;
             LeagueSeason = leagueSeason;
         }
 
@@ -77,7 +60,7 @@
 
         public LeagueRound LeagueRound { get; }
 
-        public IEnumerable<TimelineEvent> TimeLines { get; set; }
+        public IEnumerable<TimelineEvent> TimeLines { get; private set; }
 
         public TimelineEvent LatestTimeline { get; set; }
 
@@ -94,5 +77,7 @@
         public LeagueSeason LeagueSeason { get; }
 
         public void SetLeague(League league) => League = league;
+
+        public void SetTimelines(IEnumerable<TimelineEvent> timelineEvents) => TimeLines = timelineEvents;
     }
 }

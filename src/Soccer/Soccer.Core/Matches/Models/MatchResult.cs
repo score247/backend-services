@@ -6,15 +6,6 @@ namespace Soccer.Core.Matches.Models
 {
     public class MatchResult
     {
-        public MatchResult(
-            MatchStatus eventStatus,
-            MatchStatus matchStatus)
-        {
-            EventStatus = eventStatus;
-            MatchStatus = matchStatus;
-        }
-
-        // TODO: Move out
 #pragma warning disable S107 // Methods should not have too many parameters
 
         [JsonConstructor]
