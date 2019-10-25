@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoFixture;
@@ -55,7 +56,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 .With(m => m.Teams, new List<Team>())
                 .With(m => m.Referee, "AAA")
                 .Create();
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
+
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+                .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -68,11 +71,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_HasAttendance_ShouldPublishMatchUpdatedConditionsMessage()
         {
             // Arrange
-            var match = fixture.For<Match>()
-                .With(m => m.Teams, new List<Team>())
+            var match = fixture.For<Match>()                
                 .With(m => m.Attendance, 10000)
                 .Create();
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+                .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -91,7 +94,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 .With(m => m.Referee, "AAA")
                 .Create();
 
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+                .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -110,7 +114,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 .With(m => m.Referee, null)
                 .With(m => m.Attendance, 0)
                 .Create();
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+                .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -130,7 +135,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                     new Team("", "Juventus")
                 })
                 .Create();
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+                .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -150,7 +156,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                     new Team("", "Juventus", false, new TeamStatistic(0, 0))
                 })
                 .Create();
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+                .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -170,7 +177,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                     new Team("", "Juventus", false, null)
                 })
                 .Create();
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+                .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -192,7 +200,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 .Create();
 
             match.TimeLines = null;
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+                .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -214,7 +223,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 .With(m => m.TimeLines, new List<TimelineEvent>())
                 .Create();
             match.TimeLines = Enumerable.Empty<TimelineEvent>();
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+                .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -238,7 +248,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                     fixture.For<TimelineEvent>().With(t => t.Type, EventType.MatchStarted).Create()
                 })
                 .Create();
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
+
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+                .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -257,9 +269,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                     new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
                     new Team("", "Juventus", false, new TeamStatistic(0, 0))
                 })
-                .With(m => m.TimelineCommentaries, null)
                 .Create();
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+                .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -278,7 +290,6 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                     new Team("", "AC Milan", true, new TeamStatistic(0, 2)),
                     new Team("", "Juventus", false, new TeamStatistic(0, 0))
                 })
-                .With(m => m.TimelineCommentaries, Enumerable.Empty<TimelineCommentary>())
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
                     fixture.For<TimelineEvent>()
@@ -287,7 +298,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                         .Create()
                 })
                 .Create();
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+                .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
@@ -318,7 +330,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                         .With(t => t.Type, EventType.ScoreChange)
                         .Create()
                 })
-                .With(m => m.TimelineCommentaries, new List<TimelineCommentary> {
+                .Create();
+            var commentaries = new List<TimelineCommentary> {
                     new TimelineCommentary (1, new List<Commentary>
                     {
                         new Commentary("match has started")
@@ -327,9 +340,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                     {
                         new Commentary( "Goal! Cucuta Deportivo FC have got their heads in front thanks to a James Castro strike."),
                         new Commentary("Carmelo Valencia with an assist there.")
-                    })})
-                .Create();
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US).Returns(match);
+                    })};
+
+            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+                .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, commentaries));
 
             // Act
             await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
