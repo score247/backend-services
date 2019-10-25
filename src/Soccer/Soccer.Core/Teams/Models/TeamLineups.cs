@@ -39,11 +39,19 @@ namespace Soccer.Core.Teams.Models
 
         public IEnumerable<Player> Substitutions { get; }
 
-        public IEnumerable<byte> FormationToArray() => (Formation ?? string.Empty)
-            .Split(formationSplitChar)
-            .Where(fm => !string.IsNullOrWhiteSpace(fm))
-            .Select(fm => byte.Parse(fm));
+        public IList<byte> ConvertFormationToList()
+        {
+            var tempList = (Formation ?? string.Empty)
+           .Split(formationSplitChar)
+           .Where(fm => !string.IsNullOrWhiteSpace(fm))
+           .Select(fm => byte.Parse(fm))
+           .ToList();
+            var formationList = new List<byte> { 1 };
+            formationList.AddRange(tempList);
 
-        public byte TotalFormationLine() => (byte)(1 + FormationToArray().Count());
+            return formationList;
+        }
+
+        public byte CountTotalFormationLine() => (byte)(1 + ConvertFormationToList().Count);
     }
 }

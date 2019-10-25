@@ -3,6 +3,7 @@ using System.Linq;
 using Score247.Shared.Enumerations;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Teams.Models;
+using Soccer.DataProviders.SportRadar._Shared;
 using Soccer.DataProviders.SportRadar.Matches.Dtos;
 
 namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
@@ -32,7 +33,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                     var startingLineups = teamLineups.starting_lineup.Select(pl =>
                             new Player(
                                 pl.id,
-                                pl.name,
+                                PlayerNameConverter.Convert(pl.name),
                                 Enumeration.FromDisplayName<PlayerType>(pl.type),
                                 pl.jersey_number,
                                 Enumeration.FromDisplayName<Position>(pl.position),
@@ -40,11 +41,12 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 
                     var substitutesLineups = teamLineups.substitutes.Select(pl => new Player(
                             pl.id,
-                            pl.name,
+                            PlayerNameConverter.Convert(pl.name),
                             Enumeration.FromDisplayName<PlayerType>(pl.type),
                             pl.jersey_number,
                             Position.Unknown,
                             0));
+
                     var coach = new Coach(
                             teamLineups.manager?.id,
                             teamLineups.manager?.country_code,

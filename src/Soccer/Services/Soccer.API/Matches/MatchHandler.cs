@@ -1,6 +1,8 @@
 ﻿namespace Soccer.API.Matches
 {
+    using System;
     using System.Collections.Generic;
+    using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
@@ -58,12 +60,15 @@
 
             var lineupsSvg = matchLineupsGenerator.Generate(matchLineups);
 
+            //TODO: for testing
+            File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"test.svg"), lineupsSvg);
+
             return new MatchPitchViewLineups(
                 matchLineups.Id,
                 matchLineups.EventDate,
                 matchLineups.Home,
                 matchLineups.Away,
-                lineupsSvg); //new MatchLineups(StubLineUp(true), StubLineUp(false), string.Empty);
+                lineupsSvg);
         }
     }
 }
