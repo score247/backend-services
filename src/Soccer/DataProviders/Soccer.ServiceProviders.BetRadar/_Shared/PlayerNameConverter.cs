@@ -14,7 +14,7 @@ namespace Soccer.DataProviders.SportRadar._Shared
                 var minAllowedLength = firstCommaIndex + 2;
                 if (firstCommaIndex > 0 && playerName.Length > minAllowedLength)
                 {
-                    var firstName = playerName.Substring(firstCommaIndex + 1).ToUpperInvariant();
+                    var firstName = playerName.Substring(firstCommaIndex + 2).ToUpperInvariant();
                     var lastName = playerName.Substring(0, firstCommaIndex);
 
                     return $"{firstName[0]}. {lastName}";
