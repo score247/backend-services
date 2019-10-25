@@ -11,7 +11,6 @@ using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Matches.Commands;
 using Soccer.Database.Matches.Criteria;
-using Soccer.EventProcessors.Leagues;
 using Soccer.EventProcessors.Leagues.Filters;
 using Soccer.EventProcessors.Matches.Filters;
 

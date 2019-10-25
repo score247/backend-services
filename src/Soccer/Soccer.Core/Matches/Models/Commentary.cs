@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using MessagePack;
+﻿using MessagePack;
+using Newtonsoft.Json;
 
 namespace Soccer.Core.Matches.Models
 {

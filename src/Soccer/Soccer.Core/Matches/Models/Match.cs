@@ -6,7 +6,6 @@
     using Score247.Shared.Base;
     using Soccer.Core.Leagues.Models;
     using Soccer.Core.Teams.Models;
-    using Soccer.Core.Timeline.Models;
 
     public sealed class Match : BaseEntity
     {

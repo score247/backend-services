@@ -6,7 +6,6 @@ using MassTransit;
 using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
 using Soccer.Database.Matches.Commands;
-using Soccer.EventProcessors.Leagues;
 using Soccer.EventProcessors.Leagues.Filters;
 
 namespace Soccer.EventProcessors.Matches

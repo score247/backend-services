@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Teams.Models;
 using Svg;
-using Svg.Transforms;
 
 namespace Soccer.API.Matches.Helpers
 {
@@ -65,7 +63,7 @@ namespace Soccer.API.Matches.Helpers
         }
 
         private static IEnumerable<SvgElement> RenderTeam(
-            TeamLineups teamLineups, 
+            TeamLineups teamLineups,
             SvgPath jeyseyElement)
         {
             var players = new List<SvgElement>();
@@ -78,10 +76,10 @@ namespace Soccer.API.Matches.Helpers
             foreach (var formationItem in formationSplits)
             {
                 var rowPlayers = RenderPlayerRow(
-                    jeyseyElement, 
-                    teamLineups.Players.Skip(playerIndex).Take(formationItem), 
-                    teamLineups.IsHome, 
-                    rowIndex++, 
+                    jeyseyElement,
+                    teamLineups.Players.Skip(playerIndex).Take(formationItem),
+                    teamLineups.IsHome,
+                    rowIndex++,
                     yPlayerDistance);
 
                 players = players.Concat(rowPlayers).ToList();
@@ -92,8 +90,8 @@ namespace Soccer.API.Matches.Helpers
         }
 
         private static List<SvgElement> RenderPlayerRow(
-            SvgPath jeyseyElement, 
-            IEnumerable<Player> players, 
+            SvgPath jeyseyElement,
+            IEnumerable<Player> players,
             bool isHome,
             int rowIndex,
             int yPlayerDistance)

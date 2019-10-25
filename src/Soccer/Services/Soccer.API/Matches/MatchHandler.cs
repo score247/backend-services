@@ -10,7 +10,6 @@
     using Requests;
     using Soccer.API.Matches.Helpers;
     using Soccer.Core.Matches.Models;
-    using Soccer.Core.Teams.Models;
 
     public class MatchHandler :
         IRequestHandler<MatchesByDateRequest, IEnumerable<MatchSummary>>,

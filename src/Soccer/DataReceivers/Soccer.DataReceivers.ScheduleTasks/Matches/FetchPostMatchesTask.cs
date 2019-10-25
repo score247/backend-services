@@ -46,7 +46,7 @@
                 }
             }
         }
-      
+
         public async Task FetchPostMatchesForDate(DateTime date, Language language)
         {
             int batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;

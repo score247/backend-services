@@ -16,7 +16,7 @@
             int attendance)
         {
             Match = match;
-            TimelineEvents = timelineEvents.OrderBy(t => t.MatchTime).ThenBy(t=>t.Time).ToList();
+            TimelineEvents = timelineEvents.OrderBy(t => t.MatchTime).ThenBy(t => t.Time).ToList();
             Attendance = attendance;
             Venue = venue;
             Referee = referee;

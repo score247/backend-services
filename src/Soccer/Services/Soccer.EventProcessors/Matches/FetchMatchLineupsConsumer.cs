@@ -19,7 +19,7 @@ namespace Soccer.EventProcessors.Matches
         {
             var message = context.Message;
 
-            if(message?.MatchLineups == null)
+            if (message?.MatchLineups == null)
             {
                 return;
             }

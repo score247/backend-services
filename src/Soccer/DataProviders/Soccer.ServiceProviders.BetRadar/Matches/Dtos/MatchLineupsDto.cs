@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Soccer.DataProviders.SportRadar.Odds.Dtos;
 
 namespace Soccer.DataProviders.SportRadar.Matches.Dtos
 {

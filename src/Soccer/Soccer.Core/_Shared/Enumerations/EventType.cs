@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace Soccer.Core.Shared.Enumerations
+﻿namespace Soccer.Core.Shared.Enumerations
 {
     using MessagePack;
     using Score247.Shared.Enumerations;

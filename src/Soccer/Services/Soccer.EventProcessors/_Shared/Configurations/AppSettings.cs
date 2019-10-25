@@ -1,7 +1,6 @@
 ﻿namespace Soccer.EventProcessors.Shared.Configurations
 {
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel;
     using Microsoft.Extensions.Configuration;
 

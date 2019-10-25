@@ -146,13 +146,13 @@
                 var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == region).Key;
                 var matchLineUp = await matchApi.GetLineups(soccerSettings.AccessLevel, soccerSettings.Version, matchId, region, language.ToSportRadarFormat(), apiKey);
 
-                if(matchLineUp?.sport_event != null
+                if (matchLineUp?.sport_event != null
                     && matchLineUp?.lineups != null)
                 {
                     return LineupsMapper.MapLineups(matchLineUp, region);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await logger.ErrorAsync(ex.Message, ex);
             }

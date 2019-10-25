@@ -14,10 +14,8 @@
     using Refit;
     using Sentry;
     using Soccer.Core.Shared.Configurations;
-    using Soccer.DataProviders.Leagues;
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataProviders.Odds;
-    using Soccer.DataProviders.SportRadar.Leagues.Services;
     using Soccer.DataProviders.SportRadar.Matches.Services;
     using Soccer.DataProviders.SportRadar.Odds;
     using Soccer.DataProviders.SportRadar.Shared.Configurations;

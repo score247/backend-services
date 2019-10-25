@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Timeline.Models;
 

@@ -14,7 +14,6 @@
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataProviders.SportRadar.Matches.DataMappers;
     using Soccer.DataProviders.SportRadar.Matches.Dtos;
-    using Soccer.DataProviders.SportRadar.Matches.Models;
     using Soccer.DataProviders.SportRadar.Shared.Configurations;
     using Soccer.DataProviders.SportRadar.Shared.Extensions;
 

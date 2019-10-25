@@ -7,7 +7,6 @@ using Refit;
 using Score247.Shared.Enumerations;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
-using Soccer.Core.Teams.Models;
 using Soccer.DataProviders.SportRadar.Shared.Configurations;
 using Soccer.DataProviders.SportRadar.Shared.Extensions;
 using Soccer.DataProviders.SportRadar.Teams.DataMappers;
