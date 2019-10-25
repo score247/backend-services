@@ -60,7 +60,7 @@
             var lineupsSvg = matchLineupsGenerator.Generate(matchLineups);
 
             //TODO: for testing
-            File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"test.svg"), lineupsSvg);
+            File.WriteAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{request.Id.Replace(":", "_")}.svg"), lineupsSvg);
 
             return new MatchPitchViewLineups(
                 matchLineups.Id,
