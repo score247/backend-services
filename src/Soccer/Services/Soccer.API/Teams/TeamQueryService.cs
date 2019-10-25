@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Data.Repository;
@@ -26,8 +27,9 @@ namespace Soccer.API.Teams
         {
             var criteria = new GetHeadToHeadsCriteria(homeTeamId, awayTeamId, language);
             var matches = await dynamicRepository.FetchAsync<Match>(criteria);
+            var filteredMatches = matches.Where(m => m.EventDate.Year >= DateTime.Now.Year - 4);
 
-            return matches.Select(m => new MatchSummary(m));
+            return filteredMatches.Select(m => new MatchSummary(m));
         }
     }
 }
