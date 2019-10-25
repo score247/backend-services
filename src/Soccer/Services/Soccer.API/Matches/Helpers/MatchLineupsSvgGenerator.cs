@@ -139,7 +139,7 @@ namespace Soccer.API.Matches.Helpers
                 FontSize = 12
             };
 
-            playerNumber.AddStyle("fill", "white", 0);
+            playerNumber.AddStyle("fill", "#fff", 0);
 
             return playerNumber;
         }
@@ -157,7 +157,7 @@ namespace Soccer.API.Matches.Helpers
                 FontSize = 12
             };
 
-            playerName.AddStyle("fill", "white", 0);
+            playerName.AddStyle("fill", "#fff", 0);
 
             return playerName;
         }
