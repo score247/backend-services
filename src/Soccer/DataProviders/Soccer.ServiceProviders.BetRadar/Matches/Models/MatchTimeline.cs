@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Soccer.Core.Matches.Models;
-using Soccer.Core.Timeline.Models;
+using Soccer.Core.Timelines.Models;
 
 namespace Soccer.DataProviders.SportRadar.Matches.Models
 {

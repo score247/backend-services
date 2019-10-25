@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Fanex.Data.Repository;
 using MassTransit;
-using Soccer.Core.Timeline.QueueMessages;
+using Soccer.Core.Timelines.QueueMessages;
 using Soccer.Database.Timelines.Commands;
 
 namespace Soccer.EventProcessors.Timeline

@@ -3,7 +3,7 @@ using Score247.Shared.Enumerations;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.Models;
-using Soccer.Core.Timeline.Models;
+using Soccer.Core.Timelines.Models;
 using Soccer.DataProviders.SportRadar.Matches.Dtos;
 
 namespace Soccer.DataProviders.SportRadar.Matches.DataMappers

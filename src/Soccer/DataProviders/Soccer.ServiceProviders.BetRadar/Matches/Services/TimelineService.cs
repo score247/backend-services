@@ -1,4 +1,6 @@
-﻿namespace Soccer.DataProviders.SportRadar.Matches.Services
+﻿using Soccer.Core.Timelines.Models;
+
+namespace Soccer.DataProviders.SportRadar.Matches.Services
 {
     using System;
     using System.Collections.Generic;
@@ -10,7 +12,6 @@
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.Models;
-    using Soccer.Core.Timeline.Models;
     using Soccer.DataProviders.Matches.Services;
     using Soccer.DataProviders.SportRadar.Matches.DataMappers;
     using Soccer.DataProviders.SportRadar.Matches.Dtos;

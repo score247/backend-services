@@ -1,4 +1,7 @@
-﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
+﻿using Soccer.Core.Timelines.Models;
+using Soccer.Core.Timelines.QueueMessages;
+
+namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -9,8 +12,6 @@
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.QueueMessages;
-    using Soccer.Core.Timeline.Models;
-    using Soccer.Core.Timeline.QueueMessages;
     using Soccer.DataProviders.Matches.Services;
 
     public interface IFetchTimelineTask

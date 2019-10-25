@@ -5,8 +5,8 @@ using MassTransit;
 using NSubstitute;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
-using Soccer.Core.Timeline.Models;
-using Soccer.Core.Timeline.QueueMessages;
+using Soccer.Core.Timelines.Models;
+using Soccer.Core.Timelines.QueueMessages;
 using Soccer.Database.Timelines.Commands;
 using Soccer.EventProcessors.Timeline;
 using Xunit;
@@ -28,7 +28,6 @@ namespace Soccer.EventProcessors.Tests.Timelines
 
             consumer = new FetchCommentaryConsumer(dynamicRepository);
         }
-
 
         [Fact]
         public async Task Consume_InvalidMessage_ShouldNotExecuteCommand()

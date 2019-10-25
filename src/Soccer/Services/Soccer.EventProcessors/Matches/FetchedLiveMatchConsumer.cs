@@ -42,7 +42,7 @@ namespace Soccer.EventProcessors.Matches
         {
             var message = context?.Message;
 
-            if (message == null || message.Matches == null || message.Language == null)
+            if (message?.Matches == null || message.Language == null)
             {
                 return;
             }
@@ -89,8 +89,7 @@ namespace Soccer.EventProcessors.Matches
 
         private IList<Match> GetOutOfRangeClosedMatches(IEnumerable<Match> currentLiveMatches)
         {
-            var inRangeClosedMatches = liveMatchRangeFilter
-                .FilterClosed(currentLiveMatches);
+            var inRangeClosedMatches = liveMatchRangeFilter.FilterClosed(currentLiveMatches);
 
             var outOfRangeMatches = (inRangeClosedMatches != null && inRangeClosedMatches.Any()
                 ? currentLiveMatches.Except(inRangeClosedMatches)

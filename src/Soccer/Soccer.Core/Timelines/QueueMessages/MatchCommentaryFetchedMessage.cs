@@ -1,7 +1,7 @@
 ﻿using Soccer.Core.Shared.Enumerations;
-using Soccer.Core.Timeline.Models;
+using Soccer.Core.Timelines.Models;
 
-namespace Soccer.Core.Timeline.QueueMessages
+namespace Soccer.Core.Timelines.QueueMessages
 {
     public interface IMatchCommentaryFetchedMessage
     {

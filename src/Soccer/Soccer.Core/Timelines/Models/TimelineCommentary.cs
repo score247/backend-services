@@ -2,7 +2,7 @@
 using MessagePack;
 using Soccer.Core.Matches.Models;
 
-namespace Soccer.Core.Timeline.Models
+namespace Soccer.Core.Timelines.Models
 {
     [MessagePackObject]
     public class TimelineCommentary
