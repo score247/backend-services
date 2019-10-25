@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using AutoFixture;
 using Fanex.Caching;
 using Fanex.Data.Repository;
 using NSubstitute;
@@ -17,8 +16,6 @@ namespace Soccer.API.Tests.Matches
     [Trait("Soccer.API", "Match")]
     public class MatchQueryServiceTests
     {
-        private static readonly Fixture fixture = new Fixture();
-
         private readonly MatchQueryService matchQueryService;
         private readonly IDynamicRepository dynamicRepository;
 

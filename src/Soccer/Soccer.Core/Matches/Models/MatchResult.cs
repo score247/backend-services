@@ -37,26 +37,26 @@ namespace Soccer.Core.Matches.Models
         }
 
         // TODO: Move out
-        public MatchStatus EventStatus { get; }
+        public MatchStatus EventStatus { get; private set; }
 
-        public MatchStatus MatchStatus { get; }
+        public MatchStatus MatchStatus { get; private set; }
 
-        public int Period { get; }
+        public int Period { get; private set; }
 
-        public IEnumerable<MatchPeriod> MatchPeriods { get; }
+        public IEnumerable<MatchPeriod> MatchPeriods { get; private set; }
 
-        public int MatchTime { get; }
+        public int MatchTime { get; private set; }
 
-        public string WinnerId { get; }
+        public string WinnerId { get; private set; }
 
-        public int HomeScore { get; }
+        public int HomeScore { get; private set; }
 
-        public int AwayScore { get; }
+        public int AwayScore { get; private set; }
 
-        public int AggregateHomeScore { get; }
+        public int AggregateHomeScore { get; private set; }
 
-        public int AggregateAwayScore { get; }
+        public int AggregateAwayScore { get; private set; }
 
-        public string AggregateWinnerId { get; }
+        public string AggregateWinnerId { get; private set; }
     }
 }

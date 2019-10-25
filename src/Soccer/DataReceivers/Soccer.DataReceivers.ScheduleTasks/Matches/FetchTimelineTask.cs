@@ -47,8 +47,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         public async Task FetchTimelines(string matchId, string region, Language language)
         {
             var matchCommentaries = await timelineService.GetTimelines(matchId, region, language);
-            var match = matchCommentaries.Item1;
-            var commentaries = matchCommentaries.Item2;
+            var match = matchCommentaries?.Item1;
+            var commentaries = matchCommentaries?.Item2;
 
             if (match == null || match.Teams == null)
             {

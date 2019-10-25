@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoFixture;
+using FakeItEasy;
 using Fanex.Data.Repository;
 using Fanex.Logging;
 using MassTransit;
@@ -24,8 +24,6 @@ namespace Soccer.EventProcessors.Tests.Matches
     [Trait("Soccer.EventProcessors", "FetchedLiveMatchConsumer")]
     public class FetchedLiveMatchConsumerTests
     {
-        private static readonly Fixture fixture = new Fixture();
-
         private readonly IDynamicRepository dynamicRepository;
         private readonly IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
         private readonly ILogger logger;
@@ -66,10 +64,10 @@ namespace Soccer.EventProcessors.Tests.Matches
         [Fact]
         public async Task Consume_HasNewMatches_ShouldExecuteCommand()
         {
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Id, "match:not:started")
-                .With(m => m.MatchResult, fixture.For<MatchResult>().With(r => r.EventStatus, MatchStatus.Live).Create())
-                .Create();
+                .With(m => m.MatchResult, A.Dummy<MatchResult>().With(r => r.EventStatus, MatchStatus.Live))
+                ;
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { match }));
 
@@ -86,10 +84,10 @@ namespace Soccer.EventProcessors.Tests.Matches
         [Fact]
         public async Task Consume_RemoveMatches_ShouldExecuteCommand()
         {
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Id, "match:closed")
-                .With(m => m.MatchResult, fixture.For<MatchResult>().With(r => r.EventStatus, MatchStatus.Live).Create())
-                .Create();
+                .With(m => m.MatchResult, A.Dummy<MatchResult>().With(r => r.EventStatus, MatchStatus.Live))
+                ;
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>()));
 
@@ -222,10 +220,10 @@ namespace Soccer.EventProcessors.Tests.Matches
         [Fact]
         public async Task Consume_LiveMatchedNotChanged_ShouldNotExecuteCommand()
         {
-            var newMatch = fixture.For<Match>()
+            var newMatch = A.Dummy<Match>()
                 .With(m => m.Id, "1")
-                .With(m => m.MatchResult, fixture.For<MatchResult>().With(r => r.EventStatus, MatchStatus.Live).Create())
-                .Create();
+                .With(m => m.MatchResult, A.Dummy<MatchResult>().With(r => r.EventStatus, MatchStatus.Live))
+                ;
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { newMatch }));
 
@@ -243,10 +241,10 @@ namespace Soccer.EventProcessors.Tests.Matches
         [Fact]
         public async Task Consume_ExecuteCommandThrowsException_ShouldLogError()
         {
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Id, "1")
-                .With(m => m.MatchResult, fixture.For<MatchResult>().With(r => r.EventStatus, MatchStatus.Live).Create())
-                .Create();
+                .With(m => m.MatchResult, A.Dummy<MatchResult>().With(r => r.EventStatus, MatchStatus.Live))
+                ;
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>()));
 
@@ -260,31 +258,29 @@ namespace Soccer.EventProcessors.Tests.Matches
         }
 
         private static Match StubNotStartedMatch(string id, DateTimeOffset eventDate)
-            => fixture.For<Match>()
+            => A.Dummy<Match>()
                 .With(m => m.Id, id)
                 .With(m => m.EventDate, eventDate)
-                .With(m => m.MatchResult, fixture.For<MatchResult>().With(r => r.EventStatus, MatchStatus.NotStarted).Create())
-                .Create();
+                .With(m => m.MatchResult, A.Dummy<MatchResult>().With(r => r.EventStatus, MatchStatus.NotStarted))
+                ;
 
         private static Match StubLiveMatch(string id)
-            => fixture.For<Match>()
+            => A.Dummy<Match>()
                 .With(m => m.Id, id)
-                .With(m => m.MatchResult, fixture.For<MatchResult>().With(r => r.EventStatus, MatchStatus.Live).Create())
-                .Create();
+                .With(m => m.MatchResult, A.Dummy<MatchResult>().With(r => r.EventStatus, MatchStatus.Live))
+                ;
 
         private static Match StubClosedMatch(string id, DateTimeOffset? endedTime)
-            => fixture.For<Match>()
+            => A.Dummy<Match>()
                 .With(m => m.Id, id)
-                .With(m => m.MatchResult, fixture.For<MatchResult>()
-                    .With(r => r.EventStatus, MatchStatus.Live)
+                .With(m => m.MatchResult, A.Dummy<MatchResult>()
+                    .With(r => r.EventStatus, MatchStatus.Closed)
                     .With(r => r.MatchStatus, MatchStatus.Ended)
-                    .Create())
+                    )
                 .With(m => m.LatestTimeline, endedTime == null
                     ? null
-                    : fixture.For<TimelineEvent>()
+                    : A.Dummy<TimelineEvent>()
                         .With(t => t.Type, EventType.MatchEnded)
-                        .With(t => t.Time, (DateTimeOffset)endedTime)
-                        .Create())
-                .Create();
+                        .With(t => t.Time, (DateTimeOffset)endedTime));
     }
 }

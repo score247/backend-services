@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoFixture;
+using FakeItEasy;
 using Fanex.Caching;
 using Fanex.Data.Repository;
 using NSubstitute;
@@ -18,7 +18,6 @@ namespace Soccer.EventProcessors.Tests.Leagues
     [Trait("Soccer.EventProcessors", "LeagueFilter")]
     public class LeagueFilterTests
     {
-        private static readonly Fixture fixture = new Fixture();
         private const string MajorLeaguesCacheKey = "Major_Leagues";
         private readonly ICacheManager cacheService;
         private readonly IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>> matchListFilter;
@@ -46,14 +45,12 @@ namespace Soccer.EventProcessors.Tests.Leagues
 
             var matches = new List<Match>
             {
-                fixture.For<Match>()
+                A.Dummy<Match>()
                     .With(m => m.Id, "match:1")
-                    .With(m => m.League, new League("league:3", ""))
-                    .Create(),
-                fixture.For<Match>()
+                    .With(m => m.League, new League("league:3", "")),
+                A.Dummy<Match>()
                     .With(m => m.Id, "match:2")
                     .With(m => m.League, new League("league:4", ""))
-                    .Create(),
             };
 
             var filteredMatches = await matchListFilter.Filter(matches);
@@ -72,26 +69,21 @@ namespace Soccer.EventProcessors.Tests.Leagues
 
             var matches = new List<Match>
             {
-                fixture.For<Match>()
+                A.Dummy<Match>()
                     .With(m => m.Id, "match:1")
-                    .With(m => m.League, new League("league:3", ""))
-                    .Create(),
-                fixture.For<Match>()
+                    .With(m => m.League, new League("league:3", "")),
+                A.Dummy<Match>()
                     .With(m => m.Id, "match:2")
-                    .With(m => m.League, new League("league:4", ""))
-                    .Create(),
-                fixture.For<Match>()
+                    .With(m => m.League, new League("league:4", "")),
+                A.Dummy<Match>()
                     .With(m => m.Id, "match:3")
-                    .With(m => m.League, new League("league:1", ""))
-                    .Create(),
-                fixture.For<Match>()
+                    .With(m => m.League, new League("league:1", "")),
+                A.Dummy<Match>()
                     .With(m => m.Id, "match:5")
-                    .With(m => m.League, new League("league:2", ""))
-                    .Create(),
-                fixture.For<Match>()
+                    .With(m => m.League, new League("league:2", "")),
+                A.Dummy<Match>()
                     .With(m => m.Id, "match:4")
                     .With(m => m.League, new League("league:6", ""))
-                    .Create()
             };
 
             var filteredMatches = (await matchListFilter.Filter(matches)).ToList();
@@ -124,10 +116,9 @@ namespace Soccer.EventProcessors.Tests.Leagues
                     new League("league:2", "")
                 });
 
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Id, "match:1")
-                .With(m => m.League, new League("league:6", ""))
-                .Create();
+                .With(m => m.League, new League("league:6", ""));
 
             var result = (await matchFilter.Filter(match));
 
@@ -143,10 +134,9 @@ namespace Soccer.EventProcessors.Tests.Leagues
                     new League("league:2", "")
                 });
 
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Id, "match:1")
-                .With(m => m.League, new League("league:1", ""))
-                .Create();
+                .With(m => m.League, new League("league:1", ""));
 
             var result = (await matchFilter.Filter(match));
 

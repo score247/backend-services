@@ -1,4 +1,7 @@
-﻿namespace Soccer.EventProcessors.Matches.MatchEvents
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore.Internal;
+
+namespace Soccer.EventProcessors.Matches.MatchEvents
 {
     using System;
     using System.Collections.Generic;
@@ -48,7 +51,7 @@
             var matchEventsCacheKey = $"Penalty_Match_{matchEvent.MatchId}";
             var cachedPenaltyEvents = (await cacheService.GetAsync<IList<TimelineEvent>>(matchEventsCacheKey)) ?? new List<TimelineEvent>();
 
-            if (cachedPenaltyEvents.Contains(matchEvent.Timeline))
+            if (cachedPenaltyEvents.Any(t => t.Id == matchEvent.Timeline.Id))
             {
                 return false;
             }

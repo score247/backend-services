@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoFixture;
+using FakeItEasy;
 using Fanex.Caching;
 using Fanex.Data.Repository;
 using MassTransit;
@@ -21,7 +21,6 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
     [Trait("Soccer.EventProcessors", "RedCardEventConsumer")]
     public class RedCardEventConsumerTests
     {
-        private static readonly Fixture fixture = new Fixture();
         private readonly IBus messageBus;
         private readonly ICacheManager cacheManager;
         private readonly ConsumeContext<IRedCardEventMessage> context;
@@ -52,7 +51,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             context.Message.Returns(new RedCardEventMessage(new MatchEvent(
                 "sr:league",
                 matchId,
-                fixture.Create<MatchResult>(),
+                A.Dummy<MatchResult>(),
                 StubRedCard()
                 )));
 
@@ -75,7 +74,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             context.Message.Returns(new RedCardEventMessage(new MatchEvent(
                 "sr:league",
                 matchId,
-                fixture.Create<MatchResult>(),
+                A.Dummy<MatchResult>(),
                 StubRedCard()
                 )));
 
@@ -95,13 +94,11 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
         }
 
         private static TimelineEvent StubRedCard()
-            => fixture.For<TimelineEvent>()
-                .With(t => t.Type, EventType.RedCard)
-                .Create();
+            => A.Dummy<TimelineEvent>()
+                .With(t => t.Type, EventType.RedCard);
 
         private static TimelineEvent StubYellowRedCard()
-            => fixture.For<TimelineEvent>()
-                .With(t => t.Type, EventType.YellowCard)
-                .Create();
+            => A.Dummy<TimelineEvent>()
+                .With(t => t.Type, EventType.YellowRedCard);
     }
 }

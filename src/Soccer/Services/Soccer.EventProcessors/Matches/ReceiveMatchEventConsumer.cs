@@ -86,7 +86,7 @@ namespace Soccer.EventProcessors.Matches
         {
             var timeLineEvents = await GetProcessedTimelines(matchEvent.MatchId) ?? new List<TimelineEvent>();
 
-            if (timeLineEvents.Contains(matchEvent.Timeline))
+            if (timeLineEvents.Any(t => t.Id == matchEvent.Timeline.Id))
             {
                 return true;
             }

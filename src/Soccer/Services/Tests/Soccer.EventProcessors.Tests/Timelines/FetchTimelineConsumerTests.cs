@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoFixture;
+using FakeItEasy;
 using MassTransit;
 using NSubstitute;
 using Score247.Shared.Tests;
@@ -19,7 +19,6 @@ namespace Soccer.EventProcessors.Tests.Timeline
     [Trait("Soccer.EventProcessors", "FetchTimelineConsumer")]
     public class FetchTimelineConsumerTests
     {
-        private static readonly Fixture fixture = new Fixture();
         private readonly IBus messageBus;
         private readonly IMajorLeagueFilter<Match, bool> majorLeagueFilter;
         private readonly ConsumeContext<IMatchTimelinesFetchedMessage> context;
@@ -46,13 +45,12 @@ namespace Soccer.EventProcessors.Tests.Timeline
         [Fact]
         public async Task Consume_MatchNotInMajorLeagues_ShouldNotPublishMatchEvent()
         {
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.League, new League("league:1", ""))
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
-                    fixture.For<TimelineEvent>().With(t => t.Type, EventType.MatchStarted).Create()
-                })
-                .Create();
+                    A.Dummy<TimelineEvent>().With(t => t.Type, EventType.MatchStarted)
+                });
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
                 Language.en_US));
@@ -65,19 +63,17 @@ namespace Soccer.EventProcessors.Tests.Timeline
         [Fact]
         public async Task Consume_MatchInMajorLeagues_ShouldPublishLastEventWithUpdatedScore()
         {
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.League, new League("league:1", ""))
-                .With(m => m.MatchResult, fixture
-                    .For<MatchResult>()
-                    .With(r => r.HomeScore, 1)
-                    .With(r => r.AwayScore, 2)
-                    .Create())
+                .With(m => m.MatchResult,
+                    A.Dummy<MatchResult>()
+                        .With(r => r.HomeScore, 1)
+                        .With(r => r.AwayScore, 2))
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
-                    fixture.For<TimelineEvent>().With(t => t.Type, EventType.MatchStarted).Create(),
-                    fixture.For<TimelineEvent>().With(t => t.Type, EventType.MatchEnded).Create()
-                })
-                .Create();
+                    A.Dummy<TimelineEvent>().With(t => t.Type, EventType.MatchStarted),
+                    A.Dummy<TimelineEvent>().With(t => t.Type, EventType.MatchEnded)
+                });
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
                 Language.en_US));
@@ -96,19 +92,17 @@ namespace Soccer.EventProcessors.Tests.Timeline
         [Fact]
         public async Task Consume_BreakStartEvent_ShouldPublishMatchEvent()
         {
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.League, new League("league:1", ""))
-                .With(m => m.MatchResult, fixture
-                    .For<MatchResult>()
-                    .With(r => r.HomeScore, 1)
-                    .With(r => r.AwayScore, 2)
-                    .Create())
+                .With(m => m.MatchResult,
+                    A.Dummy<MatchResult>()
+                        .With(r => r.HomeScore, 1)
+                        .With(r => r.AwayScore, 2))
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
-                    fixture.For<TimelineEvent>().With(t => t.Type, EventType.BreakStart).Create(),
-                    fixture.For<TimelineEvent>().With(t => t.Type, EventType.MatchEnded).Create()
-                })
-                .Create();
+                    A.Dummy<TimelineEvent>().With(t => t.Type, EventType.BreakStart),
+                    A.Dummy<TimelineEvent>().With(t => t.Type, EventType.MatchEnded)
+                });
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
                 Language.en_US));
@@ -123,35 +117,30 @@ namespace Soccer.EventProcessors.Tests.Timeline
         [Fact]
         public async Task Consume_BreakStartEventAndScoreChanged_ShouldUpdatedScore()
         {
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.League, new League("league:1", ""))
-                .With(m => m.MatchResult, fixture
-                    .For<MatchResult>()
-                    .With(r => r.HomeScore, 1)
-                    .With(r => r.AwayScore, 1)
-                    .Create())
+                .With(m => m.MatchResult,
+                    A.Dummy<MatchResult>()
+                        .With(r => r.HomeScore, 1)
+                        .With(r => r.AwayScore, 1))
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
-                    fixture.For<TimelineEvent>().With(t => t.Type, EventType.MatchStarted).Create(),
-                    fixture.For<TimelineEvent>()
+                    A.Dummy<TimelineEvent>().With(t => t.Type, EventType.MatchStarted),
+                    A.Dummy<TimelineEvent>()
                         .With(t => t.Type, EventType.ScoreChange)
                         .With(t => t.HomeScore, 1)
                         .With(t => t.AwayScore, 0)
-                        .With(t => t.Time, DateTime.Now.AddMinutes(-1))
-                        .Create(),
-                    fixture.For<TimelineEvent>()
+                        .With(t => t.Time, DateTime.Now.AddMinutes(-1)),
+                    A.Dummy<TimelineEvent>()
                         .With(t => t.Type, EventType.BreakStart)
-                        .With(t => t.Time, DateTime.Now)
-                        .Create(),
-                    fixture.For<TimelineEvent>()
+                        .With(t => t.Time, DateTime.Now),
+                    A.Dummy<TimelineEvent>()
                         .With(t => t.Type, EventType.ScoreChange)
                         .With(t => t.HomeScore, 1)
                         .With(t => t.AwayScore, 1)
-                        .With(t => t.Time, DateTime.Now.AddMinutes(1))
-                        .Create(),
-                    fixture.For<TimelineEvent>().With(t => t.Type, EventType.MatchEnded).Create()
-                })
-                .Create();
+                        .With(t => t.Time, DateTime.Now.AddMinutes(1)),
+                    A.Dummy<TimelineEvent>().With(t => t.Type, EventType.MatchEnded)
+                });
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
                 Language.en_US));
@@ -169,29 +158,24 @@ namespace Soccer.EventProcessors.Tests.Timeline
         [Fact]
         public async Task Consume_TimelineEvents_ShouldPublishMatchEvent()
         {
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.League, new League("league:1", ""))
-                .With(m => m.MatchResult, fixture
-                    .For<MatchResult>()
-                    .With(r => r.HomeScore, 1)
-                    .With(r => r.AwayScore, 1)
-                    .Create())
+                .With(m => m.MatchResult,
+                    A.Dummy<MatchResult>()
+                        .With(r => r.HomeScore, 1)
+                        .With(r => r.AwayScore, 1))
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
-                    fixture.For<TimelineEvent>()
+                    A.Dummy<TimelineEvent>()
                         .With(t => t.Type, EventType.ScoreChange)
                         .With(t => t.HomeScore, 1)
-                        .With(t => t.AwayScore, 0)
-                        .Create(),
-                    fixture.For<TimelineEvent>()
-                        .With(t => t.Type, EventType.YellowCard)
-                        .Create(),
-                    fixture.For<TimelineEvent>()
-                        .With(t => t.Type, EventType.RedCard)
-                        .Create(),
-                    fixture.For<TimelineEvent>().With(t => t.Type, EventType.Substitution).Create()
-                })
-                .Create();
+                        .With(t => t.AwayScore, 0),
+                    A.Dummy<TimelineEvent>()
+                        .With(t => t.Type, EventType.YellowCard),
+                    A.Dummy<TimelineEvent>()
+                        .With(t => t.Type, EventType.RedCard),
+                    A.Dummy<TimelineEvent>().With(t => t.Type, EventType.Substitution)
+                });
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
                 Language.en_US));
@@ -206,19 +190,17 @@ namespace Soccer.EventProcessors.Tests.Timeline
         [Fact]
         public async Task Consume_FirstHomePenaltyShootoutEvents_ShouldPublishMatchEvent()
         {
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.League, new League("league:1", ""))
-                .With(m => m.MatchResult, fixture
-                    .For<MatchResult>()
+                .With(m => m.MatchResult,
+                    A.Dummy<MatchResult>()
                     .With(r => r.HomeScore, 1)
-                    .With(r => r.AwayScore, 1)
-                    .Create())
+                    .With(r => r.AwayScore, 1))
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
                     StubHomePenaltyShootout("1", scored: true),
                     StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 0)
-                })
-                .Create();
+                });
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
                 Language.en_US));
@@ -239,19 +221,17 @@ namespace Soccer.EventProcessors.Tests.Timeline
         [Fact]
         public async Task Consume_FirstAwayPenaltyShootoutEvents_ShouldPublishMatchEvent()
         {
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.League, new League("league:1", ""))
-                .With(m => m.MatchResult, fixture
-                    .For<MatchResult>()
-                    .With(r => r.HomeScore, 1)
-                    .With(r => r.AwayScore, 1)
-                    .Create())
+                .With(m => m.MatchResult,
+                    A.Dummy<MatchResult>()
+                        .With(r => r.HomeScore, 1)
+                        .With(r => r.AwayScore, 1))
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
                     StubAwayPenaltyShootout("1", scored: true),
                     StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 0)
-                })
-                .Create();
+                });
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
                 Language.en_US));
@@ -272,21 +252,19 @@ namespace Soccer.EventProcessors.Tests.Timeline
         [Fact]
         public async Task Consume_PairOfPenaltyShootoutEventsAndHomeFirst_ShouldPublishMatchEvent()
         {
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.League, new League("league:1", ""))
-                .With(m => m.MatchResult, fixture
-                    .For<MatchResult>()
-                    .With(r => r.HomeScore, 1)
-                    .With(r => r.AwayScore, 1)
-                    .Create())
+                .With(m => m.MatchResult,
+                    A.Dummy<MatchResult>()
+                        .With(r => r.HomeScore, 1)
+                        .With(r => r.AwayScore, 1))
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
                     StubHomePenaltyShootout("1", scored: true),
                     StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 0),
                     StubAwayPenaltyShootout("2", scored: true),
                     StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 1),
-                })
-                .Create();
+                });
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
                 Language.en_US));
@@ -307,20 +285,18 @@ namespace Soccer.EventProcessors.Tests.Timeline
         [Fact]
         public async Task Consume_PenaltyShootoutEventsAndAwayFirst_ShouldPublishMatchEvent()
         {
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.League, new League("league:1", ""))
-                .With(m => m.MatchResult, fixture
-                    .For<MatchResult>()
+                .With(m => m.MatchResult,
+                    A.Dummy<MatchResult>()
                     .With(r => r.HomeScore, 1)
-                    .With(r => r.AwayScore, 1)
-                    .Create())
+                    .With(r => r.AwayScore, 1))
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
                     StubAwayPenaltyShootout("1", scored: false),
                     StubHomePenaltyShootout("2", scored: true),
                     StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 0),
-                })
-                .Create();
+                });
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
                 Language.en_US));
@@ -341,13 +317,12 @@ namespace Soccer.EventProcessors.Tests.Timeline
         [Fact]
         public async Task Consume_PenaltyShootoutEvents_ShouldPublishMatchEvent()
         {
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.League, new League("league:1", ""))
-                .With(m => m.MatchResult, fixture
-                    .For<MatchResult>()
-                    .With(r => r.HomeScore, 1)
-                    .With(r => r.AwayScore, 1)
-                    .Create())
+                .With(m => m.MatchResult,
+                    A.Dummy<MatchResult>()
+                        .With(r => r.HomeScore, 1)
+                        .With(r => r.AwayScore, 1))
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
                     StubAwayPenaltyShootout("1", scored: false),
@@ -373,8 +348,7 @@ namespace Soccer.EventProcessors.Tests.Timeline
                     StubScoreChangeInPenalty(shootoutHomeScore: 4, shootoutAwayScore: 4),
                     StubHomePenaltyShootout("10", scored: true),
                     StubScoreChangeInPenalty(shootoutHomeScore: 5, shootoutAwayScore: 4),
-                })
-                .Create();
+                });
 
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
@@ -398,13 +372,12 @@ namespace Soccer.EventProcessors.Tests.Timeline
         [Fact]
         public async Task Consume_PenaltyHomeScored4AndAwayScored3_ShouldPublishLatestMatchEventWithFinalScore()
         {
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.League, new League("league:1", ""))
-                .With(m => m.MatchResult, fixture
-                    .For<MatchResult>()
-                    .With(r => r.HomeScore, 1)
-                    .With(r => r.AwayScore, 1)
-                    .Create())
+                .With(m => m.MatchResult,
+                    A.Dummy<MatchResult>()
+                        .With(r => r.HomeScore, 1)
+                        .With(r => r.AwayScore, 1))
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
                     StubHomePenaltyShootout("1", scored: true),
@@ -422,8 +395,7 @@ namespace Soccer.EventProcessors.Tests.Timeline
 
                     StubHomePenaltyShootout("7", scored: true),
                     StubScoreChangeInPenalty(shootoutHomeScore: 4, shootoutAwayScore: 1),
-                })
-                .Create();
+                });
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
                 Language.en_US));
@@ -450,20 +422,21 @@ namespace Soccer.EventProcessors.Tests.Timeline
             => StubTimeline(id, false, scored);
 
         private static TimelineEvent StubScoreChangeInPenalty(int shootoutHomeScore, int shootoutAwayScore)
-            => fixture.For<TimelineEvent>()
+            => A.Dummy<TimelineEvent>()
                 .With(t => t.Type, EventType.ScoreChange)
                 .With(t => t.PeriodType, PeriodType.Penalties)
                 .With(t => t.ShootoutHomeScore, shootoutHomeScore)
-                .With(t => t.ShootoutAwayScore, shootoutAwayScore)
-                .Create();
+                .With(t => t.ShootoutAwayScore, shootoutAwayScore);
 
-        private static TimelineEvent StubTimeline(string id, bool isHome, bool isScored, string playerName = "playerName")
-            => fixture.For<TimelineEvent>()
+        private static TimelineEvent StubTimeline(string id, bool isHome, bool isScored,
+            string playerName = "playerName")
+            => A.Dummy<TimelineEvent>()
                 .With(t => t.Id, id)
                 .With(t => t.Type, EventType.PenaltyShootout)
                 .With(t => t.PeriodType, PeriodType.Penalties)
                 .With(t => t.Team, isHome ? "home" : "away")
                 .With(t => t.Player, new Player("player_id", playerName))
-                .Create();
+                .With(t => t.IsHomeShootoutScored, isHome && isScored)
+                .With(t => t.IsAwayShootoutScored, !isHome && isScored);
     }
 }

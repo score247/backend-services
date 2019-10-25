@@ -15,7 +15,7 @@
         }
 
         [Key(0)]
-        public string Id { get; }
+        public string Id { get; protected set; }
 
         [IgnoreMember]
         public DateTimeOffset CreatedTime { get; set; }

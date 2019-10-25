@@ -47,33 +47,33 @@
 
 #pragma warning restore S107 // Methods should not have too many parameters
 
-        public DateTimeOffset EventDate { get; }
+        public DateTimeOffset EventDate { get; private set; }
 
         public DateTimeOffset CurrentPeriodStartTime { get; set; }
 
-        public IEnumerable<Team> Teams { get; }
+        public IEnumerable<Team> Teams { get; private set; }
 
-        public MatchResult MatchResult { get; }
+        public MatchResult MatchResult { get; private set; }
 
         public League League { get; private set; }
 
-        public LeagueRound LeagueRound { get; }
+        public LeagueRound LeagueRound { get; private set; }
 
         public IEnumerable<TimelineEvent> TimeLines { get; private set; }
 
         public TimelineEvent LatestTimeline { get; set; }
 
-        public int Attendance { get; }
+        public int Attendance { get; private set; }
 
-        public Venue Venue { get; }
+        public Venue Venue { get; private set; }
 
-        public string Referee { get; }
+        public string Referee { get; private set; }
 
-        public string Region { get; }
+        public string Region { get; private set; }
 
-        public Coverage Coverage { get; }
+        public Coverage Coverage { get; private set; }
 
-        public LeagueSeason LeagueSeason { get; }
+        public LeagueSeason LeagueSeason { get; private set; }
 
         public void SetLeague(League league) => League = league;
 

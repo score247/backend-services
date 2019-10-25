@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using Score247.Shared.Enumerations;
+﻿using FakeItEasy;
 using Score247.Shared.Tests;
 using Soccer.Core.Matches.Extensions;
 using Soccer.Core.Matches.Models;
@@ -11,84 +10,61 @@ namespace Soccer.Core.Tests.Matches.Extensions
     [Trait("Soccer.EventProcessors", "FetchedLiveMatchConsumer")]
     public class TimelineExtensionsTests
     {
-        private static readonly Fixture fixture = new Fixture();
-
         [Fact]
         public void ShouldReprocessScore_BreakStart_ReturnTrue()
         {
-            var timeline = fixture
-                .For<TimelineEvent>()
-                .With(t => t.Type, EventType.BreakStart)
-                .Create();
-
+            var timeline = A.Dummy<TimelineEvent>()
+                .With(t => t.Type, EventType.BreakStart);
             Assert.True(timeline.ShouldReprocessScore());
         }
 
         [Fact]
         public void ShouldReprocessScore_MatchEnd_ReturnTrue()
         {
-            var timeline = fixture
-                .For<TimelineEvent>()
-                .With(t => t.Type, EventType.MatchEnded)
-                .Create();
-
+            var timeline = A.Dummy<TimelineEvent>()
+                .With(t => t.Type, EventType.MatchEnded);
             Assert.True(timeline.ShouldReprocessScore());
         }
 
         [Fact]
         public void ShouldReprocessScore_PenaltyMissed_ReturnTrue()
         {
-            var timeline = fixture
-                .For<TimelineEvent>()
-                .With(t => t.Type, Enumeration.FromDisplayName<EventType>("penalty_missed"))
-                .Create();
-
+            var timeline = A.Dummy<TimelineEvent>()
+                .With(t => t.Type, EventType.PenaltyMissed);
             Assert.True(timeline.ShouldReprocessScore());
         }
 
         [Fact]
         public void ShouldReprocessScore_ScoreChanged_ReturnFalse()
         {
-            var timeline = fixture
-                .For<TimelineEvent>()
-                .With(t => t.Type, Enumeration.FromDisplayName<EventType>("score_change"))
-                .Create();
-
+            var timeline = A.Dummy<TimelineEvent>()
+                .With(t => t.Type, EventType.ScoreChange);
             Assert.False(timeline.ShouldReprocessScore());
         }
 
         [Fact]
         public void IsScoreChangeInPenalty_PenaltyPeriodButNotScored_ReturnFalse()
         {
-            var timeline = fixture
-                .For<TimelineEvent>()
-                .With(t => t.Type, Enumeration.FromDisplayName<EventType>("penalty_missed"))
-                .Create();
-
+            var timeline = A.Dummy<TimelineEvent>()
+                .With(t => t.Type, EventType.PenaltyMissed);
             Assert.False(timeline.IsScoreChangeInPenalty());
         }
 
         [Fact]
         public void IsScoreChangeInPenalty_RegularPeriod_ReturnFalse()
         {
-            var timeline = fixture
-                .For<TimelineEvent>()
-                .With(t => t.Type, Enumeration.FromDisplayName<EventType>("score_change"))
-                .With(t => t.PeriodType, Enumeration.FromDisplayName<PeriodType>("regular_period"))
-                .Create();
-
+            var timeline = A.Dummy<TimelineEvent>()
+                .With(t => t.PeriodType, PeriodType.RegularPeriod)
+                .With(t => t.Type, EventType.ScoreChange);
             Assert.False(timeline.IsScoreChangeInPenalty());
         }
 
         [Fact]
         public void IsScoreChangeInPenalty_PenaltyPeriodAndScored_ReturnTrue()
         {
-            var timeline = fixture
-                .For<TimelineEvent>()
-                .With(t => t.PeriodType, PeriodType.Penalties)
+            var timeline = A.Dummy<TimelineEvent>()
                 .With(t => t.Type, EventType.ScoreChange)
-                .Create();
-
+                .With(t => t.PeriodType, PeriodType.Penalties);
             Assert.True(timeline.IsScoreChangeInPenalty());
         }
     }

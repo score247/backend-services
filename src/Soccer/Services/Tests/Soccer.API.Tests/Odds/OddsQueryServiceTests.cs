@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoFixture;
+using FakeItEasy;
 using Fanex.Caching;
 using Fanex.Data.Repository;
 using NSubstitute;
@@ -25,7 +25,6 @@ namespace Soccer.API.Tests.Odds
         private readonly OddsQueryService oddsServiceImpl;
         private readonly IDynamicRepository dynamicRepository;
         private readonly ICacheManager cacheManager;
-        private static readonly Fixture fixture = new Fixture();
 
         private const string globalMatchId = "matchId1";
         private const int globalBetTypeId = 1;
@@ -65,30 +64,31 @@ namespace Soccer.API.Tests.Odds
                 .FetchAsync<BetTypeOdds>(
                     Arg.Is<GetOddsCriteria>(
                         criteria => criteria.BetTypeId == globalBetTypeId
-                            && criteria.MatchId == stubMatchId))
+                                    && criteria.MatchId == stubMatchId))
                 .Returns(betTypeOddsList.Where(bto => bookmakerId == null || bto.Bookmaker.Id == bookmakerId));
 
             var oddsComparison = oddsServiceImpl.GetBetTypeOddsComparisons(
-                           stubMatchId,
-                           globalBetTypeId,
-                           eventDate.Value).GetAwaiter().GetResult();
+                stubMatchId,
+                globalBetTypeId,
+                eventDate.Value).GetAwaiter().GetResult();
 
             cacheManager.GetOrSetAsync(
-                   $"OddsComparisonCacheKey_{stubMatchId}_{globalBetTypeId}",
-                   Arg.Any<Func<Task<IOrderedEnumerable<BetTypeOdds>>>>(),
-                   Arg.Any<CacheItemOptions>())
-                       .Returns(oddsComparison);
+                    $"OddsComparisonCacheKey_{stubMatchId}_{globalBetTypeId}",
+                    Arg.Any<Func<Task<IOrderedEnumerable<BetTypeOdds>>>>(),
+                    Arg.Any<CacheItemOptions>())
+                .Returns(oddsComparison);
         }
 
         private void StubOddsMovements(string stubMatchId, string bookmakerId, Match match)
         {
-            var oddsMovements = oddsServiceImpl.GetBookmakerOddsMovement(stubMatchId, globalBetTypeId, bookmakerId, match);
+            var oddsMovements =
+                oddsServiceImpl.GetBookmakerOddsMovement(stubMatchId, globalBetTypeId, bookmakerId, match);
 
             cacheManager.GetOrSetAsync(
-                   $"OddsMovementCacheKey_{stubMatchId}_{globalBetTypeId}_{bookmakerId}_{Language.en_US.Value}",
-                   Arg.Any<Func<Task<MatchOddsMovement>>>(),
-                   Arg.Any<CacheItemOptions>())
-                       .Returns(oddsMovements);
+                    $"OddsMovementCacheKey_{stubMatchId}_{globalBetTypeId}_{bookmakerId}_{Language.en_US.Value}",
+                    Arg.Any<Func<Task<MatchOddsMovement>>>(),
+                    Arg.Any<CacheItemOptions>())
+                .Returns(oddsMovements);
         }
 
         [Fact]
@@ -144,10 +144,10 @@ namespace Soccer.API.Tests.Odds
         public async Task GetBetTypeOddsList_Always_AssignOpeningOdds()
         {
             var betTypeOddsList = new List<BetTypeOdds>
-                {
-                    StubOneXTwoBetTypeOdds("sr:book:201", "bookmakername 1", new DateTime(2019, 2, 1), 0.2m, 0.2m),
-                    StubOneXTwoBetTypeOdds("sr:book:201", "bookmakername 1", new DateTime(2019, 3, 1), 0.3m, 0.3m)
-                };
+            {
+                StubOneXTwoBetTypeOdds("sr:book:201", "bookmakername 1", new DateTime(2019, 2, 1), 0.2m, 0.2m),
+                StubOneXTwoBetTypeOdds("sr:book:201", "bookmakername 1", new DateTime(2019, 3, 1), 0.3m, 0.3m)
+            };
             StubBetTypeOdds(betTypeOddsList: betTypeOddsList);
             StubMatch(globalMatchId);
 
@@ -164,7 +164,8 @@ namespace Soccer.API.Tests.Odds
         [Fact]
         public async Task GetOddsMovement_NotFoundBookmaker_ReturnEmpty()
         {
-            var matchOddsMovement = await oddsServiceImpl.GetOddsMovement("matchIdNoBookmaker", 1, "bookmarker", Language.en_US);
+            var matchOddsMovement =
+                await oddsServiceImpl.GetOddsMovement("matchIdNoBookmaker", 1, "bookmarker", Language.en_US);
 
             Assert.Null(matchOddsMovement.Bookmaker);
             Assert.Empty(matchOddsMovement.OddsMovements);
@@ -176,15 +177,16 @@ namespace Soccer.API.Tests.Odds
             var oddsMovementMatchId = "oddsMovementMatchId";
             var bookmakerId = "sr:book:201";
             var betTypeOddsList = new List<BetTypeOdds>
-                {
-                    StubOneXTwoBetTypeOdds(bookmakerId, "bookmakername 1", new DateTime(2019, 2, 1), 0.2m, 0.2m),
-                    StubOneXTwoBetTypeOdds(bookmakerId, "bookmakername 1", new DateTime(2019, 3, 1), 0.3m, 0.3m)
-                };
+            {
+                StubOneXTwoBetTypeOdds(bookmakerId, "bookmakername 1", new DateTime(2019, 2, 1), 0.2m, 0.2m),
+                StubOneXTwoBetTypeOdds(bookmakerId, "bookmakername 1", new DateTime(2019, 3, 1), 0.3m, 0.3m)
+            };
             StubBetTypeOdds(oddsMovementMatchId, betTypeOddsList);
             var match = StubMatch(oddsMovementMatchId);
             StubOddsMovements(oddsMovementMatchId, bookmakerId, match);
 
-            var matchOddsMovement = await oddsServiceImpl.GetOddsMovement(oddsMovementMatchId, 1, bookmakerId, Language.en_US);
+            var matchOddsMovement =
+                await oddsServiceImpl.GetOddsMovement(oddsMovementMatchId, 1, bookmakerId, Language.en_US);
 
             Assert.Equal(oddsMovementMatchId, matchOddsMovement.MatchId);
             Assert.Equal(bookmakerId, matchOddsMovement.Bookmaker.Id);
@@ -196,12 +198,13 @@ namespace Soccer.API.Tests.Odds
             var oddsMovementMatchId = "GetOddsMovement_MatchDoesNotExist_ReturnEmptyOddsMovement";
             StubBetTypeOdds(oddsMovementMatchId);
             cacheManager.GetOrSetAsync(
-                $"MatchOddsCacheKey_{oddsMovementMatchId}_{Language.en_US.Value}",
-                Arg.Any<Func<Task<Match>>>(),
-                Arg.Any<CacheItemOptions>())
+                    $"MatchOddsCacheKey_{oddsMovementMatchId}_{Language.en_US.Value}",
+                    Arg.Any<Func<Task<Match>>>(),
+                    Arg.Any<CacheItemOptions>())
                 .Returns(default(Match));
 
-            var matchOddsMovement = await oddsServiceImpl.GetOddsMovement(oddsMovementMatchId, 1, "bookMakerId", Language.en_US);
+            var matchOddsMovement =
+                await oddsServiceImpl.GetOddsMovement(oddsMovementMatchId, 1, "bookMakerId", Language.en_US);
 
             Assert.Empty(matchOddsMovement.OddsMovements);
         }
@@ -245,19 +248,20 @@ namespace Soccer.API.Tests.Odds
             var bookMakerId = "bookMakerId";
             var timeLines = new List<TimelineEvent>
             {
-                fixture.For<TimelineEvent>()
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.PeriodStart)
                     .With(t => t.Period, 1)
                     .With(t => t.Time, eventDate)
-                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
-                    .Create(),
+                    .With(t => t.PeriodType, PeriodType.RegularPeriod),
             };
             var match = StubMatch(matchId, eventDate, timeLines);
 
             var betTypeOddsList = new List<BetTypeOdds>
             {
-                StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.AddMinutes(-10).DateTime, 0.15m, 0.1m),
-                StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.AddMinutes(-5).DateTime, 0.15m, 0.1m),
+                StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.AddMinutes(-10).DateTime, 0.15m,
+                    0.1m),
+                StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.AddMinutes(-5).DateTime, 0.15m,
+                    0.1m),
                 StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.DateTime, 0.16m)
             };
             StubBetTypeOdds(matchId, betTypeOddsList);
@@ -286,27 +290,26 @@ namespace Soccer.API.Tests.Odds
             var bookMakerId = "bookMakerId";
             var timeLines = new List<TimelineEvent>
             {
-                fixture.For<TimelineEvent>()
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.PeriodStart)
                     .With(t => t.Period, 1)
                     .With(t => t.Time, eventDate)
-                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
-                    .Create(),
-                fixture.For<TimelineEvent>()
+                    .With(t => t.PeriodType, PeriodType.RegularPeriod),
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.ScoreChange)
                     .With(t => t.Period, 1)
                     .With(t => t.Time, eventDate.AddMinutes(20))
-                    .With(t => t.MatchTime, 20)
+                    .With(t => t.MatchTime, (byte)20)
                     .With(t => t.HomeScore, 1)
                     .With(t => t.AwayScore, 1)
-                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
-                    .Create()
+                    .With(t => t.PeriodType, PeriodType.RegularPeriod)
             };
             var match = StubMatch(matchId, eventDate, timeLines);
 
             var betTypeOddsList = new List<BetTypeOdds>
             {
-                StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.AddMinutes(-10).DateTime, 0.15m, 0.1m),
+                StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.AddMinutes(-10).DateTime, 0.15m,
+                    0.1m),
                 StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.DateTime, 0.16m),
                 StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.AddMinutes(20).DateTime, 0.14m)
             };
@@ -336,17 +339,15 @@ namespace Soccer.API.Tests.Odds
             var bookMakerId = "bookMakerId";
             var timeLines = new List<TimelineEvent>
             {
-                fixture.For<TimelineEvent>()
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.PeriodStart)
                     .With(t => t.Period, 1)
                     .With(t => t.Time, eventDate)
-                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
-                    .Create(),
-                fixture.For<TimelineEvent>()
+                    .With(t => t.PeriodType, PeriodType.RegularPeriod),
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.BreakStart)
-                    .With(t => t.Time, eventDate.AddMinutes(55) )
-                    .With(t => t.PeriodType,  PeriodType.Pause)
-                    .Create(),
+                    .With(t => t.Time, eventDate.AddMinutes(55))
+                    .With(t => t.PeriodType, PeriodType.Pause),
             };
             var match = StubMatch(matchId, eventDate, timeLines);
 
@@ -381,31 +382,27 @@ namespace Soccer.API.Tests.Odds
             var bookMakerId = "bookMakerId";
             var timeLines = new List<TimelineEvent>
             {
-                fixture.For<TimelineEvent>()
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.PeriodStart)
                     .With(t => t.Period, 1)
                     .With(t => t.Time, eventDate)
-                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
-                    .Create(),
-                fixture.For<TimelineEvent>()
+                    .With(t => t.PeriodType, PeriodType.RegularPeriod),
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.ScoreChange)
-                    .With(t => t.MatchTime, 20)
+                    .With(t => t.MatchTime, (byte)20)
                     .With(t => t.HomeScore, 1)
                     .With(t => t.AwayScore, 1)
                     .With(t => t.Time, eventDate.AddMinutes(20))
-                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
-                    .Create(),
-                fixture.For<TimelineEvent>()
+                    .With(t => t.PeriodType, PeriodType.RegularPeriod),
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.BreakStart)
                     .With(t => t.Time, eventDate.AddMinutes(55))
-                    .With(t => t.PeriodType,  PeriodType.Pause)
-                    .Create(),
-                fixture.For<TimelineEvent>()
+                    .With(t => t.PeriodType, PeriodType.Pause),
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.PeriodStart)
                     .With(t => t.Period, 2)
                     .With(t => t.Time, eventDate.AddMinutes(70))
-                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
-                    .Create(),
+                    .With(t => t.PeriodType, PeriodType.RegularPeriod),
             };
             var match = StubMatch(matchId, eventDate, timeLines);
 
@@ -442,32 +439,28 @@ namespace Soccer.API.Tests.Odds
             var bookMakerId = "bookMakerId";
             var timeLines = new List<TimelineEvent>
             {
-                fixture.For<TimelineEvent>()
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.PeriodStart)
                     .With(t => t.Period, 1)
                     .With(t => t.Time, eventDate)
-                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
-                    .Create(),
-                fixture.For<TimelineEvent>()
+                    .With(t => t.PeriodType, PeriodType.RegularPeriod),
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.BreakStart)
                     .With(t => t.Time, eventDate.AddMinutes(55))
-                    .With(t => t.PeriodType,  PeriodType.Pause)
-                    .Create(),
-                fixture.For<TimelineEvent>()
+                    .With(t => t.PeriodType, PeriodType.Pause),
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.PeriodStart)
                     .With(t => t.Period, 2)
                     .With(t => t.Time, eventDate.AddMinutes(70))
-                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
-                    .Create(),
-                fixture.For<TimelineEvent>()
+                    .With(t => t.PeriodType, PeriodType.RegularPeriod),
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.ScoreChange)
                     .With(t => t.Period, 1)
                     .With(t => t.Time, eventDate.AddMinutes(80))
                     .With(t => t.HomeScore, 2)
                     .With(t => t.AwayScore, 1)
-                    .With(t => t.MatchTime, 56)
-                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
-                    .Create(),
+                    .With(t => t.MatchTime, (byte)56)
+                    .With(t => t.PeriodType, PeriodType.RegularPeriod),
             };
             var match = StubMatch(matchId, eventDate, timeLines);
 
@@ -501,36 +494,35 @@ namespace Soccer.API.Tests.Odds
         {
             // Arrange
             var matchId = "GetOddsMovement_OddsChangeInSecondHalf_ReturnOddsChange";
+
             var bookMakerId = "bookMakerId";
+
             var timeLines = new List<TimelineEvent>
             {
-                fixture.For<TimelineEvent>()
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.PeriodStart)
                     .With(t => t.Period, 1)
                     .With(t => t.Time, eventDate)
-                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
-                    .Create(),
-                fixture.For<TimelineEvent>()
+                    .With(t => t.PeriodType, PeriodType.RegularPeriod),
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.BreakStart)
                     .With(t => t.Time, eventDate.AddMinutes(55))
-                    .With(t => t.PeriodType,  PeriodType.Pause)
-                    .Create(),
-                fixture.For<TimelineEvent>()
+                    .With(t => t.PeriodType, PeriodType.Pause),
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.PeriodStart)
                     .With(t => t.Period, 2)
                     .With(t => t.Time, eventDate.AddMinutes(70))
-                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
-                    .Create(),
-                fixture.For<TimelineEvent>()
+                    .With(t => t.PeriodType, PeriodType.RegularPeriod),
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.ScoreChange)
                     .With(t => t.Period, 1)
                     .With(t => t.Time, eventDate.AddMinutes(80))
                     .With(t => t.HomeScore, 2)
                     .With(t => t.AwayScore, 1)
-                    .With(t => t.MatchTime, 56)
-                    .With(t => t.PeriodType,  PeriodType.RegularPeriod)
-                    .Create(),
+                    .With(t => t.MatchTime, (byte)56)
+                    .With(t => t.PeriodType, PeriodType.RegularPeriod),
             };
+
             var match = StubMatch(matchId, eventDate, timeLines);
 
             var betTypeOddsList = new List<BetTypeOdds>
@@ -541,7 +533,9 @@ namespace Soccer.API.Tests.Odds
                 StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.AddMinutes(80).DateTime, 0.14m),
                 StubOneXTwoBetTypeOdds(bookMakerId, "bookMakerName", match.EventDate.AddMinutes(90).DateTime, 0.12m),
             };
+
             StubBetTypeOdds(matchId, betTypeOddsList, bookMakerId);
+
             StubOddsMovements(matchId, bookMakerId, match);
 
             // Act
@@ -564,12 +558,12 @@ namespace Soccer.API.Tests.Odds
             DateTime? eventDate = null,
             IEnumerable<TimelineEvent> timelines = null)
         {
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Id, matchId)
                 .With(m => m.EventDate, eventDate.HasValue
                     ? eventDate.Value
                     : new DateTime(2019, 2, 3))
-                .Create();
+                ;
 
             dynamicRepository
                 .GetAsync<Match>(Arg.Is<GetMatchByIdCriteria>(c => c.Id == matchId && c.Language == Language.en_US.DisplayName))

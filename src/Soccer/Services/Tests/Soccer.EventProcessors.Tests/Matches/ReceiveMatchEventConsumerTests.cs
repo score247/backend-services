@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AutoFixture;
+using FakeItEasy;
 using Fanex.Caching;
 using Fanex.Data.Repository;
 using Fanex.Logging;
@@ -23,7 +23,6 @@ namespace Soccer.EventProcessors.Tests.Matches
     [Trait("Soccer.EventProcessors", "ReceiveMatchEventConsumer")]
     public class ReceiveMatchEventConsumerTests
     {
-        private static readonly Fixture fixture = new Fixture();
         private readonly ICacheManager cacheManager;
         private readonly IBus messageBus;
         private readonly IMajorLeagueFilter<MatchEvent, bool> matchEventFilter;
@@ -56,8 +55,8 @@ namespace Soccer.EventProcessors.Tests.Matches
             context.Message.Returns(new MatchEventReceivedMessage(new MatchEvent(
                 "sr:league",
                 "sr:match",
-                fixture.Create<MatchResult>(),
-                fixture.Create<TimelineEvent>())));
+                A.Dummy<MatchResult>(),
+                A.Dummy<TimelineEvent>())));
 
             await consumer.Consume(context);
 
@@ -70,11 +69,11 @@ namespace Soccer.EventProcessors.Tests.Matches
             context.Message.Returns(new MatchEventReceivedMessage(new MatchEvent(
                 "sr:league",
                 "sr:match",
-                fixture.Create<MatchResult>(),
-                fixture.For<TimelineEvent>()
+                A.Dummy<MatchResult>(),
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.ScoreChange)
                     .With(t => t.PeriodType, PeriodType.Penalties)
-                    .Create())));
+                    )));
             StubForMajorLeague("sr:league");
 
             await consumer.Consume(context);
@@ -88,9 +87,9 @@ namespace Soccer.EventProcessors.Tests.Matches
             context.Message.Returns(new MatchEventReceivedMessage(new MatchEvent(
                 "sr:league",
                 "sr:match",
-                fixture.Create<MatchResult>(),
-                fixture.For<TimelineEvent>()
-                    .With(t => t.Type, EventType.ScoreChange).Create())));
+                A.Dummy<MatchResult>(),
+                A.Dummy<TimelineEvent>()
+                    .With(t => t.Type, EventType.ScoreChange))));
 
             StubForMajorLeague("sr:league");
 
@@ -105,9 +104,9 @@ namespace Soccer.EventProcessors.Tests.Matches
             context.Message.Returns(new MatchEventReceivedMessage(new MatchEvent(
                 "sr:league",
                 "sr:match",
-                fixture.Create<MatchResult>(),
-                fixture.For<TimelineEvent>()
-                    .With(t => t.Type, EventType.PeriodStart).Create())));
+                A.Dummy<MatchResult>(),
+                A.Dummy<TimelineEvent>()
+                    .With(t => t.Type, EventType.PeriodStart))));
 
             StubForMajorLeague("sr:league");
 
@@ -123,7 +122,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             context.Message.Returns(new MatchEventReceivedMessage(new MatchEvent(
                 "sr:league",
                 "sr:match",
-                fixture.Create<MatchResult>(),
+                A.Dummy<MatchResult>(),
                 StubPenaltyShootout())));
 
             StubForMajorLeague("sr:league");
@@ -140,7 +139,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             context.Message.Returns(new MatchEventReceivedMessage(new MatchEvent(
                 "sr:league",
                 "sr:match",
-                fixture.Create<MatchResult>(),
+                A.Dummy<MatchResult>(),
                 StubPenaltyShootout())));
 
             cacheManager.GetOrSetAsync(Arg.Any<string>(), Arg.Any<Func<Task<IList<TimelineEvent>>>>(), Arg.Any<CacheItemOptions>())
@@ -160,9 +159,9 @@ namespace Soccer.EventProcessors.Tests.Matches
             context.Message.Returns(new MatchEventReceivedMessage(new MatchEvent(
                 "sr:league",
                 "sr:match",
-                fixture.Create<MatchResult>(),
-                fixture.For<TimelineEvent>()
-                    .With(t => t.Type, EventType.MatchEnded).Create())));
+                A.Dummy<MatchResult>(),
+                A.Dummy<TimelineEvent>()
+                    .With(t => t.Type, EventType.MatchEnded))));
 
             StubForMajorLeague("sr:league");
 
@@ -178,9 +177,9 @@ namespace Soccer.EventProcessors.Tests.Matches
             context.Message.Returns(new MatchEventReceivedMessage(new MatchEvent(
                 "sr:league",
                 "sr:match",
-                fixture.Create<MatchResult>(),
-                fixture.For<TimelineEvent>()
-                    .With(t => t.Type, EventType.RedCard).Create())));
+                A.Dummy<MatchResult>(),
+                A.Dummy<TimelineEvent>()
+                    .With(t => t.Type, EventType.RedCard))));
 
             StubForMajorLeague("sr:league");
 
@@ -196,18 +195,18 @@ namespace Soccer.EventProcessors.Tests.Matches
             context.Message.Returns(new MatchEventReceivedMessage(new MatchEvent(
                 "sr:league",
                 "sr:match",
-                fixture.Create<MatchResult>(),
-                fixture.For<TimelineEvent>()
+                A.Dummy<MatchResult>(),
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Id, "1")
                     .With(t => t.Type, EventType.RedCard)
                     .With(t => t.Player, new Player("", "player"))
-                    .Create())));
+                    )));
 
             cacheManager.GetOrSetAsync(Arg.Any<string>(), Arg.Any<Func<Task<IList<TimelineEvent>>>>(), Arg.Any<CacheItemOptions>())
-                .Returns(new List<TimelineEvent> { fixture.For<TimelineEvent>()
+                .Returns(new List<TimelineEvent> { A.Dummy<TimelineEvent>()
                     .With(t => t.Id, "1")
                     .With(t => t.Type, EventType.RedCard)
-                    .Create() });
+                     });
 
             StubForMajorLeague("sr:league");
 
@@ -223,10 +222,10 @@ namespace Soccer.EventProcessors.Tests.Matches
             context.Message.Returns(new MatchEventReceivedMessage(new MatchEvent(
                 "sr:league",
                 "sr:match",
-                fixture.Create<MatchResult>(),
-                fixture.For<TimelineEvent>()
+                A.Dummy<MatchResult>(),
+                A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.YellowRedCard)
-                    .Create())));
+                    )));
 
             StubForMajorLeague("sr:league");
 
@@ -242,9 +241,9 @@ namespace Soccer.EventProcessors.Tests.Matches
         }
 
         private static TimelineEvent StubPenaltyShootout()
-            => fixture.For<TimelineEvent>()
+            => A.Dummy<TimelineEvent>()
                 .With(t => t.Type, EventType.PenaltyShootout)
                 .With(t => t.PeriodType, PeriodType.Penalties)
-                .Create();
+                ;
     }
 }

@@ -14,9 +14,9 @@ namespace Score247.Shared.Base
         }
 
         [Key(0)]
-        public string Id { get; }
+        public string Id { get; protected set; }
 
         [Key(1)]
-        public string Name { get; }
+        public string Name { get; protected set; }
     }
 }

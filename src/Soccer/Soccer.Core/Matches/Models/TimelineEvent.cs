@@ -52,46 +52,46 @@
             PlayerIn = playerIn;
         }
 
-        public EventType Type { get; }
+        public EventType Type { get; private set; }
 
-        public DateTimeOffset Time { get; }
+        public DateTimeOffset Time { get; private set; }
 
-        public byte MatchTime { get; }
+        public byte MatchTime { get; private set; }
 
-        public string StoppageTime { get; }
+        public string StoppageTime { get; private set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public string Team { get; }
+        public string Team { get; private set; }
 
-        public int Period { get; }
+        public int Period { get; private set; }
 
-        public PeriodType PeriodType { get; }
+        public PeriodType PeriodType { get; private set; }
 
         public int HomeScore { get; private set; }
 
         public int AwayScore { get; private set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public GoalScorer GoalScorer { get; }
+        public GoalScorer GoalScorer { get; private set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Player Assist { get; }
+        public Player Assist { get; private set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Player Player { get; }
+        public Player Player { get; private set; }
 
-        public int InjuryTimeAnnounced { get; }
+        public int InjuryTimeAnnounced { get; private set; }
 
         public bool IsHome => Team?.ToLowerInvariant() == "home";
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public IEnumerable<Commentary> Commentaries { get; }
+        public IEnumerable<Commentary> Commentaries { get; private set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Player PlayerOut { get; }
+        public Player PlayerOut { get; private set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Player PlayerIn { get; }
+        public Player PlayerIn { get; private set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Player HomeShootoutPlayer { get; set; }

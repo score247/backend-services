@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoFixture;
+using FakeItEasy;
 using MassTransit;
 using NSubstitute;
 using Score247.Shared.Tests;
@@ -26,7 +26,6 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         private readonly ITimelineService timelineService;
         private readonly IBus messageBus;
         private readonly FetchTimelineTask fetchTimelineTask;
-        private static readonly Fixture fixture = new Fixture();
 
         public FetchTimelineTaskTests()
         {
@@ -52,10 +51,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_HasReferee_ShouldPublishMatchUpdatedConditionsMessage()
         {
             // Arrange
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Teams, new List<Team>())
-                .With(m => m.Referee, "AAA")
-                .Create();
+                .With(m => m.Referee, "AAA");
 
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
@@ -71,9 +69,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_HasAttendance_ShouldPublishMatchUpdatedConditionsMessage()
         {
             // Arrange
-            var match = fixture.For<Match>()
-                .With(m => m.Attendance, 10000)
-                .Create();
+            var match = A.Dummy<Match>()
+                .With(m => m.Attendance, 10000);
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
@@ -88,11 +85,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_HasBothAttendanceAndReferee_ShouldPublishMatchUpdatedConditionsMessage()
         {
             // Arrange
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Teams, new List<Team>())
                 .With(m => m.Attendance, 10000)
-                .With(m => m.Referee, "AAA")
-                .Create();
+                .With(m => m.Referee, "AAA");
 
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
@@ -109,11 +105,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_NotHaveRef_ShouldNotPublishMatchUpdatedConditionsMessage()
         {
             // Arrange
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Teams, new List<Team>())
                 .With(m => m.Referee, null)
-                .With(m => m.Attendance, 0)
-                .Create();
+                .With(m => m.Attendance, 0);
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
@@ -128,19 +123,18 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_TeamStatisticNull_ShouldNotPublishTeamStatisticMessage()
         {
             // Arrange
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Teams, new List<Team>
                 {
-                    fixture.For<Team>()
+                    A.Dummy<Team>()
                         .With(t => t.Name, "AC Milan")
                         .With(t => t.IsHome, true)
-                        .With(t => t.Statistic, null).Create(),
-                    fixture.For<Team>()
+                        .With(t => t.Statistic, null),
+                    A.Dummy<Team>()
                         .With(t => t.Name, "Juventus")
                         .With(t => t.IsHome, false)
-                        .With(t => t.Statistic, null).Create(),
-                })
-                .Create();
+                        .With(t => t.Statistic, null),
+                });
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
@@ -155,19 +149,19 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_BothTeamStatisticNotNull_ShouldPublishTeamStatisticMessage()
         {
             // Arrange
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Teams, new List<Team>
                 {
-                    fixture.For<Team>()
+                    A.Dummy<Team>()
                         .With(t => t.Name, "AC Milan")
                         .With(t => t.IsHome, true)
-                        .With(t => t.Statistic, new TeamStatistic(0, 2)).Create(),
-                    fixture.For<Team>()
+                        .With(t => t.Statistic, new TeamStatistic(0, 2)),
+                    A.Dummy<Team>()
                         .With(t => t.Name, "Juventus")
                         .With(t => t.IsHome, false)
-                        .With(t => t.Statistic, new TeamStatistic(0, 0)).Create(),
-                })
-                .Create();
+                        .With(t => t.Statistic, new TeamStatistic(0, 0)),
+                });
+
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
@@ -182,19 +176,18 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_TeamStatisticNotNull_ShouldPublishTeamStatisticMessage()
         {
             // Arrange
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Teams, new List<Team>
                 {
-                    fixture.For<Team>()
+                    A.Dummy<Team>()
                         .With(t => t.Name, "AC Milan")
                         .With(t => t.IsHome, true)
-                        .With(t => t.Statistic, new TeamStatistic(0, 2)).Create(),
-                    fixture.For<Team>()
+                        .With(t => t.Statistic, new TeamStatistic(0, 2)),
+                    A.Dummy<Team>()
                         .With(t => t.Name, "Juventus")
                         .With(t => t.IsHome, false)
-                        .With(t => t.Statistic, null).Create(),
-                })
-                .Create();
+                        .With(t => t.Statistic, null),
+                });
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
@@ -209,20 +202,19 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_TimelinesNull_ShouldNotPublishMatchTimelinesFetchedMessage()
         {
             // Arrange
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Teams, new List<Team>
                 {
-                    fixture.For<Team>()
+                    A.Dummy<Team>()
                         .With(t => t.Name, "AC Milan")
                         .With(t => t.IsHome, true)
-                        .With(t => t.Statistic, new TeamStatistic(0, 2)).Create(),
-                    fixture.For<Team>()
+                        .With(t => t.Statistic, new TeamStatistic(0, 2)),
+                    A.Dummy<Team>()
                         .With(t => t.Name, "Juventus")
                         .With(t => t.IsHome, false)
-                        .With(t => t.Statistic, new TeamStatistic(0, 0)).Create(),
+                        .With(t => t.Statistic, new TeamStatistic(0, 0)),
                 })
-                .With(m => m.TimeLines, null)
-                .Create();
+                .With(m => m.TimeLines, null);
 
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
@@ -238,20 +230,19 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_TimelinesEmpty_ShouldNotPublishMatchTimelinesFetchedMessage()
         {
             // Arrange
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Teams, new List<Team>
                 {
-                    fixture.For<Team>()
+                    A.Dummy<Team>()
                         .With(t => t.Name, "AC Milan")
                         .With(t => t.IsHome, true)
-                        .With(t => t.Statistic, new TeamStatistic(0, 2)).Create(),
-                    fixture.For<Team>()
+                        .With(t => t.Statistic, new TeamStatistic(0, 2)),
+                    A.Dummy<Team>()
                         .With(t => t.Name, "Juventus")
                         .With(t => t.IsHome, false)
-                        .With(t => t.Statistic, new TeamStatistic(0, 0)).Create(),
+                        .With(t => t.Statistic, new TeamStatistic(0, 0)),
                 })
-                .With(m => m.TimeLines, new List<TimelineEvent>())
-                .Create();
+                .With(m => m.TimeLines, new List<TimelineEvent>());
 
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
@@ -267,23 +258,22 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_TimelinesNotEmpty_ShouldPublishMatchTimelinesFetchedMessage()
         {
             // Arrange
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Teams, new List<Team>
                 {
-                    fixture.For<Team>()
+                    A.Dummy<Team>()
                         .With(t => t.Name, "AC Milan")
                         .With(t => t.IsHome, true)
-                        .With(t => t.Statistic, new TeamStatistic(0, 2)).Create(),
-                    fixture.For<Team>()
+                        .With(t => t.Statistic, new TeamStatistic(0, 2)),
+                    A.Dummy<Team>()
                         .With(t => t.Name, "Juventus")
                         .With(t => t.IsHome, false)
-                        .With(t => t.Statistic, new TeamStatistic(0, 0)).Create(),
+                        .With(t => t.Statistic, new TeamStatistic(0, 0)),
                 })
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
-                    fixture.For<TimelineEvent>().With(t => t.Type, EventType.MatchStarted).Create()
-                })
-                .Create();
+                    A.Dummy<TimelineEvent>().With(t => t.Type, EventType.MatchStarted)
+                });
 
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
@@ -299,19 +289,18 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_CommentariesNull_ShouldNotPublishMatchCommentaryFetchedMessage()
         {
             // Arrange
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Teams, new List<Team>
                 {
-                    fixture.For<Team>()
+                    A.Dummy<Team>()
                         .With(t => t.Name, "AC Milan")
                         .With(t => t.IsHome, true)
-                        .With(t => t.Statistic, new TeamStatistic(0, 2)).Create(),
-                    fixture.For<Team>()
+                        .With(t => t.Statistic, new TeamStatistic(0, 2)),
+                    A.Dummy<Team>()
                         .With(t => t.Name, "Juventus")
                         .With(t => t.IsHome, false)
-                        .With(t => t.Statistic, new TeamStatistic(0, 0)).Create(),
-                })
-                .Create();
+                        .With(t => t.Statistic, new TeamStatistic(0, 0)),
+                });
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
@@ -326,26 +315,24 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_CommentariesEmpty_ShouldNotPublishMatchCommentaryFetchedMessage()
         {
             // Arrange
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.Teams, new List<Team>
                 {
-                    fixture.For<Team>()
+                    A.Dummy<Team>()
                         .With(t => t.Name, "AC Milan")
                         .With(t => t.IsHome, true)
-                        .With(t => t.Statistic, new TeamStatistic(0, 2)).Create(),
-                    fixture.For<Team>()
+                        .With(t => t.Statistic, new TeamStatistic(0, 2)),
+                    A.Dummy<Team>()
                         .With(t => t.Name, "Juventus")
                         .With(t => t.IsHome, false)
-                        .With(t => t.Statistic, new TeamStatistic(0, 0)).Create(),
+                        .With(t => t.Statistic, new TeamStatistic(0, 0)),
                 })
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
-                    fixture.For<TimelineEvent>()
+                    A.Dummy<TimelineEvent>()
                         .With(t => t.Type, EventType.MatchStarted)
                         .With(t => t.Commentaries, new List<Commentary>())
-                        .Create()
-                })
-                .Create();
+                });
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
@@ -360,31 +347,28 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchTimelines_CommentariesNotEmpty_ShouldPublishMatchCommentaryFetchedMessage()
         {
             // Arrange
-            var match = fixture.For<Match>()
+            var match = A.Dummy<Match>()
                 .With(m => m.League, new League("sr:league", ""))
                 .With(m => m.Teams, new List<Team>
                 {
-                    fixture.For<Team>()
+                    A.Dummy<Team>()
                         .With(t => t.Name, "AC Milan")
                         .With(t => t.IsHome, true)
-                        .With(t => t.Statistic, new TeamStatistic(0, 2)).Create(),
-                    fixture.For<Team>()
+                        .With(t => t.Statistic, new TeamStatistic(0, 2)),
+                    A.Dummy<Team>()
                         .With(t => t.Name, "Juventus")
                         .With(t => t.IsHome, false)
-                        .With(t => t.Statistic, new TeamStatistic(0, 0)).Create(),
+                        .With(t => t.Statistic, new TeamStatistic(0, 0)),
                 })
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
-                    fixture.For<TimelineEvent>()
+                    A.Dummy<TimelineEvent>()
                         .With(t => t.Id, "1")
-                        .With(t => t.Type, EventType.MatchStarted)
-                        .Create(),
-                    fixture.For<TimelineEvent>()
+                        .With(t => t.Type, EventType.MatchStarted),
+                    A.Dummy<TimelineEvent>()
                         .With(t => t.Id, "2")
                         .With(t => t.Type, EventType.ScoreChange)
-                        .Create()
-                })
-                .Create();
+                });
             var commentaries = new List<TimelineCommentary> {
                     new TimelineCommentary (1, new List<Commentary>
                     {
