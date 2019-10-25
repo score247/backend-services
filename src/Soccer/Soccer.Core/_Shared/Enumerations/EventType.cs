@@ -96,7 +96,6 @@ namespace Soccer.Core.Shared.Enumerations
         {
         }
 
-        [SerializationConstructor, JsonConstructor]
         public EventType(byte value, string displayName)
             : base(value, displayName)
         {
