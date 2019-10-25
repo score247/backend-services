@@ -1,21 +1,21 @@
-﻿namespace Soccer.EventProcessors.Matches
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Fanex.Caching;
-    using Fanex.Data.Repository;
-    using Fanex.Logging;
-    using MassTransit;
-    using Score247.Shared;
-    using Soccer.Core.Matches.Extensions;
-    using Soccer.Core.Matches.Models;
-    using Soccer.Core.Matches.QueueMessages;
-    using Soccer.Core.Matches.QueueMessages.MatchEvents;
-    using Soccer.Database.Matches.Criteria;
-    using Soccer.EventProcessors._Shared.Filters;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Fanex.Caching;
+using Fanex.Data.Repository;
+using Fanex.Logging;
+using MassTransit;
+using Score247.Shared;
+using Soccer.Core.Matches.Extensions;
+using Soccer.Core.Matches.Models;
+using Soccer.Core.Matches.QueueMessages;
+using Soccer.Core.Matches.QueueMessages.MatchEvents;
+using Soccer.Database.Matches.Criteria;
+using Soccer.EventProcessors.Leagues.Filters;
 
+namespace Soccer.EventProcessors.Matches
+{
     public class ReceiveMatchEventConsumer : IConsumer<IMatchEventReceivedMessage>
     {
         private static readonly CacheItemOptions EventCacheOptions = new CacheItemOptions
@@ -27,14 +27,14 @@
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
         private readonly ILogger logger;
-        private readonly IAsyncFilter<MatchEvent, bool> matchEventFilter;
+        private readonly IMajorLeagueFilter<MatchEvent, bool> matchEventFilter;
 
         public ReceiveMatchEventConsumer(
             ICacheManager cacheManager,
             IDynamicRepository dynamicRepository,
             IBus messageBus,
             ILogger logger,
-            IAsyncFilter<MatchEvent, bool> matchEventFilter)
+            IMajorLeagueFilter<MatchEvent, bool> matchEventFilter)
         {
             this.cacheManager = cacheManager;
             this.dynamicRepository = dynamicRepository;
@@ -84,9 +84,9 @@
 
         private async Task<bool> IsTimelineEventProcessed(MatchEvent matchEvent)
         {
-            var timeLineEvents = await GetProcessedTimelines(matchEvent.MatchId);
+            var timeLineEvents = await GetProcessedTimelines(matchEvent.MatchId) ?? new List<TimelineEvent>();
 
-            if (timeLineEvents?.Contains(matchEvent.Timeline) == true)
+            if (timeLineEvents.Contains(matchEvent.Timeline))
             {
                 return true;
             }
@@ -98,17 +98,12 @@
 
         private async Task<IList<TimelineEvent>> GetProcessedTimelines(string matchId)
         {
-            IList<TimelineEvent> timelineEvents;
-
             var timelineEventsCacheKey = $"MatchPushEvent_Match_{matchId}";
 
-            timelineEvents = await cacheManager.GetOrSetAsync<IList<TimelineEvent>>(
+            var timelineEvents = await cacheManager.GetOrSetAsync<IList<TimelineEvent>>(
                 timelineEventsCacheKey,
-                async () =>
-                {
-                    return (await dynamicRepository.FetchAsync<TimelineEvent>
-                                (new GetTimelineEventsCriteria(matchId))).ToList();
-                },
+                async () => (await dynamicRepository.FetchAsync<TimelineEvent>
+                    (new GetTimelineEventsCriteria(matchId))).ToList(),
                 EventCacheOptions);
 
             return timelineEvents;

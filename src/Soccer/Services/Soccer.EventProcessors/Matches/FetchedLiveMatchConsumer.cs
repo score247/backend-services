@@ -11,7 +11,8 @@ using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Matches.Commands;
 using Soccer.Database.Matches.Criteria;
-using Soccer.EventProcessors._Shared.Filters;
+using Soccer.EventProcessors.Leagues;
+using Soccer.EventProcessors.Leagues.Filters;
 using Soccer.EventProcessors.Matches.Filters;
 
 namespace Soccer.EventProcessors.Matches
@@ -20,14 +21,14 @@ namespace Soccer.EventProcessors.Matches
     {
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
-        private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
+        private readonly IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
         private readonly ILiveMatchFilter liveMatchRangeFilter;
         private readonly ILogger logger;
 
         public FetchedLiveMatchConsumer(
             IBus messageBus,
             IDynamicRepository dynamicRepository,
-            IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter,
+            IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter,
             ILiveMatchFilter liveMatchFilter,
             ILogger logger)
         {
@@ -88,12 +89,12 @@ namespace Soccer.EventProcessors.Matches
         }
 
         private IList<Match> GetOutOfRangeClosedMatches(IEnumerable<Match> currentLiveMatches)
-        {   
+        {
             var inRangeClosedMatches = liveMatchRangeFilter
                 .FilterClosed(currentLiveMatches);
 
-            var outOfRangeMatches = (inRangeClosedMatches != null && inRangeClosedMatches.Any() 
-                ? currentLiveMatches.Except(inRangeClosedMatches) 
+            var outOfRangeMatches = (inRangeClosedMatches != null && inRangeClosedMatches.Any()
+                ? currentLiveMatches.Except(inRangeClosedMatches)
                 : currentLiveMatches.Where(m => m.MatchResult.EventStatus.IsClosed()));
 
             return outOfRangeMatches.ToList();

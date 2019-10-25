@@ -1,23 +1,24 @@
-﻿namespace Soccer.EventProcessors.Matches
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Fanex.Data.Repository;
-    using MassTransit;
-    using Soccer.Core.Matches.Events;
-    using Soccer.Core.Matches.Models;
-    using Soccer.Database.Matches.Commands;
-    using Soccer.EventProcessors._Shared.Filters;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Fanex.Data.Repository;
+using MassTransit;
+using Soccer.Core.Matches.Events;
+using Soccer.Core.Matches.Models;
+using Soccer.Database.Matches.Commands;
+using Soccer.EventProcessors.Leagues;
+using Soccer.EventProcessors.Leagues.Filters;
 
+namespace Soccer.EventProcessors.Matches
+{
     public class FetchPostMatchesConsumer : IConsumer<IPostMatchFetchedMessage>
     {
         private readonly IDynamicRepository dynamicRepository;
-        private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
+        private readonly IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
 
         public FetchPostMatchesConsumer(
             IDynamicRepository dynamicRepository,
-            IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter)
+            IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter)
         {
             this.dynamicRepository = dynamicRepository;
             this.leagueFilter = leagueFilter;

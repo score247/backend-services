@@ -1,21 +1,20 @@
-﻿namespace Soccer.EventProcessors
-{
-    using System;
-    using System.Collections.Generic;
-    using Fanex.Caching;
-    using MassTransit;
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-    using Score247.Shared;
-    using Soccer.Core.Matches.Models;
-    using Soccer.EventProcessors._Shared.Filters;
-    using Soccer.EventProcessors.Leagues;
-    using Soccer.EventProcessors.Matches.Filters;
-    using Soccer.EventProcessors.Shared.Middlewares;
+﻿using System;
+using System.Collections.Generic;
+using Fanex.Caching;
+using MassTransit;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Score247.Shared;
+using Soccer.Core.Matches.Models;
+using Soccer.EventProcessors.Leagues.Filters;
+using Soccer.EventProcessors.Matches.Filters;
+using Soccer.EventProcessors.Shared.Middlewares;
 
+namespace Soccer.EventProcessors
+{
     public class Startup
     {
         public Startup(IHostingEnvironment env)
@@ -71,9 +70,9 @@
         {
             services.AddSingleton<ILiveMatchRangeValidator, LiveMatchRangeValidator>();
 
-            services.AddSingleton<IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>>, LeagueFilter>();
-            services.AddSingleton<IAsyncFilter<MatchEvent, bool>, LeagueFilter>();
-            services.AddSingleton<IAsyncFilter<Match, bool>, LeagueFilter>();
+            services.AddSingleton<IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>>, MajorLeagueFilter>();
+            services.AddSingleton<IMajorLeagueFilter<MatchEvent, bool>, MajorLeagueFilter>();
+            services.AddSingleton<IMajorLeagueFilter<Match, bool>, MajorLeagueFilter>();
             services.AddSingleton<ILiveMatchFilter, LiveMatchFilter>();
         }
     }

@@ -40,7 +40,7 @@
                 serviceCollectionConfigurator.AddConsumer<OddsChangeConsumer>();
                 serviceCollectionConfigurator.AddConsumer<UpdateMatchConditionsConsumer>();
                 serviceCollectionConfigurator.AddConsumer<UpdateTeamStatisticConsumer>();
-                serviceCollectionConfigurator.AddConsumer<UpdateMatchCoverageCosumer>();
+                serviceCollectionConfigurator.AddConsumer<UpdateMatchCoverageConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchedLiveMatchConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchLeaguesConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchTimelinesConsumer>();
@@ -70,7 +70,7 @@
                     e.Consumer<FetchPostMatchesConsumer>(provider);
                     e.Consumer<CloseLiveMatchConsumer>(provider);
                     e.Consumer<UpdateMatchConditionsConsumer>(provider);
-                    e.Consumer<UpdateMatchCoverageCosumer>(provider);
+                    e.Consumer<UpdateMatchCoverageConsumer>(provider);
                 });
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents", e =>

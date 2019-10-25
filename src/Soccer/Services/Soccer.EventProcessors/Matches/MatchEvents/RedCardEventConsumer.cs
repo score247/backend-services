@@ -41,7 +41,7 @@
             {
                 return;
             }
-            
+
             var processedRedCards = await GetProcessedRedCards(matchEvent.MatchId, matchEvent.Timeline.Team);
 
             var teamStats = new TeamStatistic(
@@ -51,21 +51,18 @@
             await messageBus.Publish<ITeamStatisticUpdatedMessage>(new TeamStatisticUpdatedMessage(matchEvent.MatchId, matchEvent.Timeline.IsHome, teamStats, true));
             await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
         }
-               
+
         private async Task<IList<TimelineEvent>> GetProcessedRedCards(string matchId, string teamId)
         {
             var timelineEventsCacheKey = $"MatchPushEvent_Match_{matchId}";
 
             var timelineEvents = await cacheManager.GetOrSetAsync<IList<TimelineEvent>>(
-                timelineEventsCacheKey,
-                async () =>
-                {
-                    return (await dynamicRepository.FetchAsync<TimelineEvent>
-                                (new GetTimelineEventsCriteria(matchId))).ToList();
-                },
-                EventCacheOptions);
+                    timelineEventsCacheKey,
+                    async () => (await dynamicRepository.FetchAsync<TimelineEvent>
+                        (new GetTimelineEventsCriteria(matchId))).ToList(),
+                    EventCacheOptions);
 
-            return timelineEvents == null 
+            return timelineEvents == null
                 ? new List<TimelineEvent>()
                 : timelineEvents
                     .Where(t => t.Team == teamId && (t.Type.IsRedCard() || t.Type.IsYellowRedCard()))

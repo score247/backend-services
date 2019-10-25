@@ -6,11 +6,11 @@
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Database.Matches.Commands;
 
-    public class UpdateMatchCoverageCosumer : IConsumer<IMatchUpdatedCoverageInfo>
+    public class UpdateMatchCoverageConsumer : IConsumer<IMatchUpdatedCoverageInfo>
     {
         private readonly IDynamicRepository dynamicRepository;
 
-        public UpdateMatchCoverageCosumer(IDynamicRepository dynamicRepository)
+        public UpdateMatchCoverageConsumer(IDynamicRepository dynamicRepository)
         {
             this.dynamicRepository = dynamicRepository;
         }

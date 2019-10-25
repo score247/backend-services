@@ -10,7 +10,7 @@ using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.Models;
-using Soccer.EventProcessors._Shared.Filters;
+using Soccer.EventProcessors.Leagues.Filters;
 using Soccer.EventProcessors.Timeline;
 using Xunit;
 
@@ -21,14 +21,14 @@ namespace Soccer.EventProcessors.Tests.Timeline
     {
         private static readonly Fixture fixture = new Fixture();
         private readonly IBus messageBus;
-        private readonly IAsyncFilter<Match, bool> majorLeagueFilter;
+        private readonly IMajorLeagueFilter<Match, bool> majorLeagueFilter;
         private readonly ConsumeContext<IMatchTimelinesFetchedMessage> context;
         private readonly FetchTimelinesConsumer fetchTimelineConsumer;
 
         public FetchTimelineConsumerTests()
         {
             messageBus = Substitute.For<IBus>();
-            majorLeagueFilter = Substitute.For<IAsyncFilter<Match, bool>>();
+            majorLeagueFilter = Substitute.For<IMajorLeagueFilter<Match, bool>>();
 
             context = Substitute.For<ConsumeContext<IMatchTimelinesFetchedMessage>>();
 

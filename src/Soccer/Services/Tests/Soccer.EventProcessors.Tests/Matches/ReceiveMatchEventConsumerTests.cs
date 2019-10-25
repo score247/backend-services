@@ -14,7 +14,7 @@ using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Matches.QueueMessages.MatchEvents;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.Models;
-using Soccer.EventProcessors._Shared.Filters;
+using Soccer.EventProcessors.Leagues.Filters;
 using Soccer.EventProcessors.Matches;
 using Xunit;
 
@@ -26,7 +26,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         private static readonly Fixture fixture = new Fixture();
         private readonly ICacheManager cacheManager;
         private readonly IBus messageBus;
-        private readonly IAsyncFilter<MatchEvent, bool> matchEventFilter;
+        private readonly IMajorLeagueFilter<MatchEvent, bool> matchEventFilter;
         private readonly ReceiveMatchEventConsumer consumer;
         private readonly ConsumeContext<IMatchEventReceivedMessage> context;
 
@@ -34,7 +34,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         {
             cacheManager = Substitute.For<ICacheManager>();
             messageBus = Substitute.For<IBus>();
-            matchEventFilter = Substitute.For<IAsyncFilter<MatchEvent, bool>>();
+            matchEventFilter = Substitute.For<IMajorLeagueFilter<MatchEvent, bool>>();
             context = Substitute.For<ConsumeContext<IMatchEventReceivedMessage>>();
 
             var logger = Substitute.For<ILogger>();

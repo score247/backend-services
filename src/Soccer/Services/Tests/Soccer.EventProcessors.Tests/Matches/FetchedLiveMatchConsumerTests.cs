@@ -9,13 +9,12 @@ using MassTransit;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Score247.Shared.Tests;
-using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Matches.Commands;
 using Soccer.Database.Matches.Criteria;
-using Soccer.EventProcessors._Shared.Filters;
+using Soccer.EventProcessors.Leagues.Filters;
 using Soccer.EventProcessors.Matches;
 using Soccer.EventProcessors.Matches.Filters;
 using Xunit;
@@ -28,7 +27,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         private static readonly Fixture fixture = new Fixture();
 
         private readonly IDynamicRepository dynamicRepository;
-        private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
+        private readonly IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
         private readonly ILogger logger;
         private readonly FetchedLiveMatchConsumer fetchedLiveMatchConsumer;
         private readonly ConsumeContext<ILiveMatchFetchedMessage> context;
@@ -36,7 +35,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         public FetchedLiveMatchConsumerTests()
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
-            leagueFilter = Substitute.For<IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>>>();
+            leagueFilter = Substitute.For<IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>>>();
             logger = Substitute.For<ILogger>();
             context = Substitute.For<ConsumeContext<ILiveMatchFetchedMessage>>();
             var messageBus = Substitute.For<IBus>();
@@ -106,7 +105,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         [Fact]
         public async Task Consume_HasNewMatchesButOutOfRange_ShouldNotInsert()
         {
-            // Arrange            
+            // Arrange
             var matchesFromApi = new List<Match> { StubNotStartedMatch("match:not:started", DateTimeOffset.Now.AddMinutes(11)) };
 
             context.Message

@@ -8,20 +8,24 @@ using Score247.Shared;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
 using Soccer.Database.Leagues.Criteria;
-using Soccer.EventProcessors._Shared.Filters;
 
-namespace Soccer.EventProcessors.Leagues
+namespace Soccer.EventProcessors.Leagues.Filters
 {
-    public class LeagueFilter :
-        IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>>,
-        IAsyncFilter<MatchEvent, bool>,
-        IAsyncFilter<Match, bool>
+    public interface IMajorLeagueFilter<in T, TResult>
+    {
+        Task<TResult> Filter(T data);
+    }
+
+    public class MajorLeagueFilter :
+        IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>>,
+        IMajorLeagueFilter<MatchEvent, bool>,
+        IMajorLeagueFilter<Match, bool>
     {
         private const string MajorLeaguesCacheKey = "Major_Leagues";
         private readonly IDynamicRepository dynamicRepository;
         private readonly ICacheManager cacheManager;
 
-        public LeagueFilter(IDynamicRepository dynamicRepository, ICacheManager cacheManager)
+        public MajorLeagueFilter(IDynamicRepository dynamicRepository, ICacheManager cacheManager)
         {
             this.dynamicRepository = dynamicRepository;
             this.cacheManager = cacheManager;
@@ -82,21 +86,6 @@ namespace Soccer.EventProcessors.Leagues
                 MajorLeaguesCacheKey,
                 async () => await dynamicRepository.FetchAsync<League>(new GetActiveLeaguesCriteria()),
                 new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
-        }
-
-        public async Task<IEnumerable<Match>> FilterAsync(IEnumerable<Match> data)
-        {
-            var majorLeagues = await GetMajorLeagues();
-
-            return data
-                .Where(match => majorLeagues?.Any(league => league.Id == match.League.Id) == true)
-                .Select(m => SetLeague(m, majorLeagues));
-        }
-
-        public Task<bool> FilterAsync(Match data)
-        {
-            // TODO: Implement later
-            return Task.FromResult(true);
         }
     }
 }

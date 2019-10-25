@@ -5,18 +5,18 @@ using MassTransit;
 using Soccer.Core.Matches.Extensions;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
-using Soccer.EventProcessors._Shared.Filters;
+using Soccer.EventProcessors.Leagues.Filters;
 
 namespace Soccer.EventProcessors.Timeline
 {
     public class FetchTimelinesConsumer : IConsumer<IMatchTimelinesFetchedMessage>
     {
         private readonly IBus messageBus;
-        private readonly IAsyncFilter<Match, bool> majorLeagueFilter;
+        private readonly IMajorLeagueFilter<Match, bool> majorLeagueFilter;
 
         public FetchTimelinesConsumer(
             IBus messageBus,
-            IAsyncFilter<Match, bool> majorLeagueFilter)
+            IMajorLeagueFilter<Match, bool> majorLeagueFilter)
         {
             this.messageBus = messageBus;
             this.majorLeagueFilter = majorLeagueFilter;

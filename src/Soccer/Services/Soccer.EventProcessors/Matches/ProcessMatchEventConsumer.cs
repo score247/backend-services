@@ -40,13 +40,11 @@
                 || (matchEvent.MatchResult.EventStatus.IsEnded() && matchEvent.Timeline.Type.IsMatchEnd()))
             {
                 //TODO should check date update of timeline
-
                 await dynamicRepository.ExecuteAsync(new UpdateLiveMatchResultCommand(matchEvent.MatchId, matchEvent.MatchResult));
                 await dynamicRepository.ExecuteAsync(new UpdateLiveMatchLastTimelineCommand(matchEvent.MatchId, matchEvent.Timeline));
             }
         }
 
-        //TODO should support multiple languages
         private async Task InsertTimeline(MatchEvent matchEvent)
             => await dynamicRepository.ExecuteAsync(new InsertTimelineCommand(matchEvent.MatchId, matchEvent.Timeline, Language.en_US));
     }

@@ -10,8 +10,7 @@ using Score247.Shared;
 using Score247.Shared.Tests;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
-using Soccer.EventProcessors._Shared.Filters;
-using Soccer.EventProcessors.Leagues;
+using Soccer.EventProcessors.Leagues.Filters;
 using Xunit;
 
 namespace Soccer.EventProcessors.Tests.Leagues
@@ -22,18 +21,18 @@ namespace Soccer.EventProcessors.Tests.Leagues
         private static readonly Fixture fixture = new Fixture();
         private const string MajorLeaguesCacheKey = "Major_Leagues";
         private readonly ICacheManager cacheService;
-        private readonly IAsyncFilter<IEnumerable<Match>, IEnumerable<Match>> matchListFilter;
-        private readonly IAsyncFilter<Match, bool> matchFilter;
-        private readonly IAsyncFilter<MatchEvent, bool> matchEventFilter;
+        private readonly IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>> matchListFilter;
+        private readonly IMajorLeagueFilter<Match, bool> matchFilter;
+        private readonly IMajorLeagueFilter<MatchEvent, bool> matchEventFilter;
 
         public LeagueFilterTests()
         {
             var dynamicRepository = Substitute.For<IDynamicRepository>();
             cacheService = Substitute.For<ICacheManager>();
 
-            matchListFilter = new LeagueFilter(dynamicRepository, cacheService);
-            matchFilter = new LeagueFilter(dynamicRepository, cacheService);
-            matchEventFilter = new LeagueFilter(dynamicRepository, cacheService);
+            matchListFilter = new MajorLeagueFilter(dynamicRepository, cacheService);
+            matchFilter = new MajorLeagueFilter(dynamicRepository, cacheService);
+            matchEventFilter = new MajorLeagueFilter(dynamicRepository, cacheService);
         }
 
         [Fact]
