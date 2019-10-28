@@ -49,9 +49,9 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 
                     var coach = new Coach(
                             teamLineups.manager?.id,
-                            teamLineups.manager?.country_code,
+                            PlayerNameConverter.Convert(teamLineups.manager?.name),
                             teamLineups.manager?.nationality,
-                            teamLineups.manager?.name
+                            teamLineups.manager?.country_code
                         );
 
                     return new TeamLineups(
