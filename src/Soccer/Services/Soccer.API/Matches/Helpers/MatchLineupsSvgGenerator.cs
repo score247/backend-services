@@ -24,7 +24,7 @@ namespace Soccer.API.Matches.Helpers
         private const string robotoFontName = "Roboto";
         private const string fillStyleName = "fill";
         private const string whiteColor = "#fff";
-        private const int fontSize = 12;
+        private const int fontSize = 11;
         private const string tranformAttributeName = "transform";
         private readonly string svgFolderPath;
         private readonly Func<string, SvgDocument> getSvgDocumentFunc;
@@ -84,7 +84,7 @@ namespace Soccer.API.Matches.Helpers
         {
             var players = new List<SvgElement>();
             var formationSplits = teamLineups.ConvertFormationToList();
-            var totalRow = formationSplits.Count;
+            var totalRow = formationSplits.Count(fm => fm > 0);
             var teamPlayers = teamLineups.Players.OrderBy(pl => pl.Order);
             var rowIndex = 0;
             var playerIndex = 0;
@@ -151,7 +151,7 @@ namespace Soccer.API.Matches.Helpers
                 X = new SvgUnitCollection { new SvgUnit(x + 15.5f) },
                 Y = new SvgUnitCollection { new SvgUnit(y + (playerHeight / 2)) },
                 FontFamily = robotoFontName,
-                FontWeight = SvgFontWeight.Bold,
+                FontWeight = SvgFontWeight.Normal,
                 FontSize = fontSize
             };
 
@@ -169,7 +169,7 @@ namespace Soccer.API.Matches.Helpers
                 X = new SvgUnitCollection { new SvgUnit(x + 15.5f) },
                 Y = new SvgUnitCollection { new SvgUnit(y + 38) },
                 FontFamily = robotoFontName,
-                FontWeight = SvgFontWeight.Bold,
+                FontWeight = SvgFontWeight.Normal,
                 FontSize = fontSize
             };
 
