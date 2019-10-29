@@ -21,7 +21,7 @@ namespace Soccer.API.Matches.Helpers
         private const string svgText = "<svg";
         private const string homeColor = "#30C2FF";
         private const string awayColor = "#FA2E58";
-        private const string robotoFontName = "Roboto";
+        private const string robotoFontName = "Arial";
         private const string fillStyleName = "fill";
         private const string whiteColor = "#fff";
         private const int fontSize = 11;
@@ -150,6 +150,7 @@ namespace Soccer.API.Matches.Helpers
                 TextAnchor = SvgTextAnchor.Middle,
                 X = new SvgUnitCollection { new SvgUnit(x + 15.5f) },
                 Y = new SvgUnitCollection { new SvgUnit(y + (playerHeight / 2)) },
+                FontFamily = robotoFontName,
                 FontWeight = SvgFontWeight.Normal,
                 FontSize = fontSize
             };
@@ -167,6 +168,7 @@ namespace Soccer.API.Matches.Helpers
                 TextAnchor = SvgTextAnchor.Middle,
                 X = new SvgUnitCollection { new SvgUnit(x + 15.5f) },
                 Y = new SvgUnitCollection { new SvgUnit(y + 38) },
+                FontFamily = robotoFontName,
                 FontWeight = SvgFontWeight.Normal,
                 FontSize = fontSize
             };
