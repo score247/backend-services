@@ -92,9 +92,10 @@ namespace Soccer.API.Matches.Helpers
 
             foreach (var formationItem in formationSplits)
             {
+                var formationRowPlayers = teamPlayers.Skip(playerIndex).Take(formationItem);
                 var rowPlayers = RenderPlayerRow(
                     jeyseyElement,
-                    teamPlayers.Skip(playerIndex).Take(formationItem),
+                    teamLineups.IsHome ? formationRowPlayers : formationRowPlayers.Reverse(),
                     teamLineups.IsHome,
                     rowIndex++,
                     yPlayerDistance);
