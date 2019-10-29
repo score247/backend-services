@@ -30,7 +30,9 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 
                 if (teamLineups != null)
                 {
-                    var startingLineups = teamLineups.starting_lineup.Select(pl =>
+                    var startingLineups = teamLineups
+                        .starting_lineup
+                        .Select(pl =>
                             new Player(
                                 pl.id,
                                 PlayerNameConverter.Convert(pl.name),
@@ -39,7 +41,10 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                                 Enumeration.FromDisplayName<Position>(pl.position),
                                 pl.order));
 
-                    var substitutesLineups = teamLineups.substitutes.Select(pl => new Player(
+                    var substitutesLineups = teamLineups
+                        .substitutes
+                        .OrderBy(st => st.jersey_number)
+                        .Select(pl => new Player(
                             pl.id,
                             PlayerNameConverter.Convert(pl.name),
                             Enumeration.FromDisplayName<PlayerType>(pl.type),
@@ -51,8 +56,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                             teamLineups.manager?.id,
                             PlayerNameConverter.Convert(teamLineups.manager?.name),
                             teamLineups.manager?.nationality,
-                            teamLineups.manager?.country_code
-                        );
+                            teamLineups.manager?.country_code);
 
                     return new TeamLineups(
                         team.Id,

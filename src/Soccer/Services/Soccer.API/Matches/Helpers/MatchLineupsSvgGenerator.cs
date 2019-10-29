@@ -14,9 +14,18 @@ namespace Soccer.API.Matches.Helpers
 
     public class MatchLineupsSvgGenerator : IMatchLineupsGenerator
     {
+        private const int playerWidth = 32;
+        private const int playerHeight = 36;
         private const int stadiumWidth = 357;
         private const int stadiumHeight = 526;
         private const string svgText = "<svg";
+        private const string homeColor = "#30C2FF";
+        private const string awayColor = "#FA2E58";
+        private const string robotoFontName = "Roboto";
+        private const string fillStyleName = "fill";
+        private const string whiteColor = "#fff";
+        private const int fontSize = 12;
+        private const string tranformAttributeName = "transform";
         private readonly string svgFolderPath;
         private readonly Func<string, SvgDocument> getSvgDocumentFunc;
 
@@ -36,11 +45,18 @@ namespace Soccer.API.Matches.Helpers
                 return string.Empty;
             }
 
-            var lineupsDoc = getSvgDocumentFunc($"{svgFolderPath}/stadium.svg");
             var jerseyElement = GetDefaultJerseyElement();
 
-            var lineupsElements = RenderTeam(matchLineups.Home, jerseyElement);
-            lineupsElements = lineupsElements.Concat(RenderTeam(matchLineups.Away, jerseyElement));
+            var lineupsElements =
+                RenderTeam(matchLineups.Home, jerseyElement)
+                .Concat(RenderTeam(matchLineups.Away, jerseyElement));
+
+            return BuildLineupSvg(lineupsElements);
+        }
+
+        private string BuildLineupSvg(IEnumerable<SvgElement> lineupsElements)
+        {
+            var lineupsDoc = getSvgDocumentFunc($"{svgFolderPath}/stadium.svg");
 
             foreach (var element in lineupsElements)
             {
@@ -102,7 +118,7 @@ namespace Soccer.API.Matches.Helpers
 
             for (int playerIndex = 0; playerIndex < totalPlayer; playerIndex++)
             {
-                var x = playerDistance * (playerIndex + 1) - 16;
+                var x = playerDistance * (playerIndex + 1) - (playerWidth / 2);
                 var heightGap = rowIndex * yPlayerDistance + (isHome ? 10 : 50);
                 var y = isHome ? heightGap : (stadiumHeight - heightGap);
 
@@ -119,10 +135,8 @@ namespace Soccer.API.Matches.Helpers
         private static SvgElement RenderPlayerJersey(SvgPath jeyseyElement, bool isHome, int x, int y)
         {
             var playerElement = jeyseyElement.DeepCopy();
-            playerElement.CustomAttributes.Add("transform", $"translate({x},{y})");
-            // home color: #30C2FF
-            // away color: #FA2E58
-            playerElement.AddStyle("fill", isHome ? "#30C2FF" : "#FA2E58", 0);
+            playerElement.CustomAttributes.Add(tranformAttributeName, $"translate({x},{y})");
+            playerElement.AddStyle(fillStyleName, isHome ? homeColor : awayColor, 0);
             return playerElement;
         }
 
@@ -133,13 +147,13 @@ namespace Soccer.API.Matches.Helpers
                 Text = player.JerseyNumber.ToString(),
                 TextAnchor = SvgTextAnchor.Middle,
                 X = new SvgUnitCollection { new SvgUnit(x + 15.5f) },
-                Y = new SvgUnitCollection { new SvgUnit(y + 18) },
-                FontFamily = "Roboto",
+                Y = new SvgUnitCollection { new SvgUnit(y + (playerHeight / 2)) },
+                FontFamily = robotoFontName,
                 FontWeight = SvgFontWeight.Bold,
-                FontSize = 12
+                FontSize = fontSize
             };
 
-            playerNumber.AddStyle("fill", "#fff", 0);
+            playerNumber.AddStyle(fillStyleName, whiteColor, 0);
 
             return playerNumber;
         }
@@ -152,12 +166,12 @@ namespace Soccer.API.Matches.Helpers
                 TextAnchor = SvgTextAnchor.Middle,
                 X = new SvgUnitCollection { new SvgUnit(x + 15.5f) },
                 Y = new SvgUnitCollection { new SvgUnit(y + 38) },
-                FontFamily = "Roboto",
+                FontFamily = robotoFontName,
                 FontWeight = SvgFontWeight.Bold,
-                FontSize = 12
+                FontSize = fontSize
             };
 
-            playerName.AddStyle("fill", "#fff", 0);
+            playerName.AddStyle(fillStyleName, whiteColor, 0);
 
             return playerName;
         }
