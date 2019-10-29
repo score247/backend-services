@@ -32,6 +32,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                 {
                     var startingLineups = teamLineups
                         .starting_lineup
+                        .OrderBy(st => st.order)
                         .Select(pl =>
                             new Player(
                                 pl.id,
