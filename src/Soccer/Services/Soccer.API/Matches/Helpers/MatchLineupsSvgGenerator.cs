@@ -85,6 +85,7 @@ namespace Soccer.API.Matches.Helpers
             var players = new List<SvgElement>();
             var formationSplits = teamLineups.ConvertFormationToList();
             var totalRow = formationSplits.Count;
+            var teamPlayers = teamLineups.Players.OrderBy(pl => pl.Order);
             var rowIndex = 0;
             var playerIndex = 0;
             var yPlayerDistance = stadiumHeight / 2 / totalRow;
@@ -93,7 +94,7 @@ namespace Soccer.API.Matches.Helpers
             {
                 var rowPlayers = RenderPlayerRow(
                     jeyseyElement,
-                    teamLineups.Players.Skip(playerIndex).Take(formationItem),
+                    teamPlayers.Skip(playerIndex).Take(formationItem),
                     teamLineups.IsHome,
                     rowIndex++,
                     yPlayerDistance);
