@@ -21,7 +21,7 @@ namespace Soccer.API.Matches.Helpers
         private const string svgText = "<svg";
         private const string homeColor = "#30C2FF";
         private const string awayColor = "#FA2E58";
-        private const string robotoFontName = "Arial";
+        private const string robotoFontName = "Roboto";
         private const string fillStyleName = "fill";
         private const string whiteColor = "#fff";
         private const int fontSize = 11;
