@@ -148,7 +148,7 @@ namespace Soccer.API.Matches.Helpers
             {
                 Text = player.JerseyNumber.ToString(),
                 TextAnchor = SvgTextAnchor.Middle,
-                X = new SvgUnitCollection { new SvgUnit(x + 15.5f) },
+                X = new SvgUnitCollection { new SvgUnit(x + (playerWidth / 2)) },
                 Y = new SvgUnitCollection { new SvgUnit(y + (playerHeight / 2)) },
                 FontFamily = robotoFontName,
                 FontWeight = SvgFontWeight.Normal,
@@ -166,8 +166,8 @@ namespace Soccer.API.Matches.Helpers
             {
                 Text = player.Name,
                 TextAnchor = SvgTextAnchor.Middle,
-                X = new SvgUnitCollection { new SvgUnit(x + 15.5f) },
-                Y = new SvgUnitCollection { new SvgUnit(y + 38) },
+                X = new SvgUnitCollection { new SvgUnit(x + (playerWidth / 2)) },
+                Y = new SvgUnitCollection { new SvgUnit(y + playerHeight + 3) },
                 FontFamily = robotoFontName,
                 FontWeight = SvgFontWeight.Normal,
                 FontSize = fontSize
