@@ -66,8 +66,8 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
             => timelineDto.goal_scorer == null
                                 ? null
                                 : new GoalScorer(
-                                    timelineDto.goal_scorer.name,
                                     timelineDto.goal_scorer.id,
+                                    timelineDto.goal_scorer.name,
                                     timelineDto.goal_scorer.method);
 
         private static Player GetGoalAssist(TimelineDto timelineDto)
