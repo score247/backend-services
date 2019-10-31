@@ -35,8 +35,8 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                 GetPlayer(timelineDto.player),
                 timelineDto.injury_time_announced,
                 Enumerable.Empty<Commentary>(),
-                GetPlayer(timelineDto.player_in),
-                GetPlayer(timelineDto.player_out));
+                GetPlayer(timelineDto.player_out),
+                GetPlayer(timelineDto.player_in));
 
             SetPenaltyInfo(timelineDto, timeline);
 
