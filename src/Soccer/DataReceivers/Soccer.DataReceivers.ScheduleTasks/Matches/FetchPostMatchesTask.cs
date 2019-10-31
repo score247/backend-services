@@ -1,4 +1,8 @@
-﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
+﻿using System.Collections.Generic;
+using Soccer.Core.Matches.Models;
+using Soccer.DataReceivers.ScheduleTasks.Teams;
+
+namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     using System;
     using System.Linq;
@@ -57,6 +61,20 @@
                 var matchesBatch = matches.Skip(i * batchSize).Take(batchSize);
 
                 await messageBus.Publish<IPostMatchFetchedMessage>(new PostMatchFetchedMessage(matchesBatch, language.DisplayName));
+            }
+
+            FetchTeamHeadToHead(language, matches);
+        }
+
+        private static void FetchTeamHeadToHead(Language language, IEnumerable<Match> matches)
+        {
+            foreach (var match in matches)
+            {
+                var homeTeamId = match.Teams.FirstOrDefault(t => t.IsHome)?.Id;
+                var awayTeamId = match.Teams.FirstOrDefault(t => !t.IsHome)?.Id;
+
+                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
+                    t.FetchHeadToHeads(homeTeamId, awayTeamId, language));
             }
         }
     }
