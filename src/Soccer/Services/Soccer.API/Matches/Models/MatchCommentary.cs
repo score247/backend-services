@@ -34,6 +34,8 @@ namespace Soccer.API.Matches.Models
         [Key(1)]
         public EventType TimelineType { get; }
 
+#pragma warning disable S109 // Magic numbers should not be used
+
         [Key(2)]
         public DateTimeOffset Time { get; }
 
@@ -51,5 +53,7 @@ namespace Soccer.API.Matches.Models
 
         [Key(7)]
         public bool IsPenaltyShootOutScored { get; }
+
+#pragma warning restore S109 // Magic numbers should not be used
     }
 }

@@ -70,13 +70,17 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             }
 
             FetchTeamHeadToHead(language, matches);
-            
+            await FetchMatchLineups(matches, language);
+        }
+
+        private async Task FetchMatchLineups(IReadOnlyList<Match> matches, Language language)
+        {
             foreach (var match in matches)
             {
-                await fetchMatchLineupsTask.FetchMatchLineups(match.Id, match.Region);
+                await fetchMatchLineupsTask.FetchMatchLineups(match.Id, match.Region, language);
             }
         }
-   
+
         private static void FetchTeamHeadToHead(Language language, IEnumerable<Match> matches)
         {
             foreach (var match in matches)

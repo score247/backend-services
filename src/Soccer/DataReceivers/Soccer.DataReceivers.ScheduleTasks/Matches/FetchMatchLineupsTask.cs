@@ -12,6 +12,9 @@
     {
         [Queue("medium")]
         Task FetchMatchLineups(string matchId, string regionName);
+
+        [Queue("medium")]
+        Task FetchMatchLineups(string matchId, string region, Language language);
     }
 
     public class FetchMatchLineupsTask : IFetchMatchLineupsTask
@@ -35,7 +38,7 @@
             }
         }
 
-        private async Task FetchMatchLineups(string matchId, string region, Language language)
+        public async Task FetchMatchLineups(string matchId, string region, Language language)
         {
             if (!string.IsNullOrWhiteSpace(matchId))
             {

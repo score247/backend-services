@@ -20,7 +20,7 @@ namespace Soccer.API.Matches.Models
             Away = away;
             PitchView = pitchView;
         }
-
+#pragma warning disable S109 // Magic numbers should not be used
         [Key(0)]
         public string Id { get; }
 
@@ -35,5 +35,6 @@ namespace Soccer.API.Matches.Models
 
         [Key(4)]
         public string PitchView { get; }
+#pragma warning restore S109 // Magic numbers should not be used
     }
 }

@@ -35,11 +35,12 @@
 
         [Key(0)]
         public string MatchId { get; }
-
+#pragma warning disable S109 // Magic numbers should not be used
         [Key(1)]
         public TeamStatistic HomeStatistic { get; }
 
         [Key(2)]
         public TeamStatistic AwayStatistic { get; }
+#pragma warning restore S109 // Magic numbers should not be used
     }
 }

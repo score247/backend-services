@@ -53,7 +53,9 @@
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
+#pragma warning disable S2325 // Methods and properties that don't access instance data should be static
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+#pragma warning restore S2325 // Methods and properties that don't access instance data should be static
         {
             if (env.IsDevelopment())
             {

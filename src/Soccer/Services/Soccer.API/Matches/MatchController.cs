@@ -13,6 +13,7 @@ namespace Soccer.API.Matches
     [ApiController]
     public class MatchController : ControllerBase
     {
+        private const string enUsLanguage = "en-US";
         private readonly IMediator mediator;
 
         public MatchController(IMediator mediator)
@@ -28,27 +29,27 @@ namespace Soccer.API.Matches
         public async Task<IEnumerable<MatchSummary>> Get(
                 DateTime fd,
                 DateTime td,
-                string language = "en-US")
+                string language = enUsLanguage)
             => await mediator.Send(new MatchesByDateRequest(fd, td, language));
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<MatchInfo> Get(string id, string language = "en-US")
+        public async Task<MatchInfo> Get(string id, string language = enUsLanguage)
             => await mediator.Send(new MatchInfoByIdRequest(id, language));
 
         [HttpGet]
         [Route("live")]
-        public async Task<IEnumerable<MatchSummary>> Get(string language = "en-US")
+        public async Task<IEnumerable<MatchSummary>> Get(string language = enUsLanguage)
           => await mediator.Send(new LiveMatchesRequest(language));
 
         [HttpGet]
         [Route("{id}/coverage")]
-        public async Task<MatchCoverage> GetMatchCoverage(string id, string language = "en-US")
+        public async Task<MatchCoverage> GetMatchCoverage(string id, string language = enUsLanguage)
            => await mediator.Send(new MatchCoverageByIdRequest(id, language));
 
         [HttpGet]
         [Route("{id}/commentaries")]
-        public async Task<IEnumerable<MatchCommentary>> GetMatchCommentaries(string id, string language = "en-US")
+        public async Task<IEnumerable<MatchCommentary>> GetMatchCommentaries(string id, string language = enUsLanguage)
            => await mediator.Send(new MatchCommentaryByIdRequest(id, language));
 
         [HttpGet]
@@ -58,7 +59,7 @@ namespace Soccer.API.Matches
 
         [HttpGet]
         [Route("{id}/lineups")]
-        public async Task<MatchPitchViewLineups> GetMatchLineups(string id, string language = "en-US")
+        public async Task<MatchPitchViewLineups> GetMatchLineups(string id, string language = enUsLanguage)
            => await mediator.Send(new MatchLineupsRequest(id, language));
     }
 }

@@ -14,10 +14,14 @@ namespace Soccer.Core.Teams.Models
             CountryCode = countryCode;
         }
 
+#pragma warning disable S109 // Magic numbers should not be used
+
         [Key(2)]
         public string Nationality { get; }
 
         [Key(3)]
         public string CountryCode { get; }
+
+#pragma warning restore S109 // Magic numbers should not be used
     }
 }

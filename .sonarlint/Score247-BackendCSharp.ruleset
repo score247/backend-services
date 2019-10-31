@@ -278,9 +278,9 @@
     <Rule Id="S3990" Action="None" />
     <Rule Id="S3992" Action="None" />
     <Rule Id="S3993" Action="Warning" />
-    <Rule Id="S3994" Action="Warning" />
+    <Rule Id="S3994" Action="None" />
     <Rule Id="S3995" Action="Warning" />
-    <Rule Id="S3996" Action="Warning" />
+    <Rule Id="S3996" Action="None" />
     <Rule Id="S3997" Action="Warning" />
     <Rule Id="S3998" Action="Warning" />
     <Rule Id="S4000" Action="Warning" />

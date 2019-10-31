@@ -20,8 +20,11 @@
     public static class RabbitMqMiddleware
     {
         private const int PrefetchCount = 16;
+        private const int retryInterval = 100;
 
+#pragma warning disable S138 // Functions should not have too many lines of code
         public static void AddRabbitMq(this IServiceCollection services, IConfiguration configuration)
+#pragma warning restore S138 // Functions should not have too many lines of code
         {
             var messageQueueSettings = new MessageQueueSettings();
             configuration.Bind("MessageQueue", messageQueueSettings);
@@ -195,7 +198,7 @@
         private static Action<IRetryConfigurator> RetryAndLogError(IServiceCollection services)
             => x =>
             {
-                x.Interval(1, 100);
+                x.Interval(1, retryInterval);
                 x.Handle<Exception>((ex) =>
                 {
                     var logger = services.BuildServiceProvider().GetRequiredService<ILogger>();

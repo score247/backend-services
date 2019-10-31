@@ -20,7 +20,7 @@ pipeline{
                 script{
                     pipelineLib.beginSonarQubeForMsBuild("Score247-Backend", "Score247/ Score247 Backend", "/d:sonar.cs.opencover.reportsPaths=\"${WORKSPACE}\\CoverageReports\\*.xml\" /d:sonar.cs.vstest.reportsPaths=\"${WORKSPACE}\\TestResults\\*.trx\"")
 
-                    pipelineLib.msBuild16("Score247.Backend.sln")
+                   pipelineLib.msBuild16("Score247.Backend.sln")
                 }
             }
         }

@@ -28,12 +28,18 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         private readonly IAppSettings appSettings;
         private readonly IMatchService matchService;
         private readonly IBus messageBus;
+        private readonly IFetchMatchLineupsTask fetchMatchLineupsTask;
 
-        public FetchPreMatchesTask(IBus messageBus, IAppSettings appSettings, IMatchService matchService)
+        public FetchPreMatchesTask(
+            IBus messageBus, 
+            IAppSettings appSettings, 
+            IMatchService matchService,
+            IFetchMatchLineupsTask fetchMatchLineupsTask)
         {
             this.appSettings = appSettings;
             this.messageBus = messageBus;
             this.matchService = matchService;
+            this.fetchMatchLineupsTask = fetchMatchLineupsTask;
         }
 
         public void FetchPreMatches(int dateSpan)
@@ -59,6 +65,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                                             x.MatchResult.EventStatus != MatchStatus.Closed).ToList();
 
             FetchTeamHeadToHead(language, matches);
+            await FetchMatchLineups(language, matches);
 
             await PublishPreMatchFetchedMessage(language, batchSize, matches);
         }
@@ -85,6 +92,17 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
                 BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
                     t.FetchHeadToHeads(homeTeamId, awayTeamId, language));
+            }
+        }
+
+        private async Task FetchMatchLineups(Language language, IEnumerable<Match> matches)
+        {
+            foreach (var match in matches)
+            {
+                if(match.EventDate.Date == DateTime.Now.Date)
+                {
+                    await fetchMatchLineupsTask.FetchMatchLineups(match.Id, match.Region, language);
+                }
             }
         }
     }
