@@ -75,8 +75,6 @@
 
         public LeagueSeason LeagueSeason { get; private set; }
 
-        public void SetLeague(League league) => League = league;
-
         public void SetTimelines(IEnumerable<TimelineEvent> timelineEvents) => TimeLines = timelineEvents;
     }
 }

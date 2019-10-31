@@ -62,12 +62,11 @@ namespace Soccer.EventProcessors.Leagues.Filters
 
         private static Match SetLeague(Match match, IEnumerable<League> majorLeagues)
         {
-            var matchLeague = majorLeagues.FirstOrDefault(l => l.Id == match.League.Id);
+            var majorLeague = majorLeagues.FirstOrDefault(l => l.Id == match.League.Id);
 
-            if (matchLeague != null)
+            if (majorLeague != null)
             {
-                // TODO: check what property need to set
-                match.SetLeague(matchLeague);
+                match.League.UpdateLeague(majorLeague.CountryCode, majorLeague.IsInternational, majorLeague.Order, majorLeague.Region);
             }
 
             return match;
