@@ -28,7 +28,7 @@ namespace Soccer.API.Tests.Matches.Helpers
 
 
         [Fact]
-        public void Generate_HomeFormationIsNull_ReturnEmpty()
+        public void Generate_NoTeamInformation_ReturnEmpty()
         {
             var matchLineups = new MatchLineups();
 
@@ -38,9 +38,19 @@ namespace Soccer.API.Tests.Matches.Helpers
         }
 
         [Fact]
-        public void Generate_AwayFormationIsNull_ReturnEmpty()
+        public void Generate_NoDataHomeTeam_ReturnEmpty()
         {
-            var matchLineups = new MatchLineups();
+            var matchLineups = new MatchLineups("11", DateTimeOffset.Now, null, StubAwayLineups());
+
+            var lineupSvg = matchLineupsSvgGenerator.Generate(matchLineups);
+
+            Assert.Empty(lineupSvg);
+        }
+
+        [Fact]
+        public void Generate_NoDataAwayTeam_ReturnEmpty()
+        {
+            var matchLineups = new MatchLineups("11", DateTimeOffset.Now, StubHomeLineups(), null);
 
             var lineupSvg = matchLineupsSvgGenerator.Generate(matchLineups);
 
@@ -50,17 +60,43 @@ namespace Soccer.API.Tests.Matches.Helpers
         [Fact]
         public void Generate_MatchLineupHasData_ReturnLineupSvg()
         {
-            var homeLineups = StubHomeLineups();
-            var awayLineups = StubAwayLineups();
+            var matchLineups = StubMatchLineups(StubHomeLineups(), StubAwayLineups());
 
+            getSvgDocumentFunc.Invoke("svgFolderPath/stadium.svg").Returns(StubStadiumDocument());
+            getSvgDocumentFunc.Invoke("svgFolderPath/jersey.svg").Returns(StubJerseyDocument());
 
+            var actualSvg = matchLineupsSvgGenerator.Generate(matchLineups);
+
+            var expectedSvg = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xml=\"http://www.w3.org/XML/1998/namespace\" version=\"1.1\">" +
+                "  <path pathLength=\"0\" transform=\"translate(162,10)\" style=\"fill:#30C2FF;\" />" +
+                "  <text x=\"178\" y=\"28\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">1</text>" +
+                "  <text x=\"178\" y=\"48\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player1 name</text>" +
+                "  <path pathLength=\"0\" transform=\"translate(162,97)\" style=\"fill:#30C2FF;\" />" +
+                "  <text x=\"178\" y=\"115\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">2</text>" +
+                "  <text x=\"178\" y=\"135\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player2 name</text>" +
+                "  <path pathLength=\"0\" transform=\"translate(162,184)\" style=\"fill:#30C2FF;\" />" +
+                "  <text x=\"178\" y=\"202\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">3</text>" +
+                "  <text x=\"178\" y=\"222\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player3 name</text>" +
+                "  <path pathLength=\"0\" transform=\"translate(162,10)\" style=\"fill:#30C2FF;\" />" +
+                "  <text x=\"178\" y=\"28\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">4</text>" +
+                "  <text x=\"178\" y=\"48\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player4 name</text>" +
+                "  <path pathLength=\"0\" transform=\"translate(103,141)\" style=\"fill:#30C2FF;\" />" +
+                "  <text x=\"119\" y=\"159\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">5</text>" +
+                "  <text x=\"119\" y=\"179\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player5 name</text>" +
+                "  <path pathLength=\"0\" transform=\"translate(222,141)\" style=\"fill:#30C2FF;\" />" +
+                "  <text x=\"238\" y=\"159\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">6</text>" +
+                "  <text x=\"238\" y=\"179\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player6 name</text>" +
+                "</svg>";
+
+            Assert.Equal(expectedSvg, actualSvg.Replace("\r\n", string.Empty));
         }
 
-        //private MatchLineups StubMatchLineups()
-        //    => new MatchLineups(
-        //        "matchId", 
-        //        new DateTimeOffset(new DateTime(1989, 5, 28)),
-        //        new TeamLineups("team1", "team home", true, new Coach()))
+        private MatchLineups StubMatchLineups(TeamLineups homeTeam = null, TeamLineups awayTeam = null)
+            => new MatchLineups(
+                "matchId",
+                new DateTimeOffset(new DateTime(1989, 5, 28)),
+                homeTeam ?? StubHomeLineups(),
+                awayTeam ?? StubAwayLineups());
 
         private TeamLineups StubHomeLineups()
             => new TeamLineups(
@@ -104,8 +140,6 @@ namespace Soccer.API.Tests.Matches.Helpers
         private static SvgDocument StubStadiumDocument()
         {
             var document = new SvgDocument();
-            var jerseyElement = new SvgPath();
-            document.Children.Add(jerseyElement);
 
             return document;
         }
