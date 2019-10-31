@@ -63,24 +63,29 @@
                     }
                     catch (Exception ex)
                     {
-                        var errorMessage = string.Join(
-                            "\r\n",
-                            ex.Message,
-                            $"MatchOdds: {JsonConvert.SerializeObject(matchOdds)}",
-                            $"Match: {JsonConvert.SerializeObject(availableMatch)}",
-                            $"MatchEvent: {JsonConvert.SerializeObject(message.MatchEvent)}");
-
-                        //TODO: temporary log info for future trace
-                        if (ex.Message.Contains("Value cannot be null", StringComparison.InvariantCultureIgnoreCase))
-                        {
-                            await logger.InfoAsync(errorMessage);
-                        }
-                        else
-                        {
-                            await logger.ErrorAsync(errorMessage, ex);
-                        }
+                        await LogInformation(message, matchOdds, availableMatch, ex);
                     }
                 }
+            }
+        }
+
+        private async Task LogInformation(IOddsChangeMessage message, MatchOdds matchOdds, Match availableMatch, Exception ex)
+        {
+            var errorMessage = string.Join(
+                                        "\r\n",
+                                        ex.Message,
+                                        $"MatchOdds: {JsonConvert.SerializeObject(matchOdds)}",
+                                        $"Match: {JsonConvert.SerializeObject(availableMatch)}",
+                                        $"MatchEvent: {JsonConvert.SerializeObject(message.MatchEvent)}");
+
+            //TODO: temporary log info for future trace
+            if (ex.Message.Contains("Value cannot be null", StringComparison.InvariantCultureIgnoreCase))
+            {
+                await logger.InfoAsync(errorMessage);
+            }
+            else
+            {
+                await logger.ErrorAsync(errorMessage, ex);
             }
         }
 

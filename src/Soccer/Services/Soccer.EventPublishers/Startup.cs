@@ -30,7 +30,10 @@ namespace Soccer.EventPublishers
             services.AddSignalR();
             services.AddLogging(Configuration);
             services.AddRabbitMq(Configuration);
+#pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
+            //TODO: Harrison, please review it, don't know why you did it
             services.AddSingleton(services.BuildServiceProvider());
+#pragma warning restore ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
             services.AddControllers();
             services
                 .AddMvc()

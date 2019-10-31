@@ -1,7 +1,6 @@
 ﻿namespace Soccer.EventPublishers.Odds
 {
     using System.Threading.Tasks;
-    using Fanex.Logging;
     using MassTransit;
     using Microsoft.AspNetCore.SignalR;
     using Newtonsoft.Json;
@@ -12,15 +11,12 @@
 
     public class OddsMovementPublisher : IConsumer<IOddsMovementMessage>
     {
+        private const string OddsMovementName = "OddsMovement";
         private readonly IHubContext<SoccerHub> hubContext;
-        private readonly ILogger logger;
 
-        public OddsMovementPublisher(
-            IHubContext<SoccerHub> hubContext,
-            ILogger logger)
+        public OddsMovementPublisher(IHubContext<SoccerHub> hubContext)
         {
             this.hubContext = hubContext;
-            this.logger = logger;
         }
 
         public async Task Consume(ConsumeContext<IOddsMovementMessage> context)
@@ -31,8 +27,8 @@
             {
                 var message = JsonConvert.SerializeObject(
                     new OddsMovementSignalRMessage(Sport.Soccer.Value, context.Message.MatchId, context.Message.OddsEvents));
-                //await hubContext.Clients.All.SendAsync(OddsMovementName, message);
-                // await logger.InfoAsync($"Send Odds Movement: {matchId}\r\n" + message);
+
+                await hubContext.Clients.All.SendAsync(OddsMovementName, message);
             }
         }
     }

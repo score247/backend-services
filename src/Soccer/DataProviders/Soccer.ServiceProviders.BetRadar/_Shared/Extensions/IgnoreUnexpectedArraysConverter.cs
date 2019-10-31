@@ -19,7 +19,7 @@ namespace Soccer.DataProviders.SportRadar._Shared.Extensions
 
         public IgnoreUnexpectedArraysConverter(IContractResolver resolver)
         {
-            this.resolver = resolver ?? throw new ArgumentNullException();
+            this.resolver = resolver ?? throw new ArgumentNullException(nameof(resolver));
         }
 
         public override bool CanConvert(Type objectType)
@@ -51,7 +51,9 @@ namespace Soccer.DataProviders.SportRadar._Shared.Extensions
                 }
                 else if (reader.TokenType == JsonToken.Comment)
                 {
+#pragma warning disable S3626 // Jump statements should not be redundant
                     continue;
+#pragma warning restore S3626 // Jump statements should not be redundant
                 }
                 else if (reader.TokenType == JsonToken.StartArray)
                 {

@@ -43,7 +43,9 @@ namespace Soccer.EventProcessors.Matches
             this.matchEventFilter = matchEventFilter;
         }
 
+#pragma warning disable S1541 // Methods and properties should not be too complex
         public async Task Consume(ConsumeContext<IMatchEventReceivedMessage> context)
+#pragma warning restore S1541 // Methods and properties should not be too complex
         {
             var matchEvent = context.Message?.MatchEvent;
 
