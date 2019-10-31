@@ -48,7 +48,9 @@
             return !(Id?.Length == 0 || other.Id?.Length == 0) && Id == other.Id;
         }
 
+#pragma warning disable S3875 // "operator==" should not be overloaded on reference types
         public static bool operator ==(BaseEntity a, BaseEntity b)
+#pragma warning restore S3875 // "operator==" should not be overloaded on reference types
         {
             if (a is null && b is null)
             {

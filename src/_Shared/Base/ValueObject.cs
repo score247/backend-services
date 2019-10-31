@@ -39,7 +39,9 @@
                 });
         }
 
+#pragma warning disable S3875 // "operator==" should not be overloaded on reference types
         public static bool operator ==(ValueObject a, ValueObject b)
+#pragma warning restore S3875 // "operator==" should not be overloaded on reference types
         {
             if (a is null && b is null)
             {
