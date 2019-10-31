@@ -14,16 +14,11 @@ namespace Soccer.Core.Teams.Models
         public TeamLineups(
             string id,
             string name,
-            string country,
-            string countryCode,
-            string flag,
             bool isHome,
-            TeamStatistic statistic,
-            string abbreviation,
             Coach coach,
             string formation,
             IEnumerable<Player> players,
-            IEnumerable<Player> substitutions) : base(id, name, country, countryCode, flag, isHome, statistic, abbreviation)
+            IEnumerable<Player> substitutions) : base(id, name, string.Empty, string.Empty, string.Empty, isHome, default(TeamStatistic), string.Empty)
         {
             Coach = coach;
             Formation = formation;
@@ -42,16 +37,14 @@ namespace Soccer.Core.Teams.Models
         public IList<byte> ConvertFormationToList()
         {
             var tempList = (Formation ?? string.Empty)
-           .Split(formationSplitChar)
-           .Where(fm => !string.IsNullOrWhiteSpace(fm))
-           .Select(fm => byte.Parse(fm))
-           .ToList();
+                           .Split(formationSplitChar)
+                           .Where(fm => !string.IsNullOrWhiteSpace(fm))
+                           .Select(fm => byte.Parse(fm))
+                           .ToList();
             var formationList = new List<byte> { 1 };
             formationList.AddRange(tempList);
-
+            
             return formationList;
         }
-
-        public byte CountTotalFormationLine() => (byte)(1 + ConvertFormationToList().Count);
     }
 }

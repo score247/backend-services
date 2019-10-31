@@ -7,7 +7,7 @@
     using Soccer.DataProviders.SportRadar.Odds.Dtos;
     using Xunit;
 
-    [Trait("Soccer.API", "Odds")]
+    [Trait("Soccer.DateProviders.SportRadar", "Odds")]
     public class OddsMapperTests
     {
         [Fact]

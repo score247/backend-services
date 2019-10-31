@@ -14,6 +14,11 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 
         public static MatchLineups MapLineups(MatchLineupsDto matchLineupsDto, string region)
         {
+            if(matchLineupsDto == null)
+            {
+                return default;
+            }
+
             var match = MatchMapper.MapMatch(matchLineupsDto.sport_event, null, null, region);
 
             var homeTeam = MapTeamLineups(match.Teams.FirstOrDefault(t => t.IsHome), matchLineupsDto.lineups);
@@ -24,50 +29,20 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 
         private static TeamLineups MapTeamLineups(Team team, IEnumerable<Lineup> lineups)
         {
-            if (team != null)
+            if (team != null && lineups != null)
             {
                 var teamLineups = lineups.FirstOrDefault(t => (team.IsHome && t.team == Home) || (!team.IsHome && t.team != Home));
 
                 if (teamLineups != null)
                 {
-                    var startingLineups = teamLineups
-                        .starting_lineup
-                        .OrderBy(st => st.order)
-                        .Select(pl =>
-                            new Player(
-                                pl.id,
-                                PlayerNameConverter.Convert(pl.name),
-                                Enumeration.FromDisplayName<PlayerType>(pl.type),
-                                pl.jersey_number,
-                                Enumeration.FromDisplayName<Position>(pl.position),
-                                pl.order));
-
-                    var substitutesLineups = teamLineups
-                        .substitutes
-                        .OrderBy(st => st.jersey_number)
-                        .Select(pl => new Player(
-                            pl.id,
-                            PlayerNameConverter.Convert(pl.name),
-                            Enumeration.FromDisplayName<PlayerType>(pl.type),
-                            pl.jersey_number,
-                            Position.Unknown,
-                            0));
-
-                    var coach = new Coach(
-                            teamLineups.manager?.id,
-                            PlayerNameConverter.Convert(teamLineups.manager?.name),
-                            teamLineups.manager?.nationality,
-                            teamLineups.manager?.country_code);
+                    var startingLineups = MapStartingLineups(teamLineups);
+                    var substitutesLineups = MapSubstitutePlayers(teamLineups);
+                    var coach = MapCoach(teamLineups);
 
                     return new TeamLineups(
                         team.Id,
                         team.Name,
-                        team.Country,
-                        team.CountryCode,
-                        team.Flag,
                         team.IsHome,
-                        team.Statistic,
-                        team.Abbreviation,
                         coach,
                         teamLineups.formation,
                         startingLineups,
@@ -77,5 +52,37 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 
             return default(TeamLineups);
         }
+
+        private static Coach MapCoach(Lineup teamLineups)
+            => new Coach(
+                    teamLineups.manager?.id,
+                    PlayerNameConverter.Convert(teamLineups.manager?.name),
+                    teamLineups.manager?.nationality,
+                    teamLineups.manager?.country_code);
+
+        private static IEnumerable<Player> MapSubstitutePlayers(Lineup teamLineups)
+            => teamLineups
+                .substitutes
+                .OrderBy(st => st.jersey_number)
+                .Select(pl => new Player(
+                    pl.id,
+                    PlayerNameConverter.Convert(pl.name),
+                    Enumeration.FromDisplayName<PlayerType>(pl.type),
+                    pl.jersey_number,
+                    Position.Unknown,
+                    0));
+
+        private static IEnumerable<Player> MapStartingLineups(Lineup teamLineups)
+            => teamLineups
+                .starting_lineup
+                .OrderBy(st => st.order)
+                .Select(pl =>
+                    new Player(
+                        pl.id,
+                        PlayerNameConverter.Convert(pl.name),
+                        Enumeration.FromDisplayName<PlayerType>(pl.type),
+                        pl.jersey_number,
+                        Enumeration.FromDisplayName<Position>(pl.position),
+                        pl.order));
     }
 }

@@ -41,7 +41,8 @@
             {
                 var matchLineups = await matchService.GetLineups(matchId, region, language);
 
-                if (matchLineups != null && !string.IsNullOrWhiteSpace(matchLineups.Id))
+                if (matchLineups != null 
+                    && !string.IsNullOrWhiteSpace(matchLineups.Id))
                 {
                     await messageBus.Publish<IMatchLineupsMessage>(new MatchLineupsMessage(matchLineups, language));
                 }

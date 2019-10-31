@@ -55,12 +55,13 @@
             RedCards = redCards;
             YellowRedCards = yellowRedCards;
         }
-
+#pragma warning disable S109 // Magic numbers should not be used
         [Key(0)]
         public int Possession { get; }
 
         [Key(1)]
         public int FreeKicks { get; }
+
 
         [Key(2)]
         public int ThrowIns { get; }
@@ -100,5 +101,7 @@
 
         [Key(14)]
         public int YellowRedCards { get; }
+
+#pragma warning restore S109 // Magic numbers should not be used
     }
 }

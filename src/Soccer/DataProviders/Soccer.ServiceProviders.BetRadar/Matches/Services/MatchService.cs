@@ -152,6 +152,13 @@
                     return LineupsMapper.MapLineups(matchLineUp, region);
                 }
             }
+            catch (ApiException ex)
+            {
+                if (ex.ReasonPhrase != "Not Found")
+                {
+                    await logger.ErrorAsync($"Message:{ex.Message}\r\nUrl:{ex.Uri}", ex);
+                }
+            }
             catch (Exception ex)
             {
                 await logger.ErrorAsync(ex.Message, ex);

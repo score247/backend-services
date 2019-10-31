@@ -22,7 +22,6 @@
             soccerMatchApi = RestService.For<ISoccerMatchApi>("https://score247-api1.nexdev.net/main/api/", messagePackRefitSettings);
         }
 
-        [Fact]
         public async Task TestLiveMatchAPIs()
         {
             var liveMatches = await soccerMatchApi.GetLiveMatches(Language.en_US.DisplayName);

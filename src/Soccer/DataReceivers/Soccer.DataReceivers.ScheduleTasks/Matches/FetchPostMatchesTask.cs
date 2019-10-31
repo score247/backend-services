@@ -29,12 +29,18 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         private readonly IMatchService matchService;
         private readonly IBus messageBus;
         private readonly IAppSettings appSettings;
+        private readonly IFetchMatchLineupsTask fetchMatchLineupsTask;
 
-        public FetchPostMatchesTask(IBus messageBus, IAppSettings appSettings, IMatchService matchService)
+        public FetchPostMatchesTask(
+            IBus messageBus, 
+            IAppSettings appSettings, 
+            IMatchService matchService,
+            IFetchMatchLineupsTask fetchMatchLineupsTask)
         {
             this.appSettings = appSettings;
             this.messageBus = messageBus;
             this.matchService = matchService;
+            this.fetchMatchLineupsTask = fetchMatchLineupsTask;
         }
 
         public void FetchPostMatches(int dateSpan)
@@ -64,8 +70,13 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             }
 
             FetchTeamHeadToHead(language, matches);
+            
+            foreach (var match in matches)
+            {
+                await fetchMatchLineupsTask.FetchMatchLineups(match.Id, match.Region);
+            }
         }
-
+   
         private static void FetchTeamHeadToHead(Language language, IEnumerable<Match> matches)
         {
             foreach (var match in matches)

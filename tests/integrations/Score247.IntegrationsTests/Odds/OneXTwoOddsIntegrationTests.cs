@@ -51,7 +51,7 @@
             ListenPushEvent();
         }
 
-        [Fact]
+        //[Fact]
         public async Task LiveMatch_VerifyOneXTwoOdds()
         {
             var kickOffTime = CreateCurrentDate(10, 10);
@@ -244,7 +244,7 @@
             await Task.Delay(20 * 1000);
         }
 
-        [Fact]
+        //[Fact]
         public async Task PreMatch_VerifyOneXTwoLiveOdds()
         {
             var match = await simulationAdminApi.AutoGenerateMatch(DateTimeOffset.Now);
@@ -322,7 +322,7 @@
             Assert.Equal(3.3m, oneXTwoOdds.BetOptions.ElementAt(2).OpeningOdds);
         }
 
-        [Fact]
+        //[Fact]
         public async Task PreMatch_VerifyOneXTwoOpeningOdds()
         {
             var match = await simulationAdminApi.AutoGenerateMatch(DateTimeOffset.Now);

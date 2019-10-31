@@ -43,6 +43,7 @@ namespace Soccer.Core.Leagues.Models
 
 #pragma warning restore S107 // Methods should not have too many parameters
 
+#pragma warning disable S109 // Magic numbers should not be used
         [Key(2)]
         public int Order { get; private set; }
 
@@ -64,6 +65,7 @@ namespace Soccer.Core.Leagues.Models
         [IgnoreMember]
         public string Region { get; }
 
+#pragma warning restore S109 // Magic numbers should not be used
         public void SetInternationalLeagueCode(string countryCode)
         {
             CountryCode = countryCode;
