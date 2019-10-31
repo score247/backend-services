@@ -67,7 +67,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                 .Select(pl => new Player(
                     pl.id,
                     PlayerNameConverter.Convert(pl.name),
-                    Enumeration.FromDisplayName<PlayerType>(pl.type),
+                    string.IsNullOrWhiteSpace(pl.type) ? PlayerType.Unknown : Enumeration.FromDisplayName<PlayerType>(pl.type),
                     pl.jersey_number,
                     Position.Unknown,
                     0));
@@ -80,9 +80,9 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                     new Player(
                         pl.id,
                         PlayerNameConverter.Convert(pl.name),
-                        Enumeration.FromDisplayName<PlayerType>(pl.type),
+                        string.IsNullOrWhiteSpace(pl.type) ? PlayerType.Unknown : Enumeration.FromDisplayName<PlayerType>(pl.type),
                         pl.jersey_number,
-                        Enumeration.FromDisplayName<Position>(pl.position),
+                        string.IsNullOrWhiteSpace(pl.position) ? Position.Unknown : Enumeration.FromDisplayName<Position>(pl.position),
                         pl.order));
     }
 }
