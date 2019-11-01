@@ -1,5 +1,6 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
+    using System;
     using System.Threading.Tasks;
     using Hangfire;
     using MassTransit;
@@ -15,6 +16,9 @@
 
         [Queue("medium")]
         Task FetchMatchLineups(string matchId, string region, Language language);
+
+        [Queue("medium")]
+        Task FetchMatchLineups();
     }
 
     public class FetchMatchLineupsTask : IFetchMatchLineupsTask
@@ -48,6 +52,19 @@
                     && !string.IsNullOrWhiteSpace(matchLineups.Id))
                 {
                     await messageBus.Publish<IMatchLineupsMessage>(new MatchLineupsMessage(matchLineups, language));
+                }
+            }
+        }
+
+        public async Task FetchMatchLineups()
+        {
+            foreach (var language in Enumeration.GetAll<Language>())
+            {
+                var todayMatches = await matchService.GetPreMatches(DateTime.Now.Date, language);
+
+                foreach (var match in todayMatches)
+                {
+                    await FetchMatchLineups(match.Id, match.Region, language);
                 }
             }
         }

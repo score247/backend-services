@@ -102,6 +102,14 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
                 job => job.FetchLeagues(),
                 taskSettings.FetchLeaguesCron);
             }
+
+            if (!string.IsNullOrWhiteSpace(taskSettings.FetchMatchLineupsCron))
+            {
+                RecurringJob.AddOrUpdate<IFetchMatchLineupsTask>(
+                nameof(IFetchMatchLineupsTask.FetchMatchLineups),
+                job => job.FetchMatchLineups(),
+                taskSettings.FetchMatchLineupsCron);
+            }
         }
     }
 }

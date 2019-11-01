@@ -15,7 +15,8 @@
             string fetchLiveMatchesTimelineCron = "*/5 * * * *",
             string fetchPostMatchesCron = " 0 0/6 * * *",
             string fetchPreMatchesCron = " 0 0/6 * * *",
-            string fetchLeaguesCron = "0 0 12 1 * ?")
+            string fetchLeaguesCron = "0 0 12 1 * ?",
+            string fetchMatchLineupsCron = "0 * * * *")
         {
             QueueBatchSize = queueBatchSize;
             FetchMatchResultDateSpan = fetchMatchResultDateSpan;
@@ -28,6 +29,7 @@
             FetchPostMatchesCron = fetchPostMatchesCron;
             FetchPreMatchesCron = fetchPreMatchesCron;
             FetchLeaguesCron = fetchLeaguesCron;
+            FetchMatchLineupsCron = fetchMatchLineupsCron;
         }
 
 #pragma warning restore S107 // Methods should not have too many parameters
@@ -53,5 +55,7 @@
         public string FetchPreMatchesCron { get; set; }
 
         public string FetchLeaguesCron { get; set; }
+
+        public string FetchMatchLineupsCron { get; set; }
     }
 }

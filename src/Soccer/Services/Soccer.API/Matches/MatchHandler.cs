@@ -1,8 +1,6 @@
 ﻿namespace Soccer.API.Matches
 {
-    using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
@@ -57,14 +55,12 @@
         {
             var matchLineups = await matchQueryService.GetMatchLineups(request.Id, request.Language);
 
-            var lineupsSvg = matchLineupsGenerator.Generate(matchLineups);
-
             return new MatchPitchViewLineups(
                 matchLineups.Id,
                 matchLineups.EventDate,
                 matchLineups.Home,
                 matchLineups.Away,
-                lineupsSvg);
+                matchLineupsGenerator.Generate(matchLineups));
         }
     }
 }
