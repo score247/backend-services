@@ -73,6 +73,7 @@ namespace Soccer.EventProcessors
             services.AddSingleton<IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>>, MajorLeagueFilter>();
             services.AddSingleton<IMajorLeagueFilter<MatchEvent, bool>, MajorLeagueFilter>();
             services.AddSingleton<IMajorLeagueFilter<Match, bool>, MajorLeagueFilter>();
+            services.AddSingleton<IMajorLeagueFilter<string, bool>, MajorLeagueFilter>();
             services.AddSingleton<ILiveMatchFilter, LiveMatchFilter>();
         }
     }

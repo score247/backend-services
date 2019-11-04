@@ -19,7 +19,8 @@ namespace Soccer.EventProcessors.Leagues.Filters
     public class MajorLeagueFilter :
         IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>>,
         IMajorLeagueFilter<MatchEvent, bool>,
-        IMajorLeagueFilter<Match, bool>
+        IMajorLeagueFilter<Match, bool>,
+        IMajorLeagueFilter<string, bool>
     {
         private const string MajorLeaguesCacheKey = "Major_Leagues";
         private readonly IDynamicRepository dynamicRepository;
@@ -60,6 +61,9 @@ namespace Soccer.EventProcessors.Leagues.Filters
             return await IsBelongMajorLeagues(data.League.Id);
         }
 
+        public Task<bool> Filter(string data) 
+            => IsBelongMajorLeagues(data);
+
         private static Match SetLeague(Match match, IEnumerable<League> majorLeagues)
         {
             var majorLeague = majorLeagues.FirstOrDefault(l => l.Id == match.League.Id);
@@ -86,5 +90,7 @@ namespace Soccer.EventProcessors.Leagues.Filters
                 async () => await dynamicRepository.FetchAsync<League>(new GetActiveLeaguesCriteria()),
                 new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
         }
+
+       
     }
 }
