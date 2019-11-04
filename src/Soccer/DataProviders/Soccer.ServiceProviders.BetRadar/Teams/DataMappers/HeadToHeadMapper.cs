@@ -29,6 +29,11 @@ namespace Soccer.DataProviders.SportRadar.Teams.DataMappers
         {
             var teamHeadToHeads = new List<Match>();
 
+            if (teamSchedules == null)
+            {
+                return teamHeadToHeads;
+            }
+
             foreach (var schedule in teamSchedules)
             {
                 var match = MatchMapper.MapMatch(
