@@ -115,7 +115,7 @@ namespace Soccer.EventProcessors.Matches
         {
             var timeLineEvents = await GetProcessedTimelines(matchEvent.MatchId);
 
-            var processedItem = timeLineEvents.FirstOrDefault(t => t == matchEvent.Timeline);
+            var processedItem = timeLineEvents.FirstOrDefault(t => t.Id == matchEvent.Timeline.Id);
 
             try
             {
