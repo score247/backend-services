@@ -22,6 +22,14 @@ BEGIN
 					JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].Region'))),
 					now(),
 					now());
+			ELSE
+				UPDATE `Match` as M
+				SET 
+					Value = JSON_REPLACE(Value,  '$.MatchResult', JSON_EXTRACT(matches, CONCAT('$[', i, '].MatchResult'))),
+					ModifiedTime = now()
+				WHERE M.SportId = sportId
+					AND M.Id = @Id
+                    AND M.Language = language;
 			END IF;
             
         -- Increment the loop variable                                                                                                                                                        
