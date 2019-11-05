@@ -117,5 +117,10 @@
             HomeScore = homeScore;
             AwayScore = awayScore;
         }
+
+        public void UpdateMatchTime(byte matchTime)
+        {
+            MatchTime = matchTime;
+        }
     }
 }

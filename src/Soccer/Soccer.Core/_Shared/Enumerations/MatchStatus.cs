@@ -22,19 +22,19 @@
         public static readonly MatchStatus Live = new MatchStatus(5, "live");
 
         ////1st_half – The match is in the first half
-        public static readonly MatchStatus FirstHaft = new MatchStatus(6, "1st_half");
+        public static readonly MatchStatus FirstHalf = new MatchStatus(6, "1st_half");
 
         ////2nd_half – The match is in the second half
-        public static readonly MatchStatus SecondHaft = new MatchStatus(7, "2nd_half");
+        public static readonly MatchStatus SecondHalf = new MatchStatus(7, "2nd_half");
 
         ////overtime – The match is in overtime
         public static readonly MatchStatus Overtime = new MatchStatus(8, "overtime");
 
         ////1st_extra – The match is in the first extra period
-        public static readonly MatchStatus FirstHaftExtra = new MatchStatus(9, "1st_extra");
+        public static readonly MatchStatus FirstHalfExtra = new MatchStatus(9, "1st_extra");
 
         ////2nd_extra – The match is in the second extra period
-        public static readonly MatchStatus SecondHaftExtra = new MatchStatus(10, "2nd_extra");
+        public static readonly MatchStatus SecondHalfExtra = new MatchStatus(10, "2nd_extra");
 
         ////awaiting_penalties – Waiting for announcement of penalties
         public static readonly MatchStatus AwaitingPenalties = new MatchStatus(11, "awaiting_penalties");
@@ -101,15 +101,15 @@
 
         public bool IsNotClosedAndNotEnded() => this != Closed && this != Ended;
 
-        public bool IsFirstHalf() => this == FirstHaft;
+        public bool IsFirstHalf() => this == FirstHalf;
 
-        public bool IsSecondHalf() => this == SecondHaft;
+        public bool IsSecondHalf() => this == SecondHalf;
 
         public bool IsHalfTime() => this == Halftime;
 
-        public bool IsFirstHaftExtra() => this == FirstHaftExtra;
+        public bool IsFirstHaftExtra() => this == FirstHalfExtra;
 
-        public bool IsSecondHalfExtra() => this == SecondHaftExtra;
+        public bool IsSecondHalfExtra() => this == SecondHalfExtra;
 
         public bool IsNotStartOrDelay() => this == NotStarted || this == Postponed || this == Cancelled || this == StartDelayed;
 
