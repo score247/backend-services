@@ -6,22 +6,30 @@ namespace Soccer.DataProviders.SportRadar._Shared
     {
         private const string comma = ",";
 
-        public static string Convert(string playerName)
+        public static string Convert(string playerName, bool firstNameInShort = true)
         {
+            var formattedName = playerName;
+
             if (!string.IsNullOrWhiteSpace(playerName) && playerName.Contains(comma))
             {
                 var firstCommaIndex = playerName.IndexOf(comma, StringComparison.OrdinalIgnoreCase);
                 var minAllowedLength = firstCommaIndex + 2;
+
                 if (firstCommaIndex > 0 && playerName.Length > minAllowedLength)
                 {
-                    var firstName = playerName.Substring(firstCommaIndex + 2).ToUpperInvariant();
+                    var firstName = firstNameInShort
+                                    ? playerName.Substring(firstCommaIndex + 2).ToUpperInvariant()
+                                    : playerName.Substring(firstCommaIndex + 2);
+
                     var lastName = playerName.Substring(0, firstCommaIndex);
 
-                    return $"{firstName[0]}. {lastName}";
+                    formattedName = firstNameInShort
+                        ? $"{firstName[0]}. {lastName}"
+                        : $"{firstName} {lastName}";
                 }
             }
 
-            return playerName;
+            return formattedName;
         }
     }
 }
