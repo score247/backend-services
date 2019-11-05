@@ -30,6 +30,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             services.AddScoped<IFetchLeaguesTask, FetchLeaguesTask>();
             services.AddScoped<IFetchHeadToHeadsTask, FetchHeadToHeadsTask>();
             services.AddScoped<IFetchMatchLineupsTask, FetchMatchLineupsTask>();
+            services.AddScoped<IFetchCleanMajorLeaguesCacheTask, FetchCleanMajorLeaguesCacheTask>();
         }
 
         public static void UseHangfire(this IApplicationBuilder app, IConfiguration configuration)
@@ -109,6 +110,14 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
                 nameof(IFetchMatchLineupsTask.FetchMatchLineups),
                 job => job.FetchMatchLineups(),
                 taskSettings.FetchMatchLineupsCron);
+            }
+
+            if (!string.IsNullOrWhiteSpace(taskSettings.FetchCleanMajorLeaguesCacheCron))
+            {
+                RecurringJob.AddOrUpdate<IFetchCleanMajorLeaguesCacheTask>(
+                nameof(IFetchCleanMajorLeaguesCacheTask.FetchCleanMajorLeaguesCache),
+                job => job.FetchCleanMajorLeaguesCache(),
+                taskSettings.FetchCleanMajorLeaguesCacheCron);
             }
         }
     }

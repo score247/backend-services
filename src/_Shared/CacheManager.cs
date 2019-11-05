@@ -11,6 +11,8 @@
         Task<T> GetAsync<T>(string key);
 
         Task SetAsync<T>(string key, T value, CacheItemOptions options);
+
+        Task RemoveAsync(string key);
     }
 
     public class CacheManager : ICacheManager
@@ -41,5 +43,8 @@
 
             return value;
         }
+
+        public Task RemoveAsync(string key)
+            => cacheService.RemoveAsync(key);
     }
 }
