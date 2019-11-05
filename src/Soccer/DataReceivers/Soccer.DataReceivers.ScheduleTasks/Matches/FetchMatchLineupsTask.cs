@@ -1,14 +1,14 @@
-﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
-{
-    using System;
-    using System.Threading.Tasks;
-    using Hangfire;
-    using MassTransit;
-    using Score247.Shared.Enumerations;
-    using Soccer.Core.Matches.QueueMessages;
-    using Soccer.Core.Shared.Enumerations;
-    using Soccer.DataProviders.Matches.Services;
+﻿using System;
+using System.Threading.Tasks;
+using Hangfire;
+using MassTransit;
+using Score247.Shared.Enumerations;
+using Soccer.Core.Matches.QueueMessages;
+using Soccer.Core.Shared.Enumerations;
+using Soccer.DataProviders.Matches.Services;
 
+namespace Soccer.DataReceivers.ScheduleTasks.Matches
+{
     public interface IFetchMatchLineupsTask
     {
         [Queue("medium")]
@@ -48,7 +48,7 @@
             {
                 var matchLineups = await matchService.GetLineups(matchId, region, language);
 
-                if (matchLineups != null 
+                if (matchLineups != null
                     && !string.IsNullOrWhiteSpace(matchLineups.Id))
                 {
                     await messageBus.Publish<IMatchLineupsMessage>(new MatchLineupsMessage(matchLineups, language));

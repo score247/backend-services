@@ -19,6 +19,9 @@ namespace Soccer.DataProviders.SportRadar.Teams.Services
     {
         [Get("/soccer-{accessLevel}{version}/{region}/{language}/teams/{homeTeamId}/versus/{awayTeamId}/matches.json?api_key={apiKey}")]
         Task<HeadToHeadsDto> GetHeadToHead(string accessLevel, string version, string region, string language, string homeTeamId, string awayTeamId, string apiKey);
+
+        [Get("/soccer-{accessLevel}{version}/{region}/{language}/teams/{teamId}/results.json?api_key={apiKey}")]
+        Task<TeamResults> GetTeamResults(string accessLevel, string version, string region, string language, string teamId, string apiKey);
     }
 
     public class HeadToHeadService : IHeadToHeadService
@@ -61,6 +64,34 @@ namespace Soccer.DataProviders.SportRadar.Teams.Services
             }
 
             return teamHeadToHeads;
+        }
+
+        public async Task<IReadOnlyList<Match>> GetTeamResults(string teamId, Language language)
+        {
+            IReadOnlyList<Match> teamResults = null;
+            var sportRadarLanguage = language.ToSportRadarFormat();
+
+            foreach (var region in soccerSettings.Regions)
+            {
+                try
+                {
+                    var teamResultsDto = await headToHeadApi.GetTeamResults(
+                         soccerSettings.AccessLevel,
+                         soccerSettings.Version,
+                         region.Name,
+                         sportRadarLanguage,
+                         teamId,
+                         region.Key);
+
+                    teamResults = HeadToHeadMapper.MapTeamResults(teamResultsDto.results, region.Name);
+                }
+                catch (Exception ex)
+                {
+                    await logger.ErrorAsync(ex.Message, ex);
+                }
+            }
+
+            return teamResults;
         }
     }
 }

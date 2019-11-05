@@ -12,6 +12,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
     {
         [Queue("medium")]
         Task FetchHeadToHeads(string homeTeamId, string awayTeamId, Language language);
+
+        [Queue("medium")]
+        Task FetchTeamResults(string teamId, Language language);
     }
 
     public class FetchHeadToHeadsTask : IFetchHeadToHeadsTask
@@ -29,12 +32,39 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
 
         public async Task FetchHeadToHeads(string homeTeamId, string awayTeamId, Language language)
         {
+            if (string.IsNullOrEmpty(homeTeamId) || string.IsNullOrEmpty(awayTeamId))
+            {
+                return;
+            }
+
             var headToHeadMatches = await headToHeadService.GetTeamHeadToHeads(homeTeamId, awayTeamId, language);
 
             if (headToHeadMatches?.Any() == true)
             {
-                Parallel.ForEach(headToHeadMatches, match => messageBus.Publish<IHeadToHeadFetchedMessage>(
-                    new HeadToHeadFetchedMessage(homeTeamId, awayTeamId, match, language)));
+                foreach (var headToHeadMatch in headToHeadMatches)
+                {
+                    await messageBus.Publish<IHeadToHeadFetchedMessage>(
+                          new HeadToHeadFetchedMessage(homeTeamId, awayTeamId, headToHeadMatch, language));
+                }
+            }
+        }
+
+        public async Task FetchTeamResults(string teamId, Language language)
+        {
+            if (string.IsNullOrEmpty(teamId))
+            {
+                return;
+            }
+
+            var teamResults = await headToHeadService.GetTeamResults(teamId, language);
+
+            if (teamResults?.Any() == true)
+            {
+                foreach (var teamResult in teamResults)
+                {
+                    await messageBus.Publish<ITeamResultsFetchedMessage>(
+                        new TeamResultsFetchedMessage(teamResult, language));
+                }
             }
         }
     }

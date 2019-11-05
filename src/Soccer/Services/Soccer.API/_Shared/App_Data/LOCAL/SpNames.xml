@@ -16,5 +16,6 @@
   </Function>
   <Function Name="Team">
     <Setting Key="Team_GetHeadToHeads" SpName="Team_GetHeadToHeads" DbName="DefaultConnection" />
+    <Setting Key="Team_GetTeamResults" SpName="Team_GetTeamResults" DbName="DefaultConnection" />
   </Function>
 </Functions>

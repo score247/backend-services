@@ -1,20 +1,16 @@
-﻿using System.Collections.Generic;
-using Soccer.Core.Matches.Models;
-using Soccer.DataReceivers.ScheduleTasks.Teams;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
+using Hangfire;
+using MassTransit;
+using Score247.Shared.Enumerations;
+using Soccer.Core.Matches.Events;
+using Soccer.Core.Shared.Enumerations;
+using Soccer.DataProviders.Matches.Services;
+using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
 
 namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
-    using System;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Hangfire;
-    using MassTransit;
-    using Score247.Shared.Enumerations;
-    using Soccer.Core.Matches.Events;
-    using Soccer.Core.Shared.Enumerations;
-    using Soccer.DataProviders.Matches.Services;
-    using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
-
     public interface IFetchPostMatchesTask
     {
         [Queue("medium")]
@@ -56,7 +52,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
         public async Task FetchPostMatchesForDate(DateTime date, Language language)
         {
-            int batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
+            var batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
             var matches = await matchService.GetPostMatches(date, language);
 
             for (var i = 0; i * batchSize < matches.Count; i++)
@@ -64,20 +60,6 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                 var matchesBatch = matches.Skip(i * batchSize).Take(batchSize);
 
                 await messageBus.Publish<IPostMatchFetchedMessage>(new PostMatchFetchedMessage(matchesBatch, language.DisplayName));
-            }
-
-            FetchTeamHeadToHead(language, matches);
-        }
-
-        private static void FetchTeamHeadToHead(Language language, IEnumerable<Match> matches)
-        {
-            foreach (var match in matches)
-            {
-                var homeTeamId = match.Teams.FirstOrDefault(t => t.IsHome)?.Id;
-                var awayTeamId = match.Teams.FirstOrDefault(t => !t.IsHome)?.Id;
-
-                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
-                    t.FetchHeadToHeads(homeTeamId, awayTeamId, language));
             }
         }
     }

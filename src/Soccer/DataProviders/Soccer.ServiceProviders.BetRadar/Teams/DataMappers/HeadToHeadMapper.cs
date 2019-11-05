@@ -48,7 +48,7 @@ namespace Soccer.DataProviders.SportRadar.Teams.DataMappers
             return teamHeadToHeads;
         }
 
-        private static IReadOnlyList<Match> MapTeamResults(IEnumerable<ResultDto> teamResults, string region)
+        public static IReadOnlyList<Match> MapTeamResults(IEnumerable<ResultDto> teamResults, string region)
         {
             var teamHeadToHeads = new List<Match>();
 

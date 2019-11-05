@@ -28,18 +28,15 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         private readonly IAppSettings appSettings;
         private readonly IMatchService matchService;
         private readonly IBus messageBus;
-        private readonly IFetchMatchLineupsTask fetchMatchLineupsTask;
 
         public FetchPreMatchesTask(
-            IBus messageBus, 
-            IAppSettings appSettings, 
-            IMatchService matchService,
-            IFetchMatchLineupsTask fetchMatchLineupsTask)
+            IBus messageBus,
+            IAppSettings appSettings,
+            IMatchService matchService)
         {
             this.appSettings = appSettings;
             this.messageBus = messageBus;
             this.matchService = matchService;
-            this.fetchMatchLineupsTask = fetchMatchLineupsTask;
         }
 
         public void FetchPreMatches(int dateSpan)
@@ -58,16 +55,15 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
         public async Task FetchPreMatchesForDate(DateTime date, Language language)
         {
-            int batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
+            var batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
 
             var matches = (await matchService.GetPreMatches(date, language))
                                 .Where(x => x.MatchResult.EventStatus != MatchStatus.Live &&
                                             x.MatchResult.EventStatus != MatchStatus.Closed).ToList();
 
-            FetchTeamHeadToHead(language, matches);
-            await FetchMatchLineups(language, matches);
-
             await PublishPreMatchFetchedMessage(language, batchSize, matches);
+            FetchTeamHeadToHeads(language, matches);
+            FetchTeamResults(language, matches);
         }
 
         private async Task PublishPreMatchFetchedMessage(Language language, int batchSize, IList<Match> matches)
@@ -83,7 +79,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             }
         }
 
-        private static void FetchTeamHeadToHead(Language language, IEnumerable<Match> matches)
+        private static void FetchTeamHeadToHeads(Language language, IEnumerable<Match> matches)
         {
             foreach (var match in matches)
             {
@@ -95,14 +91,18 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             }
         }
 
-        private async Task FetchMatchLineups(Language language, IEnumerable<Match> matches)
+        private static void FetchTeamResults(Language language, IEnumerable<Match> matches)
         {
             foreach (var match in matches)
             {
-                if(match.EventDate.Date == DateTime.Now.Date)
-                {
-                    await fetchMatchLineupsTask.FetchMatchLineups(match.Id, match.Region, language);
-                }
+                var homeTeamId = match.Teams.FirstOrDefault(t => t.IsHome)?.Id;
+                var awayTeamId = match.Teams.FirstOrDefault(t => !t.IsHome)?.Id;
+
+                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
+                    t.FetchTeamResults(homeTeamId, language));
+
+                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
+                    t.FetchTeamResults(awayTeamId, language));
             }
         }
     }

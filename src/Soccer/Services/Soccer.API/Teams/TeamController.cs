@@ -26,5 +26,16 @@ namespace Soccer.API.Teams
             string awayTeamId,
             string language = "en-US")
             => await mediator.Send(new HeadToHeadRequest(homeTeamId, awayTeamId, language));
+
+        /// <summary>
+        /// Get Team Result Matches
+        /// </summary>
+        [HttpGet]
+        [Route("{teamId}/results")]
+        public async Task<IEnumerable<MatchSummary>> GetTeamResults(
+            string teamId,
+            [FromQuery]string opponentTeamId = "",
+            string language = "en-US")
+            => await mediator.Send(new TeamResultRequest(teamId, opponentTeamId, language));
     }
 }

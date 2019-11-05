@@ -1,19 +1,18 @@
-﻿using Soccer.Core.Timelines.Models;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Hangfire;
+using MassTransit;
+using Score247.Shared.Enumerations;
+using Soccer.Core.Matches.QueueMessages;
+using Soccer.Core.Shared.Enumerations;
+using Soccer.Core.Teams.QueueMessages;
+using Soccer.Core.Timelines.Models;
 using Soccer.Core.Timelines.QueueMessages;
+using Soccer.DataProviders.Matches.Services;
 
 namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Hangfire;
-    using MassTransit;
-    using Score247.Shared.Enumerations;
-    using Soccer.Core.Matches.QueueMessages;
-    using Soccer.Core.Shared.Enumerations;
-    using Soccer.Core.Teams.QueueMessages;
-    using Soccer.DataProviders.Matches.Services;
-
     public interface IFetchTimelineTask
     {
         [Queue("medium")]

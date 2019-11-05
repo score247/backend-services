@@ -12,10 +12,13 @@ namespace Soccer.API.Teams
     public interface ITeamQueryService
     {
         Task<IEnumerable<MatchSummary>> GetHeadToHeads(string homeTeamId, string awayTeamId, Language language);
+
+        Task<IEnumerable<MatchSummary>> GetTeamResults(string teamId, string opponentTeamId, Language language);
     }
 
     public class TeamQueryService : ITeamQueryService
     {
+        private const int YearRange = 4;
         private readonly IDynamicRepository dynamicRepository;
 
         public TeamQueryService(IDynamicRepository dynamicRepository)
@@ -27,9 +30,25 @@ namespace Soccer.API.Teams
         {
             var criteria = new GetHeadToHeadsCriteria(homeTeamId, awayTeamId, language);
             var matches = await dynamicRepository.FetchAsync<Match>(criteria);
-            var filteredMatches = matches.Where(m => m.EventDate.Year >= DateTime.Now.Year - 4);
 
-            return filteredMatches.Select(m => new MatchSummary(m));
+            return matches
+                .Where(m => m.EventDate.Year >= DateTime.Now.Year - YearRange)
+                .Select(m => new MatchSummary(m));
+        }
+
+        public async Task<IEnumerable<MatchSummary>> GetTeamResults(string teamId, string opponentTeamId, Language language)
+        {
+            var criteria = new GetTeamResultsCriteria(teamId, language);
+            var matches = await dynamicRepository.FetchAsync<Match>(criteria);
+
+            if (!string.IsNullOrEmpty(opponentTeamId))
+            {
+                matches = matches.Where(match => match.Teams.All(team => team.Id != opponentTeamId));
+            }
+
+            return matches
+                .Where(m => m.EventDate.Year >= DateTime.Now.Year - YearRange)
+                .Select(match => new MatchSummary(match));
         }
     }
 }

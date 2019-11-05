@@ -7,7 +7,9 @@ using Soccer.Core.Matches.Models;
 
 namespace Soccer.API.Teams
 {
-    public class TeamHandler : IRequestHandler<HeadToHeadRequest, IEnumerable<MatchSummary>>
+    public class TeamHandler :
+        IRequestHandler<HeadToHeadRequest, IEnumerable<MatchSummary>>,
+        IRequestHandler<TeamResultRequest, IEnumerable<MatchSummary>>
     {
         private readonly ITeamQueryService teamQueryService;
 
@@ -18,5 +20,8 @@ namespace Soccer.API.Teams
 
         public Task<IEnumerable<MatchSummary>> Handle(HeadToHeadRequest request, CancellationToken cancellationToken)
             => teamQueryService.GetHeadToHeads(request.HomeTeamId, request.AwayTeamId, request.Language);
+
+        public Task<IEnumerable<MatchSummary>> Handle(TeamResultRequest request, CancellationToken cancellationToken)
+            => teamQueryService.GetTeamResults(request.TeamId, request.OpponentTeamId, request.Language);
     }
 }

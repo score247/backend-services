@@ -22,7 +22,7 @@ namespace Soccer.Database.Teams
 
         public override bool IsValid()
             => !string.IsNullOrWhiteSpace(HomeTeamId)
-               && !string.IsNullOrWhiteSpace(Language)
+               && !string.IsNullOrWhiteSpace(AwayTeamId)
                && !string.IsNullOrWhiteSpace(Language);
     }
 }

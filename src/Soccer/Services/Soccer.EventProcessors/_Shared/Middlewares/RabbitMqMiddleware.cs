@@ -23,6 +23,7 @@
         private const int retryInterval = 100;
 
 #pragma warning disable S138 // Functions should not have too many lines of code
+
         public static void AddRabbitMq(this IServiceCollection services, IConfiguration configuration)
 #pragma warning restore S138 // Functions should not have too many lines of code
         {
@@ -50,6 +51,7 @@
                 serviceCollectionConfigurator.AddConsumer<FetchCommentaryConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchHeadToHeadConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchMatchLineupsConsumer>();
+                serviceCollectionConfigurator.AddConsumer<FetchTeamResultsConsumer>();
             });
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -171,6 +173,7 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<FetchHeadToHeadConsumer>(provider);
+                    e.Consumer<FetchTeamResultsConsumer>(provider);
                 });
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchLineups", e =>
