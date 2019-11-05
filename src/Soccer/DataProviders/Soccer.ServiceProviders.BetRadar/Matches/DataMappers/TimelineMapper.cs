@@ -4,12 +4,16 @@ using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.Models;
 using Soccer.Core.Timelines.Models;
+using Soccer.DataProviders.SportRadar._Shared;
 using Soccer.DataProviders.SportRadar.Matches.Dtos;
 
 namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 {
     public static class TimelineMapper
     {
+        private const string homeTeamIdentifier = "home";
+        private const string scoredPenaltyStatus = "scored";
+
         public static TimelineEvent MapTimeline(TimelineDto timelineDto)
         {
             if (timelineDto == null)
@@ -67,18 +71,18 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                                 ? null
                                 : new GoalScorer(
                                     timelineDto.goal_scorer.id,
-                                    timelineDto.goal_scorer.name,
+                                    PlayerNameConverter.Convert(timelineDto.goal_scorer.name, false),
                                     timelineDto.goal_scorer.method);
 
         private static Player GetGoalAssist(TimelineDto timelineDto)
             => timelineDto.assist == null
                     ? null
-                    : new Player(timelineDto.assist.id, timelineDto.assist.name);
+                    : new Player(timelineDto.assist.id, PlayerNameConverter.Convert(timelineDto.assist.name, false));
 
         private static Player GetPlayer(PlayerDto playerDto)
             => playerDto == null
                 ? null
-                : new Player(playerDto.id, playerDto.name);
+                : new Player(playerDto.id, PlayerNameConverter.Convert(playerDto.name, false));
 
         public static TimelineCommentary MapTimelineCommentary(TimelineDto timelineDto)
             => timelineDto.commentaries == null
@@ -96,11 +100,11 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
         {
             if (timelineDto.period_type == PeriodType.Penalties.DisplayName)
             {
-                var isScored = timelineDto.status == "scored";
+                var isScored = timelineDto.status == scoredPenaltyStatus;
 
                 var player = GetPlayer(timelineDto.player);
 
-                if (timelineDto.team == "home")
+                if (timelineDto.team == homeTeamIdentifier)
                 {
                     timeline.IsHomeShootoutScored = isScored;
                     timeline.HomeShootoutPlayer = player;
