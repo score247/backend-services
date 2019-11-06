@@ -117,6 +117,24 @@ namespace Soccer.EventProcessors.Tests.Matches
         }
 
         [Fact]
+        public async Task Consume_BreakStart_PublishBreakStartEventMessage()
+        {
+            context.Message.Returns(new MatchEventReceivedMessage(new MatchEvent(
+                "sr:league",
+                "sr:match",
+                A.Dummy<MatchResult>(),
+                A.Dummy<TimelineEvent>()
+                    .With(t => t.Type, EventType.BreakStart))));
+
+            StubForMajorLeague("sr:league");
+
+            await consumer.Consume(context);
+
+            await messageBus.Received(1).Publish<IBreakStartEventMessage>(Arg.Any<BreakStartEventMessage>());
+            await messageBus.DidNotReceive().Publish<IMatchEventProcessedMessage>(Arg.Any<MatchEventProcessedMessage>());
+        }
+
+        [Fact]
         public async Task Consume_ShootOutInPenaltyAndNotProcessed_PublishPenaltyEventMessage()
         {
             context.Message.Returns(new MatchEventReceivedMessage(new MatchEvent(
