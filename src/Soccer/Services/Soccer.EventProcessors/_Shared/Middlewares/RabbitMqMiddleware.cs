@@ -53,6 +53,7 @@
                 serviceCollectionConfigurator.AddConsumer<FetchHeadToHeadConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchMatchLineupsConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchTeamResultsConsumer>();
+                serviceCollectionConfigurator.AddConsumer<FetchCleanMajorLeaguesCacheConsumer>();
             });
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -191,6 +192,14 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<FetchMatchLineupsConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_CleanMajorLeaguesCache", e =>
+                {
+                    e.PrefetchCount = PrefetchCount;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<FetchCleanMajorLeaguesCacheConsumer>(provider);
                 });
             }));
 
