@@ -76,6 +76,26 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
         }
 
         [Fact]
+        public async Task Consume_BreakStartAndExtraTimeHalfTime_ShouldPublishProcessedEventMessage()
+        {
+            context.Message.Returns(new BreakStartEventMessage
+                (
+                    new MatchEvent(
+                        "sr:league",
+                        "sr:match",
+                        A.Dummy<MatchResult>(),
+                        A.Dummy<TimelineEvent>()
+                            .With(timeline => timeline.Type, EventType.BreakStart)
+                            .With(timeline => timeline.PeriodType, PeriodType.ExtraTimeHalfTime))
+                ));
+
+            await breakStartConsumer.Consume(context);
+
+            await messageBus.Received(1).Publish<IMatchEventProcessedMessage>(
+                Arg.Is<MatchEventProcessedMessage>(evt => evt.MatchEvent.Timeline.MatchTime == 105));
+        }
+
+        [Fact]
         public async Task Consume_BreakStartAndAwaitingPenalties_ShouldPublishProcessedEventMessage()
         {
             context.Message.Returns(new BreakStartEventMessage
