@@ -15,10 +15,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     public interface IFetchTimelineTask
     {
-        [Queue("medium-live")]
+        [Queue("mediumlive")]
         Task FetchTimelines(string matchId, string regionName);
 
-        [Queue("medium-live")]
+        [Queue("mediumlive")]
         Task FetchTimelines(string matchId, string region, Language language);
     }
 

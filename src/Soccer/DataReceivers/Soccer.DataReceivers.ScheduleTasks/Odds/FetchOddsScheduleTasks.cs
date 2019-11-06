@@ -12,10 +12,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Odds
 {
     public interface IFetchOddsScheduleTask
     {
-        [Queue("low-live")]
+        [Queue("lowlive")]
         Task FetchOdds();
 
-        [Queue("medium-live")]
+        [Queue("mediumlive")]
         Task FetchOddsChangeLogs();
     }
 
