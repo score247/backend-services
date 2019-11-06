@@ -45,7 +45,6 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
                 IgnoreAntiforgeryToken = true
             }).UseHangfireServer(options: new BackgroundJobServerOptions
             {
-                ServerName = configuration.GetSection("HangfireServerName").Get<string>(),
                 WorkerCount = configuration.GetSection("HangfireWorkers").Get<int>(),
                 Queues = configuration.GetSection("HangfireQueues").Get<string[]>()
             });
