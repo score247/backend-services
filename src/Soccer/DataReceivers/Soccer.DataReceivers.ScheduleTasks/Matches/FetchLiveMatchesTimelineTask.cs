@@ -7,7 +7,7 @@
 
     public interface IFetchLiveMatchesTimelineTask
     {
-        [Queue("medium")]
+        [Queue("medium-live")]
         Task FetchLiveMatchesTimeline();
     }
 

@@ -13,10 +13,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     public interface IFetchPostMatchesTask
     {
-        [Queue("medium")]
+        [Queue("low")]
         void FetchPostMatches(int dateSpan);
 
-        [Queue("medium")]
+        [Queue("low")]
         Task FetchPostMatchesForDate(DateTime date, Language language);
     }
 

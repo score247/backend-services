@@ -7,7 +7,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 {
     public interface ICleanMajorLeaguesCacheTask
     {
-        [Queue("medium")]
+        [Queue("low")]
         Task CleanMajorLeaguesCache();
     }
 

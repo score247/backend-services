@@ -10,7 +10,7 @@
 
     public interface IFetchLiveMatchesTask
     {
-        [Queue("high")]
+        [Queue("high-live")]
         Task FetchLiveMatches();
     }
 

@@ -12,10 +12,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 {
     public interface IFetchLeaguesTask
     {
-        [Queue("medium")]
+        [Queue("low")]
         void FetchLeagues();
 
-        [Queue("medium")]
+        [Queue("low")]
         Task FetchLeaguesForLanguage(Language language);
     }
 

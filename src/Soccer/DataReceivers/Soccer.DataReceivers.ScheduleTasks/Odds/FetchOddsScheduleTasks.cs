@@ -1,21 +1,21 @@
-﻿namespace Soccer.DataReceivers.ScheduleTasks.Odds
-{
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Hangfire;
-    using MassTransit;
-    using Soccer.Core.Odds.Messages;
-    using Soccer.Core.Odds.Models;
-    using Soccer.DataProviders.Odds;
-    using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Hangfire;
+using MassTransit;
+using Soccer.Core.Odds.Messages;
+using Soccer.Core.Odds.Models;
+using Soccer.DataProviders.Odds;
+using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
 
+namespace Soccer.DataReceivers.ScheduleTasks.Odds
+{
     public interface IFetchOddsScheduleTask
     {
-        [Queue("medium")]
+        [Queue("low-live")]
         Task FetchOdds();
 
-        [Queue("medium")]
+        [Queue("medium-live")]
         Task FetchOddsChangeLogs();
     }
 
