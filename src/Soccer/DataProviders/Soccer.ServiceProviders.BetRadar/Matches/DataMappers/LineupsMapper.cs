@@ -61,28 +61,32 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                     teamLineups.manager?.country_code);
 
         private static IEnumerable<Player> MapSubstitutePlayers(Lineup teamLineups)
-            => teamLineups
-                .substitutes
+            => (teamLineups.substitutes ?? Enumerable.Empty<Substitute>())
                 .OrderBy(st => st.jersey_number)
                 .Select(pl => new Player(
                     pl.id,
                     PlayerNameConverter.Convert(pl.name),
-                    string.IsNullOrWhiteSpace(pl.type) ? PlayerType.Unknown : Enumeration.FromDisplayName<PlayerType>(pl.type),
+                    string.IsNullOrWhiteSpace(pl.type) 
+                        ? PlayerType.Unknown 
+                        : Enumeration.FromDisplayName<PlayerType>(pl.type),
                     pl.jersey_number,
                     Position.Unknown,
                     0));
 
         private static IEnumerable<Player> MapStartingLineups(Lineup teamLineups)
-            => teamLineups
-                .starting_lineup
+            => (teamLineups.starting_lineup ?? Enumerable.Empty<StartingLineup>())
                 .OrderBy(st => st.order)
                 .Select(pl =>
                     new Player(
                         pl.id,
                         PlayerNameConverter.Convert(pl.name),
-                        string.IsNullOrWhiteSpace(pl.type) ? PlayerType.Unknown : Enumeration.FromDisplayName<PlayerType>(pl.type),
+                        string.IsNullOrWhiteSpace(pl.type) 
+                            ? PlayerType.Unknown 
+                            : Enumeration.FromDisplayName<PlayerType>(pl.type),
                         pl.jersey_number,
-                        string.IsNullOrWhiteSpace(pl.position) ? Position.Unknown : Enumeration.FromDisplayName<Position>(pl.position),
+                        string.IsNullOrWhiteSpace(pl.position) 
+                            ? Position.Unknown 
+                            : Enumeration.FromDisplayName<Position>(pl.position),
                         pl.order));
     }
 }

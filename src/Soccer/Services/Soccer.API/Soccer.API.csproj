@@ -79,7 +79,28 @@
     <None Update="_Shared\App_Data\SvgFiles\jersey.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="_Shared\App_Data\SvgFiles\red_card.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="_Shared\App_Data\SvgFiles\red_yellow_card.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="_Shared\App_Data\SvgFiles\score_change.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="_Shared\App_Data\SvgFiles\score_change_by_owngoal.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="_Shared\App_Data\SvgFiles\score_change_by_penalty.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="_Shared\App_Data\SvgFiles\stadium.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="_Shared\App_Data\SvgFiles\substitution.svg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="_Shared\App_Data\SvgFiles\yellow_card.svg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

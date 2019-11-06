@@ -11,6 +11,7 @@
     using Shared.Configurations;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
+    using Soccer.Core.Teams.Models;
     using Soccer.Database.Matches.Criteria;
     using Soccer.Database.Timelines.Criteria;
 
@@ -35,7 +36,7 @@
 
     public class MatchQueryService : IMatchQueryService
     {
-        private const int MatchDataCacheInMinutes = 3;
+        private const int MatchDataCacheInMinutes = 0;
         private const string MatchStatisticCacheKey = "MatchQuery_MatchStatisticCacheKey";
         private const string MatchInfoCacheKey = "MatchQuery_MatchInfoCacheKey";
         private const string MatchListCacheKey = "MatchQuery_MatchListCacheKey";
@@ -46,6 +47,15 @@
         private readonly ICacheManager cacheManager;
         private readonly IAppSettings appSettings;
         private readonly Func<DateTimeOffset> dateTimeNowFunc;
+
+        private static readonly IList<EventType> lineupsEvents = new List<EventType>
+        {
+            EventType.ScoreChange,
+            EventType.RedCard,
+            EventType.YellowCard,
+            EventType.YellowRedCard,
+            EventType.Substitution
+        };
 
         public MatchQueryService(
             IDynamicRepository dynamicRepository,
@@ -133,7 +143,66 @@
                 return new MatchLineups();
             }
 
+            var timelines = (await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id))).ToList();
+            //sr:match:1941866813
+            CombineTimelineEventsIntoLineups(matchLineups.Home, timelines);
+            CombineTimelineEventsIntoLineups(matchLineups.Away, timelines);
+
             return matchLineups;
+        }
+
+        private static void CombineTimelineEventsIntoLineups(TeamLineups teamLineups, List<TimelineEvent> timelines)
+        {
+            foreach (var player in teamLineups.Players)
+            {
+                player.EventStatistic = BuildPlayerEventStatistic(timelines, player);
+            }
+        }
+
+        private static Dictionary<EventType, int> BuildPlayerEventStatistic(List<TimelineEvent> timelines, Player player)
+        {
+            var playerStatistic = new Dictionary<EventType, int>();
+
+            foreach (var lineupsEvent in lineupsEvents)
+            {
+                var events = timelines.Where(tl => tl.Type == lineupsEvent
+                            && (tl.Player?.Id == player.Id || tl.PlayerOut?.Id == player.Id || tl.GoalScorer?.Id == player.Id));
+
+                if (events.Any())
+                {
+                    if (lineupsEvent == EventType.ScoreChange)
+                    {
+                        AddGoalEvents(playerStatistic, events);
+                    }
+                    else
+                    {
+                        playerStatistic.Add(lineupsEvent, events.Count());
+                    }
+                }
+            }
+
+            return playerStatistic;
+        }
+
+        private static void AddGoalEvents(Dictionary<EventType, int> playerStatistic, IEnumerable<TimelineEvent> timelineEvents)
+        {
+            var normalGoals = timelineEvents.Where(timelineEvent => timelineEvent.GoalScorer?.GetEventTypeFromGoalMethod() == EventType.ScoreChange);
+            if (normalGoals.Any())
+            {
+                playerStatistic.Add(EventType.ScoreChange, normalGoals.Count());
+            }
+
+            var ownGoals = timelineEvents.Where(timelineEvent => timelineEvent.GoalScorer?.GetEventTypeFromGoalMethod() == EventType.ScoreChangeByOwnGoal);
+            if (ownGoals.Any())
+            {
+                playerStatistic.Add(EventType.ScoreChangeByOwnGoal, ownGoals.Count());
+            }
+
+            var penaltyGoals = timelineEvents.Where(timelineEvent => timelineEvent.GoalScorer?.GetEventTypeFromGoalMethod() == EventType.ScoreChangeByPenalty);
+            if (penaltyGoals.Any())
+            {
+                playerStatistic.Add(EventType.ScoreChangeByPenalty, penaltyGoals.Count());
+            }
         }
 
         private async Task<MatchStatistic> GetMatchStatisticData(string id)
