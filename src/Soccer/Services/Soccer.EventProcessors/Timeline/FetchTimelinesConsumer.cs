@@ -11,6 +11,8 @@ namespace Soccer.EventProcessors.Timeline
 {
     public class FetchTimelinesConsumer : IConsumer<IMatchTimelinesFetchedMessage>
     {
+        private static byte DefaultPenaltyMatchTime = 121;
+
         private readonly IBus messageBus;
         private readonly IMajorLeagueFilter<Match, bool> majorLeagueFilter;
 
@@ -172,6 +174,8 @@ namespace Soccer.EventProcessors.Timeline
                 shootoutEvent.ShootoutAwayScore = shootoutAwayScore + (shootoutEvent.IsAwayShootoutScored ? 1 : 0);
                 shootoutEvent.ShootoutHomeScore = shootoutHomeScore;
             }
+
+            shootoutEvent.UpdateMatchTime(DefaultPenaltyMatchTime);
 
             return shootoutEvent;
         }

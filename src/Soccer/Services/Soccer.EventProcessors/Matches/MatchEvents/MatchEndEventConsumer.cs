@@ -1,20 +1,21 @@
-﻿namespace Soccer.EventProcessors.Matches.MatchEvents
-{
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Fanex.Data.Repository;
-    using MassTransit;
-    using Soccer.Core.Matches.Events;
-    using Soccer.Core.Matches.QueueMessages;
-    using Soccer.Core.Matches.QueueMessages.MatchEvents;
-    using Soccer.Core.Shared.Enumerations;
-    using Soccer.Database.Matches.Commands;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
+using Fanex.Data.Repository;
+using MassTransit;
+using Soccer.Core.Matches.Events;
+using Soccer.Core.Matches.QueueMessages;
+using Soccer.Core.Matches.QueueMessages.MatchEvents;
+using Soccer.Core.Shared.Enumerations;
+using Soccer.Database.Matches.Commands;
 
+namespace Soccer.EventProcessors.Matches.MatchEvents
+{
     public class MatchEndEventConsumer : IConsumer<IMatchEndEventMessage>
     {
-        private const byte DefaultMatchEndTime = 91;
+        private static byte DefaultMatchEndTime = 91;
+
         private static readonly ReadOnlyDictionary<PeriodType, byte> MatchEndTimes
           = new ReadOnlyDictionary<PeriodType, byte>(
               new Dictionary<PeriodType, byte>
@@ -43,7 +44,7 @@
             }
 
             var latestPeriodType = matchEvent.MatchResult.MatchPeriods.LastOrDefault()?.PeriodType;
-            var matchTime = latestPeriodType != null && MatchEndTimes.ContainsKey(latestPeriodType) 
+            var matchTime = latestPeriodType != null && MatchEndTimes.ContainsKey(latestPeriodType)
                                 ? MatchEndTimes[latestPeriodType]
                                 : DefaultMatchEndTime;
 

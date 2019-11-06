@@ -11,6 +11,7 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
     public class BreakStartEventConsumer : IConsumer<IBreakStartEventMessage>
     {
         private const byte DefaultBreakStartTime = 45;
+
         private static readonly ReadOnlyDictionary<PeriodType, byte> BreakTimes
           = new ReadOnlyDictionary<PeriodType, byte>(
               new Dictionary<PeriodType, byte>

@@ -1,16 +1,16 @@
-﻿namespace Soccer.EventProcessors.Matches.MatchEvents
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Collections.ObjectModel;
-    using System.Threading.Tasks;
-    using Fanex.Data.Repository;
-    using MassTransit;
-    using Soccer.Core.Matches.QueueMessages;
-    using Soccer.Core.Matches.QueueMessages.MatchEvents;
-    using Soccer.Core.Shared.Enumerations;
-    using Soccer.Database.Matches.Commands;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using Fanex.Data.Repository;
+using MassTransit;
+using Soccer.Core.Matches.QueueMessages;
+using Soccer.Core.Matches.QueueMessages.MatchEvents;
+using Soccer.Core.Shared.Enumerations;
+using Soccer.Database.Matches.Commands;
 
+namespace Soccer.EventProcessors.Matches.MatchEvents
+{
     public class PeriodStartEventConsumer : IConsumer<IPeriodStartEventMessage>
     {
         private const byte DefaultPeriodStartTime = 1;
