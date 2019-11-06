@@ -81,6 +81,12 @@ namespace Soccer.EventProcessors.Matches
                 return;
             }
 
+            if (matchEvent.Timeline.Type.IsBreakStart())
+            {
+                await messageBus.Publish<IBreakStartEventMessage>(new BreakStartEventMessage(matchEvent));
+                return;
+            }
+
             await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
         }
 
