@@ -295,7 +295,7 @@ namespace Soccer.API.Matches.Helpers
             {
                 CenterX = x,
                 CenterY = y,
-                Radius = 4
+                Radius = 5
             };
             circleElement.AddStyle("fill", "red", 0);
 
@@ -308,8 +308,8 @@ namespace Soccer.API.Matches.Helpers
                 X = new SvgUnitCollection { new SvgUnit(x) },
                 Y = new SvgUnitCollection { new SvgUnit(y + 2) },
                 FontFamily = robotoFontName,
-                FontWeight = SvgFontWeight.Normal,
-                FontSize = 6
+                FontWeight = SvgFontWeight.Bold,
+                FontSize = 7
             };
             playerNumber.AddStyle("fill", "white", 0);
 
