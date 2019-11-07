@@ -51,7 +51,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             if (!string.IsNullOrWhiteSpace(taskSettings.FetchPreMatchesCron))
             {
                 RecurringJob.AddOrUpdate<IFetchPreMatchesTask>(
-                    "FetchPreMatch",
+                    nameof(IFetchPreMatchesTask.FetchPreMatches),
                     job => job.FetchPreMatches(taskSettings.FetchMatchScheduleDateSpan),
                     taskSettings.FetchPreMatchesCron);
             }
@@ -59,7 +59,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             if (!string.IsNullOrWhiteSpace(taskSettings.FetchPostMatchesCron))
             {
                 RecurringJob.AddOrUpdate<IFetchPostMatchesTask>(
-                    "FetchPostMatch",
+                    nameof(IFetchPostMatchesTask.FetchPostMatches),
                     job => job.FetchPostMatches(taskSettings.FetchMatchScheduleDateSpan),
                     taskSettings.FetchPostMatchesCron);
             }
@@ -67,7 +67,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             if (!string.IsNullOrWhiteSpace(taskSettings.FetchLiveMatchesCron))
             {
                 RecurringJob.AddOrUpdate<IFetchLiveMatchesTask>(
-                    "FetchLiveMatch",
+                    nameof(IFetchLiveMatchesTask.FetchLiveMatches),
                     job => job.FetchLiveMatches(),
                     taskSettings.FetchLiveMatchesCron);
             }
@@ -75,7 +75,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             if (!string.IsNullOrWhiteSpace(taskSettings.FetchLiveMatchesTimelineCron))
             {
                 RecurringJob.AddOrUpdate<IFetchLiveMatchesTimelineTask>(
-                    "FetchLiveMatchTimeline",
+                    nameof(IFetchLiveMatchesTimelineTask.FetchLiveMatchesTimeline),
                     job => job.FetchLiveMatchesTimeline(),
                     taskSettings.FetchLiveMatchesTimelineCron);
             }
