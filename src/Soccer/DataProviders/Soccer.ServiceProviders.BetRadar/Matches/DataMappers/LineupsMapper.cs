@@ -35,7 +35,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 
                 if (teamLineups != null)
                 {
-                    var startingLineups = MapStartingLineups(teamLineups);
+                    var startingLineups = MapStartingLineups(teamLineups, string.IsNullOrWhiteSpace(teamLineups.formation));
                     var substitutesLineups = MapSubstitutePlayers(teamLineups);
                     var coach = MapCoach(teamLineups);
 
@@ -73,9 +73,9 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                     Position.Unknown,
                     0));
 
-        private static IEnumerable<Player> MapStartingLineups(Lineup teamLineups)
+        private static IEnumerable<Player> MapStartingLineups(Lineup teamLineups, bool isOrderByJerseyNumber)
             => (teamLineups.starting_lineup ?? Enumerable.Empty<StartingLineup>())
-                .OrderBy(st => st.order)
+                .OrderBy(st => isOrderByJerseyNumber ? st.jersey_number : st.order)
                 .Select(pl =>
                     new Player(
                         pl.id,
