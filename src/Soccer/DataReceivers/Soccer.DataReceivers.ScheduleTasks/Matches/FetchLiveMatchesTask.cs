@@ -38,7 +38,12 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
                 await messageBus.Publish<ILiveMatchFetchedMessage>(new LiveMatchFetchedMessage(language, matches));
 
-                var closedMatches = matches.Where(match => match.MatchResult.EventStatus.IsClosed());
+                var closedMatches = matches.Where(match => match.MatchResult.EventStatus.IsClosed()).ToList();
+
+                if (closedMatches.Count == 0)
+                {
+                    continue;
+                }
 
                 BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(
                     task => task.FetchHeadToHeads(language, closedMatches));
