@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Hangfire;
 using MassTransit;
-using Microsoft.EntityFrameworkCore.Internal;
+using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.QueueMessages;
 using Soccer.DataProviders.Teams.Services;
@@ -10,6 +12,12 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
 {
     public interface IFetchHeadToHeadsTask
     {
+        [Queue("medium")]
+        void FetchHeadToHeads(Language language, IEnumerable<Match> matches);
+
+        [Queue("medium")]
+        void FetchTeamResults(Language language, IEnumerable<Match> matches);
+
         [Queue("medium")]
         Task FetchHeadToHeads(string homeTeamId, string awayTeamId, Language language);
 
@@ -28,6 +36,33 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
         {
             this.headToHeadService = headToHeadService;
             this.messageBus = messageBus;
+        }
+
+        public void FetchHeadToHeads(Language language, IEnumerable<Match> matches)
+        {
+            foreach (var match in matches)
+            {
+                var homeTeamId = match.Teams.FirstOrDefault(t => t.IsHome)?.Id;
+                var awayTeamId = match.Teams.FirstOrDefault(t => !t.IsHome)?.Id;
+
+                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
+                    t.FetchHeadToHeads(homeTeamId, awayTeamId, language));
+            }
+        }
+
+        public void FetchTeamResults(Language language, IEnumerable<Match> matches)
+        {
+            foreach (var match in matches)
+            {
+                var homeTeamId = match.Teams.FirstOrDefault(t => t.IsHome)?.Id;
+                var awayTeamId = match.Teams.FirstOrDefault(t => !t.IsHome)?.Id;
+
+                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
+                    t.FetchTeamResults(homeTeamId, language));
+
+                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
+                    t.FetchTeamResults(awayTeamId, language));
+            }
         }
 
         public async Task FetchHeadToHeads(string homeTeamId, string awayTeamId, Language language)

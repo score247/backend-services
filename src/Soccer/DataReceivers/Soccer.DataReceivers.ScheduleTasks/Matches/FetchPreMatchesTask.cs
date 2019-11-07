@@ -41,14 +41,22 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
         public void FetchPreMatches(int dateSpan)
         {
-            var from = DateTime.UtcNow;
-            var to = DateTime.UtcNow.AddDays(dateSpan);
-
             foreach (var language in Enumeration.GetAll<Language>())
             {
-                for (var date = from; date.Date <= to; date = date.AddDays(1))
+                for (var dayAdd = 0; dayAdd <= dateSpan; dayAdd++)
                 {
-                    BackgroundJob.Enqueue<IFetchPreMatchesTask>(t => t.FetchPreMatchesForDate(date, language));
+                    var fetchDate = DateTime.UtcNow.AddDays(dayAdd);
+
+                    if (dayAdd > 0)
+                    {
+                        BackgroundJob.Schedule<IFetchPreMatchesTask>(
+                            t => t.FetchPreMatchesForDate(fetchDate, language),
+                            TimeSpan.FromHours(appSettings.ScheduleTasksSettings.FetchMatchesByDateDelayedHours * dayAdd));
+                    }
+                    else
+                    {
+                        BackgroundJob.Enqueue<IFetchPreMatchesTask>(t => t.FetchPreMatchesForDate(fetchDate, language));
+                    }
                 }
             }
         }
@@ -62,47 +70,25 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                                             x.MatchResult.EventStatus != MatchStatus.Closed).ToList();
 
             await PublishPreMatchFetchedMessage(language, batchSize, matches);
-            FetchTeamHeadToHeads(language, matches);
-            FetchTeamResults(language, matches);
         }
 
-        private async Task PublishPreMatchFetchedMessage(Language language, int batchSize, IList<Match> matches)
+        private async Task PublishPreMatchFetchedMessage(Language language, int batchSize, ICollection<Match> matches)
         {
             for (var i = 0; i * batchSize < matches.Count; i++)
             {
-                var matchesBatch = matches.Skip(i * batchSize).Take(batchSize);
+                var batchOfMatches = matches.Skip(i * batchSize).Take(batchSize).ToList();
 
                 await messageBus.Publish<IPreMatchesFetchedMessage>(
-                    new PreMatchesFetchedMessage(matchesBatch, language.DisplayName));
+                    new PreMatchesFetchedMessage(batchOfMatches, language.DisplayName));
 
-                BackgroundJob.Enqueue<IFetchPreMatchesTimelineTask>(t => t.FetchPreMatchTimeline(matchesBatch.ToList()));
-            }
-        }
+                BackgroundJob.Enqueue<IFetchPreMatchesTimelineTask>(
+                    task => task.FetchPreMatchTimeline(batchOfMatches));
 
-        private static void FetchTeamHeadToHeads(Language language, IEnumerable<Match> matches)
-        {
-            foreach (var match in matches)
-            {
-                var homeTeamId = match.Teams.FirstOrDefault(t => t.IsHome)?.Id;
-                var awayTeamId = match.Teams.FirstOrDefault(t => !t.IsHome)?.Id;
+                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(
+                    task => task.FetchHeadToHeads(language, batchOfMatches));
 
-                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
-                    t.FetchHeadToHeads(homeTeamId, awayTeamId, language));
-            }
-        }
-
-        private static void FetchTeamResults(Language language, IEnumerable<Match> matches)
-        {
-            foreach (var match in matches)
-            {
-                var homeTeamId = match.Teams.FirstOrDefault(t => t.IsHome)?.Id;
-                var awayTeamId = match.Teams.FirstOrDefault(t => !t.IsHome)?.Id;
-
-                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
-                    t.FetchTeamResults(homeTeamId, language));
-
-                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
-                    t.FetchTeamResults(awayTeamId, language));
+                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(
+                    task => task.FetchTeamResults(language, batchOfMatches));
             }
         }
     }

@@ -1,4 +1,7 @@
-﻿namespace Soccer.DataReceivers.ScheduleTasks.Matches
+﻿using System.Linq;
+using Soccer.DataReceivers.ScheduleTasks.Teams;
+
+namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     using System.Threading.Tasks;
     using Hangfire;
@@ -34,6 +37,14 @@
                 var matches = await matchService.GetLiveMatches(language);
 
                 await messageBus.Publish<ILiveMatchFetchedMessage>(new LiveMatchFetchedMessage(language, matches));
+
+                var closedMatches = matches.Where(match => match.MatchResult.EventStatus.IsClosed());
+
+                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(
+                    task => task.FetchHeadToHeads(language, closedMatches));
+
+                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(
+                    task => task.FetchTeamResults(language, closedMatches));
             }
         }
     }

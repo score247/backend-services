@@ -38,14 +38,23 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
         public void FetchPostMatches(int dateSpan)
         {
-            var from = DateTime.UtcNow.AddDays(-dateSpan);
-            var to = DateTime.UtcNow;
-
             foreach (var language in Enumeration.GetAll<Language>())
             {
-                for (var date = from; date.Date <= to; date = date.AddDays(1))
+                for (var dayAdd = 0; dayAdd <= dateSpan; dayAdd++)
                 {
-                    BackgroundJob.Enqueue<IFetchPostMatchesTask>(t => t.FetchPostMatchesForDate(date, language));
+                    var fetchDate = DateTime.UtcNow.AddDays(-dayAdd);
+
+                    if (dayAdd > 0)
+                    {
+                        BackgroundJob.Schedule<IFetchPostMatchesTask>(
+                            t => t.FetchPostMatchesForDate(fetchDate, language),
+                            TimeSpan.FromHours(appSettings.ScheduleTasksSettings.FetchMatchesByDateDelayedHours * dayAdd));
+                    }
+                    else
+                    {
+                        BackgroundJob.Enqueue<IFetchPostMatchesTask>(
+                            t => t.FetchPostMatchesForDate(fetchDate, language));
+                    }
                 }
             }
         }
