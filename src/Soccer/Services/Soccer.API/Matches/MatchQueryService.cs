@@ -36,7 +36,7 @@
 
     public class MatchQueryService : IMatchQueryService
     {
-        private const int MatchDataCacheInMinutes = 0;
+        private const int MatchDataCacheInMinutes = 3;
         private const string MatchStatisticCacheKey = "MatchQuery_MatchStatisticCacheKey";
         private const string MatchInfoCacheKey = "MatchQuery_MatchInfoCacheKey";
         private const string MatchListCacheKey = "MatchQuery_MatchListCacheKey";

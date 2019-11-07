@@ -59,10 +59,6 @@
 
             var lineupsSvg = matchLineupsGenerator.Generate(matchLineups);
 
-            var folder = $"{AppDomain.CurrentDomain.BaseDirectory}/data/";
-            Directory.CreateDirectory(folder);
-            File.WriteAllText(Path.Combine(folder, $"{request.Id.Replace(":", "_")}.svg"), lineupsSvg);
-
             return new MatchPitchViewLineups(
                 matchLineups.Id,
                 matchLineups.EventDate,
