@@ -19,7 +19,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
 
         private readonly BreakStartEventConsumer breakStartConsumer;
 
-        public BreakStartEventConsumerTests() 
+        public BreakStartEventConsumerTests()
         {
             context = Substitute.For<ConsumeContext<IBreakStartEventMessage>>();
             messageBus = Substitute.For<IBus>();
@@ -41,9 +41,9 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             context.Message.Returns(new BreakStartEventMessage
                 (
                     new MatchEvent(
-                        "sr:league", 
-                        "sr:match", 
-                        A.Dummy<MatchResult>(), 
+                        "sr:league",
+                        "sr:match",
+                        A.Dummy<MatchResult>(),
                         A.Dummy<TimelineEvent>()
                             .With(timeline => timeline.Type, EventType.BreakStart)
                             .With(timeline => timeline.PeriodType, PeriodType.Pause))
@@ -132,7 +132,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             await breakStartConsumer.Consume(context);
 
             await messageBus.Received(1).Publish<IMatchEventProcessedMessage>(
-                Arg.Is<MatchEventProcessedMessage>(evt => evt.MatchEvent.Timeline.MatchTime == 45));
+                Arg.Is<MatchEventProcessedMessage>(evt => evt.MatchEvent.Timeline.MatchTime == 105));
         }
     }
 }
