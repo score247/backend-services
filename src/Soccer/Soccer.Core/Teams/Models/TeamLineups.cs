@@ -28,7 +28,7 @@ namespace Soccer.Core.Teams.Models
             Coach coach,
             string formation,
             IEnumerable<Player> players,
-            IEnumerable<Player> substitutions) 
+            IEnumerable<Player> substitutions)
             : base(id, name, string.Empty, string.Empty, string.Empty, isHome, default(TeamStatistic), string.Empty)
         {
             Coach = coach;
@@ -56,7 +56,7 @@ namespace Soccer.Core.Teams.Models
                            .ToList();
             var formationList = new List<byte> { 1 };
             formationList.AddRange(tempList);
-            
+
             return formationList;
         }
     }

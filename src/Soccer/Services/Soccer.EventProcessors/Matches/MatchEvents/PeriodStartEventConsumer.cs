@@ -45,8 +45,8 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
             }
 
             var period = new Tuple<PeriodType, int>(matchEvent.Timeline.PeriodType, matchEvent.Timeline.Period);
-            var matchTime = PeriodTimes.ContainsKey(period) 
-                ? PeriodTimes[period] 
+            var matchTime = PeriodTimes.ContainsKey(period)
+                ? PeriodTimes[period]
                 : DefaultPeriodStartTime;
 
             matchEvent.Timeline.UpdateMatchTime(matchTime);

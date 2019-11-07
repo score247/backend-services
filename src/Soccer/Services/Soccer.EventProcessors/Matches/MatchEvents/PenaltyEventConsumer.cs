@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using Microsoft.EntityFrameworkCore.Internal;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Caching;
 using MassTransit;
+using Microsoft.EntityFrameworkCore.Internal;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Matches.QueueMessages.MatchEvents;
@@ -13,7 +13,7 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
 {
     public class PenaltyEventConsumer : IConsumer<IPenaltyEventMessage>
     {
-        private static byte DefaultPenaltyMatchTime = 121;
+        private static readonly byte DefaultPenaltyMatchTime = 121;
 
         private static readonly CacheItemOptions MatchPenaltyCacheOptions = new CacheItemOptions
         {

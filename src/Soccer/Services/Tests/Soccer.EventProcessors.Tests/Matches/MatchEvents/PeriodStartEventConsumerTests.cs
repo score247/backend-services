@@ -22,7 +22,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
 
         private readonly PeriodStartEventConsumer periodStartConsumer;
 
-        public PeriodStartEventConsumerTests() 
+        public PeriodStartEventConsumerTests()
         {
             context = Substitute.For<ConsumeContext<IPeriodStartEventMessage>>();
             dynamicRepository = Substitute.For<IDynamicRepository>();

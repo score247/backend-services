@@ -71,6 +71,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "integrations", "integration
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Score247.IntegrationsTests", "tests\integrations\Score247.IntegrationsTests\Score247.IntegrationsTests.csproj", "{CC7F177E-E952-481F-B189-04F80226BCD5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.Cache", "src\Soccer\Infrastructure\Soccer.Cache\Soccer.Cache.csproj", "{EBB8583F-DDC5-4E7A-ACEA-5CAAC13E36CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -165,6 +167,10 @@ Global
 		{CC7F177E-E952-481F-B189-04F80226BCD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC7F177E-E952-481F-B189-04F80226BCD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC7F177E-E952-481F-B189-04F80226BCD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBB8583F-DDC5-4E7A-ACEA-5CAAC13E36CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBB8583F-DDC5-4E7A-ACEA-5CAAC13E36CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBB8583F-DDC5-4E7A-ACEA-5CAAC13E36CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBB8583F-DDC5-4E7A-ACEA-5CAAC13E36CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -201,6 +207,7 @@ Global
 		{AEEE020E-37E7-4AC4-80AD-FDB1C1147985} = {30FA5FDA-77A7-480D-92F2-1C3C9956B791}
 		{3EC8A797-BD60-41EF-98E7-FC42722839D5} = {ECE5FB6F-3B03-43E8-8442-2F8759EDF458}
 		{CC7F177E-E952-481F-B189-04F80226BCD5} = {3EC8A797-BD60-41EF-98E7-FC42722839D5}
+		{EBB8583F-DDC5-4E7A-ACEA-5CAAC13E36CB} = {4E291B9D-E764-49D1-8399-258034560AA0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D13AD9D6-D937-45A2-AAA4-3EFA410C7411}

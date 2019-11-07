@@ -43,7 +43,7 @@
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                     .Build();
-            
+
             return WebHost.CreateDefaultBuilder(args)
                .ConfigureLogging((hostingContext, logging) => { })
                .UseConfiguration(configuration)

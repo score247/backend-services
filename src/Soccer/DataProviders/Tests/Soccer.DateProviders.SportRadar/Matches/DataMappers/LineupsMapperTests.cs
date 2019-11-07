@@ -80,7 +80,7 @@ namespace Soccer.DateProviders.SportRadar.Matches.DataMappers
                     }
                 },
                 lineups = new List<Lineup>
-                { 
+                {
                     StubTeamLineup(),
                     StubTeamLineup("away", "3-3-3-1")
                 }

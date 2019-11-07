@@ -1,23 +1,20 @@
 ﻿using System.Threading.Tasks;
 using MassTransit;
-using Score247.Shared;
+using Soccer.Cache.Leagues;
 using Soccer.Core.Leagues.QueueMessages;
 
 namespace Soccer.EventProcessors.Leagues
 {
     public class CleanMajorLeaguesCacheConsumer : IConsumer<IMajorLeaguesCacheCleanedMessage>
     {
-        private const string MajorLeaguesCacheKey = "Major_Leagues";
-        private readonly ICacheManager cacheManager;
+        private readonly ILeagueCache leagueCache;
 
-        public CleanMajorLeaguesCacheConsumer(ICacheManager cacheManager)
+        public CleanMajorLeaguesCacheConsumer(ILeagueCache leagueCache)
         {
-            this.cacheManager = cacheManager;
+            this.leagueCache = leagueCache;
         }
 
-        public async Task Consume(ConsumeContext<IMajorLeaguesCacheCleanedMessage> context)
-        {
-            await cacheManager.RemoveAsync(MajorLeaguesCacheKey);
-        }
+        public Task Consume(ConsumeContext<IMajorLeaguesCacheCleanedMessage> context)
+            => leagueCache.ClearMajorLeaguesCache();
     }
 }

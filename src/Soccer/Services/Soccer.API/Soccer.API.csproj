@@ -53,6 +53,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Infrastructure\Soccer.Cache\Soccer.Cache.csproj" />
     <ProjectReference Include="..\..\Infrastructure\Soccer.Database\Soccer.Database.csproj" />
     <ProjectReference Include="..\..\Soccer.Core\Soccer.Core.csproj" />
   </ItemGroup>

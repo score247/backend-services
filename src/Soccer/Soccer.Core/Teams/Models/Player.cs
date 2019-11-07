@@ -17,11 +17,11 @@ namespace Soccer.Core.Teams.Models
 
         [SerializationConstructor, JsonConstructor]
         public Player(
-            string id, 
-            string name, 
-            PlayerType type, 
-            int jerseyNumber, 
-            Position position, 
+            string id,
+            string name,
+            PlayerType type,
+            int jerseyNumber,
+            Position position,
             int order) : base(id, name)
         {
             Type = type;
@@ -65,7 +65,7 @@ namespace Soccer.Core.Teams.Models
             => Method == OwnGoal
                 ? EventType.ScoreChangeByOwnGoal
 #pragma warning disable S3358 // Ternary operators should not be nested
-                : Method == Penalty 
+                : Method == Penalty
                     ? EventType.ScoreChangeByPenalty
                     : EventType.ScoreChange;
 #pragma warning restore S3358 // Ternary operators should not be nested

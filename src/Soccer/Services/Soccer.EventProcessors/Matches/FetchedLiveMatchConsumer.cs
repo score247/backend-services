@@ -47,8 +47,8 @@ namespace Soccer.EventProcessors.Matches
                 return;
             }
 
-            var fetchedLiveMatches = await leagueFilter.Filter(message.Matches);
-            var currentLiveMatches = await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(message.Language));
+            var fetchedLiveMatches = (await leagueFilter.Filter(message.Matches)).ToList();
+            var currentLiveMatches = (await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(message.Language))).ToList();
 
             var removedMatches = GetRemovedMatches(fetchedLiveMatches, currentLiveMatches);
             var newMatches = GetNewMatches(fetchedLiveMatches, currentLiveMatches);

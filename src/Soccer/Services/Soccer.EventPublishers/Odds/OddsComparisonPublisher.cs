@@ -1,7 +1,6 @@
 ﻿namespace Soccer.EventPublishers.Odds
 {
     using System.Threading.Tasks;
-    using Fanex.Logging;
     using MassTransit;
     using Microsoft.AspNetCore.SignalR;
     using Newtonsoft.Json;

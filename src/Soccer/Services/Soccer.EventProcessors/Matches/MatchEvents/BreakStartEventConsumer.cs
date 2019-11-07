@@ -35,8 +35,8 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
 
             if (matchEvent != null)
             {
-                var matchTime = BreakTimes.ContainsKey(matchEvent.Timeline.PeriodType) 
-                    ? BreakTimes[matchEvent.Timeline.PeriodType] 
+                var matchTime = BreakTimes.ContainsKey(matchEvent.Timeline.PeriodType)
+                    ? BreakTimes[matchEvent.Timeline.PeriodType]
                     : DefaultBreakStartTime;
 
                 matchEvent.Timeline.UpdateMatchTime(matchTime);

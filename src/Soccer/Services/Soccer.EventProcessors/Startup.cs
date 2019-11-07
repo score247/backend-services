@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Score247.Shared;
+using Soccer.Cache.Leagues;
 using Soccer.Core.Matches.Models;
 using Soccer.EventProcessors.Leagues.Filters;
+using Soccer.EventProcessors.Leagues.Services;
 using Soccer.EventProcessors.Matches.Filters;
 using Soccer.EventProcessors.Shared.Middlewares;
 
@@ -68,6 +70,8 @@ namespace Soccer.EventProcessors
 
         private static void RegisterFilters(IServiceCollection services)
         {
+            services.AddSingleton<ILeagueService, LeagueService>();
+            services.AddSingleton<ILeagueCache, LeagueCache>();
             services.AddSingleton<ILiveMatchRangeValidator, LiveMatchRangeValidator>();
 
             services.AddSingleton<IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>>, MajorLeagueFilter>();

@@ -6,24 +6,22 @@ using Soccer.Cache.Leagues;
 using Soccer.Core.Leagues.Models;
 using Soccer.Database.Leagues.Criteria;
 
-namespace Soccer.API.Leagues
+namespace Soccer.EventProcessors.Leagues.Services
 {
-    public interface ILeagueQueryService
+    public interface ILeagueService
     {
         Task<IEnumerable<League>> GetMajorLeagues();
     }
 
-    public class LeagueQueryService : ILeagueQueryService
+    public class LeagueService : ILeagueService
     {
-        private readonly IDynamicRepository dynamicRepository;
         private readonly ILeagueCache leagueCache;
+        private readonly IDynamicRepository dynamicRepository;
 
-        public LeagueQueryService(
-            IDynamicRepository dynamicRepository,
-            ILeagueCache leagueCache)
+        public LeagueService(ILeagueCache leagueCache, IDynamicRepository dynamicRepository)
         {
-            this.dynamicRepository = dynamicRepository;
             this.leagueCache = leagueCache;
+            this.dynamicRepository = dynamicRepository;
         }
 
         public async Task<IEnumerable<League>> GetMajorLeagues()

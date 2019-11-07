@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using NSubstitute;
 using Soccer.API.Matches.Helpers;
 using Soccer.Core.Matches.Models;
@@ -131,7 +130,7 @@ namespace Soccer.API.Tests.Matches.Helpers
                              "  <path pathLength=\"0\" transform=\"translate(222,141)\" style=\"fill:#30C2FF;\" />" +
                              "  <text x=\"238\" y=\"159\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">6</text>" +
                              "  <text x=\"238\" y=\"179\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player6 name</text>" +
-                             "</svg>";  
+                             "</svg>";
 
             Assert.Equal(expectedSvg, actualSvg.Replace("\r\n", string.Empty));
         }

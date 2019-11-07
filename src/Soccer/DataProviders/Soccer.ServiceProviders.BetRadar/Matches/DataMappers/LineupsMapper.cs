@@ -14,7 +14,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 
         public static MatchLineups MapLineups(MatchLineupsDto matchLineupsDto, string region)
         {
-            if(matchLineupsDto == null)
+            if (matchLineupsDto == null)
             {
                 return default;
             }
@@ -66,8 +66,8 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                 .Select(pl => new Player(
                     pl.id,
                     PlayerNameConverter.Convert(pl.name),
-                    string.IsNullOrWhiteSpace(pl.type) 
-                        ? PlayerType.Unknown 
+                    string.IsNullOrWhiteSpace(pl.type)
+                        ? PlayerType.Unknown
                         : Enumeration.FromDisplayName<PlayerType>(pl.type),
                     pl.jersey_number,
                     Position.Unknown,
@@ -80,12 +80,12 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                     new Player(
                         pl.id,
                         PlayerNameConverter.Convert(pl.name),
-                        string.IsNullOrWhiteSpace(pl.type) 
-                            ? PlayerType.Unknown 
+                        string.IsNullOrWhiteSpace(pl.type)
+                            ? PlayerType.Unknown
                             : Enumeration.FromDisplayName<PlayerType>(pl.type),
                         pl.jersey_number,
-                        string.IsNullOrWhiteSpace(pl.position) 
-                            ? Position.Unknown 
+                        string.IsNullOrWhiteSpace(pl.position)
+                            ? Position.Unknown
                             : Enumeration.FromDisplayName<Position>(pl.position),
                         pl.order));
     }
