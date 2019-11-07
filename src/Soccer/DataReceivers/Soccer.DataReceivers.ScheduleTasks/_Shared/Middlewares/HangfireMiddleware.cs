@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using Hangfire;
 using Hangfire.Dashboard;
 using Hangfire.MySql.Core;
@@ -79,22 +78,6 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
                     "FetchLiveMatchTimeline",
                     job => job.FetchLiveMatchesTimeline(),
                     taskSettings.FetchLiveMatchesTimelineCron);
-            }
-
-            if (!string.IsNullOrWhiteSpace(taskSettings.FetchOddsScheduleJobCron))
-            {
-                RecurringJob.AddOrUpdate<IFetchOddsScheduleTask>(
-                    nameof(IFetchOddsScheduleTask.FetchOdds),
-                    job => job.FetchOdds(),
-                    taskSettings.FetchOddsScheduleJobCron);
-            }
-
-            if (!string.IsNullOrWhiteSpace(taskSettings.FetchOddsChangeJobCron))
-            {
-                RecurringJob.AddOrUpdate<IFetchOddsScheduleTask>(
-                nameof(IFetchOddsScheduleTask.FetchOddsChangeLogs),
-                job => job.FetchOddsChangeLogs(),
-                taskSettings.FetchOddsChangeJobCron);
             }
 
             if (!string.IsNullOrWhiteSpace(taskSettings.FetchLeaguesCron))
