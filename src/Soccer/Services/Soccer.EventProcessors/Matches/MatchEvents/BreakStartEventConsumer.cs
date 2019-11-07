@@ -18,7 +18,7 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
               {
                   [PeriodType.Pause] = 45,
                   [PeriodType.AwaitingExtraTime] = 90,
-                  [PeriodType.AwaitingExtraTime] = 105,
+                  [PeriodType.ExtraTimeHalfTime] = 105,
                   [PeriodType.AwaitingPenalties] = 120,
               });
 
