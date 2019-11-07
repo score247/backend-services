@@ -36,7 +36,7 @@
 
     public class MatchQueryService : IMatchQueryService
     {
-        private const int MatchDataCacheInMinutes = 3;
+        private const int MatchDataCacheInMinutes = 2;
         private const string MatchStatisticCacheKey = "MatchQuery_MatchStatisticCacheKey";
         private const string MatchInfoCacheKey = "MatchQuery_MatchInfoCacheKey";
         private const string MatchListCacheKey = "MatchQuery_MatchListCacheKey";
@@ -47,15 +47,6 @@
         private readonly ICacheManager cacheManager;
         private readonly IAppSettings appSettings;
         private readonly Func<DateTimeOffset> dateTimeNowFunc;
-
-        private static readonly IList<EventType> lineupsEvents = new List<EventType>
-        {
-            EventType.ScoreChange,
-            EventType.RedCard,
-            EventType.YellowCard,
-            EventType.YellowRedCard,
-            EventType.Substitution
-        };
 
         public MatchQueryService(
             IDynamicRepository dynamicRepository,
@@ -119,8 +110,8 @@
             return timelineEvents.Select(t => new MatchCommentary(t));
         }
 
-        private CacheItemOptions GetCacheOptions()
-            => new CacheItemOptions().SetAbsoluteExpiration(dateTimeNowFunc().AddMinutes(MatchDataCacheInMinutes));
+        private CacheItemOptions GetCacheOptions(int cachedMinutes = MatchDataCacheInMinutes)
+            => new CacheItemOptions().SetAbsoluteExpiration(dateTimeNowFunc().AddMinutes(cachedMinutes));
 
         public async Task<MatchStatistic> GetMatchStatistic(string id)
             => await cacheManager.GetOrSetAsync(
@@ -132,7 +123,7 @@
             => await cacheManager.GetOrSetAsync(
                 $"{MatchLineupCacheKey}_{id}_{language.Value}",
                 async () => await GetMatchLineupsData(id, language),
-                GetCacheOptions());
+                GetCacheOptions(0));
 
         private async Task<MatchLineups> GetMatchLineupsData(string id, Language language)
         {
@@ -144,7 +135,7 @@
             }
 
             var timelines = (await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id))).ToList();
-            //sr:match:1941866813
+
             CombineTimelineEventsIntoLineups(matchLineups.Home, timelines);
             CombineTimelineEventsIntoLineups(matchLineups.Away, timelines);
 
@@ -157,16 +148,17 @@
             {
                 player.EventStatistic = BuildPlayerEventStatistic(timelines, player);
             }
+
+            teamLineups.SubstitutionEvents = timelines.Where(timeline => timeline.Type == EventType.Substitution);
         }
 
         private static Dictionary<EventType, int> BuildPlayerEventStatistic(List<TimelineEvent> timelines, Player player)
         {
             var playerStatistic = new Dictionary<EventType, int>();
 
-            foreach (var lineupsEvent in lineupsEvents)
+            foreach (var lineupsEvent in TeamLineups.LineupsEvents)
             {
-                var events = timelines.Where(tl => tl.Type == lineupsEvent
-                            && (tl.Player?.Id == player.Id || tl.PlayerOut?.Id == player.Id || tl.GoalScorer?.Id == player.Id));
+                var events = timelines.Where(tl => IsPlayerHasTimelineEvent(player, tl, lineupsEvent));
 
                 if (events.Any())
                 {
@@ -183,6 +175,10 @@
 
             return playerStatistic;
         }
+
+        private static bool IsPlayerHasTimelineEvent(Player player, TimelineEvent tl, EventType lineupsEvent)
+            => tl.Type == lineupsEvent
+                && (tl.Player?.Id == player.Id || tl.PlayerOut?.Id == player.Id || tl.GoalScorer?.Id == player.Id);
 
         private static void AddGoalEvents(Dictionary<EventType, int> playerStatistic, IEnumerable<TimelineEvent> timelineEvents)
         {

@@ -2,12 +2,22 @@
 using System.Linq;
 using MessagePack;
 using Newtonsoft.Json;
+using Soccer.Core.Matches.Models;
+using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.Core.Teams.Models
 {
     [MessagePackObject(keyAsPropertyName: true)]
     public class TeamLineups : Team
     {
+        public static readonly IEnumerable<EventType> LineupsEvents = new List<EventType>
+        {
+            EventType.ScoreChange,
+            EventType.RedCard,
+            EventType.YellowCard,
+            EventType.YellowRedCard,
+            EventType.Substitution
+        };
         private const char formationSplitChar = '-';
 
         [SerializationConstructor, JsonConstructor]
@@ -18,7 +28,8 @@ namespace Soccer.Core.Teams.Models
             Coach coach,
             string formation,
             IEnumerable<Player> players,
-            IEnumerable<Player> substitutions) : base(id, name, string.Empty, string.Empty, string.Empty, isHome, default(TeamStatistic), string.Empty)
+            IEnumerable<Player> substitutions) 
+            : base(id, name, string.Empty, string.Empty, string.Empty, isHome, default(TeamStatistic), string.Empty)
         {
             Coach = coach;
             Formation = formation;
@@ -33,6 +44,8 @@ namespace Soccer.Core.Teams.Models
         public IEnumerable<Player> Players { get; }
 
         public IEnumerable<Player> Substitutions { get; }
+
+        public IEnumerable<TimelineEvent> SubstitutionEvents { get; set; }
 
         public IList<byte> ConvertFormationToList()
         {
