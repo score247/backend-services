@@ -146,20 +146,25 @@
         {
             foreach (var player in teamLineups.Players)
             {
-                player.EventStatistic = BuildPlayerEventStatistic(timelines, player);
+                player.EventStatistic = BuildPlayerEventStatistic(timelines, player, IsPlayerHasTimelineEvent);
+            }
+
+            foreach (var player in teamLineups.Substitutions)
+            {
+                player.EventStatistic = BuildPlayerEventStatistic(timelines, player, IsSubstitutePlayerHasTimelineEvent);
             }
 
             teamLineups.SubstitutionEvents = timelines.Where(timeline 
                 => timeline.Type == EventType.Substitution && timeline.IsHome == teamLineups.IsHome);
         }
 
-        private static Dictionary<EventType, int> BuildPlayerEventStatistic(List<TimelineEvent> timelines, Player player)
+        private static Dictionary<EventType, int> BuildPlayerEventStatistic(List<TimelineEvent> timelines, Player player, Func<Player, TimelineEvent, EventType, bool> isPlayerHasTimelineEvent)
         {
             var playerStatistic = new Dictionary<EventType, int>();
 
             foreach (var lineupsEvent in TeamLineups.LineupsEvents)
             {
-                var events = timelines.Where(tl => IsPlayerHasTimelineEvent(player, tl, lineupsEvent));
+                var events = timelines.Where(tl => isPlayerHasTimelineEvent(player, tl, lineupsEvent));
 
                 if (events.Any())
                 {
@@ -180,6 +185,10 @@
         private static bool IsPlayerHasTimelineEvent(Player player, TimelineEvent tl, EventType lineupsEvent)
             => tl.Type == lineupsEvent
                 && (tl.Player?.Id == player.Id || tl.PlayerOut?.Id == player.Id || tl.GoalScorer?.Id == player.Id);
+
+        private static bool IsSubstitutePlayerHasTimelineEvent(Player player, TimelineEvent tl, EventType lineupsEvent)
+           => tl.Type == lineupsEvent
+               && (tl.Player?.Id == player.Id || tl.PlayerIn?.Id == player.Id || tl.GoalScorer?.Id == player.Id);
 
         private static void AddGoalEvents(Dictionary<EventType, int> playerStatistic, IEnumerable<TimelineEvent> timelineEvents)
         {

@@ -106,24 +106,27 @@
                        Dsn = new Dsn("https://c1354e53bd554c5185e97538260b0baa@sentry.nexdev.net/52")
                    }));
 
-            var eventListenerService = new MatchEventListenerService(sportRadarSettings, Logger.Log);
-
-            Task.Run(() => eventListenerService.ListenEvents((matchEvent) =>
+            foreach (var region in sportRadarSettings.SoccerSettings.Regions)
             {
-                try
+                var eventListenerService = new MatchEventListenerService(sportRadarSettings, region, Logger.Log);
+
+                Task.Run(() => eventListenerService.ListenEvents((matchEvent) =>
                 {
-                    Console.WriteLine(JsonConvert.SerializeObject(matchEvent));
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(
-                            string.Join(
-                            "\r\n",
-                            $"Match Event: {JsonConvert.SerializeObject(matchEvent)}",
-                            $"Exception: {ex}"),
-                            ex);
-                }
-            }, default));
+                    try
+                    {
+                        Console.WriteLine(JsonConvert.SerializeObject(matchEvent));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(
+                                string.Join(
+                                "\r\n",
+                                $"Match Event: {JsonConvert.SerializeObject(matchEvent)}",
+                                $"Exception: {ex}"),
+                                ex);
+                    }
+                }, default));
+            }
 
             Console.ReadLine();
         }

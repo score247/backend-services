@@ -10,6 +10,7 @@
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
     using Newtonsoft.Json;
     using Refit;
     using Sentry;
@@ -54,7 +55,8 @@
         }
 
 #pragma warning disable S2325 // Methods and properties that don't access instance data should be static
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+
+        public void Configure(IApplicationBuilder app, Microsoft.AspNetCore.Hosting.IHostingEnvironment env)
 #pragma warning restore S2325 // Methods and properties that don't access instance data should be static
         {
             if (env.IsDevelopment())
@@ -116,14 +118,19 @@
             services.AddSingleton<ISportRadarSettings>(sportRadarDataProviderSettings);
             services.AddSingleton(RestService.For<IMatchApi>(sportRadarDataProviderSettings.ServiceUrl));
             services.AddSingleton<IMatchService, MatchService>();
-            services.AddSingleton<IMatchEventListenerService, MatchEventListenerService>();
 
-            services.AddScoped<IOddsMessagePublisher, OddsMessagePublisher>();
-            services.AddScoped<IOddsService, OddsService>();
             services.AddSingleton(RestService.For<IOddsApi>(sportRadarDataProviderSettings.ServiceUrl));
             services.AddSingleton<Func<DateTimeOffset>>(() => DateTimeOffset.Now);
 
-            services.AddHostedService<MatchEventListener>();
+            var soccerSettings = sportRadarDataProviderSettings.SoccerSettings;
+            foreach (var region in soccerSettings.Regions)
+            {
+                services.AddSingleton<IHostedService>((serviceProvider)
+                    => new MatchEventListener(
+                        serviceProvider.GetService<IBus>(),
+                        new MatchEventListenerService(sportRadarDataProviderSettings, region, serviceProvider.GetService<ILogger>()),
+                        serviceProvider.GetService<ILogger>()));
+            }
         }
     }
 }

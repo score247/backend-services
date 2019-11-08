@@ -7,6 +7,8 @@
 
     public interface IMatchEventListenerService
     {
+        string Name { get; }
+
         Task ListenEvents(Action<MatchEvent> handler, CancellationToken cancellationToken);
     }
 }
