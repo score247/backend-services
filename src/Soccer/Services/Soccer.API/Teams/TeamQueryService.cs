@@ -43,7 +43,8 @@ namespace Soccer.API.Teams
 
             if (!string.IsNullOrEmpty(opponentTeamId))
             {
-                matches = matches.Where(match => match.Teams.All(team => team.Id != opponentTeamId));
+                matches = matches.Where(match => match.Teams.All(team => team.Id != opponentTeamId)
+                                                 && match.MatchResult.EventStatus.IsClosed());
             }
 
             return matches
