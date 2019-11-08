@@ -11,7 +11,7 @@ namespace Soccer.EventProcessors.Timeline
 {
     public class FetchTimelinesConsumer : IConsumer<IMatchTimelinesFetchedMessage>
     {
-        private static readonly byte DefaultPenaltyMatchTime = 121;
+        private const byte DefaultPenaltyMatchTime = 121;
 
         private readonly IBus messageBus;
         private readonly IMajorLeagueFilter<Match, bool> majorLeagueFilter;
