@@ -149,7 +149,8 @@
                 player.EventStatistic = BuildPlayerEventStatistic(timelines, player);
             }
 
-            teamLineups.SubstitutionEvents = timelines.Where(timeline => timeline.Type == EventType.Substitution);
+            teamLineups.SubstitutionEvents = timelines.Where(timeline 
+                => timeline.Type == EventType.Substitution && timeline.IsHome == teamLineups.IsHome);
         }
 
         private static Dictionary<EventType, int> BuildPlayerEventStatistic(List<TimelineEvent> timelines, Player player)
