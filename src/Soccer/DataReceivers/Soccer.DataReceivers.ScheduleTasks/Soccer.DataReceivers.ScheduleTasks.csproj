@@ -17,10 +17,36 @@
 
   <ItemGroup>
     <None Remove="appsettings.json" />
+    <None Remove="appsettings.local-acceptance-test.json" />
+    <None Remove="appsettings.local-dev.json" />
+    <None Remove="appsettings.local-dev1.json" />
+    <None Remove="appsettings.local-dev2.json" />
+    <None Remove="appsettings.local-main-live.json" />
+    <None Remove="appsettings.local-main.json" />
+    <None Remove="appsettings.local-test.json" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.local-acceptance-test.json" />
+    <Content Include="appsettings.local-dev.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.local-dev1.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.local-dev2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.local-main-live.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.local-main.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.local-test.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
