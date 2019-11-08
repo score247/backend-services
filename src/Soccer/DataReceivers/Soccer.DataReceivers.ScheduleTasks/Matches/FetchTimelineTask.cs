@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
 using MassTransit;
-using Score247.Shared.Enumerations;
+using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.QueueMessages;
@@ -15,9 +15,6 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     public interface IFetchTimelineTask
     {
-        [Queue("mediumlive")]
-        Task FetchTimelines(string matchId, string regionName);
-
         [Queue("mediumlive")]
         Task FetchTimelines(string matchId, string region, Language language);
     }
@@ -35,14 +32,6 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             this.timelineService = timelineService;
         }
 
-        public async Task FetchTimelines(string matchId, string regionName)
-        {
-            foreach (var language in Enumeration.GetAll<Language>())
-            {
-                await FetchTimelines(matchId, regionName, language);
-            }
-        }
-
         public async Task FetchTimelines(string matchId, string region, Language language)
         {
             var matchCommentaries = await timelineService.GetTimelines(matchId, region, language);
@@ -54,21 +43,20 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(match.Referee) || match.Attendance > 0)
-            {
-                await messageBus.Publish<IMatchUpdatedConditionsMessage>(new MatchUpdatedConditionsMessage(matchId, match.Referee, match.Attendance, language));
-            }
+            await PubishMatchCondition(matchId, language, match);
 
             await PublishTeamStatistic(matchId, match);
 
-            if (match.TimeLines != null && match.TimeLines.Any())
-            {
-                await messageBus.Publish<IMatchTimelinesFetchedMessage>(new MatchTimelinesFetchedMessage(match, language));
-            }
+            await PublishMatchTimelines(language, match);
 
-            if (commentaries != null)
+            await PublishMatchCommentaries(matchId, language, match, commentaries);
+        }
+
+        private async Task PubishMatchCondition(string matchId, Language language, Core.Matches.Models.Match match)
+        {
+            if (!string.IsNullOrWhiteSpace(match.Referee) || match.Attendance > 0)
             {
-                await PublishCommentaries(matchId, match.League.Id, language, commentaries);
+                await messageBus.Publish<IMatchUpdatedConditionsMessage>(new MatchUpdatedConditionsMessage(matchId, match.Referee, match.Attendance, language));
             }
         }
 
@@ -81,14 +69,25 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             }
         }
 
-        private async Task PublishCommentaries(string matchId, string leagueId, Language language, IEnumerable<TimelineCommentary> commentaries)
+        private async Task PublishMatchTimelines(Language language, Core.Matches.Models.Match match)
         {
-            foreach (var commentary in from commentary in commentaries
-                                       where commentary.Commentaries.Any()
-                                       select commentary)
+            if (match.TimeLines != null && match.TimeLines.Any())
             {
-                await messageBus.Publish<IMatchCommentaryFetchedMessage>(
-                    new MatchCommentaryFetchedMessage(leagueId, matchId, commentary, language));
+                await messageBus.Publish<IMatchTimelinesFetchedMessage>(new MatchTimelinesFetchedMessage(match, language));
+            }
+        }
+
+        private async Task PublishMatchCommentaries(string matchId, Language language, Match match, IEnumerable<TimelineCommentary> commentaries)
+        {
+            if (commentaries != null)
+            {
+                foreach (var commentary in from commentary in commentaries
+                                           where commentary.Commentaries.Any()
+                                           select commentary)
+                {
+                    await messageBus.Publish<IMatchCommentaryFetchedMessage>(
+                        new MatchCommentaryFetchedMessage(match.League.Id, matchId, commentary, language));
+                }
             }
         }
     }

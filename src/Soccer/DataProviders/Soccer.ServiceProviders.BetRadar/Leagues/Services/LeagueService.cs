@@ -14,19 +14,19 @@ using Soccer.DataProviders.SportRadar.Shared.Extensions;
 
 namespace Soccer.DataProviders.SportRadar.Leagues.Services
 {
-    public interface ILeagueApi
+    public interface ISportRadarLeagueApi
     {
         [Get("/soccer-{accessLevel}{version}/{region}/{language}/tournaments.json?api_key={apiKey}")]
         Task<Dtos.TournamentResult> GetRegionLeagues(string accessLevel, string version, string region, string language, string apiKey);
     }
 
-    public class LeagueService : ILeagueService
+    public class SportRadarLeagueService : ILeagueService
     {
-        private readonly ILeagueApi leagueApi;
+        private readonly ISportRadarLeagueApi leagueApi;
         private readonly SportSettings soccerSettings;
         private readonly ILogger logger;
 
-        public LeagueService(ILeagueApi leagueApi, ISportRadarSettings sportRadarSettings, ILogger logger)
+        public SportRadarLeagueService(ISportRadarLeagueApi leagueApi, ISportRadarSettings sportRadarSettings, ILogger logger)
         {
             this.leagueApi = leagueApi;
             soccerSettings = sportRadarSettings.Sports.FirstOrDefault(s => s.Id == Sport.Soccer.Value);

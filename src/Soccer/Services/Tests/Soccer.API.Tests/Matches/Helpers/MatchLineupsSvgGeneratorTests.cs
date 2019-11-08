@@ -10,7 +10,6 @@ using Xunit;
 
 namespace Soccer.API.Tests.Matches.Helpers
 {
-
     [Trait("Soccer.API", "Match/Helpers")]
     public class MatchLineupsSvgGeneratorTests
     {
@@ -18,14 +17,12 @@ namespace Soccer.API.Tests.Matches.Helpers
         private readonly Func<string, SvgDocument> getSvgDocumentFunc;
         private readonly MatchLineupsSvgGenerator matchLineupsSvgGenerator;
 
-
         public MatchLineupsSvgGeneratorTests()
         {
             getSvgDocumentFunc = Substitute.For<Func<string, SvgDocument>>();
 
             matchLineupsSvgGenerator = new MatchLineupsSvgGenerator(svgFolderPath, getSvgDocumentFunc);
         }
-
 
         [Fact]
         public void Generate_NoTeamInformation_ReturnEmpty()
@@ -91,14 +88,14 @@ namespace Soccer.API.Tests.Matches.Helpers
                              "  </g>" +
                              "  <g>" +
                              "    <path transform=\"translate(144,3)\" />" +
-                             "    <circle cx=\"147\" cy=\"95\" r=\"4\" style=\"fill:red;\" />" +
-                             "    <text x=\"147\" y=\"97\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"6\" font-weight=\"400\" style=\"fill:white;\">2</text>" +
+                             "    <circle cx=\"147\" cy=\"95\" r=\"5\" style=\"fill:red;\" />" +
+                             "    <text x=\"147\" y=\"97\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"7\" font-weight=\"700\" style=\"fill:white;\">2</text>" +
                              "  </g>" +
                              "  <path transform=\"translate(159,-2.5)\" />" +
                              "  <g>" +
                              "    <path transform=\"translate(159,24.4)\" />" +
-                             "    <circle cx=\"162\" cy=\"115.4\" r=\"4\" style=\"fill:red;\" />" +
-                             "    <text x=\"162\" y=\"117.4\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"6\" font-weight=\"400\" style=\"fill:white;\">2</text>" +
+                             "    <circle cx=\"162\" cy=\"115.4\" r=\"5\" style=\"fill:red;\" />" +
+                             "    <text x=\"162\" y=\"117.4\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"7\" font-weight=\"700\" style=\"fill:white;\">2</text>" +
                              "  </g>" +
                              "  <g transform=\"translate(180,113)\">" +
                              "    <path />" +

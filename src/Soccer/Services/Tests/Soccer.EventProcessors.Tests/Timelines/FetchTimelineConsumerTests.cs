@@ -10,7 +10,6 @@ using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.Models;
-using Soccer.EventProcessors.Leagues.Filters;
 using Soccer.EventProcessors.Timeline;
 using Xunit;
 
@@ -20,41 +19,21 @@ namespace Soccer.EventProcessors.Tests.Timeline
     public class FetchTimelineConsumerTests
     {
         private readonly IBus messageBus;
-        private readonly IMajorLeagueFilter<Match, bool> majorLeagueFilter;
         private readonly ConsumeContext<IMatchTimelinesFetchedMessage> context;
         private readonly FetchTimelinesConsumer fetchTimelineConsumer;
 
         public FetchTimelineConsumerTests()
         {
             messageBus = Substitute.For<IBus>();
-            majorLeagueFilter = Substitute.For<IMajorLeagueFilter<Match, bool>>();
 
             context = Substitute.For<ConsumeContext<IMatchTimelinesFetchedMessage>>();
 
-            fetchTimelineConsumer = new FetchTimelinesConsumer(messageBus, majorLeagueFilter);
+            fetchTimelineConsumer = new FetchTimelinesConsumer(messageBus);
         }
 
         [Fact]
         public async Task Consume_InvalidMessage_ShouldNotPublishMatchEvent()
         {
-            await fetchTimelineConsumer.Consume(context);
-
-            await messageBus.DidNotReceive().Publish(Arg.Any<IMatchEventReceivedMessage>());
-        }
-
-        [Fact]
-        public async Task Consume_MatchNotInMajorLeagues_ShouldNotPublishMatchEvent()
-        {
-            var match = A.Dummy<Match>()
-                .With(m => m.League, new League("league:1", ""))
-                .With(m => m.TimeLines, new List<TimelineEvent>
-                {
-                    A.Dummy<TimelineEvent>().With(t => t.Type, EventType.MatchStarted)
-                });
-            context.Message.Returns(new MatchTimelinesFetchedMessage(
-                match,
-                Language.en_US));
-
             await fetchTimelineConsumer.Consume(context);
 
             await messageBus.DidNotReceive().Publish(Arg.Any<IMatchEventReceivedMessage>());
@@ -77,8 +56,6 @@ namespace Soccer.EventProcessors.Tests.Timeline
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
                 Language.en_US));
-
-            majorLeagueFilter.Filter(Arg.Any<Match>()).Returns(true);
 
             await fetchTimelineConsumer.Consume(context);
 
@@ -106,8 +83,6 @@ namespace Soccer.EventProcessors.Tests.Timeline
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
                 Language.en_US));
-
-            majorLeagueFilter.Filter(Arg.Any<Match>()).Returns(true);
 
             await fetchTimelineConsumer.Consume(context);
 
@@ -145,8 +120,6 @@ namespace Soccer.EventProcessors.Tests.Timeline
                 match,
                 Language.en_US));
 
-            majorLeagueFilter.Filter(Arg.Any<Match>()).Returns(true);
-
             await fetchTimelineConsumer.Consume(context);
 
             await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(
@@ -180,8 +153,6 @@ namespace Soccer.EventProcessors.Tests.Timeline
                 match,
                 Language.en_US));
 
-            majorLeagueFilter.Filter(Arg.Any<Match>()).Returns(true);
-
             await fetchTimelineConsumer.Consume(context);
 
             await messageBus.Received(4).Publish<IMatchEventReceivedMessage>(Arg.Any<MatchEventReceivedMessage>());
@@ -204,8 +175,6 @@ namespace Soccer.EventProcessors.Tests.Timeline
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
                 Language.en_US));
-
-            majorLeagueFilter.Filter(Arg.Any<Match>()).Returns(true);
 
             await fetchTimelineConsumer.Consume(context);
 
@@ -235,8 +204,6 @@ namespace Soccer.EventProcessors.Tests.Timeline
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
                 Language.en_US));
-
-            majorLeagueFilter.Filter(Arg.Any<Match>()).Returns(true);
 
             await fetchTimelineConsumer.Consume(context);
 
@@ -269,8 +236,6 @@ namespace Soccer.EventProcessors.Tests.Timeline
                 match,
                 Language.en_US));
 
-            majorLeagueFilter.Filter(Arg.Any<Match>()).Returns(true);
-
             await fetchTimelineConsumer.Consume(context);
 
             await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventProcessedMessage>(
@@ -300,8 +265,6 @@ namespace Soccer.EventProcessors.Tests.Timeline
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
                 Language.en_US));
-
-            majorLeagueFilter.Filter(Arg.Any<Match>()).Returns(true);
 
             await fetchTimelineConsumer.Consume(context);
 
@@ -354,8 +317,6 @@ namespace Soccer.EventProcessors.Tests.Timeline
                 match,
                 Language.en_US));
 
-            majorLeagueFilter.Filter(Arg.Any<Match>()).Returns(true);
-
             await fetchTimelineConsumer.Consume(context);
 
             await messageBus.Received(10).Publish<IMatchEventReceivedMessage>(Arg.Any<MatchEventProcessedMessage>());
@@ -399,8 +360,6 @@ namespace Soccer.EventProcessors.Tests.Timeline
             context.Message.Returns(new MatchTimelinesFetchedMessage(
                 match,
                 Language.en_US));
-
-            majorLeagueFilter.Filter(Arg.Any<Match>()).Returns(true);
 
             await fetchTimelineConsumer.Consume(context);
 

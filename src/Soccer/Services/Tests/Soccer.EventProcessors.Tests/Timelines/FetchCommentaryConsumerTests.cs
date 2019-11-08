@@ -8,17 +8,17 @@ using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Timelines.Models;
 using Soccer.Core.Timelines.QueueMessages;
 using Soccer.Database.Timelines.Commands;
-using Soccer.EventProcessors.Leagues.Filters;
 using Soccer.EventProcessors.Timeline;
 using Xunit;
 
 namespace Soccer.EventProcessors.Tests.Timelines
 {
+#pragma warning disable S2699 // Tests should include assertions
+
     [Trait("Soccer.EventProcessors", "FetchCommentaryConsumer")]
     public class FetchCommentaryConsumerTests
     {
         private readonly IDynamicRepository dynamicRepository;
-        private readonly IMajorLeagueFilter<string, bool> majorLeagueFilter;
         private readonly ConsumeContext<IMatchCommentaryFetchedMessage> context;
 
         private readonly FetchCommentaryConsumer consumer;
@@ -26,10 +26,9 @@ namespace Soccer.EventProcessors.Tests.Timelines
         public FetchCommentaryConsumerTests()
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
-            majorLeagueFilter = Substitute.For<IMajorLeagueFilter<string, bool>>();
             context = Substitute.For<ConsumeContext<IMatchCommentaryFetchedMessage>>();
 
-            consumer = new FetchCommentaryConsumer(dynamicRepository, majorLeagueFilter);
+            consumer = new FetchCommentaryConsumer(dynamicRepository);
         }
 
         [Fact]
@@ -41,26 +40,8 @@ namespace Soccer.EventProcessors.Tests.Timelines
         }
 
         [Fact]
-        public async Task Consume_NotInMajorLeagues_ShouldNotExecuteCommand()
-        {
-            majorLeagueFilter.Filter(Arg.Is<string>(leagueId => leagueId == "sr:league:1")).Returns(true);
-
-            context.Message.Returns(new MatchCommentaryFetchedMessage(
-                "sr:league:2",
-                "sr:match:1",
-                new TimelineCommentary(1, new List<Commentary>()),
-                Language.en_US));
-
-            await consumer.Consume(context);
-
-            await dynamicRepository.DidNotReceive().ExecuteAsync(Arg.Is<InsertCommentaryCommand>(m => m.MatchId == "sr:match:1"));
-        }
-
-        [Fact]
         public async Task Consume_ValidMessage_ShouldExecuteCommand()
         {
-            majorLeagueFilter.Filter(Arg.Is<string>(leagueId => leagueId == "sr:league:1")).Returns(true);
-
             context.Message.Returns(new MatchCommentaryFetchedMessage(
                 "sr:league:1",
                 "sr:match:1",
@@ -72,4 +53,6 @@ namespace Soccer.EventProcessors.Tests.Timelines
             await dynamicRepository.Received(1).ExecuteAsync(Arg.Is<InsertCommentaryCommand>(m => m.MatchId == "sr:match:1"));
         }
     }
+
+#pragma warning restore S2699 // Tests should include assertions
 }

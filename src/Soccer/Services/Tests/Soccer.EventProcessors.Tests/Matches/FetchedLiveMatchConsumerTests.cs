@@ -14,7 +14,6 @@ using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Matches.Commands;
 using Soccer.Database.Matches.Criteria;
-using Soccer.EventProcessors.Leagues.Filters;
 using Soccer.EventProcessors.Matches;
 using Soccer.EventProcessors.Matches.Filters;
 using Xunit;
@@ -25,21 +24,20 @@ namespace Soccer.EventProcessors.Tests.Matches
     public class FetchedLiveMatchConsumerTests
     {
         private readonly IDynamicRepository dynamicRepository;
-        private readonly IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
         private readonly ILogger logger;
         private readonly FetchedLiveMatchConsumer fetchedLiveMatchConsumer;
         private readonly ConsumeContext<ILiveMatchFetchedMessage> context;
+#pragma warning disable S2699 // Tests should include assertions
 
         public FetchedLiveMatchConsumerTests()
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
-            leagueFilter = Substitute.For<IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>>>();
             logger = Substitute.For<ILogger>();
             context = Substitute.For<ConsumeContext<ILiveMatchFetchedMessage>>();
             var messageBus = Substitute.For<IBus>();
             var liveMatchFilter = new LiveMatchFilter(new LiveMatchRangeValidator());
 
-            fetchedLiveMatchConsumer = new FetchedLiveMatchConsumer(messageBus, dynamicRepository, leagueFilter, liveMatchFilter, logger);
+            fetchedLiveMatchConsumer = new FetchedLiveMatchConsumer(messageBus, dynamicRepository, liveMatchFilter, logger);
         }
 
         [Fact]
@@ -70,9 +68,6 @@ namespace Soccer.EventProcessors.Tests.Matches
                 ;
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { match }));
-
-            leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
-                .Returns(new List<Match> { match });
 
             await fetchedLiveMatchConsumer.Consume(context);
 
@@ -109,9 +104,6 @@ namespace Soccer.EventProcessors.Tests.Matches
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi));
 
-            leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
-                .Returns(matchesFromApi);
-
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>
                 {
@@ -138,9 +130,6 @@ namespace Soccer.EventProcessors.Tests.Matches
 
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi));
-
-            leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
-                .Returns(matchesFromApi);
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>
@@ -170,9 +159,6 @@ namespace Soccer.EventProcessors.Tests.Matches
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi));
 
-            leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
-                .Returns(matchesFromApi);
-
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>
                 {
@@ -199,9 +185,6 @@ namespace Soccer.EventProcessors.Tests.Matches
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi));
 
-            leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
-                .Returns(matchesFromApi);
-
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>
                 {
@@ -226,9 +209,6 @@ namespace Soccer.EventProcessors.Tests.Matches
                 ;
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { newMatch }));
-
-            leagueFilter.Filter(Arg.Any<IEnumerable<Match>>())
-                .Returns(new List<Match> { newMatch });
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match> { newMatch });
@@ -283,4 +263,6 @@ namespace Soccer.EventProcessors.Tests.Matches
                         .With(t => t.Type, EventType.MatchEnded)
                         .With(t => t.Time, (DateTimeOffset)endedTime));
     }
+
+#pragma warning restore S2699 // Tests should include assertions
 }

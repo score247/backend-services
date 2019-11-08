@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Soccer.API.Matches.Models;
 using Soccer.API.Matches.Requests;
 using Soccer.Core.Matches.Models;
+using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.API.Matches
 {
@@ -13,7 +14,6 @@ namespace Soccer.API.Matches
     [ApiController]
     public class MatchController : ControllerBase
     {
-        private const string englishCode = "en-US";
         private readonly IMediator mediator;
 
         public MatchController(IMediator mediator)
@@ -29,27 +29,27 @@ namespace Soccer.API.Matches
         public async Task<IEnumerable<MatchSummary>> Get(
                 DateTime fd,
                 DateTime td,
-                string language = englishCode)
+                string language = Language.English)
             => await mediator.Send(new MatchesByDateRequest(fd, td, language));
 
         [HttpGet]
         [Route("{id}")]
-        public async Task<MatchInfo> Get(string id, string language = englishCode)
+        public async Task<MatchInfo> Get(string id, string language = Language.English)
             => await mediator.Send(new MatchInfoByIdRequest(id, language));
 
         [HttpGet]
         [Route("live")]
-        public async Task<IEnumerable<MatchSummary>> Get(string language = englishCode)
+        public async Task<IEnumerable<MatchSummary>> Get(string language = Language.English)
           => await mediator.Send(new LiveMatchesRequest(language));
 
         [HttpGet]
         [Route("{id}/coverage")]
-        public async Task<MatchCoverage> GetMatchCoverage(string id, string language = englishCode)
+        public async Task<MatchCoverage> GetMatchCoverage(string id, string language = Language.English)
            => await mediator.Send(new MatchCoverageByIdRequest(id, language));
 
         [HttpGet]
         [Route("{id}/commentaries")]
-        public async Task<IEnumerable<MatchCommentary>> GetMatchCommentaries(string id, string language = englishCode)
+        public async Task<IEnumerable<MatchCommentary>> GetMatchCommentaries(string id, string language = Language.English)
            => await mediator.Send(new MatchCommentaryByIdRequest(id, language));
 
         [HttpGet]
@@ -59,7 +59,7 @@ namespace Soccer.API.Matches
 
         [HttpGet]
         [Route("{id}/lineups")]
-        public async Task<MatchPitchViewLineups> GetMatchLineups(string id, string language = englishCode)
+        public async Task<MatchPitchViewLineups> GetMatchLineups(string id, string language = Language.English)
            => await mediator.Send(new MatchLineupsRequest(id, language));
     }
 }

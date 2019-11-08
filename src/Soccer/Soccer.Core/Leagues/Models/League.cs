@@ -71,7 +71,7 @@ namespace Soccer.Core.Leagues.Models
         [Key(6)]
         public bool IsInternational { get; private set; }
 
-        [IgnoreMember]
+        [Key(7)]
         public string Region { get; private set; }
 
 #pragma warning restore S109 // Magic numbers should not be used

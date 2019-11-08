@@ -21,4 +21,8 @@
     <ProjectReference Include="..\..\Soccer.EventProcessors\Soccer.EventProcessors.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Leagues\" />
+  </ItemGroup>
+
 </Project>

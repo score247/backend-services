@@ -14,18 +14,18 @@ using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Matches.QueueMessages.MatchEvents;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.Models;
-using Soccer.EventProcessors.Leagues.Filters;
 using Soccer.EventProcessors.Matches;
 using Xunit;
 
 namespace Soccer.EventProcessors.Tests.Matches
 {
+#pragma warning disable S2699 // Tests should include assertions
+
     [Trait("Soccer.EventProcessors", "ReceiveMatchEventConsumer")]
     public class ReceiveMatchEventConsumerTests
     {
         private readonly ICacheManager cacheManager;
         private readonly IBus messageBus;
-        private readonly IMajorLeagueFilter<MatchEvent, bool> matchEventFilter;
         private readonly ReceiveMatchEventConsumer consumer;
         private readonly ConsumeContext<IMatchEventReceivedMessage> context;
 
@@ -33,31 +33,16 @@ namespace Soccer.EventProcessors.Tests.Matches
         {
             cacheManager = Substitute.For<ICacheManager>();
             messageBus = Substitute.For<IBus>();
-            matchEventFilter = Substitute.For<IMajorLeagueFilter<MatchEvent, bool>>();
             context = Substitute.For<ConsumeContext<IMatchEventReceivedMessage>>();
 
             var logger = Substitute.For<ILogger>();
             var dynamicRepository = Substitute.For<IDynamicRepository>();
-            consumer = new ReceiveMatchEventConsumer(cacheManager, dynamicRepository, messageBus, logger, matchEventFilter);
+            consumer = new ReceiveMatchEventConsumer(cacheManager, dynamicRepository, messageBus, logger);
         }
 
         [Fact]
         public async Task Consume_MatchEventIsNull_ShouldNotPublishMatchEventProcessed()
         {
-            await consumer.Consume(context);
-
-            await messageBus.DidNotReceive().Publish<IMatchEventProcessedMessage>(Arg.Any<MatchEventProcessedMessage>());
-        }
-
-        [Fact]
-        public async Task Consume_NotInMajorLeague_ShouldNotMatchEventProcessed()
-        {
-            context.Message.Returns(new MatchEventReceivedMessage(new MatchEvent(
-                "sr:league",
-                "sr:match",
-                A.Dummy<MatchResult>(),
-                A.Dummy<TimelineEvent>())));
-
             await consumer.Consume(context);
 
             await messageBus.DidNotReceive().Publish<IMatchEventProcessedMessage>(Arg.Any<MatchEventProcessedMessage>());
@@ -74,7 +59,6 @@ namespace Soccer.EventProcessors.Tests.Matches
                     .With(t => t.Type, EventType.ScoreChange)
                     .With(t => t.PeriodType, PeriodType.Penalties)
                     )));
-            StubForMajorLeague("sr:league");
 
             await consumer.Consume(context);
 
@@ -91,8 +75,6 @@ namespace Soccer.EventProcessors.Tests.Matches
                 A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.ScoreChange))));
 
-            StubForMajorLeague("sr:league");
-
             await consumer.Consume(context);
 
             await messageBus.Received(1).Publish<IMatchEventProcessedMessage>(Arg.Any<MatchEventProcessedMessage>());
@@ -107,8 +89,6 @@ namespace Soccer.EventProcessors.Tests.Matches
                 A.Dummy<MatchResult>(),
                 A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.PeriodStart))));
-
-            StubForMajorLeague("sr:league");
 
             await consumer.Consume(context);
 
@@ -126,8 +106,6 @@ namespace Soccer.EventProcessors.Tests.Matches
                 A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.BreakStart))));
 
-            StubForMajorLeague("sr:league");
-
             await consumer.Consume(context);
 
             await messageBus.Received(1).Publish<IBreakStartEventMessage>(Arg.Any<BreakStartEventMessage>());
@@ -142,8 +120,6 @@ namespace Soccer.EventProcessors.Tests.Matches
                 "sr:match",
                 A.Dummy<MatchResult>(),
                 StubPenaltyShootout())));
-
-            StubForMajorLeague("sr:league");
 
             await consumer.Consume(context);
 
@@ -163,8 +139,6 @@ namespace Soccer.EventProcessors.Tests.Matches
             cacheManager.GetOrSetAsync(Arg.Any<string>(), Arg.Any<Func<Task<IList<TimelineEvent>>>>(), Arg.Any<CacheItemOptions>())
                 .Returns(new List<TimelineEvent> { StubPenaltyShootout() });
 
-            StubForMajorLeague("sr:league");
-
             await consumer.Consume(context);
 
             await messageBus.DidNotReceive().Publish<IPenaltyEventMessage>(Arg.Any<PenaltyEventMessage>());
@@ -181,8 +155,6 @@ namespace Soccer.EventProcessors.Tests.Matches
                 A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.MatchEnded))));
 
-            StubForMajorLeague("sr:league");
-
             await consumer.Consume(context);
 
             await messageBus.Received(1).Publish<IMatchEndEventMessage>(Arg.Any<MatchEndEventMessage>());
@@ -198,8 +170,6 @@ namespace Soccer.EventProcessors.Tests.Matches
                 A.Dummy<MatchResult>(),
                 A.Dummy<TimelineEvent>()
                     .With(t => t.Type, EventType.RedCard))));
-
-            StubForMajorLeague("sr:league");
 
             await consumer.Consume(context);
 
@@ -226,8 +196,6 @@ namespace Soccer.EventProcessors.Tests.Matches
                     .With(t => t.Type, EventType.RedCard)
                      });
 
-            StubForMajorLeague("sr:league");
-
             await consumer.Consume(context);
 
             await messageBus.Received(1).Publish<IRedCardEventMessage>(Arg.Is<RedCardEventMessage>(m => m.MatchEvent.Timeline.Player.Name == "player"));
@@ -245,23 +213,17 @@ namespace Soccer.EventProcessors.Tests.Matches
                     .With(t => t.Type, EventType.YellowRedCard)
                     )));
 
-            StubForMajorLeague("sr:league");
-
             await consumer.Consume(context);
 
             await messageBus.Received(1).Publish<IRedCardEventMessage>(Arg.Any<RedCardEventMessage>());
             await messageBus.DidNotReceive().Publish<IMatchEventProcessedMessage>(Arg.Any<MatchEventProcessedMessage>());
         }
 
-        private void StubForMajorLeague(string leagueId)
-        {
-            matchEventFilter.Filter(Arg.Is<MatchEvent>(evt => evt.LeagueId == leagueId)).Returns(true);
-        }
-
         private static TimelineEvent StubPenaltyShootout()
             => A.Dummy<TimelineEvent>()
                 .With(t => t.Type, EventType.PenaltyShootout)
-                .With(t => t.PeriodType, PeriodType.Penalties)
-                ;
+                .With(t => t.PeriodType, PeriodType.Penalties);
     }
+
+#pragma warning restore S2699 // Tests should include assertions
 }

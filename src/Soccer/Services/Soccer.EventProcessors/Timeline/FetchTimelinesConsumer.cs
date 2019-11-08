@@ -5,7 +5,6 @@ using MassTransit;
 using Soccer.Core.Matches.Extensions;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
-using Soccer.EventProcessors.Leagues.Filters;
 
 namespace Soccer.EventProcessors.Timeline
 {
@@ -14,24 +13,17 @@ namespace Soccer.EventProcessors.Timeline
         private const byte DefaultPenaltyMatchTime = 121;
 
         private readonly IBus messageBus;
-        private readonly IMajorLeagueFilter<Match, bool> majorLeagueFilter;
 
-        public FetchTimelinesConsumer(
-            IBus messageBus,
-            IMajorLeagueFilter<Match, bool> majorLeagueFilter)
+        public FetchTimelinesConsumer(IBus messageBus)
         {
             this.messageBus = messageBus;
-            this.majorLeagueFilter = majorLeagueFilter;
         }
 
         public async Task Consume(ConsumeContext<IMatchTimelinesFetchedMessage> context)
         {
             var match = context.Message?.Match;
 
-            if (match == null
-                || match.TimeLines == null
-                || !match.TimeLines.Any()
-                || !(await majorLeagueFilter.Filter(match)))
+            if (match == null || match.TimeLines?.Any() != true)
             {
                 return;
             }

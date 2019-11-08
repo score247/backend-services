@@ -67,7 +67,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\DataProviders\Soccer.DataProviders.Internal\Soccer.DataProviders.Internal.csproj" />
     <ProjectReference Include="..\..\DataProviders\Soccer.ServiceProviders.BetRadar\Soccer.DataProviders.SportRadar.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Soccer.Cache\Soccer.Cache.csproj" />
     <ProjectReference Include="..\Soccer.DataReceivers\Soccer.DataReceivers.csproj" />
   </ItemGroup>
 </Project>

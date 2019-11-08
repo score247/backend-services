@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Fanex.Caching;
 using MassTransit;
 using Microsoft.AspNetCore.Builder;
@@ -9,8 +8,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Score247.Shared;
 using Soccer.Cache.Leagues;
-using Soccer.Core.Matches.Models;
-using Soccer.EventProcessors.Leagues.Filters;
 using Soccer.EventProcessors.Leagues.Services;
 using Soccer.EventProcessors.Matches.Filters;
 using Soccer.EventProcessors.Shared.Middlewares;
@@ -73,11 +70,6 @@ namespace Soccer.EventProcessors
             services.AddSingleton<ILeagueService, LeagueService>();
             services.AddSingleton<ILeagueCache, LeagueCache>();
             services.AddSingleton<ILiveMatchRangeValidator, LiveMatchRangeValidator>();
-
-            services.AddSingleton<IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>>, MajorLeagueFilter>();
-            services.AddSingleton<IMajorLeagueFilter<MatchEvent, bool>, MajorLeagueFilter>();
-            services.AddSingleton<IMajorLeagueFilter<Match, bool>, MajorLeagueFilter>();
-            services.AddSingleton<IMajorLeagueFilter<string, bool>, MajorLeagueFilter>();
             services.AddSingleton<ILiveMatchFilter, LiveMatchFilter>();
         }
     }

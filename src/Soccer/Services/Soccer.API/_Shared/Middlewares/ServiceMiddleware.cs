@@ -9,6 +9,7 @@ using Soccer.API.Matches;
 using Soccer.API.Matches.Helpers;
 using Soccer.API.Odds;
 using Soccer.API.Teams;
+using Soccer.Cache.Leagues;
 using Svg;
 
 namespace Soccer.API.Shared.Middlewares
@@ -17,14 +18,17 @@ namespace Soccer.API.Shared.Middlewares
     {
         public static void AddServices(this IServiceCollection services)
         {
+            services.AddSingleton<ICacheService, CacheService>();
+            services.AddSingleton<ICacheManager, CacheManager>();
             services.AddSingleton<IDynamicRepository, DynamicRepository>();
 
-            services.AddSingleton<ICacheService, CacheService>();
+            services.AddSingleton<ILeagueCache, LeagueCache>();
+
             services.AddScoped<IMatchQueryService, MatchQueryService>();
             services.AddScoped<IOddsQueryService, OddsQueryService>();
             services.AddScoped<ILeagueQueryService, LeagueQueryService>();
             services.AddScoped<ITeamQueryService, TeamQueryService>();
-            services.AddScoped<ICacheManager, CacheManager>();
+
             services.AddSingleton<Func<DateTimeOffset>>(() => DateTimeOffset.Now);
             services.AddSingleton<IMatchLineupsGenerator>(new MatchLineupsSvgGenerator(
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"_Shared\App_Data\SvgFiles"),

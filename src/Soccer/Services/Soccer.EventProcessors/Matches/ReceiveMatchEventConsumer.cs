@@ -12,7 +12,6 @@ using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Matches.QueueMessages.MatchEvents;
 using Soccer.Database.Matches.Criteria;
-using Soccer.EventProcessors.Leagues.Filters;
 
 namespace Soccer.EventProcessors.Matches
 {
@@ -27,31 +26,27 @@ namespace Soccer.EventProcessors.Matches
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
         private readonly ILogger logger;
-        private readonly IMajorLeagueFilter<MatchEvent, bool> matchEventFilter;
 
         public ReceiveMatchEventConsumer(
             ICacheManager cacheManager,
             IDynamicRepository dynamicRepository,
             IBus messageBus,
-            ILogger logger,
-            IMajorLeagueFilter<MatchEvent, bool> matchEventFilter)
+            ILogger logger)
         {
             this.cacheManager = cacheManager;
             this.dynamicRepository = dynamicRepository;
             this.messageBus = messageBus;
             this.logger = logger;
-            this.matchEventFilter = matchEventFilter;
         }
 
 #pragma warning disable S1541 // Methods and properties should not be too complex
+
         public async Task Consume(ConsumeContext<IMatchEventReceivedMessage> context)
 #pragma warning restore S1541 // Methods and properties should not be too complex
         {
             var matchEvent = context.Message?.MatchEvent;
 
-            if (matchEvent == null
-                || !(await matchEventFilter.Filter(matchEvent))
-                || matchEvent.Timeline.IsScoreChangeInPenalty())
+            if (matchEvent?.Timeline.IsScoreChangeInPenalty() != false)
             {
                 return;
             }

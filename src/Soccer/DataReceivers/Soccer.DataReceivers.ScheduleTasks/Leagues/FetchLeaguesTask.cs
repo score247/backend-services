@@ -1,10 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
 using MassTransit;
 using Score247.Shared.Enumerations;
 using Soccer.Core.Leagues.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.DataProviders._Shared.Enumerations;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
 
@@ -21,15 +23,15 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 
     public class FetchLeaguesTask : IFetchLeaguesTask
     {
-        private readonly ILeagueService leagueService;
+        private readonly Func<DataProviderType, ILeagueService> leagueServiceFactory;
         private readonly IBus messageBus;
         private readonly IAppSettings appSettings;
 
-        public FetchLeaguesTask(IBus messageBus, IAppSettings appSettings, ILeagueService leagueService)
+        public FetchLeaguesTask(IBus messageBus, IAppSettings appSettings, Func<DataProviderType, ILeagueService> leagueServiceFactory)
         {
             this.appSettings = appSettings;
             this.messageBus = messageBus;
-            this.leagueService = leagueService;
+            this.leagueServiceFactory = leagueServiceFactory;
         }
 
         public void FetchLeagues()
@@ -42,6 +44,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 
         public async Task FetchLeaguesForLanguage(Language language)
         {
+            var leagueService = leagueServiceFactory(DataProviderType.SportRadar);
+
             var batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
             var soccerLeagues = (await leagueService.GetLeagues(language)).ToList();
 

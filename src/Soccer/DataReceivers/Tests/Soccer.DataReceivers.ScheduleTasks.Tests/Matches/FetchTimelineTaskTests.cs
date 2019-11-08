@@ -23,6 +23,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
     [Trait("Soccer.DataReceivers", "FetchTimelineTask")]
     public class FetchTimelineTaskTests
     {
+        private static readonly League WorldCupLeague = new League("1", "World Cup");
         private readonly ITimelineService timelineService;
         private readonly IBus messageBus;
         private readonly FetchTimelineTask fetchTimelineTask;
@@ -53,7 +54,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             // Arrange
             var match = A.Dummy<Match>()
                 .With(m => m.Teams, new List<Team>())
-                .With(m => m.Referee, "AAA");
+                .With(m => m.Referee, "AAA")
+                .With(m => m.League, WorldCupLeague);
 
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
@@ -70,7 +72,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         {
             // Arrange
             var match = A.Dummy<Match>()
-                .With(m => m.Attendance, 10000);
+                .With(m => m.Attendance, 10000)
+                .With(m => m.League, WorldCupLeague);
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
@@ -88,7 +91,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             var match = A.Dummy<Match>()
                 .With(m => m.Teams, new List<Team>())
                 .With(m => m.Attendance, 10000)
-                .With(m => m.Referee, "AAA");
+                .With(m => m.Referee, "AAA")
+                .With(m => m.League, WorldCupLeague);
 
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
@@ -108,7 +112,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             var match = A.Dummy<Match>()
                 .With(m => m.Teams, new List<Team>())
                 .With(m => m.Referee, null)
-                .With(m => m.Attendance, 0);
+                .With(m => m.Attendance, 0)
+                .With(m => m.League, WorldCupLeague);
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
@@ -124,6 +129,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         {
             // Arrange
             var match = A.Dummy<Match>()
+                .With(m => m.League, WorldCupLeague)
                 .With(m => m.Teams, new List<Team>
                 {
                     A.Dummy<Team>()
@@ -150,6 +156,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         {
             // Arrange
             var match = A.Dummy<Match>()
+                .With(m => m.League, WorldCupLeague)
                 .With(m => m.Teams, new List<Team>
                 {
                     A.Dummy<Team>()
@@ -177,6 +184,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         {
             // Arrange
             var match = A.Dummy<Match>()
+                .With(m => m.League, WorldCupLeague)
                 .With(m => m.Teams, new List<Team>
                 {
                     A.Dummy<Team>()
@@ -203,6 +211,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         {
             // Arrange
             var match = A.Dummy<Match>()
+                .With(m => m.League, WorldCupLeague)
                 .With(m => m.Teams, new List<Team>
                 {
                     A.Dummy<Team>()
@@ -231,6 +240,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         {
             // Arrange
             var match = A.Dummy<Match>()
+                .With(m => m.League, WorldCupLeague)
                 .With(m => m.Teams, new List<Team>
                 {
                     A.Dummy<Team>()
@@ -259,6 +269,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         {
             // Arrange
             var match = A.Dummy<Match>()
+                .With(m => m.League, WorldCupLeague)
                 .With(m => m.Teams, new List<Team>
                 {
                     A.Dummy<Team>()
@@ -290,6 +301,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         {
             // Arrange
             var match = A.Dummy<Match>()
+                .With(m => m.League, WorldCupLeague)
                 .With(m => m.Teams, new List<Team>
                 {
                     A.Dummy<Team>()
@@ -316,6 +328,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         {
             // Arrange
             var match = A.Dummy<Match>()
+                .With(m => m.League, WorldCupLeague)
                 .With(m => m.Teams, new List<Team>
                 {
                     A.Dummy<Team>()
@@ -348,7 +361,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         {
             // Arrange
             var match = A.Dummy<Match>()
-                .With(m => m.League, new League("sr:league", ""))
+                .With(m => m.League, WorldCupLeague)
                 .With(m => m.Teams, new List<Team>
                 {
                     A.Dummy<Team>()

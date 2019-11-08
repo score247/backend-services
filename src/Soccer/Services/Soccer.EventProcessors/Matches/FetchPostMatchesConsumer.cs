@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Data.Repository;
 using MassTransit;
 using Soccer.Core.Leagues.Extensions;
 using Soccer.Core.Matches.Events;
-using Soccer.Core.Matches.Models;
 using Soccer.Database.Matches.Commands;
-using Soccer.EventProcessors.Leagues.Filters;
 using Soccer.EventProcessors.Leagues.Services;
 
 namespace Soccer.EventProcessors.Matches
@@ -15,16 +12,13 @@ namespace Soccer.EventProcessors.Matches
     public class FetchPostMatchesConsumer : IConsumer<IPostMatchFetchedMessage>
     {
         private readonly IDynamicRepository dynamicRepository;
-        private readonly IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter;
         private readonly ILeagueService leagueService;
 
         public FetchPostMatchesConsumer(
             IDynamicRepository dynamicRepository,
-            IMajorLeagueFilter<IEnumerable<Match>, IEnumerable<Match>> leagueFilter,
             ILeagueService leagueService)
         {
             this.dynamicRepository = dynamicRepository;
-            this.leagueFilter = leagueFilter;
             this.leagueService = leagueService;
         }
 
@@ -32,7 +26,7 @@ namespace Soccer.EventProcessors.Matches
         {
             var message = context.Message;
             var majorLeagues = await leagueService.GetMajorLeagues();
-            var filteredMatches = (await leagueFilter.Filter(message.Matches))
+            var updatedMatches = message.Matches
                 .Select(match =>
                 {
                     match.League.UpdateMajorLeagueInfo(majorLeagues);
@@ -40,7 +34,7 @@ namespace Soccer.EventProcessors.Matches
                     return match;
                 });
 
-            var command = new InsertOrUpdatePostMatchesCommand(filteredMatches, message.Language);
+            var command = new InsertOrUpdatePostMatchesCommand(updatedMatches, message.Language);
 
             await dynamicRepository.ExecuteAsync(command);
         }

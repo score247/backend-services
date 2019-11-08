@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using Hangfire;
 using MassTransit;
 using Score247.Shared.Enumerations;
+using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.DataProviders._Shared.Enumerations;
+using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.Matches.Services;
 using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
 using Soccer.DataReceivers.ScheduleTasks.Teams;
@@ -17,10 +20,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
     public interface IFetchPreMatchesTask
     {
         [Queue("low")]
-        void FetchPreMatches(int dateSpan);
+        Task FetchPreMatches(int dateSpan);
 
         [Queue("low")]
-        Task FetchPreMatchesForDate(DateTime date, Language language);
+        Task FetchPreMatchesForDate(DateTime date, Language language, IEnumerable<League> majorLeagues);
     }
 
     public class FetchPreMatchesTask : IFetchPreMatchesTask
@@ -28,19 +31,24 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         private readonly IAppSettings appSettings;
         private readonly IMatchService matchService;
         private readonly IBus messageBus;
+        private readonly ILeagueService internalLeagueService;
 
         public FetchPreMatchesTask(
             IBus messageBus,
             IAppSettings appSettings,
-            IMatchService matchService)
+            IMatchService matchService,
+            Func<DataProviderType, ILeagueService> leagueServiceFactory)
         {
             this.appSettings = appSettings;
             this.messageBus = messageBus;
             this.matchService = matchService;
+            internalLeagueService = leagueServiceFactory(DataProviderType.Internal);
         }
 
-        public void FetchPreMatches(int dateSpan)
+        public async Task FetchPreMatches(int dateSpan)
         {
+            var majorLeagues = await internalLeagueService.GetLeagues(Language.en_US);
+
             foreach (var language in Enumeration.GetAll<Language>())
             {
                 for (var dayAdd = 0; dayAdd <= dateSpan; dayAdd++)
@@ -50,24 +58,27 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                     if (dayAdd > 0)
                     {
                         BackgroundJob.Schedule<IFetchPreMatchesTask>(
-                            t => t.FetchPreMatchesForDate(fetchDate, language),
+                            t => t.FetchPreMatchesForDate(fetchDate, language, majorLeagues),
                             TimeSpan.FromHours(appSettings.ScheduleTasksSettings.FetchMatchesByDateDelayedHours * dayAdd));
                     }
                     else
                     {
-                        BackgroundJob.Enqueue<IFetchPreMatchesTask>(t => t.FetchPreMatchesForDate(fetchDate, language));
+                        BackgroundJob.Enqueue<IFetchPreMatchesTask>(t => t.FetchPreMatchesForDate(fetchDate, language, majorLeagues));
                     }
                 }
             }
         }
 
-        public async Task FetchPreMatchesForDate(DateTime date, Language language)
+        public async Task FetchPreMatchesForDate(DateTime date, Language language, IEnumerable<League> majorLeagues)
         {
             var batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
 
             var matches = (await matchService.GetPreMatches(date, language))
-                                .Where(x => x.MatchResult.EventStatus != MatchStatus.Live &&
-                                            x.MatchResult.EventStatus != MatchStatus.Closed).ToList();
+                .Where(match =>
+                    match.MatchResult.EventStatus != MatchStatus.Live
+                    && match.MatchResult.EventStatus != MatchStatus.Closed
+                    && majorLeagues?.Any(league => league.Id == match.League.Id) == true)
+                .ToList();
 
             await PublishPreMatchFetchedMessage(language, batchSize, matches);
         }

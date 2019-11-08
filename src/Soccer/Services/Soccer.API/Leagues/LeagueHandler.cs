@@ -17,6 +17,6 @@ namespace Soccer.API.Leagues
         }
 
         public Task<IEnumerable<League>> Handle(MajorLeaguesRequest request, CancellationToken cancellationToken)
-            => leagueQueryService.GetMajorLeagues();
+            => leagueQueryService.GetMajorLeagues(request.Language);
     }
 }

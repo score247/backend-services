@@ -7,7 +7,7 @@
     {
         private static readonly Dictionary<string, string> LanguageMapping = new Dictionary<string, string>
         {
-            { "en-US", "en" }
+            { Language.English, "en" }
         };
 
         public static string ToSportRadarFormat(this Language language)

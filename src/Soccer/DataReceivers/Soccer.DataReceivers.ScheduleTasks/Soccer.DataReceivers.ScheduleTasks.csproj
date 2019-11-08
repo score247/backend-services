@@ -17,38 +17,10 @@
 
   <ItemGroup>
     <None Remove="appsettings.json" />
-    <None Remove="appsettings.local-acceptance-test.json" />
-    <None Remove="appsettings.local-dev.json" />
-    <None Remove="appsettings.local-dev1.json" />
-    <None Remove="appsettings.local-dev2.json" />
-    <None Remove="appsettings.local-main-live.json" />
-    <None Remove="appsettings.local-main.json" />
-    <None Remove="appsettings.local-test.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="appsettings.local-main-live.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="appsettings.local-dev2.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="appsettings.local-dev1.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="appsettings.local-acceptance-test.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="appsettings.local-dev.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="appsettings.local-main.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="appsettings.local-test.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -74,6 +46,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\_Shared\Score247.Shared.csproj" />
+    <ProjectReference Include="..\..\DataProviders\Soccer.DataProviders.Internal\Soccer.DataProviders.Internal.csproj" />
     <ProjectReference Include="..\..\DataProviders\Soccer.DataProviders\Soccer.DataProviders.csproj" />
     <ProjectReference Include="..\..\DataProviders\Soccer.ServiceProviders.BetRadar\Soccer.DataProviders.SportRadar.csproj" />
     <ProjectReference Include="..\..\Soccer.Core\Soccer.Core.csproj" />

@@ -4,16 +4,17 @@ using System.Threading.Tasks;
 using Fanex.Caching;
 using Score247.Shared;
 using Soccer.Core.Leagues.Models;
+using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.Cache.Leagues
 {
     public interface ILeagueCache
     {
-        Task<IEnumerable<League>> GetMajorLeagues();
+        Task<IEnumerable<League>> GetMajorLeagues(string language = Language.English);
 
-        Task SetMajorLeagues(IEnumerable<League> majorLeagues);
+        Task SetMajorLeagues(IEnumerable<League> majorLeagues, string language = Language.English);
 
-        Task ClearMajorLeaguesCache();
+        Task ClearMajorLeaguesCache(string language = Language.English);
     }
 
     public class LeagueCache : ILeagueCache
@@ -26,15 +27,17 @@ namespace Soccer.Cache.Leagues
             this.cacheManager = cacheManager;
         }
 
-        public Task SetMajorLeagues(IEnumerable<League> majorLeagues)
-          => cacheManager.SetAsync(
-                MajorLeaguesCacheKey,
-                majorLeagues,
-            new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
+        public Task SetMajorLeagues(IEnumerable<League> majorLeagues, string language = Language.English)
+              => cacheManager.SetAsync(
+                    GetMajorLeaguesCacheKey(language),
+                    majorLeagues,
+                new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
 
-        public Task<IEnumerable<League>> GetMajorLeagues()
-            => cacheManager.GetAsync<IEnumerable<League>>(MajorLeaguesCacheKey);
+        public Task<IEnumerable<League>> GetMajorLeagues(string language = Language.English)
+            => cacheManager.GetAsync<IEnumerable<League>>(GetMajorLeaguesCacheKey(language));
 
-        public Task ClearMajorLeaguesCache() => cacheManager.RemoveAsync(MajorLeaguesCacheKey);
+        public Task ClearMajorLeaguesCache(string language = Language.English) => cacheManager.RemoveAsync(GetMajorLeaguesCacheKey(language));
+
+        private static string GetMajorLeaguesCacheKey(string language) => MajorLeaguesCacheKey + "_" + language;
     }
 }

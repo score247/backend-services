@@ -4,7 +4,9 @@
 
     public class Language : Enumeration
     {
-        public static readonly Language en_US = new Language(1, "en-US");
+        public const string English = "en-US";
+
+        public static readonly Language en_US = new Language(1, English);
 
         public Language()
         {

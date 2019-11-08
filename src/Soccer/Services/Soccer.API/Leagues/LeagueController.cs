@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Soccer.API.Leagues.Requests;
 using Soccer.Core.Leagues.Models;
+using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.API.Leagues
 {
@@ -17,8 +18,8 @@ namespace Soccer.API.Leagues
             => this.mediator = mediator;
 
         [HttpGet]
-        [Route("/major")]
-        public async Task<IEnumerable<League>> Get()
-            => await mediator.Send(new MajorLeaguesRequest());
+        [Route("major")]
+        public async Task<IEnumerable<League>> GetMajorLeagues(string language = Language.English)
+            => await mediator.Send(new MajorLeaguesRequest(language));
     }
 }

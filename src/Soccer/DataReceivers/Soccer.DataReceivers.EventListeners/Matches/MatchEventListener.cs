@@ -1,4 +1,14 @@
-﻿namespace Soccer.DataReceivers.EventListeners.Matches
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using Soccer.Core.Leagues.Models;
+using Soccer.Core.Matches.Models;
+using Soccer.Core.Shared.Enumerations;
+using Soccer.DataProviders.Leagues;
+
+[assembly: InternalsVisibleTo("Soccer.DataReceivers.EventListeners.Tests")]
+
+namespace Soccer.DataReceivers.EventListeners.Matches
 {
     using System;
     using System.Threading;
@@ -15,16 +25,21 @@
         private readonly IBus messageBus;
         private readonly IMatchEventListenerService eventListenerService;
         private readonly ILogger logger;
+        private readonly ILeagueService internalLeagueService;
 
         public MatchEventListener(
             IBus messageBus,
             IMatchEventListenerService eventListenerService,
-            ILogger logger)
+            ILogger logger,
+            ILeagueService internalLeagueService)
         {
             this.messageBus = messageBus;
             this.eventListenerService = eventListenerService;
             this.logger = logger;
+            this.internalLeagueService = internalLeagueService;
         }
+
+        internal IEnumerable<League> MajorLeagues { get; set; }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -37,6 +52,8 @@
 
         public async override Task StartAsync(CancellationToken cancellationToken)
         {
+            MajorLeagues = await internalLeagueService.GetLeagues(Language.en_US);
+
             await logger.InfoAsync($"Started Match Event Listener {eventListenerService.Name} at {DateTime.Now}");
 
             await base.StartAsync(cancellationToken);
@@ -51,22 +68,30 @@
 
         private async Task ListenMatchEvents(CancellationToken stoppingToken)
         {
-            await eventListenerService.ListenEvents(async (matchEvent) =>
+            await eventListenerService.ListenEvents(
+                async matchEvent => await HandleEvent(matchEvent, stoppingToken),
+                stoppingToken);
+        }
+
+        protected internal async Task HandleEvent(MatchEvent matchEvent, CancellationToken cancellationToken)
+        {
+            try
             {
-                try
+                if (MajorLeagues.Any(league => league.Id == matchEvent.LeagueId))
                 {
-                    await messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent), stoppingToken);
+                    await Task.WhenAll(
+                        messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent), cancellationToken));
                 }
-                catch (Exception ex)
-                {
-                    await logger.ErrorAsync(
-                        string.Join(
-                            "\r\n",
-                            $"Match Event {eventListenerService.Name}: {JsonConvert.SerializeObject(matchEvent)}",
-                            $"Exception: {ex}"),
-                        ex);
-                }
-            }, stoppingToken);
+            }
+            catch (Exception ex)
+            {
+                await logger.ErrorAsync(
+                    string.Join(
+                        "\r\n",
+                        $"Match Event {eventListenerService.Name}: {JsonConvert.SerializeObject(matchEvent)}",
+                        $"Exception: {ex}"),
+                    ex);
+            }
         }
     }
 }

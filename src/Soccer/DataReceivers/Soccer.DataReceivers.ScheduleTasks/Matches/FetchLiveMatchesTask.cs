@@ -1,16 +1,18 @@
 ﻿using System.Linq;
 using Soccer.DataReceivers.ScheduleTasks.Teams;
+using System;
+using System.Threading.Tasks;
+using Hangfire;
+using MassTransit;
+using Score247.Shared.Enumerations;
+using Soccer.Core.Matches.Events;
+using Soccer.Core.Shared.Enumerations;
+using Soccer.DataProviders._Shared.Enumerations;
+using Soccer.DataProviders.Leagues;
+using Soccer.DataProviders.Matches.Services;
 
 namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
-    using System.Threading.Tasks;
-    using Hangfire;
-    using MassTransit;
-    using Score247.Shared.Enumerations;
-    using Soccer.Core.Matches.Events;
-    using Soccer.Core.Shared.Enumerations;
-    using Soccer.DataProviders.Matches.Services;
-
     public interface IFetchLiveMatchesTask
     {
         [Queue("highlive")]
@@ -21,20 +23,26 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
     {
         private readonly IMatchService matchService;
         private readonly IBus messageBus;
+        private readonly ILeagueService internalLeagueService;
 
         public FetchLiveMatchesTask(
             IBus messageBus,
-            IMatchService matchService)
+            IMatchService matchService,
+            Func<DataProviderType, ILeagueService> leagueServiceFactory)
         {
             this.messageBus = messageBus;
             this.matchService = matchService;
+            internalLeagueService = leagueServiceFactory(DataProviderType.Internal);
         }
 
         public async Task FetchLiveMatches()
         {
+            var majorLeagues = await internalLeagueService.GetLeagues(Language.en_US);
+
             foreach (var language in Enumeration.GetAll<Language>())
             {
-                var matches = await matchService.GetLiveMatches(language);
+                var matches = (await matchService.GetLiveMatches(language))
+                     .Where(match => majorLeagues?.Any(league => league.Id == match.League.Id) == true);
 
                 await messageBus.Publish<ILiveMatchFetchedMessage>(new LiveMatchFetchedMessage(language, matches));
 
