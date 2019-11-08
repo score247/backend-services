@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fanex.Caching;
 using Score247.Shared;
+using Score247.Shared.Enumerations;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Shared.Enumerations;
 
@@ -14,7 +15,7 @@ namespace Soccer.Cache.Leagues
 
         Task SetMajorLeagues(IEnumerable<League> majorLeagues, string language = Language.English);
 
-        Task ClearMajorLeaguesCache(string language = Language.English);
+        Task ClearMajorLeaguesCache();
     }
 
     public class LeagueCache : ILeagueCache
@@ -36,7 +37,13 @@ namespace Soccer.Cache.Leagues
         public Task<IEnumerable<League>> GetMajorLeagues(string language = Language.English)
             => cacheManager.GetAsync<IEnumerable<League>>(GetMajorLeaguesCacheKey(language));
 
-        public Task ClearMajorLeaguesCache(string language = Language.English) => cacheManager.RemoveAsync(GetMajorLeaguesCacheKey(language));
+        public async Task ClearMajorLeaguesCache()
+        {
+            foreach (var language in Enumeration.GetAll<Language>())
+            {
+                await cacheManager.RemoveAsync(GetMajorLeaguesCacheKey(language.DisplayName));
+            }
+        }
 
         private static string GetMajorLeaguesCacheKey(string language) => MajorLeaguesCacheKey + "_" + language;
     }
