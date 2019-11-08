@@ -16,6 +16,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
     public interface IFetchTimelineTask
     {
         [Queue("mediumlive")]
+        Task FetchTimelines(IEnumerable<Match> matches, Language language);
+
+        [Queue("mediumlive")]
         Task FetchTimelines(string matchId, string region, Language language);
     }
 
@@ -30,6 +33,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         {
             this.messageBus = messageBus;
             this.timelineService = timelineService;
+        }
+
+        public async Task FetchTimelines(IEnumerable<Match> matches, Language language)
+        {
+            foreach (var match in matches)
+            {
+                await FetchTimelines(match.Id, match.Region, language);
+            }
         }
 
         public async Task FetchTimelines(string matchId, string region, Language language)
@@ -52,7 +63,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             await PublishMatchCommentaries(matchId, language, match, commentaries);
         }
 
-        private async Task PubishMatchCondition(string matchId, Language language, Core.Matches.Models.Match match)
+        private async Task PubishMatchCondition(string matchId, Language language, Match match)
         {
             if (!string.IsNullOrWhiteSpace(match.Referee) || match.Attendance > 0)
             {
@@ -60,7 +71,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             }
         }
 
-        private async Task PublishTeamStatistic(string matchId, Core.Matches.Models.Match match)
+        private async Task PublishTeamStatistic(string matchId, Match match)
         {
             foreach (var team in match.Teams.Where(team => team.Statistic != null).Select(team => team))
             {
@@ -69,7 +80,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             }
         }
 
-        private async Task PublishMatchTimelines(Language language, Core.Matches.Models.Match match)
+        private async Task PublishMatchTimelines(Language language, Match match)
         {
             if (match.TimeLines != null && match.TimeLines.Any())
             {

@@ -58,6 +58,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
                 BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(
                     task => task.FetchTeamResults(language, closedMatches));
+
+                BackgroundJob.Enqueue<IFetchTimelineTask>(
+                  task => task.FetchTimelines(closedMatches, language));
             }
         }
     }
