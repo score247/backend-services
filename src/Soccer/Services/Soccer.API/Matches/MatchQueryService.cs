@@ -154,8 +154,40 @@
                 player.EventStatistic = BuildPlayerEventStatistic(timelines, player, IsSubstitutePlayerHasTimelineEvent);
             }
 
-            teamLineups.SubstitutionEvents = timelines.Where(timeline 
-                => timeline.Type == EventType.Substitution && timeline.IsHome == teamLineups.IsHome);
+            teamLineups.SubstitutionEvents = timelines
+                .Where(timeline => timeline.Type == EventType.Substitution && timeline.IsHome == teamLineups.IsHome)
+                .Select(timeline => MapPlayerJerseyNumberForSubstitutionEvent(teamLineups, timeline));
+        }
+
+        private static TimelineEvent MapPlayerJerseyNumberForSubstitutionEvent(TeamLineups teamLineups, TimelineEvent timeline)
+        {
+            var playerIn = teamLineups.Substitutions.FirstOrDefault(player => player.Id == timeline.PlayerIn.Id);
+            var timelinePlayerIn = playerIn == null
+            ? timeline.PlayerIn
+            : new Player(
+                playerIn.Id,
+                playerIn.Name,
+                playerIn.JerseyNumber);
+
+            var playerOut = teamLineups.Players.FirstOrDefault(player => player.Id == timeline.PlayerOut.Id);
+            var timelinePlayerOut = playerOut == null
+            ? timeline.PlayerOut
+            : new Player(
+                playerOut.Id,
+                playerOut.Name,
+                playerOut.JerseyNumber);
+
+            return new TimelineEvent(
+            timeline.Id,
+            timeline.Type,
+            timeline.Time,
+            timeline.MatchTime,
+            timeline.StoppageTime,
+            timeline.Period,
+            timeline.PeriodType,
+            timeline.InjuryTimeAnnounced,
+            timelinePlayerOut,
+            timelinePlayerIn);
         }
 
         private static Dictionary<EventType, int> BuildPlayerEventStatistic(List<TimelineEvent> timelines, Player player, Func<Player, TimelineEvent, EventType, bool> isPlayerHasTimelineEvent)

@@ -132,14 +132,12 @@
 
                     await WriteHeartbeatLog(regionStream.Key);
 
-                    if (matchEvent == default(MatchEvent))
+                    if (matchEvent != default(MatchEvent))
                     {
-                        continue;
+                        handler.Invoke(matchEvent.AddScoreToSpecialTimeline(matchEvent.MatchResult));
+
+                        await logger.InfoAsync($"{DateTime.Now} - region {regionStream.Key} Receiving: {matchEventPayload}");
                     }
-
-                    handler.Invoke(matchEvent.AddScoreToSpecialTimeline(matchEvent.MatchResult));
-
-                    await logger.InfoAsync($"{DateTime.Now} - region {regionStream.Key} Receiving: {matchEventPayload}");
                 }
             }
             catch (Exception ex)

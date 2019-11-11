@@ -13,7 +13,7 @@
     {
 #pragma warning disable S107 // Methods should not have too many parameters
 
-        [JsonConstructor]
+        [JsonConstructor, SerializationConstructor]
         public TimelineEvent(
             string id,
             EventType type,
@@ -48,6 +48,31 @@
             Player = player;
             InjuryTimeAnnounced = injuryTimeAnnounced;
             Commentaries = commentaries;
+            PlayerOut = playerOut;
+            PlayerIn = playerIn;
+        }
+
+#pragma warning disable S107 // Methods should not have too many parameters
+        public TimelineEvent(
+            string id,
+            EventType type,
+            DateTimeOffset time,
+            byte matchTime,
+            string stoppageTime,
+            int period,
+            PeriodType periodType,
+            int injuryTimeAnnounced,
+            Player playerOut,
+            Player playerIn) : base(id)
+#pragma warning restore S107 // Methods should not have too many parameters
+        {
+            Type = type;
+            Time = time;
+            MatchTime = matchTime;
+            StoppageTime = stoppageTime;
+            Period = period;
+            PeriodType = periodType;
+            InjuryTimeAnnounced = injuryTimeAnnounced;
             PlayerOut = playerOut;
             PlayerIn = playerIn;
         }

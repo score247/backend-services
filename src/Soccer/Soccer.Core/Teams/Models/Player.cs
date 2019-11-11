@@ -15,6 +15,11 @@ namespace Soccer.Core.Teams.Models
         {
         }
 
+        public Player(string id, string name, int jerseyNumber) : this(id, name)
+        {
+            JerseyNumber = jerseyNumber;
+        }
+
         [SerializationConstructor, JsonConstructor]
         public Player(
             string id,
