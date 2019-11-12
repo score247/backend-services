@@ -73,7 +73,7 @@ namespace Soccer.API.Tests.Matches.Helpers
                             "  <text x=\"178\" y=\"28\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">1</text>" +
                             "  <text x=\"178\" y=\"50\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player1 name</text>" +
                             "  <rect width=\"8\" height=\"12\" rx=\"1\" transform=\"translate(186,7)\" filter=\"url(#shadow)\" style=\"fill:yellow;\" />" +
-                            "  <g transform=\"translate(141.8,5)\">" +
+                            "  <g transform=\"translate(144.8,5.4)\">" +
                             "    <path />" +
                             "  </g>" +
                             "  <g transform=\"translate(158.8,0)\">" +
@@ -93,11 +93,11 @@ namespace Soccer.API.Tests.Matches.Helpers
                             "    <rect x=\"2\" y=\"-2\" width=\"8\" height=\"12\" rx=\"1\" style=\"fill:red;\" />" +
                             "  </g>" +
                             "  <g>" +
-                            "    <g transform=\"translate(141.8,92)\">" +
+                            "    <g transform=\"translate(144.8,92.4)\">" +
                             "      <path />" +
                             "    </g>" +
-                            "    <circle cx=\"144.8\" cy=\"97\" r=\"5\" style=\"fill:red;\" />" +
-                            "    <text x=\"144.8\" y=\"99\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"7\" font-weight=\"700\" style=\"fill:white;\">2</text>" +
+                            "    <circle cx=\"147.8\" cy=\"97.4\" r=\"5\" style=\"fill:red;\" />" +
+                            "    <text x=\"147.8\" y=\"99.4\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"7\" font-weight=\"700\" style=\"fill:white;\">2</text>" +
                             "  </g>" +
                             "  <g transform=\"translate(158.8,87)\">" +
                             "    <path />" +
@@ -123,7 +123,7 @@ namespace Soccer.API.Tests.Matches.Helpers
                             "  <text x=\"178\" y=\"28\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">4</text>" +
                             "  <text x=\"178\" y=\"50\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player4 name</text>" +
                             "  <rect width=\"8\" height=\"12\" rx=\"1\" transform=\"translate(186,7)\" filter=\"url(#shadow)\" style=\"fill:yellow;\" />" +
-                            "  <g transform=\"translate(141.8,5)\">" +
+                            "  <g transform=\"translate(144.8,5.4)\">" +
                             "    <path />" +
                             "  </g>" +
                             "  <g transform=\"translate(158.8,0)\">" +
