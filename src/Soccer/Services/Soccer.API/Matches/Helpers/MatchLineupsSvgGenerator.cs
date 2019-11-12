@@ -85,14 +85,6 @@ namespace Soccer.API.Matches.Helpers
             return lineupsSvg.Substring(lineupsSvg.IndexOf(svgText, StringComparison.OrdinalIgnoreCase));
         }
 
-        private SvgPath GetDefaultJerseyElement()
-        {
-            var jerseyDoc = getSvgDocumentFunc($"{svgFolderPath}/jersey.svg");
-            var jerseyElement = jerseyDoc.Children.FirstOrDefault() as SvgPath;
-
-            return jerseyElement;
-        }
-
         private IEnumerable<SvgElement> RenderTeam(TeamLineups teamLineups)
         {
             var players = new List<SvgElement>();
@@ -132,7 +124,7 @@ namespace Soccer.API.Matches.Helpers
             for (int playerIndex = 0; playerIndex < totalPlayer; playerIndex++)
             {
                 var x = playerDistance * (playerIndex + 1);
-                var heightGap = rowIndex * yPlayerDistance + playerHeight;
+                var heightGap = rowIndex * yPlayerDistance + (int)(playerHeight * 1.5);
                 var y = isHome ? heightGap : (stadiumHeight - heightGap);
 
                 playerElements.Add(RenderPlayerJersey(isHome, x, y));
@@ -167,7 +159,7 @@ namespace Soccer.API.Matches.Helpers
             return elements;
         }
 
-        private static SvgElement RenderPlayerJersey(bool isHome, int x, int y)
+        private static SvgElement RenderPlayerJersey(bool isHome, double x, double y)
         {
             var playerElement = new SvgCircle
             {

@@ -69,83 +69,83 @@ namespace Soccer.API.Tests.Matches.Helpers
             var actualSvg = matchLineupsSvgGenerator.Generate(matchLineups);
 
             var expectedSvg = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" xmlns:xml=\"http://www.w3.org/XML/1998/namespace\" version=\"1.1\">" +
-                            "  <circle r=\"12\" transform=\"translate(178,24)\" style=\"fill:#30C2FF;\" />" +
-                            "  <text x=\"178\" y=\"28\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">1</text>" +
-                            "  <text x=\"178\" y=\"50\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player1 name</text>" +
-                            "  <rect width=\"8\" height=\"12\" rx=\"1\" transform=\"translate(186,7)\" filter=\"url(#shadow)\" style=\"fill:yellow;\" />" +
-                            "  <g transform=\"translate(144.8,5.4)\">" +
-                            "    <path />" +
-                            "  </g>" +
-                            "  <g transform=\"translate(158.8,0)\">" +
-                            "    <path />" +
-                            "  </g>" +
-                            "  <g transform=\"translate(158.8,26)\">" +
-                            "    <path />" +
-                            "  </g>" +
-                            "  <g transform=\"translate(182,26)\">" +
-                            "    <path />" +
-                            "  </g>" +
-                            "  <circle r=\"12\" transform=\"translate(178,111)\" style=\"fill:#30C2FF;\" />" +
-                            "  <text x=\"178\" y=\"115\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">2</text>" +
-                            "  <text x=\"178\" y=\"137\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player2 name</text>" +
-                            "  <g transform=\"translate(186,94)\" filter=\"url(#shadow)\">" +
-                            "    <rect width=\"8\" height=\"12\" rx=\"1\" style=\"fill:yellow;\" />" +
-                            "    <rect x=\"2\" y=\"-2\" width=\"8\" height=\"12\" rx=\"1\" style=\"fill:red;\" />" +
-                            "  </g>" +
-                            "  <g>" +
-                            "    <g transform=\"translate(144.8,92.4)\">" +
-                            "      <path />" +
-                            "    </g>" +
-                            "    <circle cx=\"147.8\" cy=\"97.4\" r=\"5\" style=\"fill:red;\" />" +
-                            "    <text x=\"147.8\" y=\"99.4\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"7\" font-weight=\"700\" style=\"fill:white;\">2</text>" +
-                            "  </g>" +
-                            "  <g transform=\"translate(158.8,87)\">" +
-                            "    <path />" +
-                            "  </g>" +
-                            "  <g>" +
-                            "    <g transform=\"translate(158.8,113)\">" +
-                            "      <path />" +
-                            "    </g>" +
-                            "    <circle cx=\"161.8\" cy=\"117\" r=\"5\" style=\"fill:red;\" />" +
-                            "    <text x=\"161.8\" y=\"119\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"7\" font-weight=\"700\" style=\"fill:white;\">2</text>" +
-                            "  </g>" +
-                            "  <g transform=\"translate(182,113)\">" +
-                            "    <path />" +
-                            "  </g>" +
-                            "  <circle r=\"12\" transform=\"translate(178,198)\" style=\"fill:#30C2FF;\" />" +
-                            "  <text x=\"178\" y=\"202\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">3</text>" +
-                            "  <text x=\"178\" y=\"224\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player3 name</text>" +
-                            "  <rect width=\"8\" height=\"12\" rx=\"1\" transform=\"translate(186,181)\" filter=\"url(#shadow)\" style=\"fill:red;\" />" +
-                            "  <g transform=\"translate(182,200)\">" +
-                            "    <path />" +
-                            "  </g>" +
-                            "  <circle r=\"12\" transform=\"translate(178,24)\" style=\"fill:#30C2FF;\" />" +
-                            "  <text x=\"178\" y=\"28\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">4</text>" +
-                            "  <text x=\"178\" y=\"50\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player4 name</text>" +
-                            "  <rect width=\"8\" height=\"12\" rx=\"1\" transform=\"translate(186,7)\" filter=\"url(#shadow)\" style=\"fill:yellow;\" />" +
-                            "  <g transform=\"translate(144.8,5.4)\">" +
-                            "    <path />" +
-                            "  </g>" +
-                            "  <g transform=\"translate(158.8,0)\">" +
-                            "    <path />" +
-                            "  </g>" +
-                            "  <g transform=\"translate(158.8,26)\">" +
-                            "    <path />" +
-                            "  </g>" +
-                            "  <g transform=\"translate(182,26)\">" +
-                            "    <path />" +
-                            "  </g>" +
-                            "  <circle r=\"12\" transform=\"translate(119,155)\" style=\"fill:#30C2FF;\" />" +
-                            "  <text x=\"119\" y=\"159\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">5</text>" +
-                            "  <text x=\"119\" y=\"181\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player5 name</text>" +
-                            "  <rect width=\"8\" height=\"12\" rx=\"1\" transform=\"translate(127,138)\" filter=\"url(#shadow)\" style=\"fill:red;\" />" +
-                            "  <g transform=\"translate(123,157)\">" +
-                            "    <path />" +
-                            "  </g>" +
-                            "  <circle r=\"12\" transform=\"translate(238,155)\" style=\"fill:#30C2FF;\" />" +
-                            "  <text x=\"238\" y=\"159\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">6</text>" +
-                            "  <text x=\"238\" y=\"181\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player6 name</text>" +
-                            "</svg>";
+                    "  <circle r=\"12\" transform=\"translate(178,36)\" style=\"fill:#30C2FF;\" />" +
+                    "  <text x=\"178\" y=\"40\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">1</text>" +
+                    "  <text x=\"178\" y=\"62\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player1 name</text>" +
+                    "  <rect width=\"8\" height=\"12\" rx=\"1\" transform=\"translate(186,19)\" filter=\"url(#shadow)\" style=\"fill:yellow;\" />" +
+                    "  <g transform=\"translate(144.8,17.4)\">" +
+                    "    <path />" +
+                    "  </g>" +
+                    "  <g transform=\"translate(158.8,12)\">" +
+                    "    <path />" +
+                    "  </g>" +
+                    "  <g transform=\"translate(158.8,38)\">" +
+                    "    <path />" +
+                    "  </g>" +
+                    "  <g transform=\"translate(182,38)\">" +
+                    "    <path />" +
+                    "  </g>" +
+                    "  <circle r=\"12\" transform=\"translate(178,123)\" style=\"fill:#30C2FF;\" />" +
+                    "  <text x=\"178\" y=\"127\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">2</text>" +
+                    "  <text x=\"178\" y=\"149\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player2 name</text>" +
+                    "  <g transform=\"translate(186,106)\" filter=\"url(#shadow)\">" +
+                    "    <rect width=\"8\" height=\"12\" rx=\"1\" style=\"fill:yellow;\" />" +
+                    "    <rect x=\"2\" y=\"-2\" width=\"8\" height=\"12\" rx=\"1\" style=\"fill:red;\" />" +
+                    "  </g>" +
+                    "  <g>" +
+                    "    <g transform=\"translate(144.8,104.4)\">" +
+                    "      <path />" +
+                    "    </g>" +
+                    "    <circle cx=\"147.8\" cy=\"109.4\" r=\"5\" style=\"fill:red;\" />" +
+                    "    <text x=\"147.8\" y=\"111.4\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"7\" font-weight=\"700\" style=\"fill:white;\">2</text>" +
+                    "  </g>" +
+                    "  <g transform=\"translate(158.8,99)\">" +
+                    "    <path />" +
+                    "  </g>" +
+                    "  <g>" +
+                    "    <g transform=\"translate(158.8,125)\">" +
+                    "      <path />" +
+                    "    </g>" +
+                    "    <circle cx=\"161.8\" cy=\"129\" r=\"5\" style=\"fill:red;\" />" +
+                    "    <text x=\"161.8\" y=\"131\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"7\" font-weight=\"700\" style=\"fill:white;\">2</text>" +
+                    "  </g>" +
+                    "  <g transform=\"translate(182,125)\">" +
+                    "    <path />" +
+                    "  </g>" +
+                    "  <circle r=\"12\" transform=\"translate(178,210)\" style=\"fill:#30C2FF;\" />" +
+                    "  <text x=\"178\" y=\"214\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">3</text>" +
+                    "  <text x=\"178\" y=\"236\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player3 name</text>" +
+                    "  <rect width=\"8\" height=\"12\" rx=\"1\" transform=\"translate(186,193)\" filter=\"url(#shadow)\" style=\"fill:red;\" />" +
+                    "  <g transform=\"translate(182,212)\">" +
+                    "    <path />" +
+                    "  </g>" +
+                    "  <circle r=\"12\" transform=\"translate(178,36)\" style=\"fill:#30C2FF;\" />" +
+                    "  <text x=\"178\" y=\"40\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">4</text>" +
+                    "  <text x=\"178\" y=\"62\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player4 name</text>" +
+                    "  <rect width=\"8\" height=\"12\" rx=\"1\" transform=\"translate(186,19)\" filter=\"url(#shadow)\" style=\"fill:yellow;\" />" +
+                    "  <g transform=\"translate(144.8,17.4)\">" +
+                    "    <path />" +
+                    "  </g>" +
+                    "  <g transform=\"translate(158.8,12)\">" +
+                    "    <path />" +
+                    "  </g>" +
+                    "  <g transform=\"translate(158.8,38)\">" +
+                    "    <path />" +
+                    "  </g>" +
+                    "  <g transform=\"translate(182,38)\">" +
+                    "    <path />" +
+                    "  </g>" +
+                    "  <circle r=\"12\" transform=\"translate(119,167)\" style=\"fill:#30C2FF;\" />" +
+                    "  <text x=\"119\" y=\"171\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">5</text>" +
+                    "  <text x=\"119\" y=\"193\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player5 name</text>" +
+                    "  <rect width=\"8\" height=\"12\" rx=\"1\" transform=\"translate(127,150)\" filter=\"url(#shadow)\" style=\"fill:red;\" />" +
+                    "  <g transform=\"translate(123,169)\">" +
+                    "    <path />" +
+                    "  </g>" +
+                    "  <circle r=\"12\" transform=\"translate(238,167)\" style=\"fill:#30C2FF;\" />" +
+                    "  <text x=\"238\" y=\"171\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">6</text>" +
+                    "  <text x=\"238\" y=\"193\" text-anchor=\"middle\" font-family=\"Roboto\" font-size=\"11\" font-weight=\"400\" style=\"fill:white;\">player6 name</text>" +
+                    "</svg>";       
 
 
             Assert.Equal(expectedSvg, actualSvg.Replace("\r\n", string.Empty));
