@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Score247.Shared.Enumerations;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.DataProviders.SportRadar._Shared;
 using Soccer.DataProviders.SportRadar.Leagues.DataMappers;
 using Soccer.DataProviders.SportRadar.Matches.Dtos;
 using Soccer.DataProviders.SportRadar.Teams.DataMappers;
@@ -19,26 +20,22 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
             string region,
             IEnumerable<TimelineEvent> timelineEvents = null,
             Coverage coverage = null)
-        {
-            var match = new Match(
-                sportEvent.id,
-                sportEvent.scheduled,
-                sportEvent.scheduled,
-                TeamMapper.MapTeams(sportEvent),
-                MapMatchResult(sportEvent.status, sportEventStatus),
-                LeagueMapper.MapLeague(sportEvent.tournament, region),
-                LeagueMapper.MapLeagueRound(sportEvent.tournament_round),
-                timelineEvents,
-                null,
-                sportEventConditions?.attendance ?? 0,
-                MapVenue(sportEvent.venue),
-                sportEventConditions?.referee?.name,
-                region,
-                coverage,
-                LeagueMapper.MapLeagueSeason(sportEvent.season));
-
-            return match;
-        }
+            => new Match(
+                    sportEvent.id,
+                    sportEvent.scheduled,
+                    sportEvent.scheduled,
+                    TeamMapper.MapTeams(sportEvent),
+                    MapMatchResult(sportEvent.status, sportEventStatus),
+                    LeagueMapper.MapLeague(sportEvent.tournament, region),
+                    LeagueMapper.MapLeagueRound(sportEvent.tournament_round),
+                    timelineEvents,
+                    null,
+                    sportEventConditions?.attendance ?? 0,
+                    MapVenue(sportEvent.venue),
+                    PlayerNameConverter.Convert(sportEventConditions?.referee?.name, false),
+                    region,
+                    coverage,
+                    LeagueMapper.MapLeagueSeason(sportEvent.season));
 
         public static MatchResult MapMatchResult(string status, SportEventStatusDto sportEventStatus = null)
         {
