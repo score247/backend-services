@@ -220,14 +220,14 @@ namespace Soccer.API.Matches.Helpers
                 card = BuildCardElement(Color.Red);
                 card.CustomAttributes.Add(tranformAttributeName, $"translate({cardX},{cardY})");
             }
-
-            if (hasYellowRedCard)
+            else if (hasYellowRedCard)
             {
                 card = BuildYellowRedCardElement();
                 card.CustomAttributes.Add(tranformAttributeName, $"translate({cardX},{cardY})");
             }
-
-            if (hasYellowCard)
+#pragma warning disable S126 // "if ... else if" constructs should end with "else" clauses
+            else if (hasYellowCard)
+#pragma warning restore S126 // "if ... else if" constructs should end with "else" clauses
             {
                 card = BuildCardElement(Color.Yellow);
                 card.CustomAttributes.Add(tranformAttributeName, $"translate({cardX},{cardY})");
