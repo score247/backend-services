@@ -256,9 +256,12 @@ namespace Soccer.API.Matches.Helpers
             if (hasGoals)
             {
                 var hasPenaltyGoal = player.EventStatistic.ContainsKey(EventType.ScoreChangeByPenalty);
+                var overTwoPenaltyGoals = hasPenaltyGoal && player.EventStatistic[EventType.ScoreChangeByPenalty] > 1
+                    ? 2
+                    : 0;
 
                 var element = BuildEventTypeElement(EventType.ScoreChange);
-                var elementX = x - (playerWidth / 1.25) + (hasPenaltyGoal ? -(ballWidthHeight + 1) : 0);
+                var elementX = x - (playerWidth / 1.25) + (hasPenaltyGoal ? -(ballWidthHeight + 1 - overTwoPenaltyGoals) : 0);
                 var elementY = y - (playerHeight / 2) - (ballWidthHeight / 2) + 1;
                 if (!element.CustomAttributes.ContainsKey(tranformAttributeName))
                 {
