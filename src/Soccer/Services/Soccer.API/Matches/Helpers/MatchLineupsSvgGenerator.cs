@@ -18,10 +18,15 @@ namespace Soccer.API.Matches.Helpers
 
     public class MatchLineupsSvgGenerator : IMatchLineupsGenerator
     {
-        private const int playerWidth = 32;
-        private const int playerHeight = 36;
+        private const int playerWidth = 24;
+        private const int playerHeight = 24;
         private const int stadiumWidth = 357;
         private const int stadiumHeight = 526;
+        private const int ballWidthHeight = 16;
+        private const int totalEventRadius = 5;
+        private const int cardWidth = 8;
+        private const int cardHeight = 12;
+
         private const string svgText = "<svg";
         private const string homeColor = "#30C2FF";
         private const string awayColor = "#FA2E58";
@@ -59,11 +64,7 @@ namespace Soccer.API.Matches.Helpers
                 return string.Empty;
             }
 
-            var jerseyElement = GetDefaultJerseyElement();
-
-            var lineupsElements =
-                RenderTeam(matchLineups.Home, jerseyElement)
-                .Concat(RenderTeam(matchLineups.Away, jerseyElement));
+            var lineupsElements = RenderTeam(matchLineups.Home).Concat(RenderTeam(matchLineups.Away));
 
             return BuildLineupSvg(lineupsElements);
         }
@@ -92,9 +93,7 @@ namespace Soccer.API.Matches.Helpers
             return jerseyElement;
         }
 
-        private IEnumerable<SvgElement> RenderTeam(
-            TeamLineups teamLineups,
-            SvgPath jeyseyElement)
+        private IEnumerable<SvgElement> RenderTeam(TeamLineups teamLineups)
         {
             var players = new List<SvgElement>();
             var formationSplits = teamLineups.ConvertFormationToList();
@@ -108,7 +107,6 @@ namespace Soccer.API.Matches.Helpers
             {
                 var formationRowPlayers = teamPlayers.Skip(playerIndex).Take(formationItem);
                 var rowPlayers = RenderPlayerRow(
-                    jeyseyElement,
                     teamLineups.IsHome ? formationRowPlayers : formationRowPlayers.Reverse(),
                     teamLineups.IsHome,
                     rowIndex++,
@@ -122,7 +120,6 @@ namespace Soccer.API.Matches.Helpers
         }
 
         private List<SvgElement> RenderPlayerRow(
-            SvgPath jeyseyElement,
             IEnumerable<Player> players,
             bool isHome,
             int rowIndex,
@@ -134,11 +131,11 @@ namespace Soccer.API.Matches.Helpers
 
             for (int playerIndex = 0; playerIndex < totalPlayer; playerIndex++)
             {
-                var x = playerDistance * (playerIndex + 1) - (playerWidth / 2);
-                var heightGap = rowIndex * yPlayerDistance + (isHome ? 10 : 50);
+                var x = playerDistance * (playerIndex + 1);
+                var heightGap = rowIndex * yPlayerDistance + playerHeight;
                 var y = isHome ? heightGap : (stadiumHeight - heightGap);
 
-                playerElements.Add(RenderPlayerJersey(jeyseyElement, isHome, x, y));
+                playerElements.Add(RenderPlayerJersey(isHome, x, y));
 
                 var player = players.ElementAt(playerIndex);
                 playerElements.Add(RenderPlayerNumber(player, x, y));
@@ -170,9 +167,12 @@ namespace Soccer.API.Matches.Helpers
             return elements;
         }
 
-        private static SvgElement RenderPlayerJersey(SvgPath jeyseyElement, bool isHome, int x, int y)
+        private static SvgElement RenderPlayerJersey(bool isHome, int x, int y)
         {
-            var playerElement = jeyseyElement.DeepCopy();
+            var playerElement = new SvgCircle
+            {
+                Radius = playerHeight / 2
+            };
             playerElement.CustomAttributes.Add(tranformAttributeName, $"translate({x},{y})");
             playerElement.AddStyle(fillStyleName, isHome ? homeColor : awayColor, 0);
             return playerElement;
@@ -184,8 +184,8 @@ namespace Soccer.API.Matches.Helpers
             {
                 Text = player.JerseyNumber.ToString(),
                 TextAnchor = SvgTextAnchor.Middle,
-                X = new SvgUnitCollection { new SvgUnit(x + (playerWidth / 2)) },
-                Y = new SvgUnitCollection { new SvgUnit(y + (playerHeight / 2)) },
+                X = new SvgUnitCollection { new SvgUnit(x) },
+                Y = new SvgUnitCollection { new SvgUnit(y + 4) },
                 FontFamily = robotoFontName,
                 FontWeight = SvgFontWeight.Normal,
                 FontSize = fontSize
@@ -202,7 +202,7 @@ namespace Soccer.API.Matches.Helpers
             {
                 Text = player.Name,
                 TextAnchor = SvgTextAnchor.Middle,
-                X = new SvgUnitCollection { new SvgUnit(x + (playerWidth / 2)) },
+                X = new SvgUnitCollection { new SvgUnit(x) },
                 Y = new SvgUnitCollection { new SvgUnit(y + playerHeight + 2) },
                 FontFamily = robotoFontName,
                 FontWeight = SvgFontWeight.Normal,
@@ -219,31 +219,34 @@ namespace Soccer.API.Matches.Helpers
             var hasRedcard = player.EventStatistic.ContainsKey(EventType.RedCard);
             var hasYellowCard = player.EventStatistic.ContainsKey(EventType.YellowCard);
             var hasYellowRedCard = player.EventStatistic.ContainsKey(EventType.YellowRedCard);
+            SvgElement card = null;
+            var cardX = x + playerWidth / 3;
+            var cardY = y - playerWidth / 1.5 - 1;
 
             if (hasRedcard)
             {
-                var redCardElement = BuildCardElement(Color.Red);
-
-                redCardElement.CustomAttributes.Add(tranformAttributeName, $"translate({x + playerWidth / 1.5},{y - 5})");
-
-                return redCardElement;
+                card = BuildCardElement(Color.Red);
+                card.CustomAttributes.Add(tranformAttributeName, $"translate({cardX},{cardY})");
             }
 
             if (hasYellowRedCard)
             {
-                var redCardElement = BuildYellowRedCardElement();
-                redCardElement.CustomAttributes.Add(tranformAttributeName, $"translate({x + playerWidth / 1.5},{y - 5})");
-                return redCardElement;
+                card = BuildYellowRedCardElement();
+                card.CustomAttributes.Add(tranformAttributeName, $"translate({cardX},{cardY})");
             }
 
             if (hasYellowCard)
             {
-                var yellowCardElement = BuildCardElement(Color.Yellow);
-                yellowCardElement.CustomAttributes.Add(tranformAttributeName, $"translate({x + playerWidth / 1.5},{y - 5})");
-                return yellowCardElement;
+                card = BuildCardElement(Color.Yellow);
+                card.CustomAttributes.Add(tranformAttributeName, $"translate({cardX},{cardY})");
             }
 
-            return default;
+            if(card != null)
+            {
+                card.CustomAttributes.Add("filter", $"url(#shadow)");
+            }
+
+            return card;
         }
 
         private SvgElement RenderGoals(Player player, int x, int y)
@@ -255,8 +258,8 @@ namespace Soccer.API.Matches.Helpers
                 var hasPenaltyGoal = player.EventStatistic.ContainsKey(EventType.ScoreChangeByPenalty);
 
                 var element = BuildEventTypeElement(EventType.ScoreChange);
-                var elementX = x - 3 + (hasPenaltyGoal ? -15 : 0);
-                var elementY = y - 7;
+                var elementX = x - (playerWidth / 1.25) + (hasPenaltyGoal ? -(ballWidthHeight + 1) : 0);
+                var elementY = y - (playerHeight / 2) - (ballWidthHeight / 2) + 1;
                 if (!element.CustomAttributes.ContainsKey(tranformAttributeName))
                 {
                     element.CustomAttributes.Add(tranformAttributeName, $"translate({elementX},{elementY})");
@@ -265,7 +268,7 @@ namespace Soccer.API.Matches.Helpers
                 var totalGoals = player.EventStatistic[EventType.ScoreChange];
                 if (totalGoals > 1)
                 {
-                    return BuildEventCountNumber(elementX + 3, (float)(elementY + 7), element, totalGoals);
+                    return BuildEventCountNumber((float)(elementX + 3), (float)(elementY + 7), element, totalGoals);
                 }
 
                 return element;
@@ -295,7 +298,7 @@ namespace Soccer.API.Matches.Helpers
             {
                 CenterX = x,
                 CenterY = y,
-                Radius = 5
+                Radius = totalEventRadius
             };
             circleElement.AddStyle("fill", "red", 0);
 
@@ -325,8 +328,8 @@ namespace Soccer.API.Matches.Helpers
             if (hasGoals)
             {
                 var element = BuildEventTypeElement(EventType.ScoreChangeByPenalty);
-                var elementX = x - 3;
-                var elementY = y - 12.5;
+                var elementX = x - playerWidth / 1.25;
+                var elementY = y - playerHeight;
                 if (!element.CustomAttributes.ContainsKey(tranformAttributeName))
                 {
                     element.CustomAttributes.Add(tranformAttributeName, $"translate({elementX},{elementY})");
@@ -335,7 +338,7 @@ namespace Soccer.API.Matches.Helpers
                 var totalGoals = player.EventStatistic[EventType.ScoreChangeByPenalty];
                 if (totalGoals > 1)
                 {
-                    return BuildEventCountNumber(elementX + 3, (float)(elementY + 12.5), element, totalGoals);
+                    return BuildEventCountNumber((float)(elementX + 3), (float)(elementY + 12.5), element, totalGoals);
                 }
 
                 return element;
@@ -351,8 +354,8 @@ namespace Soccer.API.Matches.Helpers
             if (hasGoals)
             {
                 var element = BuildEventTypeElement(EventType.ScoreChangeByOwnGoal);
-                var elementX = x - 3;
-                var elementY = y + playerHeight / 2.5;
+                var elementX = x - playerWidth / 1.25;
+                var elementY = y + 2;
                 if (!element.CustomAttributes.ContainsKey(tranformAttributeName))
                 {
                     element.CustomAttributes.Add(tranformAttributeName, $"translate({elementX},{elementY})");
@@ -361,7 +364,7 @@ namespace Soccer.API.Matches.Helpers
                 var totalGoals = player.EventStatistic[EventType.ScoreChangeByOwnGoal];
                 if (totalGoals > 1)
                 {
-                    return BuildEventCountNumber(elementX + 3, (float)(elementY + 6), element, totalGoals);
+                    return BuildEventCountNumber((float)(elementX + 3), (float)(elementY + 6), element, totalGoals);
                 }
 
                 return element;
@@ -376,8 +379,11 @@ namespace Soccer.API.Matches.Helpers
 
             if (hasSubtitution)
             {
+                var subX = x + (ballWidthHeight / 4);
+                var subY = y + 2;
+
                 var element = BuildSubtituteOutElement();
-                element.CustomAttributes.Add(tranformAttributeName, $"translate({x + 18},{y + 16})");
+                element.CustomAttributes.Add(tranformAttributeName, $"translate({subX},{subY})");
 
                 return element;
             }
@@ -385,11 +391,11 @@ namespace Soccer.API.Matches.Helpers
             return default;
         }
 
-        private SvgRectangle BuildCardElement(Color color)
+        private SvgElement BuildCardElement(Color color)
             => new SvgRectangle
             {
-                Width = 8,
-                Height = 12,
+                Width = cardWidth,
+                Height = cardHeight,
                 CornerRadiusX = 1,
                 Fill = new SvgColourServer(color)
             };
@@ -400,16 +406,16 @@ namespace Soccer.API.Matches.Helpers
 
             group.Children.Add(new SvgRectangle
             {
-                Width = 8,
-                Height = 12,
+                Width = cardWidth,
+                Height = cardHeight,
                 CornerRadiusX = 1,
                 Fill = new SvgColourServer(Color.Yellow)
             });
 
             group.Children.Add(new SvgRectangle
             {
-                Width = 8,
-                Height = 12,
+                 Width = cardWidth,
+                Height = cardHeight,
                 CornerRadiusX = 1,
                 X = 2,
                 Y = -2,
@@ -422,14 +428,19 @@ namespace Soccer.API.Matches.Helpers
         private SvgElement BuildEventTypeElement(EventType eventType)
         {
             var document = getSvgDocumentFunc($"{svgFolderPath}/{eventType.DisplayName}.svg");
-            var element = document.Children.FirstOrDefault() as SvgPath;
 
-            return element;
+            return LoadGroupChildElement(document);
         }
 
         private SvgElement BuildSubtituteOutElement()
         {
             var document = getSvgDocumentFunc($"{svgFolderPath}/substitution.svg");
+
+            return LoadGroupChildElement(document);
+        }
+
+        private static SvgElement LoadGroupChildElement(SvgDocument document)
+        {
             var group = new SvgGroup();
 
             foreach (var child in document.Children)
