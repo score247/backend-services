@@ -156,6 +156,7 @@
 
             teamLineups.SubstitutionEvents = timelines
                 .Where(timeline => timeline.Type == EventType.Substitution && timeline.IsHome == teamLineups.IsHome)
+                .OrderByDescending(timeline => timeline.Time)
                 .Select(timeline => MapPlayerJerseyNumberForSubstitutionEvent(teamLineups, timeline));
         }
 
