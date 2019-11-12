@@ -1,8 +1,6 @@
 ﻿namespace Soccer.API.Matches
 {
-    using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Threading;
     using System.Threading.Tasks;
     using MediatR;
@@ -58,10 +56,6 @@
             var matchLineups = await matchQueryService.GetMatchLineups(request.Id, request.Language);
 
             var lineupsSvg = matchLineupsGenerator.Generate(matchLineups);
-
-            var folder = $"{AppDomain.CurrentDomain.BaseDirectory}/data/";
-            System.IO.Directory.CreateDirectory(folder);
-            File.WriteAllText(Path.Combine(folder, $"{request.Id.Replace(":", "_")}.svg"), lineupsSvg);
 
             return new MatchPitchViewLineups(
                 matchLineups.Id,
