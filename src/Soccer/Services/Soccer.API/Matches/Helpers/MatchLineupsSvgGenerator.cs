@@ -120,11 +120,12 @@ namespace Soccer.API.Matches.Helpers
             var playerElements = new List<SvgElement>();
             var totalPlayer = players.Count();
             var playerDistance = stadiumWidth / (totalPlayer + 1);
+            var homeGap = rowIndex == 0 ? 25 : 20;
 
             for (int playerIndex = 0; playerIndex < totalPlayer; playerIndex++)
             {
                 var x = playerDistance * (playerIndex + 1);
-                var heightGap = rowIndex * yPlayerDistance + (isHome ? 20 : 35);
+                var heightGap = rowIndex * yPlayerDistance + (isHome ? homeGap : 35);
                 var y = isHome ? heightGap : (stadiumHeight - heightGap);
 
                 playerElements.Add(RenderPlayerJersey(isHome, x, y));
