@@ -124,7 +124,7 @@ namespace Soccer.API.Matches.Helpers
             for (int playerIndex = 0; playerIndex < totalPlayer; playerIndex++)
             {
                 var x = playerDistance * (playerIndex + 1);
-                var heightGap = rowIndex * yPlayerDistance + (int)(playerHeight * 1.5);
+                var heightGap = rowIndex * yPlayerDistance + (isHome ? 15 : 35);
                 var y = isHome ? heightGap : (stadiumHeight - heightGap);
 
                 playerElements.Add(RenderPlayerJersey(isHome, x, y));
