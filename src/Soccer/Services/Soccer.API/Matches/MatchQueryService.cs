@@ -1,4 +1,6 @@
-﻿namespace Soccer.API.Matches
+﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Soccer.API.Tests")]
+
+namespace Soccer.API.Matches
 {
     using System;
     using System.Collections.Generic;
@@ -125,7 +127,7 @@
                 async () => await GetMatchLineupsData(id, language),
                 GetCacheOptions(0));
 
-        private async Task<MatchLineups> GetMatchLineupsData(string id, Language language)
+        internal async Task<MatchLineups> GetMatchLineupsData(string id, Language language)
         {
             var matchLineups = await dynamicRepository.GetAsync<MatchLineups>(new GetMatchLineupsCriteria(id, language));
 
@@ -163,32 +165,22 @@
         private static TimelineEvent MapPlayerJerseyNumberForSubstitutionEvent(TeamLineups teamLineups, TimelineEvent timeline)
         {
             var playerIn = teamLineups.Substitutions.FirstOrDefault(player => player.Id == timeline.PlayerIn.Id);
-            var timelinePlayerIn = playerIn == null
-            ? timeline.PlayerIn
-            : new Player(
-                playerIn.Id,
-                playerIn.Name,
-                playerIn.JerseyNumber);
+            var timelinePlayerIn = playerIn == null ? timeline.PlayerIn : new Player(playerIn);
 
             var playerOut = teamLineups.Players.FirstOrDefault(player => player.Id == timeline.PlayerOut.Id);
-            var timelinePlayerOut = playerOut == null
-            ? timeline.PlayerOut
-            : new Player(
-                playerOut.Id,
-                playerOut.Name,
-                playerOut.JerseyNumber);
+            var timelinePlayerOut = playerOut == null ? timeline.PlayerOut : new Player(playerOut);
 
             return new TimelineEvent(
-            timeline.Id,
-            timeline.Type,
-            timeline.Time,
-            timeline.MatchTime,
-            timeline.StoppageTime,
-            timeline.Period,
-            timeline.PeriodType,
-            timeline.InjuryTimeAnnounced,
-            timelinePlayerOut,
-            timelinePlayerIn);
+                        timeline.Id,
+                        timeline.Type,
+                        timeline.Time,
+                        timeline.MatchTime,
+                        timeline.StoppageTime,
+                        timeline.Period,
+                        timeline.PeriodType,
+                        timeline.InjuryTimeAnnounced,
+                        timelinePlayerOut,
+                        timelinePlayerIn);
         }
 
         private static Dictionary<EventType, int> BuildPlayerEventStatistic(List<TimelineEvent> timelines, Player player, Func<Player, TimelineEvent, EventType, bool> isPlayerHasTimelineEvent)

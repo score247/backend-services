@@ -16,6 +16,7 @@
     public class MatchEventListenerService : IMatchEventListenerService
     {
         private const int MillisecondsTimeout = 10 * 1000;
+        private const int DelayTime = 100;
         private const int FiveMinutes = 5;
         private const byte MaxRetryTimes = 5;
         private const int TimeDelayForStartingOtherEventListener = 500;
@@ -50,6 +51,7 @@
 #pragma warning disable S2696 // Instance members should not write to "static" fields
                 retryCount++;
 #pragma warning restore S2696 // Instance members should not write to "static" fields
+                cancellationToken.Register(() => logger.Error($"Region {Name} task was cancelled at {DateTime.Now}"));
                 await Task.Delay(TimeDelayForStartingOtherEventListener);
                 await ListeningEventForRegion(region.Name, region.PushKey, handler, cancellationToken);
             }
@@ -138,7 +140,13 @@
 
                         await logger.InfoAsync($"{DateTime.Now} - region {regionStream.Key} Receiving: {matchEventPayload}");
                     }
+                    else
+                    {
+                        await Task.Delay(DelayTime);
+                    }
                 }
+
+                await logger.InfoAsync($"{DateTime.Now} - region {regionStream.Key} End of Stream");
             }
             catch (Exception ex)
             {
