@@ -13,7 +13,7 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
 {
     public class PenaltyEventConsumer : IConsumer<IPenaltyEventMessage>
     {
-        private static readonly byte DefaultPenaltyMatchTime = 121;
+        private const byte DefaultPenaltyMatchTime = 121;
 
         private static readonly CacheItemOptions MatchPenaltyCacheOptions = new CacheItemOptions
         {

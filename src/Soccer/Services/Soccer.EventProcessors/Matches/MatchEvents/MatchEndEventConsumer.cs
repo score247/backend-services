@@ -14,7 +14,7 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
 {
     public class MatchEndEventConsumer : IConsumer<IMatchEndEventMessage>
     {
-        private static readonly byte DefaultMatchEndTime = 91;
+        private const byte DefaultMatchEndTime = 91;
 
         private static readonly ReadOnlyDictionary<PeriodType, byte> MatchEndTimes
           = new ReadOnlyDictionary<PeriodType, byte>(
