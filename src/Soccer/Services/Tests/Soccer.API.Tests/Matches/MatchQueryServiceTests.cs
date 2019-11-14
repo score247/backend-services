@@ -15,7 +15,6 @@ using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.Models;
 using Soccer.Database.Matches.Criteria;
-using Soccer.Database.Timelines.Criteria;
 using Xunit;
 
 namespace Soccer.API.Tests.Matches
@@ -49,6 +48,71 @@ namespace Soccer.API.Tests.Matches
                 Arg.Any<Func<Task<IEnumerable<TimelineEvent>>>>(),
                 Arg.Any<CacheItemOptions>());
         }
+
+        #region Match Statistic
+
+        [Fact]
+#pragma warning disable S2699 // Tests should include assertions
+        public async Task GetMatchStatisticData_Always_GetFromCache()
+#pragma warning restore S2699 // Tests should include assertions
+        {
+            await matchQueryService.GetMatchStatistic("sr:match:1");
+
+            await cacheManager.Received(1).GetOrSetAsync(
+                "MatchQuery_MatchStatisticCacheKey_sr:match:1",
+                Arg.Any<Func<Task<MatchStatistic>>>(),
+                Arg.Any<CacheItemOptions>());
+        }
+
+        [Fact]
+#pragma warning disable S2699 // Tests should include assertions
+        public async Task GetMatchStatisticData_Always_ExecuteGetAsync()
+#pragma warning restore S2699 // Tests should include assertions
+        {
+            var matchId = "matchId";
+            await matchQueryService.GetMatchStatisticData(matchId);
+
+            await dynamicRepository.Received(1).GetAsync<Match>(
+                Arg.Is<GetMatchByIdCriteria>(criteria => criteria.Id == matchId));
+        }
+
+        [Fact]
+        public async Task GetMatchStatisticData_NoData_ReturnEmptyMatchStatistic()
+        {
+            var matchId = "matchId";
+            StubMatchStatistic(matchId, null);
+
+            var match = await matchQueryService.GetMatchStatisticData(matchId);
+
+            Assert.Null(match.MatchId);
+        }
+
+        [Fact]
+        public async Task GetMatchStatisticData_HasData_ReturnMatchStatistic()
+        {
+            var matchId = "matchId";
+            var returnedMatch = A.Dummy<Match>()
+                        .With(t => t.Teams, new List<Team>
+                        {
+                            A.Dummy<Team>().With(t => t.IsHome, true).With(t => t.Statistic, new TeamStatistic(1, 1)),
+                            A.Dummy<Team>().With(t => t.IsHome, false).With(t => t.Statistic, new TeamStatistic(2, 2))
+                        });
+            StubMatchStatistic(matchId, returnedMatch);
+
+            var match = await matchQueryService.GetMatchStatisticData(matchId);
+
+            Assert.Equal(1, match.HomeStatistic.RedCards);
+            Assert.Equal(2, match.AwayStatistic.RedCards);
+        }
+
+        private void StubMatchStatistic(string matchId, Match returnedMatch)
+            => dynamicRepository.GetAsync<Match>(
+                            Arg.Is<GetMatchByIdCriteria>(criteria => criteria.Id == matchId))
+                            .Returns(Task.FromResult(returnedMatch));
+
+        #endregion Match Statistic
+
+        #region Match Lineups
 
         [Fact]
         public async Task GetMatchLineups_Always_ReturnDataFromCache()
@@ -214,8 +278,8 @@ namespace Soccer.API.Tests.Matches
         }
 
         private void StubRetunLineupsFromCache(
-            string matchId = "matchId", 
-            Language language = null, 
+            string matchId = "matchId",
+            Language language = null,
             MatchLineups matchLineups = null)
         {
             matchLineups = matchLineups ?? StubMatchLineups(matchId);
@@ -240,7 +304,7 @@ namespace Soccer.API.Tests.Matches
 
         private void StubTimelineEvents(string matchId, IEnumerable<TimelineEvent> timelineEvents = null)
         {
-            timelineEvents = timelineEvents 
+            timelineEvents = timelineEvents
                 ?? new List<TimelineEvent>
                 {
                     A.Dummy<TimelineEvent>()
@@ -315,7 +379,7 @@ namespace Soccer.API.Tests.Matches
                 awayTeam ?? StubAwayLineups());
 
             dynamicRepository
-                .GetAsync<MatchLineups>(Arg.Is<GetMatchLineupsCriteria>(criteria 
+                .GetAsync<MatchLineups>(Arg.Is<GetMatchLineupsCriteria>(criteria
                     => criteria.MatchId == matchId
                         && criteria.Language == Language.en_US.DisplayName))
                 .Returns(Task.FromResult(matchLineups));
@@ -361,5 +425,7 @@ namespace Soccer.API.Tests.Matches
                     new Player(Player6ID, "player6 name", PlayerType.Forward, 6, Position.RightWinger, 3)
                 },
                 new List<Player>());
+
+        #endregion Match Lineups
     }
 }

@@ -8,11 +8,12 @@
     [MessagePackObject]
     public class MatchStatistic
     {
+        const int twoTeams = 2;
+
         public MatchStatistic() { }
 
         public MatchStatistic(Match match)
         {
-            const int twoTeams = 2;
             MatchId = match.Id;
 
             if (match.Teams != null

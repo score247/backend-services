@@ -236,7 +236,7 @@ namespace Soccer.API.Matches
             }
         }
 
-        private async Task<MatchStatistic> GetMatchStatisticData(string id)
+        internal async Task<MatchStatistic> GetMatchStatisticData(string id)
         {
             var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, Language.en_US));
 
