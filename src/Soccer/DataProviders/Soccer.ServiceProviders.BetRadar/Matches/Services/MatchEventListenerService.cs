@@ -16,7 +16,7 @@
     public class MatchEventListenerService : IMatchEventListenerService
     {
         private const int MillisecondsTimeout = 10 * 1000;
-        private const int DelayTime = 100;
+        private const int DelayTime = 5000;
         private const int FiveMinutes = 5;
         private const byte MaxRetryTimes = 5;
         private const int TimeDelayForStartingOtherEventListener = 500;
@@ -146,7 +146,7 @@
                     }
                 }
 
-                await logger.InfoAsync($"{DateTime.Now} - region {regionStream.Key} End of Stream");
+                await logger.ErrorAsync($"{DateTime.Now} - region {regionStream.Key} End of Stream");
             }
             catch (Exception ex)
             {
