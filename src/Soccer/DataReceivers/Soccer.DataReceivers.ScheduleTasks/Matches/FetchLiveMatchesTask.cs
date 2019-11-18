@@ -1,6 +1,5 @@
-﻿using System.Linq;
-using Soccer.DataReceivers.ScheduleTasks.Teams;
-using System;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
 using MassTransit;
@@ -13,11 +12,17 @@ using Soccer.DataProviders.Matches.Services;
 
 namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
+#pragma warning disable S109 // Magic numbers should not be used
+
     public interface IFetchLiveMatchesTask
     {
+        [DisableConcurrentExecution(timeoutInSeconds: 60)]
+        [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
         [Queue("highlive")]
         Task FetchLiveMatches();
     }
+
+#pragma warning restore S109 // Magic numbers should not be used
 
     public class FetchLiveMatchesTask : IFetchLiveMatchesTask
     {
@@ -53,11 +58,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                     continue;
                 }
 
-                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(
-                    task => task.FetchHeadToHeads(language, closedMatches));
-
-                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(
-                    task => task.FetchTeamResults(language, closedMatches));
+                //TODO: publish match result for storing H2H data
 
                 BackgroundJob.Enqueue<IFetchTimelineTask>(
                   task => task.FetchTimelines(closedMatches, language));

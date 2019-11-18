@@ -17,9 +17,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     public interface IFetchPostMatchesTask
     {
+        [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
         Task FetchPostMatches(int dateSpan);
 
+        [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
         Task FetchPostMatchesForDate(DateTime date, Language language, IEnumerable<League> majorLeagues);
     }

@@ -129,7 +129,14 @@
 
         private async Task LogApiException(Exception ex)
         {
-            var apiException = (ApiException)ex;
+            var apiException = ex as ApiException;
+
+            if (apiException == null)
+            {
+                await logger.ErrorAsync(ex.Message, ex);
+                return;
+            }
+
             var content = apiException.Content;
 
             if (IgnoreMessages.All(m => !content.Contains(m)))

@@ -15,9 +15,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     public interface IFetchTimelineTask
     {
+        [AutomaticRetry(Attempts = 1)]
         [Queue("mediumlive")]
         Task FetchTimelines(IEnumerable<Match> matches, Language language);
 
+        [AutomaticRetry(Attempts = 1)]
         [Queue("mediumlive")]
         Task FetchTimelines(string matchId, string region, Language language);
     }

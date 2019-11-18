@@ -12,15 +12,19 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
 {
     public interface IFetchHeadToHeadsTask
     {
+        [AutomaticRetry(Attempts = 1)]
         [Queue("medium")]
         void FetchHeadToHeads(Language language, IEnumerable<Match> matches);
 
+        [AutomaticRetry(Attempts = 1)]
         [Queue("medium")]
         void FetchTeamResults(Language language, IEnumerable<Match> matches);
 
+        [AutomaticRetry(Attempts = 1)]
         [Queue("medium")]
         Task FetchHeadToHeads(string homeTeamId, string awayTeamId, Language language);
 
+        [AutomaticRetry(Attempts = 1)]
         [Queue("medium")]
         Task FetchTeamResults(string teamId, Language language);
     }

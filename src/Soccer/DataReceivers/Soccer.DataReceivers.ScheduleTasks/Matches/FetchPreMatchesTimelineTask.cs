@@ -11,9 +11,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     public interface IFetchPreMatchesTimelineTask
     {
+        [AutomaticRetry(Attempts = 1)]
         [Queue("medium")]
         void FetchPreMatchTimeline(IList<Match> matches);
 
+        [AutomaticRetry(Attempts = 1)]
         [Queue("medium")]
         Task FetchPreMatchTimeline(string matchId, string region);
     }

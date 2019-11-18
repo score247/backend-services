@@ -14,9 +14,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     public interface IFetchMatchLineupsTask
     {
+        [AutomaticRetry(Attempts = 1)]
         [Queue("medium")]
         Task FetchMatchLineups(string matchId, string region, Language language);
 
+        [AutomaticRetry(Attempts = 1)]
         [Queue("medium")]
         Task FetchMatchLineups();
     }

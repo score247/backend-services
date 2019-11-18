@@ -12,6 +12,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
     public interface IFetchLiveMatchesTimelineTask
     {
+        [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
+        [DisableConcurrentExecution(timeoutInSeconds: 240)]
         [Queue("mediumlive")]
         Task FetchLiveMatchesTimeline();
     }
