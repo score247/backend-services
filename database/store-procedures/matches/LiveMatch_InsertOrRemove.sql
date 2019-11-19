@@ -19,6 +19,7 @@ BEGIN
 		IF NOT EXISTS (SELECT 1 FROM `LiveMatch` WHERE Id = @Id AND Language = language) 
         THEN			
 			 INSERT INTO `LiveMatch`
+             (`Id`, `Value`, `SportId`, `Language`, `LeagueId`, `EventDate`, `Region`, `LeagueSeasonId`, `CreatedTime`, `ModifiedTime`)
 			 SELECT 
 				Id, 
 				JSON_SET(`Value`,  '$.MatchResult', JSON_EXTRACT(newMatches, CONCAT('$[', ni, '].MatchResult'))) as `Value`,
@@ -27,6 +28,7 @@ BEGIN
 				LeagueId,
 				EventDate,
 				Region,
+                JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].LeagueSeason.Id'))),
 				now(),
 				now()
 				FROM `Match` as M

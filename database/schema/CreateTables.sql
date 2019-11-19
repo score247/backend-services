@@ -153,6 +153,15 @@ CREATE TABLE `Commentary_Archived` (
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE `LeagueSeason` (
+  `LeagueId` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `SeasonId` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Fetched` TINYINT NULL DEFAULT '0',
+  `FetchedDate` timestamp NULL DEFAULT NULL,
+  `CreatedTime` timestamp NULL DEFAULT NULL,
+  `ModifiedTime` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`SeasonId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 
