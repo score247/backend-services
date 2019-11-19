@@ -1,9 +1,11 @@
 ﻿namespace Soccer.API.Shared.Middlewares
 {
     using System;
+    using System.Collections.Generic;
     using System.IO;
     using System.Reflection;
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.OpenApi.Models;
 
@@ -23,14 +25,20 @@
             });
         }
 
-        public static void ConfigureSwagger(this IApplicationBuilder application)
+        public static void ConfigureSwagger(this IApplicationBuilder application, IConfiguration configuration)
         {
-            application
-                .UseSwagger()
-                .UseSwaggerUI(c =>
+            var basePath = configuration["HostingVirtualPath"];
+
+            application.UseSwagger(c =>
+            {
+                c.PreSerializeFilters.Add((swagger, httpReq) =>
                 {
-                    c.SwaggerEndpoint($"../swagger/v1/swagger.json", "Score247 Query API Docs");
+                    swagger.Servers.Add(new OpenApiServer { Url = basePath });
                 });
+            }).UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint($"../swagger/v1/swagger.json", "Score247 Query API Docs");
+            });
         }
     }
 }

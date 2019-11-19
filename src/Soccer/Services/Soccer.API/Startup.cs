@@ -61,7 +61,7 @@ namespace Soccer.API
                 app.ConfigureExceptionHandler();
                 app.UseHealthCheck();
                 app.UseDatabase(Configuration);
-                app.ConfigureSwagger();
+                app.ConfigureSwagger(Configuration);
                 app.UseRouting();
                 app.UseEndpoints(endpoints =>
                 {
