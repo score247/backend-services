@@ -42,7 +42,8 @@ namespace Soccer.Core.Leagues.Models
             string countryName,
             string countryCode,
             bool isInternational,
-            string region) : base(id, name)
+            string region,
+            string seasonId) : base(id, name)
         {
             Order = order;
             CategoryId = categoryId;
@@ -50,6 +51,7 @@ namespace Soccer.Core.Leagues.Models
             CountryCode = countryCode;
             IsInternational = isInternational;
             Region = region;
+            SeasonId = seasonId;
         }
 
 #pragma warning restore S107 // Methods should not have too many parameters
@@ -73,6 +75,9 @@ namespace Soccer.Core.Leagues.Models
 
         [Key(7)]
         public string Region { get; private set; }
+
+        [Key(8)]
+        public string SeasonId { get; private set; }
 
 #pragma warning restore S109 // Magic numbers should not be used
 

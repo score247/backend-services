@@ -10,9 +10,9 @@ namespace Soccer.Core.Leagues.QueueMessages
         string Language { get; }
     }
 
-    public class LeaguesSyncedMessage : ILeaguesFetchedMessage
+    public class LeaguesFetchedMessage : ILeaguesFetchedMessage
     {
-        public LeaguesSyncedMessage(IEnumerable<League> leagues, string language)
+        public LeaguesFetchedMessage(IEnumerable<League> leagues, string language)
         {
             Leagues = leagues;
             Language = language;

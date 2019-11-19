@@ -53,7 +53,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             {
                 var leaguesBatch = soccerLeagues.Skip(i * batchSize).Take(batchSize);
 
-                await messageBus.Publish<ILeaguesFetchedMessage>(new LeaguesSyncedMessage(leaguesBatch, language.DisplayName));
+                await messageBus.Publish<ILeaguesFetchedMessage>(new LeaguesFetchedMessage(leaguesBatch, language.DisplayName));
             }
         }
     }

@@ -26,7 +26,8 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
                 tournament.category?.name,
                 tournament.category?.country_code ?? "",
                 isInternationalLeague,
-                region);
+                region,
+                tournament.current_season?.id ?? "");
         }
 
         public static LeagueRound MapLeagueRound(TournamentRoundDto tournamentRound)

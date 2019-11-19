@@ -18,10 +18,10 @@ namespace Soccer.EventProcessors.Leagues
             this.dynamicRepository = dynamicRepository;
         }
 
-        public async Task Consume(ConsumeContext<ILeaguesFetchedMessage> context)
+        public Task Consume(ConsumeContext<ILeaguesFetchedMessage> context)
         {
             var message = context.Message;
-            await InsertOrUpdateLeagues(message.Leagues, message.Language);
+            return InsertOrUpdateLeagues(message.Leagues, message.Language);
         }
 
         private async Task InsertOrUpdateLeagues(IEnumerable<League> leagues, string language)
@@ -31,18 +31,20 @@ namespace Soccer.EventProcessors.Leagues
 
             var countryLeagues = leagues.Where(league => !league.IsInternational);
             await InsertOrUpdateCountryLeagues(countryLeagues, language);
+
+            //TODO insert into league_season
         }
 
-        private async Task InsertOrUpdateInternationalLeagues(IEnumerable<League> leagues, string language)
+        private Task InsertOrUpdateInternationalLeagues(IEnumerable<League> leagues, string language)
         {
             var command = new InsertOrUpdateInternationalLeaguesCommand(leagues, language);
-            await dynamicRepository.ExecuteAsync(command);
+            return dynamicRepository.ExecuteAsync(command);
         }
 
-        private async Task InsertOrUpdateCountryLeagues(IEnumerable<League> leagues, string language)
+        private Task InsertOrUpdateCountryLeagues(IEnumerable<League> leagues, string language)
         {
             var command = new InsertOrUpdateCountryLeaguesCommand(leagues, language);
-            await dynamicRepository.ExecuteAsync(command);
+            return dynamicRepository.ExecuteAsync(command);
         }
     }
 }
