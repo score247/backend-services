@@ -29,7 +29,7 @@
                 .UseSwagger()
                 .UseSwaggerUI(c =>
                 {
-                    c.SwaggerEndpoint("v1/swagger.json", "Score247 Query API Docs");
+                    c.SwaggerEndpoint($"../swagger/v1/swagger.json", "Score247 Query API Docs");
                 });
         }
     }
