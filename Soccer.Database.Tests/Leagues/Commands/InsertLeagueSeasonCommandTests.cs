@@ -9,7 +9,7 @@ namespace Soccer.Database.Tests.Leagues.Commands
     {
         private readonly InsertLeagueSeasonCommand command;
 
-        public InsertLeagueSeasonCommandTests() 
+        public InsertLeagueSeasonCommandTests()
         {
             command = new InsertLeagueSeasonCommand(A.CollectionOfDummy<League>(5));
         }

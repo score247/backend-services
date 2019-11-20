@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Soccer.Core.Shared.Enumerations;
+﻿using Soccer.Core.Shared.Enumerations;
 using Soccer.DataProviders.SportRadar.Leagues.DataMappers;
 using Soccer.DataProviders.SportRadar.Leagues.Dtos;
 using Xunit;
@@ -17,7 +14,7 @@ namespace Soccer.DateProviders.SportRadar.Matches.DataMappers
         [InlineData("categoryName", "", "tournamentName", "1B", "tournamentName:: Group B")]
         [InlineData("categoryName", "countryCode", "tournamentName", "tournamentName", "categoryName tournamentName")]
         public void MapLeagueName_Rule1_TypeIsGroup_ReturnLeagueGroupName(
-            string categoryName,  string countryCode, string tournamentName, string group, string expectedLeagueName)
+            string categoryName, string countryCode, string tournamentName, string group, string expectedLeagueName)
         {
             var league = LeagueMapper.MapLeague(StubTournamentDto(categoryName, countryCode, tournamentName), "region");
             var leagueRound = LeagueMapper.MapLeagueRound(StubTournamentRoundDto(group: group));
@@ -35,7 +32,7 @@ namespace Soccer.DateProviders.SportRadar.Matches.DataMappers
            string categoryName, string countryCode, string tournamentName, string name, string expectedLeagueName)
         {
             var league = LeagueMapper.MapLeague(StubTournamentDto(categoryName, countryCode, tournamentName), "region");
-            var leagueRound = LeagueMapper.MapLeagueRound(StubTournamentRoundDto(type:"cup", name: name));
+            var leagueRound = LeagueMapper.MapLeagueRound(StubTournamentRoundDto(type: "cup", name: name));
 
             var leagueGroupName = LeagueMapper.MapLeagueGroupName(league, leagueRound, Language.en_US);
 
@@ -99,8 +96,8 @@ namespace Soccer.DateProviders.SportRadar.Matches.DataMappers
             };
 
         private TournamentRoundDto StubTournamentRoundDto(
-            string type = "group", 
-            string name = "tournament round name", 
+            string type = "group",
+            string name = "tournament round name",
             string group = "B",
             string phase = "phase")
             => new TournamentRoundDto

@@ -2,12 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
-using Hangfire.Common;
 using MassTransit;
 using Score247.Shared.Enumerations;
 using Soccer.Core.Matches.Events;
 using Soccer.Core.Shared.Enumerations;
-using Soccer.Core.Teams.QueueMessages;
 using Soccer.DataProviders._Shared.Enumerations;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.Matches.Services;

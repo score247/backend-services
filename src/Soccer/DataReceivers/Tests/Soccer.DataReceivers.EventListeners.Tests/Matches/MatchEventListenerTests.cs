@@ -11,7 +11,6 @@ using Soccer.Core.Shared.Enumerations;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.Matches.Services;
 using Soccer.DataReceivers.EventListeners.Matches;
-using Soccer.DataReceivers.Odds;
 using Xunit;
 
 namespace Soccer.DataReceivers.EventListeners.Tests.Matches

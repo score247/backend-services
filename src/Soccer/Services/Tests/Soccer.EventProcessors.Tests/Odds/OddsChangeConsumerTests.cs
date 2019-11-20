@@ -14,7 +14,6 @@
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Odds.Messages;
     using Soccer.Core.Odds.Models;
-    using Soccer.Core.Shared.Enumerations;
     using Soccer.Database.Odds.Criteria;
     using Soccer.EventProcessors.Odds;
     using Soccer.EventProcessors.Shared.Configurations;
@@ -86,10 +85,10 @@
             var oddsChangeMessage = new OddsChangeMessage(new List<MatchOdds>
             {
                 new MatchOdds("matchId", Enumerable.Empty<BetTypeOdds>())
-            }, 
+            },
             new MatchEvent(
-                "leagueId", 
-                "matchId", 
+                "leagueId",
+                "matchId",
                 A.Dummy<MatchResult>(),
                 A.Dummy<TimelineEvent>()));
             context.Message.Returns(oddsChangeMessage);

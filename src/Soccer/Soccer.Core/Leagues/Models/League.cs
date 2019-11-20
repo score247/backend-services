@@ -34,8 +34,8 @@ namespace Soccer.Core.Leagues.Models
 
         public League(League league, string leagueName)
             : this(
-                  league.Id, 
-                  leagueName, 
+                  league.Id,
+                  leagueName,
                   league.Order,
                   league.CategoryId,
                   league.CountryName,

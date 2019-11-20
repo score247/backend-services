@@ -234,7 +234,7 @@ namespace Soccer.API.Matches.Helpers
                 card.CustomAttributes.Add(tranformAttributeName, $"translate({cardX},{cardY})");
             }
 
-            if(card != null)
+            if (card != null)
             {
                 card.CustomAttributes.Add("filter", $"url(#shadow)");
             }
@@ -410,7 +410,7 @@ namespace Soccer.API.Matches.Helpers
 
             group.Children.Add(new SvgRectangle
             {
-                 Width = cardWidth,
+                Width = cardWidth,
                 Height = cardHeight,
                 CornerRadiusX = 1,
                 X = 2,

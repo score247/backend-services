@@ -127,15 +127,15 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
 
             if (!string.IsNullOrWhiteSpace(groupName))
             {
-                convertedGroupName = 
-                    groupName.Length == 1 
-                        ? groupName.ToUpperInvariant() 
+                convertedGroupName =
+                    groupName.Length == 1
+                        ? groupName.ToUpperInvariant()
                         : ExtractGroupName(league, groupName);
             }
 
             // Should multiple languages here
-            convertedGroupName = string.IsNullOrWhiteSpace(convertedGroupName) 
-                ? string.Empty 
+            convertedGroupName = string.IsNullOrWhiteSpace(convertedGroupName)
+                ? string.Empty
                 : $"{termsplit} Group {convertedGroupName}";
 
             return BuildLeagueWithCountryName(league) + convertedGroupName;
@@ -148,7 +148,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
 
         private static string BuildLeagueWithCountryName(League league, string countryName = null)
         {
-            if(league.IsInternational)
+            if (league.IsInternational)
             {
                 return league.Name;
             }

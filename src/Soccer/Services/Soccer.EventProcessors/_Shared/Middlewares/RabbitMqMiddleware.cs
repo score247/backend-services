@@ -184,7 +184,6 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<FetchHeadToHeadConsumer>(provider);
-                    e.Consumer<FetchHeadToHeadConsumer>(provider);
                 });
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchLineups", e =>
