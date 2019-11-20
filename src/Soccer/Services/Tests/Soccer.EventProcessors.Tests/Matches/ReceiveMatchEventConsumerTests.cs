@@ -49,7 +49,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         }
 
         [Fact]
-        public async Task Consume_ScoreChangeInPenalty_ShouldNotMatchEventProcessed()
+        public async Task Consume_LeaguesFetchedMessage_ShouldNotMatchEventProcessed()
         {
             context.Message.Returns(new MatchEventReceivedMessage(new MatchEvent(
                 "sr:league",

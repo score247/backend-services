@@ -18,10 +18,17 @@ namespace Soccer.EventProcessors.Leagues
             this.dynamicRepository = dynamicRepository;
         }
 
-        public Task Consume(ConsumeContext<ILeaguesFetchedMessage> context)
+        public async Task Consume(ConsumeContext<ILeaguesFetchedMessage> context)
         {
             var message = context.Message;
-            return InsertOrUpdateLeagues(message.Leagues, message.Language);
+
+            if (message.Leagues?.Any() == false)
+            {
+                return;
+            }
+
+            await InsertOrUpdateLeagues(message.Leagues, message.Language);
+            await InsertLeagueSeasons(message.Leagues, message.Language);
         }
 
         private async Task InsertOrUpdateLeagues(IEnumerable<League> leagues, string language)
@@ -31,8 +38,6 @@ namespace Soccer.EventProcessors.Leagues
 
             var countryLeagues = leagues.Where(league => !league.IsInternational);
             await InsertOrUpdateCountryLeagues(countryLeagues, language);
-
-            await InsertLeagueSeasons(leagues, language);
         }
 
         private Task InsertOrUpdateInternationalLeagues(IEnumerable<League> leagues, string language)
