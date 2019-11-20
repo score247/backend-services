@@ -82,7 +82,6 @@ CREATE TABLE `Lineups` (
   `ModifiedTime` timestamp NOT NULL,
   PRIMARY KEY (`MatchId`,`Language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `Lineups_Archived`

@@ -1,0 +1,9 @@
+{
+  "Connections": [
+    {
+      "host": "10.18.200.109",
+      "port": "3386",
+      "database": "score247_local_main"
+    }
+  ]
+}

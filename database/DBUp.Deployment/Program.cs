@@ -1,33 +1,75 @@
 ﻿using DbUp;
 using DbUp.Helpers;
+using DBUp.Deployment.Models;
 using DBUp.Deployment.PreProcessors;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 
 namespace DBUp.Deployment
 {
     public static class Program
     {
+
         private static int Main(string[] args)
         {
-            //LOCAL DEV
-            var connectionString = "Data Source=10.18.200.109;Port=3396;Initial Catalog=score247_local_dev;Persist Security Info=True;User ID=root;Password=1234AA@PASS;Allow User Variables=True;";
-            //var connectionString = "Data Source=10.18.200.109;Port=3396;Initial Catalog=score247_local_dev1;Persist Security Info=True;User ID=root;Password=1234AA@PASS;Allow User Variables=True;";
-            // var connectionString = "Data Source=10.18.200.109;Port=3396;Initial Catalog=score247_local_dev2;Persist Security Info=True;User ID=root;Password=1234AA@PASS;Allow User Variables=True;";
+            var settingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "app-settings.dev.json");
+            var settings = File.ReadAllText(settingPath);
+            var connectionConfiguration = JsonConvert.DeserializeObject<ConnectionConfiguration>(settings);
 
-            //LOCAL TEST
-            // var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_test;Persist Security Info=True;User ID=user;Password=1234aa;Allow User Variables=True;";
+            foreach (var config in connectionConfiguration.Connections)
+            {
+                // InstallNewDatabase(config.ToString());
+                Console.ForegroundColor = ConsoleColor.Blue;
 
-            //LOCAL MAIN
-            //var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_main;Persist Security Info=True;User ID=root;Password=1234AA@PASS;Allow User Variables=True;";
+                Console.WriteLine("==============");
+                Console.WriteLine($"Deploying scripts to {config.Database} database");
+                Console.WriteLine();
 
+                Console.ResetColor();
+
+                InstallStoredProcedures(config.ToString());
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Success!");
+            Console.ResetColor();
+            return 0;
+        }
+
+
+        public static int InstallNewDatabase(string connectionString)
+        {
+            //1. run schema scripts: create tables + indexes
+            InstallSchemas(connectionString);
+
+            //2. create event schedulers
+
+            //3. run sp
+            InstallStoredProcedures(connectionString);
+
+            return 0;
+        }
+
+        public static int InstallSchemas(string connectionString)
+        {
+            var dir = new DirectoryInfo("../../../../schema").FullName;
+
+            return RunScripts(connectionString, new string[] { dir });
+        }
+
+        public static int InstallStoredProcedures(string connectionString)
+        {
             var dir = new DirectoryInfo("../../../../store-procedures").FullName;
-
-            //Import Data
-            //var dir = new DirectoryInfo("../../../../import").FullName;
-
             var subDirs = Directory.GetDirectories(dir);
 
+            return RunScripts(connectionString, subDirs);
+        }
+
+        private static int RunScripts(string connectionString, string[] subDirs)
+        {
             foreach (var sub in subDirs)
             {
                 Console.WriteLine($"Deploying scripts in {sub}");
@@ -55,9 +97,6 @@ namespace DBUp.Deployment
                 }
             }
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Success!");
-            Console.ResetColor();
             return 0;
         }
     }
