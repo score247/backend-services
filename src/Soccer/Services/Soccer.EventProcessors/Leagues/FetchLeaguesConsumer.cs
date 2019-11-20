@@ -32,7 +32,7 @@ namespace Soccer.EventProcessors.Leagues
             var countryLeagues = leagues.Where(league => !league.IsInternational);
             await InsertOrUpdateCountryLeagues(countryLeagues, language);
 
-            //TODO insert into league_season
+            await InsertLeagueSeasons(leagues, language);
         }
 
         private Task InsertOrUpdateInternationalLeagues(IEnumerable<League> leagues, string language)
@@ -44,6 +44,13 @@ namespace Soccer.EventProcessors.Leagues
         private Task InsertOrUpdateCountryLeagues(IEnumerable<League> leagues, string language)
         {
             var command = new InsertOrUpdateCountryLeaguesCommand(leagues, language);
+            return dynamicRepository.ExecuteAsync(command);
+        }
+
+        private Task InsertLeagueSeasons(IEnumerable<League> leagues, string language)
+        {
+            var command = new InsertLeagueSeasonCommand(leagues, language);
+
             return dynamicRepository.ExecuteAsync(command);
         }
     }
