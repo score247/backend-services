@@ -110,7 +110,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
             if (leagueRound.Type == LeagueRoundType.CupRound
                 && !string.IsNullOrWhiteSpace(leagueRound?.Name))
             {
-                return $"{BuildLeagueWithCountryName(league)}{termsplit} {leagueRound.Name.Replace(underscore, space)}";
+                return $"{BuildLeagueWithCountryName(league)}{termsplit} {leagueRound.Name?.Replace(underscore, space)}";
             }
 
             return LeagueNameRule1GroupBuilder(league, leagueRound, language);
@@ -127,9 +127,10 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
 
             if (!string.IsNullOrWhiteSpace(groupName))
             {
-                convertedGroupName = groupName.Length == 1 
-                    ? groupName.ToUpperInvariant() 
-                    : ExtractGroupName(league, groupName);
+                convertedGroupName = 
+                    groupName.Length == 1 
+                        ? groupName.ToUpperInvariant() 
+                        : ExtractGroupName(league, groupName);
             }
 
             // Should multiple languages here
@@ -152,13 +153,16 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
                 return league.Name;
             }
 
-            var countryNameHasTwoNames = league.CountryName.Any(ch => ch == commaChar); 
-
-            if (countryNameHasTwoNames)
+            if (!string.IsNullOrWhiteSpace(league.CountryName))
             {
+                var countryNameHasTwoNames = league.CountryName.Any(ch => ch == commaChar);
+
+                if (countryNameHasTwoNames)
+                {
 #pragma warning disable S1226 // Method parameters, caught exceptions and foreach variables' initial values should not be ignored
-                countryName = league.CountryName.Substring(0, league.CountryName.IndexOf(commaChar));
+                    countryName = league.CountryName.Substring(0, league.CountryName.IndexOf(commaChar));
 #pragma warning restore S1226 // Method parameters, caught exceptions and foreach variables' initial values should not be ignored
+                }
             }
 
             return $"{countryName ?? league.CountryName} {league.Name}";
