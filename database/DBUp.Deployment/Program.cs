@@ -2,10 +2,7 @@
 using DbUp.Helpers;
 using DBUp.Deployment.PreProcessors;
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Reflection;
 
 namespace DBUp.Deployment
 {
@@ -15,7 +12,7 @@ namespace DBUp.Deployment
         {
             //LOCAL DEV
             //var connectionString = "Data Source=10.18.200.109;Port=3396;Initial Catalog=score247_local_dev;Persist Security Info=True;User ID=root;Password=1234AA@PASS;Allow User Variables=True;";
-            var connectionString = "Data Source=10.18.200.109;Port=3396;Initial Catalog=score247_local_test;Persist Security Info=True;User ID=root;Password=1234AA@PASS;Allow User Variables=True;";
+            var connectionString = "Data Source=10.18.200.109;Port=3396;Initial Catalog=score247_local_dev2;Persist Security Info=True;User ID=root;Password=1234AA@PASS;Allow User Variables=True;";
             // var connectionString = "Data Source=10.18.200.109;Port=3396;Initial Catalog=score247_local_dev2;Persist Security Info=True;User ID=root;Password=1234AA@PASS;Allow User Variables=True;";
 
             //LOCAL TEST
@@ -24,7 +21,10 @@ namespace DBUp.Deployment
             //LOCAL MAIN
             //var connectionString = "Data Source=10.18.200.109;Port=3386;Initial Catalog=score247_local_main;Persist Security Info=True;User ID=root;Password=1234AA@PASS;Allow User Variables=True;";
 
-            var dir = new DirectoryInfo("../../../../store-procedures").FullName;
+            //var dir = new DirectoryInfo("../../../../store-procedures").FullName;
+
+            //Import Data
+            //var dir = new DirectoryInfo("../../../../import").FullName;
 
             var subDirs = Directory.GetDirectories(dir);
 
