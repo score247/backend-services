@@ -156,6 +156,7 @@ CREATE TABLE `Commentary_Archived` (
 CREATE TABLE `LeagueSeason` (
   `LeagueId` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
   `SeasonId` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Region` VARCHAR(45) NOT NULL,
   `Fetched` TINYINT NULL DEFAULT '0',
   `FetchedDate` timestamp NULL DEFAULT NULL,
   `CreatedTime` timestamp NULL DEFAULT NULL,
