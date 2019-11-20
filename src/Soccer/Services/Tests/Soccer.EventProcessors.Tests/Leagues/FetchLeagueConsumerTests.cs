@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FakeItEasy;
 using Fanex.Data.Repository;
 using MassTransit;
 using NSubstitute;
+using Score247.Shared.Tests;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Leagues.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
@@ -20,7 +22,6 @@ namespace Soccer.EventProcessors.Tests.Leagues
         private readonly IDynamicRepository dynamicRepository;
         private readonly FetchLeaguesConsumer consumer;
 
-
         public FetchLeagueConsumerTests()
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
@@ -30,7 +31,7 @@ namespace Soccer.EventProcessors.Tests.Leagues
         }
 
         [Fact]
-        public async Task Consume_LeaguesFetchedMessage_EmptyLeagues_NotExecuteInsertLeagueSeasonCommand()
+        public async Task Consume_LeaguesFetchedMessage_EmptyLeagues_NotExecuteAnyCommands()
         {
             context.Message.Returns(new LeaguesFetchedMessage(
                 Enumerable.Empty<League>(),
@@ -39,7 +40,81 @@ namespace Soccer.EventProcessors.Tests.Leagues
 
             await consumer.Consume(context);
 
+            await dynamicRepository.DidNotReceive().ExecuteAsync(Arg.Any<InsertOrUpdateInternationalLeaguesCommand>());
+            await dynamicRepository.DidNotReceive().ExecuteAsync(Arg.Any<InsertOrUpdateCountryLeaguesCommand>());
             await dynamicRepository.DidNotReceive().ExecuteAsync(Arg.Any<InsertLeagueSeasonCommand>());
+        }
+
+        [Fact]
+        public async Task Consume_LeaguesFetchedMessage_NotHaveInternational_NotInsertOrUpdateInternationalLeagues()
+        {
+            context.Message.Returns(new LeaguesFetchedMessage(
+                new List<League>
+                {
+                    A.Dummy<League>().With(league => league.IsInternational, false),
+                    A.Dummy<League>().With(league => league.IsInternational, false),
+                    A.Dummy<League>().With(league => league.IsInternational, false)
+                },
+                Language.en_US.DisplayName
+                ));
+
+            await consumer.Consume(context);
+
+            await dynamicRepository.DidNotReceive().ExecuteAsync(Arg.Any<InsertOrUpdateInternationalLeaguesCommand>());
+        }
+
+        [Fact]
+        public async Task Consume_LeaguesFetchedMessage_HasInternational_InsertOrUpdateInternationalLeagues()
+        {
+            context.Message.Returns(new LeaguesFetchedMessage(
+                new List<League>
+                {
+                    A.Dummy<League>().With(league => league.IsInternational, true),
+                    A.Dummy<League>().With(league => league.IsInternational, true),
+                    A.Dummy<League>().With(league => league.IsInternational, false)
+                },
+                Language.en_US.DisplayName
+                ));
+
+            await consumer.Consume(context);
+
+            await dynamicRepository.Received(1).ExecuteAsync(Arg.Any<InsertOrUpdateInternationalLeaguesCommand>());
+        }
+
+        [Fact]
+        public async Task Consume_LeaguesFetchedMessage_NotHaveCountry_InsertOrUpdateCountryLeagues()
+        {
+            context.Message.Returns(new LeaguesFetchedMessage(
+                new List<League>
+                {
+                    A.Dummy<League>().With(league => league.IsInternational, true),
+                    A.Dummy<League>().With(league => league.IsInternational, true),
+                    A.Dummy<League>().With(league => league.IsInternational, true)
+                },
+                Language.en_US.DisplayName
+                ));
+
+            await consumer.Consume(context);
+
+            await dynamicRepository.DidNotReceive().ExecuteAsync(Arg.Any<InsertOrUpdateCountryLeaguesCommand>());
+        }
+
+        [Fact]
+        public async Task Consume_LeaguesFetchedMessage_HasCountry_InsertOrUpdateCountryLeagues()
+        {
+            context.Message.Returns(new LeaguesFetchedMessage(
+                new List<League>
+                {
+                    A.Dummy<League>().With(league => league.IsInternational, true),
+                    A.Dummy<League>().With(league => league.IsInternational, true),
+                    A.Dummy<League>().With(league => league.IsInternational, false)
+                },
+                Language.en_US.DisplayName
+                ));
+
+            await consumer.Consume(context);
+
+            await dynamicRepository.Received(1).ExecuteAsync(Arg.Any<InsertOrUpdateCountryLeaguesCommand>());
         }
 
         [Fact]

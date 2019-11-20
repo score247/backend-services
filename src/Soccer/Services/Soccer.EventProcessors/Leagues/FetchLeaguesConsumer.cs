@@ -34,10 +34,18 @@ namespace Soccer.EventProcessors.Leagues
         private async Task InsertOrUpdateLeagues(IEnumerable<League> leagues, string language)
         {
             var internationalLeagues = leagues.Where(league => league.IsInternational);
-            await InsertOrUpdateInternationalLeagues(internationalLeagues, language);
+
+            if (internationalLeagues?.Any() == true)
+            {
+                await InsertOrUpdateInternationalLeagues(internationalLeagues, language);
+            }
 
             var countryLeagues = leagues.Where(league => !league.IsInternational);
-            await InsertOrUpdateCountryLeagues(countryLeagues, language);
+
+            if (countryLeagues?.Any() == true)
+            {
+                await InsertOrUpdateCountryLeagues(countryLeagues, language);
+            }
         }
 
         private Task InsertOrUpdateInternationalLeagues(IEnumerable<League> leagues, string language)
