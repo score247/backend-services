@@ -42,7 +42,6 @@ namespace Soccer.EventProcessors.Tests.Leagues
 
             await dynamicRepository.DidNotReceive().ExecuteAsync(Arg.Any<InsertOrUpdateInternationalLeaguesCommand>());
             await dynamicRepository.DidNotReceive().ExecuteAsync(Arg.Any<InsertOrUpdateCountryLeaguesCommand>());
-            await dynamicRepository.DidNotReceive().ExecuteAsync(Arg.Any<InsertLeagueSeasonCommand>());
         }
 
         [Fact]
@@ -115,19 +114,6 @@ namespace Soccer.EventProcessors.Tests.Leagues
             await consumer.Consume(context);
 
             await dynamicRepository.Received(1).ExecuteAsync(Arg.Any<InsertOrUpdateCountryLeaguesCommand>());
-        }
-
-        [Fact]
-        public async Task Consume_LeaguesFetchedMessage_ExecuteInsertLeagueSeasonCommand()
-        {
-            context.Message.Returns(new LeaguesFetchedMessage(
-                A.CollectionOfDummy<League>(5),
-                Language.en_US.DisplayName
-                ));
-
-            await consumer.Consume(context);
-
-            await dynamicRepository.Received(1).ExecuteAsync(Arg.Any<InsertLeagueSeasonCommand>());
         }
     }
 }

@@ -28,7 +28,6 @@ namespace Soccer.EventProcessors.Leagues
             }
 
             await InsertOrUpdateLeagues(message.Leagues, message.Language);
-            await InsertLeagueSeasons(message.Leagues, message.Language);
         }
 
         private async Task InsertOrUpdateLeagues(IEnumerable<League> leagues, string language)
@@ -57,13 +56,6 @@ namespace Soccer.EventProcessors.Leagues
         private Task InsertOrUpdateCountryLeagues(IEnumerable<League> leagues, string language)
         {
             var command = new InsertOrUpdateCountryLeaguesCommand(leagues, language);
-            return dynamicRepository.ExecuteAsync(command);
-        }
-
-        private Task InsertLeagueSeasons(IEnumerable<League> leagues, string language)
-        {
-            var command = new InsertLeagueSeasonCommand(leagues, language);
-
             return dynamicRepository.ExecuteAsync(command);
         }
     }
