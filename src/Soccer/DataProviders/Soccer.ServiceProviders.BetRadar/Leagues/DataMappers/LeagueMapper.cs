@@ -200,7 +200,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
             LeagueRound leagueRound,
             Language language)
         {
-            if (leagueRound.Phase != null)
+            if (leagueRound?.Phase != null)
             {
                 var isPlayOffs = leagueRound.Phase.Equals(playoffs, StringComparison.InvariantCultureIgnoreCase);
 
