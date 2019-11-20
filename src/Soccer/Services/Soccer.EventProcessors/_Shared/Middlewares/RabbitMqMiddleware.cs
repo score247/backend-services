@@ -50,9 +50,8 @@
                 serviceCollectionConfigurator.AddConsumer<FetchLeaguesConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchTimelinesConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchCommentaryConsumer>();
-                serviceCollectionConfigurator.AddConsumer<FetchHeadToHeadConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchMatchLineupsConsumer>();
-                serviceCollectionConfigurator.AddConsumer<FetchTeamResultsConsumer>();
+                serviceCollectionConfigurator.AddConsumer<FetchHeadToHeadConsumer>();
                 serviceCollectionConfigurator.AddConsumer<CleanMajorLeaguesCacheConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchLeaguesSeasonConsumer>();
             });
@@ -185,7 +184,7 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<FetchHeadToHeadConsumer>(provider);
-                    e.Consumer<FetchTeamResultsConsumer>(provider);
+                    e.Consumer<FetchHeadToHeadConsumer>(provider);
                 });
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchLineups", e =>

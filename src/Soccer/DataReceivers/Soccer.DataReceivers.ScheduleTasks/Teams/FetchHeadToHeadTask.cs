@@ -22,6 +22,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
 
         [AutomaticRetry(Attempts = 1)]
         [Queue("medium")]
+        Task PublishHeadToHeads(Language language, IEnumerable<Match> matches);
+
+        [AutomaticRetry(Attempts = 1)]
+        [Queue("medium")]
         Task FetchHeadToHeads(string homeTeamId, string awayTeamId, Language language);
 
         [AutomaticRetry(Attempts = 1)]
@@ -46,8 +50,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
         {
             foreach (var match in matches)
             {
-                var homeTeamId = match.Teams.FirstOrDefault(t => t.IsHome)?.Id;
-                var awayTeamId = match.Teams.FirstOrDefault(t => !t.IsHome)?.Id;
+                (var homeTeamId, var awayTeamId) = GenerateTeamId(match);
 
                 BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
                     t.FetchHeadToHeads(homeTeamId, awayTeamId, language));
@@ -58,8 +61,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
         {
             foreach (var match in matches)
             {
-                var homeTeamId = match.Teams.FirstOrDefault(t => t.IsHome)?.Id;
-                var awayTeamId = match.Teams.FirstOrDefault(t => !t.IsHome)?.Id;
+                (var homeTeamId, var awayTeamId) = GenerateTeamId(match);
 
                 BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
                     t.FetchTeamResults(homeTeamId, language));
@@ -83,7 +85,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
                 foreach (var headToHeadMatch in headToHeadMatches)
                 {
                     await messageBus.Publish<IHeadToHeadFetchedMessage>(
-                          new HeadToHeadFetchedMessage(homeTeamId, awayTeamId, headToHeadMatch, language));
+                          new HeadToHeadFetchedMessage(headToHeadMatch, language));
                 }
             }
         }
@@ -101,10 +103,23 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
             {
                 foreach (var teamResult in teamResults)
                 {
-                    await messageBus.Publish<ITeamResultsFetchedMessage>(
-                        new TeamResultsFetchedMessage(teamResult, language));
+                    await messageBus.Publish<IHeadToHeadFetchedMessage>(
+                        new HeadToHeadFetchedMessage(teamResult, language));
                 }
             }
         }
+
+        public async Task PublishHeadToHeads(Language language, IEnumerable<Match> matches)
+        {
+            foreach (var match in matches)
+            {
+                await messageBus.Publish<IHeadToHeadFetchedMessage>(
+                        new HeadToHeadFetchedMessage(match, language));
+            }
+        }
+
+        private static (string, string) GenerateTeamId(Match match)
+            => (match.Teams.FirstOrDefault(t => t.IsHome)?.Id,
+                match.Teams.FirstOrDefault(t => !t.IsHome)?.Id);
     }
 }

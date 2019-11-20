@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Fanex.Data.Repository;
 using MassTransit;
 using Soccer.Core.Leagues.Extensions;
@@ -25,15 +26,18 @@ namespace Soccer.EventProcessors.Teams
         {
             var message = context?.Message;
 
-            if (message != null)
+            if (message?.Match != null)
             {
                 var majorLeagues = await leagueService.GetMajorLeagues();
-                message.HeadToHeadMatch.League.UpdateMajorLeagueInfo(majorLeagues);
+                message.Match.League.UpdateMajorLeagueInfo(majorLeagues);
+
+                var homeTeamId = message.Match.Teams?.FirstOrDefault(t => t.IsHome)?.Id;
+                var awayTeamId = message.Match.Teams?.FirstOrDefault(t => !t.IsHome)?.Id;
 
                 await dynamicRepository.ExecuteAsync(new InsertOrUpdateHeadToHeadCommand(
-                    message.HomeTeamId,
-                    message.AwayTeamId,
-                    message.HeadToHeadMatch,
+                    homeTeamId,
+                    awayTeamId,
+                    message.Match,
                     message.Language));
             }
         }
