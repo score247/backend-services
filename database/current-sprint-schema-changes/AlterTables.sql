@@ -1,9 +1,3 @@
-ALTER TABLE `Timeline` 
-ADD COLUMN `Language` VARCHAR(10) NOT NULL DEFAULT 'en-US' AFTER `Value`,
-DROP PRIMARY KEY,
-ADD PRIMARY KEY (`Id`, `MatchId`, `Language`);
-;
-
 ALTER TABLE `Match` 
 ADD COLUMN `LeagueSeasonId` VARCHAR(45) NULL DEFAULT NULL AFTER `Region`;
 
