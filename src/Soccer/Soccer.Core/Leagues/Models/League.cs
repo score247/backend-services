@@ -32,6 +32,21 @@ namespace Soccer.Core.Leagues.Models
             Region = region;
         }
 
+        public League(League league, string leagueName)
+            : this(
+                  league.Id, 
+                  leagueName, 
+                  league.Order,
+                  league.CategoryId,
+                  league.CountryName,
+                  league.CountryCode,
+                  league.IsInternational,
+                  league.Region,
+                  league.SeasonId)
+        {
+
+        }
+
         [SerializationConstructor, JsonConstructor]
 #pragma warning disable S107 // Methods should not have too many parameters
         public League(

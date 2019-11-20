@@ -56,6 +56,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.Services
                           timelineDto.sport_event_status,
                           timelineDto.sport_event_conditions,
                           region,
+                          language,
                           GetTimelines(timelineDto),
                           GetCoverageInfo(timelineDto));
 

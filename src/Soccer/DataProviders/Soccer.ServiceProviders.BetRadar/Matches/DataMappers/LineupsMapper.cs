@@ -2,6 +2,7 @@
 using System.Linq;
 using Score247.Shared.Enumerations;
 using Soccer.Core.Matches.Models;
+using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.Models;
 using Soccer.DataProviders.SportRadar._Shared;
 using Soccer.DataProviders.SportRadar.Matches.Dtos;
@@ -19,7 +20,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                 return default;
             }
 
-            var match = MatchMapper.MapMatch(matchLineupsDto.sport_event, null, null, region);
+            var match = MatchMapper.MapMatch(matchLineupsDto.sport_event, null, null, region, Language.en_US);
 
             var homeTeam = MapTeamLineups(match.Teams.FirstOrDefault(t => t.IsHome), matchLineupsDto.lineups);
             var awayTeam = MapTeamLineups(match.Teams.FirstOrDefault(t => !t.IsHome), matchLineupsDto.lineups);

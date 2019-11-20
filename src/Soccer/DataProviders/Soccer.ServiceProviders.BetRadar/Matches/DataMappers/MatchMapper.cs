@@ -2,6 +2,7 @@
 using System.Linq;
 using Newtonsoft.Json;
 using Score247.Shared.Enumerations;
+using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.DataProviders.SportRadar._Shared;
@@ -18,16 +19,22 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
             SportEventStatusDto sportEventStatus,
             SportEventConditions sportEventConditions,
             string region,
+            Language language,
             IEnumerable<TimelineEvent> timelineEvents = null,
             Coverage coverage = null)
-            => new Match(
+        {
+            var league = LeagueMapper.MapLeague(sportEvent.tournament, region);
+            var leagueRound = LeagueMapper.MapLeagueRound(sportEvent.tournament_round);
+            var leagueName = LeagueMapper.MapLeagueGroupName(league, leagueRound, language);
+
+            return new Match(
                     sportEvent.id,
                     sportEvent.scheduled,
                     sportEvent.scheduled,
                     TeamMapper.MapTeams(sportEvent),
                     MapMatchResult(sportEvent.status, sportEventStatus),
-                    LeagueMapper.MapLeague(sportEvent.tournament, region),
-                    LeagueMapper.MapLeagueRound(sportEvent.tournament_round),
+                    string.IsNullOrEmpty(leagueName) ? league : new League(league, leagueName),
+                    leagueRound,
                     timelineEvents,
                     null,
                     sportEventConditions?.attendance ?? 0,
@@ -36,6 +43,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                     region,
                     coverage,
                     LeagueMapper.MapLeagueSeason(sportEvent.season));
+        }
 
         public static MatchResult MapMatchResult(string status, SportEventStatusDto sportEventStatus = null)
         {

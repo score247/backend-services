@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Soccer.Core.Matches.Models;
+using Soccer.Core.Shared.Enumerations;
 using Soccer.DataProviders.SportRadar.Matches.DataMappers;
 using Soccer.DataProviders.SportRadar.Matches.Dtos;
 using Soccer.DataProviders.SportRadar.Teams.Dtos;
@@ -40,7 +41,8 @@ namespace Soccer.DataProviders.SportRadar.Teams.DataMappers
                         schedule,
                         null,
                         null,
-                        region);
+                        region,
+                        Language.en_US);
 
                 teamHeadToHeads.Add(match);
             }
@@ -63,7 +65,8 @@ namespace Soccer.DataProviders.SportRadar.Teams.DataMappers
                         teamResult.sport_event,
                         teamResult.sport_event_status,
                         null,
-                        region);
+                        region,
+                        Language.en_US);
 
                 teamHeadToHeads.Add(match);
             }

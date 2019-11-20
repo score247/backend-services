@@ -102,12 +102,6 @@
         }
 
 
-        [Fact]
-        public async Task Consume_TimelineEventNotInclude_DoesNotExecuteFetchAsync()
-        {
-
-        }
-
         private static MatchOdds StubMatchOdds(DateTime? lastUpdatedTime = null)
         {
             var lastUpdate = lastUpdatedTime ?? new DateTimeOffset(2019, 1, 2, 0, 0, 0, new TimeSpan(7, 0, 0)).DateTime;

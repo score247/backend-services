@@ -1,11 +1,11 @@
-﻿namespace Soccer.Core.Matches.Models
-{
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using MessagePack;
-    using Shared.Enumerations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using MessagePack;
+using Soccer.Core.Shared.Enumerations;
 
+namespace Soccer.Core.Matches.Models
+{
     [MessagePackObject]
 #pragma warning disable S109 // Magic numbers should not be used
     public class MatchSummary
@@ -45,7 +45,11 @@
             DateTimeOffset modifiedTime,
             bool isInternationalLeague,
             int leagueOrder,
-            string leagueSeasonId)
+            string leagueSeasonId,
+            LeagueRoundType leagueRoundType,
+            string leagueRoundName,
+            int leagueRoundNumber,
+            string leagueRoundGroup)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             Id = id;
@@ -80,6 +84,10 @@
             IsInternationalLeague = isInternationalLeague;
             LeagueOrder = leagueOrder;
             LeagueSeasonId = leagueSeasonId;
+            LeagueRoundType = leagueRoundType;
+            LeagueRoundName = leagueRoundName;
+            LeagueRoundNumber = leagueRoundNumber;
+            LeagueRoundGroup = leagueRoundGroup;
         }
 
         public MatchSummary()
@@ -110,6 +118,10 @@
                 IsInternationalLeague = match.League.IsInternational;
                 LeagueOrder = match.League.Order;
                 LeagueSeasonId = match.LeagueSeason?.Id;
+                LeagueRoundGroup = match.LeagueRound?.Group;
+                LeagueRoundType = match.LeagueRound?.Type;
+                LeagueRoundNumber = match.LeagueRound?.Number ?? 0;
+                LeagueRoundName = match.LeagueRound?.Name;
             }
         }
 
@@ -270,6 +282,18 @@
 
         [Key(31)]
         public string LeagueSeasonId { get; private set; }
+
+        [Key(32)]
+        public LeagueRoundType LeagueRoundType { get; private set; }
+
+        [Key(33)]
+        public string LeagueRoundName { get; private set; }
+
+        [Key(34)]
+        public int LeagueRoundNumber { get; private set; }
+
+        [Key(35)]
+        public string LeagueRoundGroup { get; private set; }
     }
 
 #pragma warning restore S109 // Magic numbers should not be used

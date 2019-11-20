@@ -13,7 +13,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
     public interface IFetchLiveMatchesTimelineTask
     {
         [AutomaticRetry(Attempts = 0, OnAttemptsExceeded = AttemptsExceededAction.Delete)]
+#pragma warning disable S109 // Magic numbers should not be used
         [DisableConcurrentExecution(timeoutInSeconds: 240)]
+#pragma warning restore S109 // Magic numbers should not be used
         [Queue("mediumlive")]
         Task FetchLiveMatchesTimeline();
     }
