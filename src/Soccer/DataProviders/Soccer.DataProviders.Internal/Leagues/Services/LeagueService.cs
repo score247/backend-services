@@ -17,7 +17,7 @@ namespace Soccer.DataProviders.Internal.Leagues.Services
         Task<IEnumerable<League>> GetMajorLeagues(string language);
 
         [Get("/soccer/{language}/leagues/season/unprocessed")]
-        Task<IEnumerable<LeagueSeasonProcessedInfo>> GetUnprocessedLeagueSeason();
+        Task<IEnumerable<LeagueSeasonProcessedInfo>> GetUnprocessedLeagueSeason(string language);
     }
 
     public class InternalLeagueService : ILeagueService, ILeagueSeasonService
@@ -72,7 +72,7 @@ namespace Soccer.DataProviders.Internal.Leagues.Services
         {
             try
             {
-                return await leagueApi.GetUnprocessedLeagueSeason();
+                return await leagueApi.GetUnprocessedLeagueSeason(Language.en_US.DisplayName);
             }
             catch (Exception ex)
             {
