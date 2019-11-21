@@ -7,7 +7,7 @@ namespace Soccer.Core.Leagues.Models
     [MessagePackObject(keyAsPropertyName: true)]
     public class LeagueSeasonProcessedInfo
     {
-        [JsonConstructor]
+        [SerializationConstructor, JsonConstructor]
         public LeagueSeasonProcessedInfo(string leagueId, string seasonId, string region, bool fetched, DateTimeOffset fetchedDate) 
         {
             LeagueId = leagueId;
