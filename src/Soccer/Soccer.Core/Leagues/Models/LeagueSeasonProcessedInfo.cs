@@ -8,7 +8,7 @@ namespace Soccer.Core.Leagues.Models
     public class LeagueSeasonProcessedInfo
     {
         [SerializationConstructor, JsonConstructor]
-        public LeagueSeasonProcessedInfo(string leagueId, string seasonId, string region, sbyte fetched, DateTimeOffset fetchedDate) 
+        public LeagueSeasonProcessedInfo(string leagueId, string seasonId, string region, sbyte fetched, DateTime fetchedDate) 
         {
             LeagueId = leagueId;
             SeasonId = seasonId;
@@ -25,6 +25,6 @@ namespace Soccer.Core.Leagues.Models
 
         public bool Fetched { get; }
 
-        public DateTimeOffset FetchedDate { get; }
+        public DateTime FetchedDate { get; }
     }
 }
