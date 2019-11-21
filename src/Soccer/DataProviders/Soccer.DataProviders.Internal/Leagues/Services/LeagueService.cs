@@ -30,6 +30,16 @@ namespace Soccer.DataProviders.Internal.Leagues.Services
             this.logger = logger;
         }
 
+        public Task<League> GetLeague(string leagueId, Language language)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<League> GetLeagueLiveStandings(string leagueId, Language language)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IEnumerable<League>> GetLeagues(Language language)
         {
             try
@@ -53,6 +63,11 @@ namespace Soccer.DataProviders.Internal.Leagues.Services
 
                 return Enumerable.Empty<League>();
             }
+        }
+
+        public Task<League> GetLeagueStandings(string leagueId, Language language)
+        {
+            throw new NotImplementedException();
         }
     }
 }

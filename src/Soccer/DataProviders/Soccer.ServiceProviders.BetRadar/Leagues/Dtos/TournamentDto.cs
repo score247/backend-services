@@ -26,6 +26,8 @@
         public CurrentSeason current_season { get; set; }
 
         public SeasonCoverageInfo season_coverage_info { get; set; }
+
+        public CoverageInfoDto coverage_info { get; set; }
     }
 
     public class Category

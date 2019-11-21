@@ -18,6 +18,15 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
     {
         [Get("/soccer-{accessLevel}{version}/{region}/{language}/tournaments.json?api_key={apiKey}")]
         Task<Dtos.TournamentResult> GetRegionLeagues(string accessLevel, string version, string region, string language, string apiKey);
+
+        [Get("/soccer-{accessLevel}{version}/{region}/{language}/tournaments/{tournamentId}/info.json?api_key={apiKey}")]
+        Task<Dtos.TournamentDto> GetLeague(string accessLevel, string version, string region, string language, string tournamentId, string apiKey);
+
+        [Get("/soccer-{accessLevel}{version}/{region}/{language}/tournaments/{tournamentId}/standings.json?api_key={apiKey}")]
+        Task<Dtos.TournamentStandingDto> GetTournamentStandings(string accessLevel, string version, string region, string language, string tournamentId, string apiKey);
+
+        [Get("/soccer-{accessLevel}{version}/{region}/{language}/tournaments/{tournamentId}/live_standings.json?api_key={apiKey}")]
+        Task<Dtos.TournamentStandingDto> GetTournamentLiveStandings(string accessLevel, string version, string region, string language, string tournamentId, string apiKey);
     }
 
     public class SportRadarLeagueService : ILeagueService
@@ -31,6 +40,16 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             this.leagueApi = leagueApi;
             soccerSettings = sportRadarSettings.Sports.FirstOrDefault(s => s.Id == Sport.Soccer.Value);
             this.logger = logger;
+        }
+
+        public Task<League> GetLeague(string leagueId, Language language)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<League> GetLeagueLiveStandings(string leagueId, Language language)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<League>> GetLeagues(Language language)
@@ -58,6 +77,11 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             }
 
             return new List<League>();
+        }
+
+        public Task<League> GetLeagueStandings(string leagueId, Language language)
+        {
+            throw new NotImplementedException();
         }
     }
 }
