@@ -1,12 +1,11 @@
-﻿using DbUp;
+﻿using System;
+using System.IO;
+using System.Reflection;
+using DbUp;
 using DbUp.Helpers;
 using DBUp.Deployment.Models;
 using DBUp.Deployment.PreProcessors;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
 
 namespace DBUp.Deployment
 {
@@ -15,7 +14,7 @@ namespace DBUp.Deployment
 
         private static int Main(string[] args)
         {
-            var settingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "app-settings.dev.json");
+            var settingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "app-settings.test.json");
             var settings = File.ReadAllText(settingPath);
             var connectionConfiguration = JsonConvert.DeserializeObject<ConnectionConfiguration>(settings);
 
@@ -30,7 +29,8 @@ namespace DBUp.Deployment
 
                 Console.ResetColor();
 
-                InstallStoredProcedures(config.ToString());
+                //InstallStoredProcedures(config.ToString());
+                InstallSprintChanges(config.ToString());
             }
 
             Console.ForegroundColor = ConsoleColor.Green;
@@ -53,9 +53,28 @@ namespace DBUp.Deployment
             return 0;
         }
 
-        public static int InstallSchemas(string connectionString)
+        public static int InstallSprintChanges(string connectionString) 
         {
+            //1. run schema scripts: create tables + indexes
+            InstallSchemas(connectionString, true);
+
+            //2. create event schedulers
+
+            //3. run sp
+            InstallStoredProcedures(connectionString);
+
+            return 0;
+        }
+
+        public static int InstallSchemas(string connectionString, bool forSprint = false)
+        {
+
             var dir = new DirectoryInfo("../../../../schema").FullName;
+
+            if (forSprint)
+            {
+                dir = new DirectoryInfo("../../../../current-sprint-schema-changes").FullName;
+            }
 
             return RunScripts(connectionString, new string[] { dir });
         }
