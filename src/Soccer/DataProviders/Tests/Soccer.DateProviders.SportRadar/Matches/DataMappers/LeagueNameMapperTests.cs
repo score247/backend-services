@@ -82,8 +82,6 @@ namespace Soccer.DateProviders.SportRadar.Matches.DataMappers
                 => MapLeagueName_Rule1_TypeIsGroup_ReturnLeagueGroupName(categoryName, countryCode, tournamentName, group, expectedLeagueName);
 
         [Theory]
-        [InlineData("categoryName", "countryCode", "tournament", "qualification", "categoryName tournament")]
-        [InlineData("categoryName", "", "tournament", "qualification", "tournament")]
         [InlineData("categoryName", "countryCode", "tournament", "variable", "categoryName tournament")]
         [InlineData("categoryName", "", "tournament", "variable", "tournament")]
         [InlineData("categoryName", "countryCode", "tournament", "unknown", "categoryName tournament")]
@@ -95,6 +93,20 @@ namespace Soccer.DateProviders.SportRadar.Matches.DataMappers
         {
             var league = LeagueMapper.MapLeague(StubTournamentDto(categoryName, countryCode, tournamentName), "region");
             var leagueRound = LeagueMapper.MapLeagueRound(StubTournamentRoundDto(typeName));
+
+            var leagueGroupName = LeagueMapper.MapLeagueGroupName(league, leagueRound, Language.en_US);
+
+            Assert.Equal(expectedLeagueName, leagueGroupName);
+        }
+
+        [Theory]
+        [InlineData("categoryName", "countryCode", "tournament", "phase_1", "categoryName tournament:: phase 1")]
+        [InlineData("categoryName", "", "tournament", "phase_2", "tournament:: phase 2")]
+        public void MapLeagueName_Rule1_TypeIsQualification_ReturnLeagueGroupName(
+           string categoryName, string countryCode, string tournamentName, string phase, string expectedLeagueName)
+        {
+            var league = LeagueMapper.MapLeague(StubTournamentDto(categoryName, countryCode, tournamentName), "region");
+            var leagueRound = LeagueMapper.MapLeagueRound(StubTournamentRoundDto(type: LeagueRoundType.Qualifier, phase: phase));
 
             var leagueGroupName = LeagueMapper.MapLeagueGroupName(league, leagueRound, Language.en_US);
 

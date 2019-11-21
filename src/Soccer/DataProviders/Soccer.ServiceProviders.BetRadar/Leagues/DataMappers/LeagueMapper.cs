@@ -116,6 +116,12 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
                 return $"{BuildLeagueWithCountryName(league)}{termsplit} {leagueRound.Name?.Replace(underscore, space)}";
             }
 
+            if (leagueRound.Type == LeagueRoundType.QualifierRound
+                && !string.IsNullOrWhiteSpace(leagueRound?.Phase))
+            {
+                return $"{BuildLeagueWithCountryName(league)}{termsplit} {leagueRound.Phase?.Replace(underscore, space)}";
+            }
+
             return LeagueNameRule1GroupBuilder(league, leagueRound, language);
         }
 
