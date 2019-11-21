@@ -28,7 +28,7 @@ BEGIN
 				LeagueId,
 				EventDate,
 				Region,
-                JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].LeagueSeason.Id'))),
+                JSON_UNQUOTE(JSON_EXTRACT(newMatches, CONCAT('$[', i, '].LeagueSeason.Id'))),
 				now(),
 				now()
 				FROM `Match` as M
