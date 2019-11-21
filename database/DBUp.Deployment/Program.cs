@@ -11,7 +11,6 @@ namespace DBUp.Deployment
 {
     public static class Program
     {
-
         private static int Main(string[] args)
         {
             var settingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "app-settings.dev.json");
@@ -20,7 +19,7 @@ namespace DBUp.Deployment
 
             foreach (var config in connectionConfiguration.Connections)
             {
-                // InstallNewDatabase(config.ToString());
+                InstallNewDatabase(config.ToString());
                 Console.ForegroundColor = ConsoleColor.Blue;
 
                 Console.WriteLine("==============");
@@ -39,7 +38,6 @@ namespace DBUp.Deployment
             return 0;
         }
 
-
         public static int InstallNewDatabase(string connectionString)
         {
             //1. run schema scripts: create tables + indexes
@@ -49,6 +47,9 @@ namespace DBUp.Deployment
 
             //3. run sp
             InstallStoredProcedures(connectionString);
+
+            //4. init data
+            InitData(connectionString);
 
             return 0;
         }
@@ -77,6 +78,15 @@ namespace DBUp.Deployment
             }
 
             return RunScripts(connectionString, new string[] { dir });
+        }
+
+        public static int InitData(string connectionString)
+        {
+            var dir = new DirectoryInfo("../../../../import").FullName;
+
+            var subDirs = Directory.GetDirectories(dir);
+
+            return RunScripts(connectionString, subDirs);
         }
 
         public static int InstallStoredProcedures(string connectionString)
