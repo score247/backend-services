@@ -1,9 +1,11 @@
 ﻿using System;
+using Newtonsoft.Json;
 
 namespace Soccer.Core.Leagues.Models
 {
     public class LeagueSeasonProcessedInfo
     {
+        [JsonConstructor]
         public LeagueSeasonProcessedInfo(string leagueId, string seasonId, string region, bool fetched, DateTimeOffset fetchedDate) 
         {
             LeagueId = leagueId;
