@@ -54,6 +54,11 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             throw new NotImplementedException();
         }
 
+        public Task<League> GetLeagueStandings(string leagueId, Language language)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IEnumerable<League>> GetLeagues(Language language)
         {
             try
