@@ -38,7 +38,7 @@ namespace Soccer.DataProviders.Internal.Leagues.Services
             throw new NotImplementedException();
         }
 
-        public Task<League> GetLeagueLiveStandings(string leagueId, Language language)
+        public Task<LeagueStanding> GetLeagueLiveStandings(string leagueId, Language language, string region)
         {
             throw new NotImplementedException();
         }
@@ -68,6 +68,11 @@ namespace Soccer.DataProviders.Internal.Leagues.Services
             }
         }
 
+        public Task<LeagueStanding> GetLeagueStandings(string leagueId, Language language, string region)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IEnumerable<LeagueSeasonProcessedInfo>> GetUnprocessedLeagueSeason()
         {
             try
@@ -80,11 +85,6 @@ namespace Soccer.DataProviders.Internal.Leagues.Services
 
                 return Enumerable.Empty<LeagueSeasonProcessedInfo>();
             }
-        }
-
-        public Task<League> GetLeagueStandings(string leagueId, Language language)
-        {
-            throw new NotImplementedException();
         }
     }
 }

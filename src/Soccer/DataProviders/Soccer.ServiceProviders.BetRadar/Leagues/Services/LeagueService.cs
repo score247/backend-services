@@ -49,16 +49,6 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             throw new NotImplementedException();
         }
 
-        public Task<League> GetLeagueLiveStandings(string leagueId, Language language)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<League> GetLeagueStandings(string leagueId, Language language)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IEnumerable<League>> GetLeagues(Language language)
         {
             try
@@ -109,6 +99,16 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             }
 
             return Enumerable.Empty<Match>();
+        }
+
+        public Task<LeagueStanding> GetLeagueStandings(string leagueId, Language language, string region)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<LeagueStanding> GetLeagueLiveStandings(string leagueId, Language language, string region)
+        {
+            throw new NotImplementedException();
         }
     }
 }
