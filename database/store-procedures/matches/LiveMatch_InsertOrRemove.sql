@@ -23,8 +23,8 @@ BEGIN
 			 SELECT 
 				Id, 
 				JSON_SET(`Value`,  '$.MatchResult', JSON_EXTRACT(newMatches, CONCAT('$[', ni, '].MatchResult'))) as `Value`,
-				`Language`,
-				`SportId`,
+                `SportId`,
+				`Language`,				
 				LeagueId,
 				EventDate,
 				Region,
