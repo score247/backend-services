@@ -78,7 +78,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
 
         public static string MapLeagueGroupName(League league, LeagueRound leagueRound, Language language)
         {
-            if (league == null && leagueRound == null)
+            if (league == null || leagueRound == null)
             {
                 return string.Empty;
             }
