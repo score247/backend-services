@@ -67,5 +67,7 @@
         public int FetchMatchesByDateDelayedHours { get; set; }
 
         public string FetchLeaguesSeasonCron { get; set; }
+
+        public string FetchLeagueMatchesCron { get; set; }
     }
 }
