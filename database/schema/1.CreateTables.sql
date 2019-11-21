@@ -110,6 +110,7 @@ CREATE TABLE `LiveMatch` (
   `LeagueId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `EventDate` timestamp NOT NULL,
   `Region` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `LeagueSeasonId` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `CreatedTime` timestamp NULL DEFAULT NULL,
   `ModifiedTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`,`Language`)
@@ -128,6 +129,7 @@ CREATE TABLE `Match` (
   `LeagueId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `EventDate` timestamp NOT NULL,
   `Region` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `LeagueSeasonId` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `CreatedTime` timestamp NULL DEFAULT NULL,
   `ModifiedTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`,`Language`)
