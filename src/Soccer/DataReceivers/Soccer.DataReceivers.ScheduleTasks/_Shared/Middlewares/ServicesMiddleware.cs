@@ -64,6 +64,9 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             });
 #pragma warning restore S1301 // "switch" statements should have at least 3 "case" clauses
 
+            services.AddSingleton<ILeagueScheduleService, SportRadarLeagueService>();
+            services.AddSingleton<ILeagueSeasonService, InternalLeagueService>();
+
             services.AddSingleton(RestService.For<IHeadToHeadApi>(sportRadarDataProviderSettings.ServiceUrl));
             services.AddSingleton<IHeadToHeadService, HeadToHeadService>();
         }

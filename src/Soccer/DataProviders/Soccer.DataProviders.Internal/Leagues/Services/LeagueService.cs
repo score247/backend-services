@@ -15,9 +15,12 @@ namespace Soccer.DataProviders.Internal.Leagues.Services
     {
         [Get("/soccer/{language}/leagues/major")]
         Task<IEnumerable<League>> GetMajorLeagues(string language);
+
+        [Get("/soccer/{language}/leagues/season/unprocessed")]
+        Task<IEnumerable<LeagueSeasonProcessedInfo>> GetUnprocessedLeagueSeason();
     }
 
-    public class InternalLeagueService : ILeagueService
+    public class InternalLeagueService : ILeagueService, ILeagueSeasonService
     {
         private readonly IInternalLeagueApi leagueApi;
         private readonly ILeagueCache leagueCache;
@@ -62,6 +65,20 @@ namespace Soccer.DataProviders.Internal.Leagues.Services
                 await logger.ErrorAsync(ex.Message, ex);
 
                 return Enumerable.Empty<League>();
+            }
+        }
+
+        public async Task<IEnumerable<LeagueSeasonProcessedInfo>> GetUnprocessedLeagueSeason()
+        {
+            try
+            {
+                return await leagueApi.GetUnprocessedLeagueSeason();
+            }
+            catch (Exception ex)
+            {
+                await logger.ErrorAsync(ex.Message, ex);
+
+                return Enumerable.Empty<LeagueSeasonProcessedInfo>();
             }
         }
 

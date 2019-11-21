@@ -31,7 +31,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
         Task<Dtos.TournamentStandingDto> GetTournamentLiveStandings(string accessLevel, string version, string region, string language, string tournamentId, string apiKey);
     }
 
-    public class SportRadarLeagueService : ILeagueService
+    public class SportRadarLeagueService : ILeagueService, ILeagueScheduleService
     {
         private readonly ISportRadarLeagueApi leagueApi;
         private readonly SportSettings soccerSettings;
