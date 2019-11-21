@@ -20,7 +20,9 @@ BEGIN
             now(),
             now())
 		ON DUPLICATE KEY UPDATE
-            Value = JSON_EXTRACT(matches, CONCAT('$[', i, ']')),
+            Value = JSON_REPLACE(Value,  
+							'$.EventDate', JSON_EXTRACT(matches, CONCAT('$[', i, '].EventDate')), 
+							'$.MatchResult', JSON_EXTRACT(matches, CONCAT('$[', i, '].MatchResult'))),
             EventDate = STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].EventDate'))),'%Y-%m-%dT%H:%i:%s+00:00'),
             ModifiedTime = now();
         -- Increment the loop variable                                                                                                                                                        

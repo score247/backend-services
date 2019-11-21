@@ -19,7 +19,7 @@ namespace DBUp.Deployment
 
             foreach (var config in connectionConfiguration.Connections)
             {
-                InstallNewDatabase(config.ToString());
+                //InstallNewDatabase(config.ToString());
                 Console.ForegroundColor = ConsoleColor.Blue;
 
                 Console.WriteLine("==============");
