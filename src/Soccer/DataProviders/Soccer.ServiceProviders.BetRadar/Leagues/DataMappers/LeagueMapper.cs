@@ -152,11 +152,19 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
                 ? string.Empty
                 : groupName[groupName.Length - 1].ToString().ToUpperInvariant();
 
-        private static string BuildLeagueWithCountryName(League league, string countryName = null)
+        private static string BuildLeagueWithCountryName(League league, string leagueName = null)
         {
+            var countryName = league.CountryName;
             if (league.IsInternational)
             {
-                return league.Name;
+                if (leagueName == null)
+                {
+                    return league.Name;
+                }
+                else
+                {
+                    countryName = string.Empty;
+                }
             }
 
             if (!string.IsNullOrWhiteSpace(league.CountryName))
@@ -171,7 +179,9 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
                 }
             }
 
-            return $"{countryName ?? league.CountryName} {league.Name}";
+            leagueName = string.IsNullOrWhiteSpace(leagueName) ? league.Name : leagueName;
+
+            return $"{countryName} {leagueName}".TrimStart();
         }
 
         private static string LeagueNameRule2Builder(
@@ -199,7 +209,11 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
 
             if (numOfComma == twoCommas)
             {
-                return BuildLeagueWithCountryName(league).Replace(commaString, termsplit);
+                var words = league.Name.Split(commaChar);
+
+                return BuildLeagueWithCountryName(
+                    league, 
+                    string.Join(termsplit, words[0], words[2], words[1]));
             }
 
             return string.Empty;

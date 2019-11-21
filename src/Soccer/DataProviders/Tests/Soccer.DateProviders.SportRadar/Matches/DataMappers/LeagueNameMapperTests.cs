@@ -47,8 +47,8 @@ namespace Soccer.DateProviders.SportRadar.Matches.DataMappers
             => MapLeagueName_Rule1_TypeIsGroup_ReturnLeagueGroupName(categoryName, countryCode, tournamentName, group, expectedLeagueName);
 
         [Theory]
-        [InlineData("categoryName", "countryCode", "tournament, subname1, subname2", "B", "categoryName tournament:: subname1:: subname2")]
-        [InlineData("categoryName", "", "tournament, subname1, subname2", "tournament, subname", "tournament:: subname1:: subname2")]
+        [InlineData("categoryName", "countryCode", "tournament, subname1, subname2", "B", "categoryName tournament:: subname2:: subname1")]
+        [InlineData("categoryName", "", "tournament, subname1, subname2", "tournament, subname", "tournament:: subname2:: subname1")]
         public void MapLeagueName_Rule3_ReturnLeagueGroupName(
             string categoryName, string countryCode, string tournamentName, string group, string expectedLeagueName)
             => MapLeagueName_Rule1_TypeIsGroup_ReturnLeagueGroupName(categoryName, countryCode, tournamentName, group, expectedLeagueName);
