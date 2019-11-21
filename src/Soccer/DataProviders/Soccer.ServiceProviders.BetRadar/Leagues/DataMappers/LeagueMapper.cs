@@ -46,7 +46,9 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
             }
 
             var leagueRound = new LeagueRound(
-                Enumeration.FromDisplayName<LeagueRoundType>(tournamentRound.type),
+                string.IsNullOrWhiteSpace(tournamentRound.type) 
+                    ? LeagueRoundType.UnknownRound
+                    : Enumeration.FromDisplayName<LeagueRoundType>(tournamentRound.type),
                 tournamentRound.name,
                 tournamentRound.number,
                 tournamentRound.phase,
