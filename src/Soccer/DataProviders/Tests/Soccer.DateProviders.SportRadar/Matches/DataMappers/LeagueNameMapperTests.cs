@@ -1,4 +1,5 @@
-﻿using Soccer.Core.Shared.Enumerations;
+﻿using Soccer.Core.Leagues.Extensions;
+using Soccer.Core.Shared.Enumerations;
 using Soccer.DataProviders.SportRadar.Leagues.DataMappers;
 using Soccer.DataProviders.SportRadar.Leagues.Dtos;
 using Xunit;
@@ -19,7 +20,7 @@ namespace Soccer.DateProviders.SportRadar.Matches.DataMappers
             var league = LeagueMapper.MapLeague(StubTournamentDto(categoryName, countryCode, tournamentName), "region");
             var leagueRound = LeagueMapper.MapLeagueRound(StubTournamentRoundDto(group: group));
 
-            var leagueGroupName = LeagueMapper.MapLeagueGroupName(league, leagueRound, Language.en_US);
+            var leagueGroupName = league.MapLeagueGroupName(leagueRound, Language.en_US);
 
             Assert.Equal(expectedLeagueName, leagueGroupName);
         }
@@ -34,7 +35,7 @@ namespace Soccer.DateProviders.SportRadar.Matches.DataMappers
             var league = LeagueMapper.MapLeague(StubTournamentDto(categoryName, countryCode, tournamentName), "region");
             var leagueRound = LeagueMapper.MapLeagueRound(StubTournamentRoundDto(type: "cup", name: name));
 
-            var leagueGroupName = LeagueMapper.MapLeagueGroupName(league, leagueRound, Language.en_US);
+            var leagueGroupName = league.MapLeagueGroupName(leagueRound, Language.en_US);
 
             Assert.Equal(expectedLeagueName, leagueGroupName);
         }
@@ -69,7 +70,7 @@ namespace Soccer.DateProviders.SportRadar.Matches.DataMappers
                 group,
                 phase));
 
-            var leagueGroupName = LeagueMapper.MapLeagueGroupName(league, leagueRound, Language.en_US);
+            var leagueGroupName = league.MapLeagueGroupName(leagueRound, Language.en_US);
 
             Assert.Equal(expectedLeagueName, leagueGroupName);
         }
@@ -94,7 +95,7 @@ namespace Soccer.DateProviders.SportRadar.Matches.DataMappers
             var league = LeagueMapper.MapLeague(StubTournamentDto(categoryName, countryCode, tournamentName), "region");
             var leagueRound = LeagueMapper.MapLeagueRound(StubTournamentRoundDto(typeName));
 
-            var leagueGroupName = LeagueMapper.MapLeagueGroupName(league, leagueRound, Language.en_US);
+            var leagueGroupName = league.MapLeagueGroupName(leagueRound, Language.en_US);
 
             Assert.Equal(expectedLeagueName, leagueGroupName);
         }
@@ -108,7 +109,7 @@ namespace Soccer.DateProviders.SportRadar.Matches.DataMappers
             var league = LeagueMapper.MapLeague(StubTournamentDto(categoryName, countryCode, tournamentName), "region");
             var leagueRound = LeagueMapper.MapLeagueRound(StubTournamentRoundDto(type: LeagueRoundType.Qualifier, phase: phase));
 
-            var leagueGroupName = LeagueMapper.MapLeagueGroupName(league, leagueRound, Language.en_US);
+            var leagueGroupName = league.MapLeagueGroupName(leagueRound, Language.en_US);
 
             Assert.Equal(expectedLeagueName, leagueGroupName);
         }

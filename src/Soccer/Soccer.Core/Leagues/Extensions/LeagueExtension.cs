@@ -1,11 +1,21 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Soccer.Core.Leagues.Models;
+using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.Core.Leagues.Extensions
 {
     public static class LeagueExtension
     {
+        private const string playoffs = "Playoffs";
+        private const char commaChar = ',';
+        private const string commaString = ",";
+        private const string termsplit = "::";
+        private const string underscore = "_";
+        private const string space = " ";
+        private const int second = 2;
+
         public static void UpdateMajorLeagueInfo(this League league, IEnumerable<League> majorLeagues)
         {
             var majorLeague = majorLeagues.FirstOrDefault(l => l.Id == league.Id);
@@ -15,5 +25,177 @@ namespace Soccer.Core.Leagues.Extensions
                 league.UpdateLeague(majorLeague.CountryCode, majorLeague.IsInternational, majorLeague.Order, majorLeague.Region);
             }
         }
+
+        public static string MapLeagueGroupName(this League league, LeagueRound leagueRound, Language language)
+        {
+            if (league == null || leagueRound == null)
+            {
+                return string.Empty;
+            }
+
+            foreach (var builder in leagueNameBuilders)
+            {
+                var leagueName = builder(league, leagueRound, language);
+
+                if (!string.IsNullOrWhiteSpace(leagueName))
+                {
+                    return leagueName;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        // Please refer to wiki to see rule list wiki/Scores_-_Show_League_name_by_rule#LeagueNameRule
+        private static readonly List<Func<League, LeagueRound, Language, string>> leagueNameBuilders =
+            new List<Func<League, LeagueRound, Language, string>>
+            {
+                LeagueNameRule4Builder,
+                LeagueNameRule3Builder,
+                LeagueNameRule2Builder,
+                LeagueNameRule1Builder
+            };
+
+        private static string LeagueNameRule1Builder(
+           League league,
+           LeagueRound leagueRound,
+           Language language)
+        {
+            if (leagueRound.Type == LeagueRoundType.CupRound
+                && !string.IsNullOrWhiteSpace(leagueRound?.Name))
+            {
+                return $"{BuildLeagueWithCountryName(league)}{termsplit} {leagueRound.Name?.Replace(underscore, space)}";
+            }
+
+            if (leagueRound.Type == LeagueRoundType.QualifierRound
+                && !string.IsNullOrWhiteSpace(leagueRound?.Phase))
+            {
+                return $"{BuildLeagueWithCountryName(league)}{termsplit} {leagueRound.Phase?.Replace(underscore, space)}";
+            }
+
+            return LeagueNameRule1GroupBuilder(league, leagueRound, language);
+        }
+
+        private static string LeagueNameRule1GroupBuilder(
+            League league,
+            LeagueRound leagueRound,
+#pragma warning disable S1172 // Unused method parameters should be removed
+            Language language)
+        {
+            var groupName = leagueRound?.Group;
+            var convertedGroupName = string.Empty;
+
+            if (leagueRound?.Type == LeagueRoundType.GroupRound)
+            {
+                if (!string.IsNullOrWhiteSpace(groupName))
+                {
+                    convertedGroupName =
+                        groupName.Length == 1
+                            ? groupName.ToUpperInvariant()
+                            : ExtractGroupName(league, groupName);
+                }
+
+                // Should multiple languages here
+                convertedGroupName = string.IsNullOrWhiteSpace(convertedGroupName)
+                    ? string.Empty
+                    : $"{termsplit} Group {convertedGroupName}";
+            }
+
+            return BuildLeagueWithCountryName(league) + convertedGroupName;
+        }
+
+        private static string ExtractGroupName(League league, string groupName)
+            => groupName.Equals(league.Name)
+                ? string.Empty
+                : groupName[groupName.Length - 1].ToString().ToUpperInvariant();
+
+        private static string BuildLeagueWithCountryName(League league, string leagueName = null)
+        {
+            var countryName = league.CountryName;
+            if (league.IsInternational)
+            {
+                if (leagueName == null)
+                {
+                    return league.Name;
+                }
+                else
+                {
+                    countryName = string.Empty;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(league.CountryName))
+            {
+                var countryNameHasTwoNames = league.CountryName.Any(ch => ch == commaChar);
+
+                if (countryNameHasTwoNames)
+                {
+#pragma warning disable S1226 // Method parameters, caught exceptions and foreach variables' initial values should not be ignored
+                    countryName = league.CountryName.Substring(0, league.CountryName.IndexOf(commaChar));
+#pragma warning restore S1226 // Method parameters, caught exceptions and foreach variables' initial values should not be ignored
+                }
+            }
+
+            leagueName = string.IsNullOrWhiteSpace(leagueName) ? league.Name : leagueName;
+
+            return $"{countryName} {leagueName}".TrimStart();
+        }
+
+        private static string LeagueNameRule2Builder(
+            League league,
+            LeagueRound leagueRound,
+            Language language)
+        {
+            var numOfComma = league.Name.Count(nameChar => nameChar == commaChar);
+
+            if (numOfComma == 1)
+            {
+                return BuildLeagueWithCountryName(league).Replace(commaString, termsplit);
+            }
+
+            return string.Empty;
+        }
+
+        private static string LeagueNameRule3Builder(
+            League league,
+            LeagueRound leagueRound,
+            Language language)
+        {
+            var numOfComma = league.Name.Count(ch => ch == commaChar);
+            const int twoCommas = 2;
+
+            if (numOfComma == twoCommas)
+            {
+                var words = league.Name.Split(commaChar);
+
+                return BuildLeagueWithCountryName(
+                    league,
+                    string.Join(termsplit, words[0], words[second], words[1]));
+            }
+
+            return string.Empty;
+        }
+
+        private static string LeagueNameRule4Builder(
+            League league,
+            LeagueRound leagueRound,
+            Language language)
+        {
+            if (leagueRound?.Phase != null)
+            {
+                var isPlayOffs = leagueRound.Phase.Equals(playoffs, StringComparison.InvariantCultureIgnoreCase);
+
+                if (isPlayOffs)
+                {
+                    var leagueName = LeagueNameRule1Builder(league, leagueRound, language);
+
+                    return $"{leagueName}{termsplit} {playoffs}";
+                }
+            }
+
+            return string.Empty;
+        }
+
+#pragma warning restore S1172 // Unused method parameters should be removed
     }
 }

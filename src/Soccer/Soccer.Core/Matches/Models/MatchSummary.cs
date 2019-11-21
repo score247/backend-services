@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.Core.Leagues.Extensions;
 
 namespace Soccer.Core.Matches.Models
 {
@@ -122,7 +123,9 @@ namespace Soccer.Core.Matches.Models
                 LeagueRoundType = match.LeagueRound?.Type;
                 LeagueRoundNumber = match.LeagueRound?.Number ?? 0;
                 LeagueRoundName = match.LeagueRound?.Name;
-                LeagueGroupName = match.LeagueGroupName;
+                LeagueGroupName = string.IsNullOrWhiteSpace(match.LeagueGroupName) 
+                    ? match.League.MapLeagueGroupName(match.LeagueRound, Language.en_US)
+                    : match.LeagueGroupName;
             }
         }
 

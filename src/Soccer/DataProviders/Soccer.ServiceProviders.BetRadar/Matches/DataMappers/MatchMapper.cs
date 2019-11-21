@@ -2,7 +2,7 @@
 using System.Linq;
 using Newtonsoft.Json;
 using Score247.Shared.Enumerations;
-using Soccer.Core.Leagues.Models;
+using Soccer.Core.Leagues.Extensions;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.DataProviders.SportRadar._Shared;
@@ -25,7 +25,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
         {
             var league = LeagueMapper.MapLeague(sportEvent.tournament, region);
             var leagueRound = LeagueMapper.MapLeagueRound(sportEvent.tournament_round);
-            var leagueGroupName = LeagueMapper.MapLeagueGroupName(league, leagueRound, language);
+            var leagueGroupName = league.MapLeagueGroupName(leagueRound, language);
 
             return new Match(
                     sportEvent.id,
