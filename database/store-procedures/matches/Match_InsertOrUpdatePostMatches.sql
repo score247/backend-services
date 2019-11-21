@@ -1,6 +1,6 @@
 DROP procedure IF EXISTS `Match_InsertOrUpdatePostMatches`;
 
-CREATE DEFINER=`root`@`%` PROCEDURE `Match_InsertOrUpdatePostMatches`(IN sportId INT, IN matches MEDIUMTEXT, IN language TEXT)
+CREATE DEFINER=`user`@`%` PROCEDURE `Match_InsertOrUpdatePostMatches`(IN sportId INT, IN matches MEDIUMTEXT, IN language TEXT)
 BEGIN
 	DECLARE i INT DEFAULT 0;                                                                                                                                                    
     DECLARE e INT DEFAULT JSON_LENGTH(matches);
@@ -12,14 +12,17 @@ BEGIN
             
 			IF(NOT EXISTS (SELECT 1 FROM  `Match` AS M WHERE M.Id = @Id AND M.Language = language))
 			THEN
-				INSERT INTO `Match` VALUES (
+				INSERT INTO `Match` 
+                (`Id`, `Value`, `SportId`, `Language`, `LeagueId`, `EventDate`, `Region`, `LeagueSeasonId`, `CreatedTime`, `ModifiedTime`)
+                VALUES (
 					@Id,
 					JSON_EXTRACT(matches, CONCAT('$[', i, ']')),
-					language, 
-					sportId, 
+                    sportId, 
+					language, 					
 					JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].League.Id'))), 
 					STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].EventDate'))),'%Y-%m-%dT%H:%i:%s+00:00'),
 					JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].Region'))),
+                    JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].LeagueSeason.Id'))),
 					now(),
 					now());
 			ELSE
