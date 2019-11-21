@@ -14,7 +14,7 @@ namespace DBUp.Deployment
 
         private static int Main(string[] args)
         {
-            var settingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "app-settings.test.json");
+            var settingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "app-settings.dev.json");
             var settings = File.ReadAllText(settingPath);
             var connectionConfiguration = JsonConvert.DeserializeObject<ConnectionConfiguration>(settings);
 
@@ -29,8 +29,8 @@ namespace DBUp.Deployment
 
                 Console.ResetColor();
 
-                //InstallStoredProcedures(config.ToString());
-                InstallSprintChanges(config.ToString());
+                InstallStoredProcedures(config.ToString());
+                //InstallSprintChanges(config.ToString());
             }
 
             Console.ForegroundColor = ConsoleColor.Green;

@@ -1,3 +1,5 @@
+DROP procedure IF EXISTS `League_GetUnprocessedLeagueSeason`;
+
 CREATE DEFINER=`user`@`%` PROCEDURE `League_GetUnprocessedLeagueSeason`()
 BEGIN
 	SELECT  Season.`LeagueId`,
