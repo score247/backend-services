@@ -81,6 +81,26 @@ namespace Soccer.DateProviders.SportRadar.Matches.DataMappers
             string categoryName, string countryCode, string tournamentName, string group, string expectedLeagueName)
                 => MapLeagueName_Rule1_TypeIsGroup_ReturnLeagueGroupName(categoryName, countryCode, tournamentName, group, expectedLeagueName);
 
+        [Theory]
+        [InlineData("categoryName", "countryCode", "tournament", "qualification", "categoryName tournament")]
+        [InlineData("categoryName", "", "tournament", "qualification", "tournament")]
+        [InlineData("categoryName", "countryCode", "tournament", "variable", "categoryName tournament")]
+        [InlineData("categoryName", "", "tournament", "variable", "tournament")]
+        [InlineData("categoryName", "countryCode", "tournament", "unknown", "categoryName tournament")]
+        [InlineData("categoryName", "", "tournament", "unknown", "tournament")]
+        [InlineData("categoryName", "countryCode", "tournament", "playoff", "categoryName tournament")]
+        [InlineData("categoryName", "", "tournament", "playoff", "tournament")]
+        public void MapLeagueName_NotSupportRule_ReturnLeagueGroupName(
+           string categoryName, string countryCode, string tournamentName, string typeName, string expectedLeagueName)
+        {
+            var league = LeagueMapper.MapLeague(StubTournamentDto(categoryName, countryCode, tournamentName), "region");
+            var leagueRound = LeagueMapper.MapLeagueRound(StubTournamentRoundDto(typeName));
+
+            var leagueGroupName = LeagueMapper.MapLeagueGroupName(league, leagueRound, Language.en_US);
+
+            Assert.Equal(expectedLeagueName, leagueGroupName);
+        }
+
 
         private TournamentDto StubTournamentDto(string categoryName, string countryCode, string tournamentName)
             => new TournamentDto

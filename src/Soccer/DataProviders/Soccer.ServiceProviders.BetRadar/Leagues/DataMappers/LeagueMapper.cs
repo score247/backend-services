@@ -95,6 +95,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
             return string.Empty;
         }
 
+        // Please refer to wiki to see rule list wiki/Scores_-_Show_League_name_by_rule#LeagueNameRule
         private static readonly List<Func<League, LeagueRound, Language, string>> leagueNameBuilders =
             new List<Func<League, LeagueRound, Language, string>>
             {
@@ -127,18 +128,21 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
             var groupName = leagueRound?.Group;
             var convertedGroupName = string.Empty;
 
-            if (!string.IsNullOrWhiteSpace(groupName))
+            if (leagueRound?.Type == LeagueRoundType.GroupRound)
             {
-                convertedGroupName =
-                    groupName.Length == 1
-                        ? groupName.ToUpperInvariant()
-                        : ExtractGroupName(league, groupName);
-            }
+                if (!string.IsNullOrWhiteSpace(groupName))
+                {
+                    convertedGroupName =
+                        groupName.Length == 1
+                            ? groupName.ToUpperInvariant()
+                            : ExtractGroupName(league, groupName);
+                }
 
-            // Should multiple languages here
-            convertedGroupName = string.IsNullOrWhiteSpace(convertedGroupName)
-                ? string.Empty
-                : $"{termsplit} Group {convertedGroupName}";
+                // Should multiple languages here
+                convertedGroupName = string.IsNullOrWhiteSpace(convertedGroupName)
+                    ? string.Empty
+                    : $"{termsplit} Group {convertedGroupName}";
+            }
 
             return BuildLeagueWithCountryName(league) + convertedGroupName;
         }
