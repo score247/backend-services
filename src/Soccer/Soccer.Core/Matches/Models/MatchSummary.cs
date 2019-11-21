@@ -122,6 +122,7 @@ namespace Soccer.Core.Matches.Models
                 LeagueRoundType = match.LeagueRound?.Type;
                 LeagueRoundNumber = match.LeagueRound?.Number ?? 0;
                 LeagueRoundName = match.LeagueRound?.Name;
+                LeagueGroupName = match.LeagueGroupName;
             }
         }
 
@@ -294,6 +295,9 @@ namespace Soccer.Core.Matches.Models
 
         [Key(35)]
         public string LeagueRoundGroup { get; private set; }
+
+        [Key(36)]
+        public string LeagueGroupName { get; private set; }
     }
 
 #pragma warning restore S109 // Magic numbers should not be used

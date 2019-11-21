@@ -25,7 +25,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
         {
             var league = LeagueMapper.MapLeague(sportEvent.tournament, region);
             var leagueRound = LeagueMapper.MapLeagueRound(sportEvent.tournament_round);
-            var leagueName = LeagueMapper.MapLeagueGroupName(league, leagueRound, language);
+            var leagueGroupName = LeagueMapper.MapLeagueGroupName(league, leagueRound, language);
 
             return new Match(
                     sportEvent.id,
@@ -33,7 +33,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                     sportEvent.scheduled,
                     TeamMapper.MapTeams(sportEvent),
                     MapMatchResult(sportEvent.status, sportEventStatus),
-                    string.IsNullOrEmpty(leagueName) ? league : new League(league, leagueName),
+                    league,
                     leagueRound,
                     timelineEvents,
                     null,
@@ -42,7 +42,8 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                     PlayerNameConverter.Convert(sportEventConditions?.referee?.name, false),
                     region,
                     coverage,
-                    LeagueMapper.MapLeagueSeason(sportEvent.season));
+                    LeagueMapper.MapLeagueSeason(sportEvent.season),
+                    leagueGroupName);
         }
 
         public static MatchResult MapMatchResult(string status, SportEventStatusDto sportEventStatus = null)
