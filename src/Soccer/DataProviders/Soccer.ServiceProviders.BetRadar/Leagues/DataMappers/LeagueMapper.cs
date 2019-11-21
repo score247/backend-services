@@ -16,6 +16,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
         private const string termsplit = "::";
         private const string underscore = "_";
         private const string space = " ";
+        private const int second = 2;
 
         public static League MapLeague(TournamentDto tournament, string region)
         {
@@ -219,7 +220,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
 
                 return BuildLeagueWithCountryName(
                     league, 
-                    string.Join(termsplit, words[0], words[2], words[1]));
+                    string.Join(termsplit, words[0], words[second], words[1]));
             }
 
             return string.Empty;
