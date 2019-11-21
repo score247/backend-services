@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Soccer.API.Leagues.Requests;
 using Soccer.Core.Leagues.Models;
+using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.API.Leagues
@@ -26,5 +27,12 @@ namespace Soccer.API.Leagues
         [Route("season/unprocessed")]
         public async Task<IEnumerable<LeagueSeasonProcessedInfo>> GetUnprocessedSeasons(string language = Language.English)
             => await mediator.Send(new UnprocessedLeagueSeasonRequest());
+
+        [HttpGet]
+        [Route("{id}/matches")]
+        public async Task<IEnumerable<MatchSummary>> GetMatches(
+              string id,
+              string language = Language.English)
+          => await mediator.Send(new MatchesByLeagueRequest(id, language));
     }
 }

@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 using Fanex.Data.Repository;
 using Soccer.Cache.Leagues;
 using Soccer.Core.Leagues.Models;
+using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Leagues.Criteria;
+using Soccer.Database.Matches.Criteria;
 
 namespace Soccer.API.Leagues
 {
@@ -14,6 +16,8 @@ namespace Soccer.API.Leagues
         Task<IEnumerable<League>> GetMajorLeagues(Language language);
 
         Task<IEnumerable<LeagueSeasonProcessedInfo>> GetLeagueSeasonFecth();
+
+        Task<IEnumerable<MatchSummary>> GetMatches(string id, Language language);
     }
 
     public class LeagueQueryService : ILeagueQueryService
@@ -47,6 +51,13 @@ namespace Soccer.API.Leagues
             await leagueCache.SetMajorLeagues(majorLeagues);
 
             return majorLeagues;
+        }
+
+        public async Task<IEnumerable<MatchSummary>> GetMatches(string id, Language language)
+        {
+            var matches = await dynamicRepository.FetchAsync<Match>(new GetMatchesByLeagueCriteria(id, language));
+
+            return matches.Select(m => new MatchSummary(m));
         }
     }
 }
