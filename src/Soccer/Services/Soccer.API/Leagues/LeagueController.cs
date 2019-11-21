@@ -21,5 +21,10 @@ namespace Soccer.API.Leagues
         [Route("major")]
         public async Task<IEnumerable<League>> GetMajorLeagues(string language = Language.English)
             => await mediator.Send(new MajorLeaguesRequest(language));
+
+        [HttpGet]
+        [Route("season/unprocessed")]
+        public async Task<IEnumerable<LeagueSeasonProcessedInfo>> GetUnprocessedSeasons(string language = Language.English)
+            => await mediator.Send(new UnprocessedLeagueSeasonRequest());
     }
 }

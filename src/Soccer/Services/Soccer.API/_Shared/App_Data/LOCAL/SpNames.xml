@@ -13,6 +13,7 @@
   </Function>
   <Function Name="League">
     <Setting Key="League_GetActive" SpName="League_GetActive" DbName="DefaultConnection" />
+    <Setting Key="League_GetUnprocessedLeagueSeason" SpName="League_GetUnprocessedLeagueSeason" DbName="DefaultConnection" />
   </Function>
   <Function Name="Team">
     <Setting Key="Team_GetHeadToHeads" SpName="Team_GetHeadToHeads" DbName="DefaultConnection" />

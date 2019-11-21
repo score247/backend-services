@@ -6,9 +6,11 @@ using Fanex.Logging;
 using Refit;
 using Score247.Shared.Enumerations;
 using Soccer.Core.Leagues.Models;
+using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.SportRadar.Leagues.DataMappers;
+using Soccer.DataProviders.SportRadar.Matches.DataMappers;
 using Soccer.DataProviders.SportRadar.Shared.Configurations;
 using Soccer.DataProviders.SportRadar.Shared.Extensions;
 
@@ -19,8 +21,8 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
         [Get("/soccer-{accessLevel}{version}/{region}/{language}/tournaments.json?api_key={apiKey}")]
         Task<Dtos.TournamentResult> GetRegionLeagues(string accessLevel, string version, string region, string language, string apiKey);
 
-        [Get("/soccer-{accessLevel}{version}/{region}/{language}/tournaments/{tournamentId}/info.json?api_key={apiKey}")]
-        Task<Dtos.TournamentDto> GetLeague(string accessLevel, string version, string region, string language, string tournamentId, string apiKey);
+        [Get("/soccer-{accessLevel}{version}/{region}/{language}/tournaments/{leagueId}/schedule.json?api_key={apiKey}")]
+        Task<Dtos.TournamentSchedule> GetLeagueSchedule(string accessLevel, string version, string region, string language, string leagueId, string apiKey);
 
         [Get("/soccer-{accessLevel}{version}/{region}/{language}/tournaments/{tournamentId}/standings.json?api_key={apiKey}")]
         Task<Dtos.TournamentStandingDto> GetTournamentStandings(string accessLevel, string version, string region, string language, string tournamentId, string apiKey);
@@ -79,9 +81,29 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             return new List<League>();
         }
 
-        public Task<League> GetLeagueStandings(string leagueId, Language language)
+        public async Task<IEnumerable<Match>> GetLeagueMatches(string regionName, string leagueId, Language language)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == regionName).Key;
+
+                var sportRadarLanguage = language.ToSportRadarFormat();
+                var tournamentScheduleDto = await leagueApi.GetLeagueSchedule(
+                    soccerSettings.AccessLevel,
+                    soccerSettings.Version,
+                    regionName,
+                    sportRadarLanguage,
+                    leagueId,
+                    apiKey);
+
+                return tournamentScheduleDto.sport_events.Select(ms => MatchMapper.MapMatch(ms, null, null, regionName, language));
+            }
+            catch (Exception ex)
+            {
+                await logger.ErrorAsync(ex.ToString());
+            }
+
+            return Enumerable.Empty<Match>();
         }
     }
 }

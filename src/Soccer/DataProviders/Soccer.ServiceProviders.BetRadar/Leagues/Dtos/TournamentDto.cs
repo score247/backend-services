@@ -13,6 +13,17 @@
         public IEnumerable<TournamentDto> tournaments { get; set; }
     }
 
+    public class TournamentSchedule
+    {
+        public DateTime generated_at { get; set; }
+
+        public string schema { get; set; }
+
+        public TournamentDto tournament { get; set; }
+
+        public IEnumerable<SportEventDto> sport_events { get; set; }
+    }
+
     public class TournamentDto
     {
         public string id { get; set; }

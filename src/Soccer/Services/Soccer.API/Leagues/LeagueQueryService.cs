@@ -12,6 +12,8 @@ namespace Soccer.API.Leagues
     public interface ILeagueQueryService
     {
         Task<IEnumerable<League>> GetMajorLeagues(Language language);
+
+        Task<IEnumerable<LeagueSeasonProcessedInfo>> GetLeagueSeasonFecth();
     }
 
     public class LeagueQueryService : ILeagueQueryService
@@ -26,6 +28,9 @@ namespace Soccer.API.Leagues
             this.dynamicRepository = dynamicRepository;
             this.leagueCache = leagueCache;
         }
+
+        public Task<IEnumerable<LeagueSeasonProcessedInfo>> GetLeagueSeasonFecth()
+        => dynamicRepository.FetchAsync<LeagueSeasonProcessedInfo>(new GetUnprocessedLeagueSeasonCriteria());
 
         public async Task<IEnumerable<League>> GetMajorLeagues(Language language)
         {

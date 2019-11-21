@@ -7,7 +7,9 @@ using Soccer.Core.Leagues.Models;
 
 namespace Soccer.API.Leagues
 {
-    public class LeagueHandler : IRequestHandler<MajorLeaguesRequest, IEnumerable<League>>
+    public class LeagueHandler 
+        : IRequestHandler<MajorLeaguesRequest, IEnumerable<League>>
+        , IRequestHandler<UnprocessedLeagueSeasonRequest, IEnumerable<LeagueSeasonProcessedInfo>>
     {
         private readonly ILeagueQueryService leagueQueryService;
 
@@ -18,5 +20,8 @@ namespace Soccer.API.Leagues
 
         public Task<IEnumerable<League>> Handle(MajorLeaguesRequest request, CancellationToken cancellationToken)
             => leagueQueryService.GetMajorLeagues(request.Language);
+
+        public Task<IEnumerable<LeagueSeasonProcessedInfo>> Handle(UnprocessedLeagueSeasonRequest request, CancellationToken cancellationToken)
+        => leagueQueryService.GetLeagueSeasonFecth();
     }
 }
