@@ -1,8 +1,10 @@
 ﻿using System;
+using MessagePack;
 using Newtonsoft.Json;
 
 namespace Soccer.Core.Leagues.Models
 {
+    [MessagePackObject(keyAsPropertyName: true)]
     public class LeagueSeasonProcessedInfo
     {
         [JsonConstructor]
