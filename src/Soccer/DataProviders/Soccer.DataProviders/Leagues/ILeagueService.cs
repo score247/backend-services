@@ -10,11 +10,9 @@ namespace Soccer.DataProviders.Leagues
     {
         Task<IEnumerable<League>> GetLeagues(Language language);
 
-        Task<League> GetLeague(string leagueId, Language language);
+        Task<LeagueStanding> GetLeagueStandings(string leagueId, Language language, string regionName);
 
-        Task<LeagueStanding> GetLeagueStandings(string leagueId, Language language, string region);
-
-        Task<LeagueStanding> GetLeagueLiveStandings(string leagueId, Language language, string region);
+        Task<LeagueStanding> GetLeagueLiveStandings(string leagueId, Language language, string regionName);
     }
 
     public interface ILeagueScheduleService

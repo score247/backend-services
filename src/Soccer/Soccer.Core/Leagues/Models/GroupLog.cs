@@ -3,9 +3,9 @@ using Soccer.Core.Teams.Models;
 
 namespace Soccer.Core.Leagues.Models
 {
-    public class GroupNote
+    public class GroupLog
     {
-        public GroupNote(string id, IEnumerable<TeamNote> teams)
+        public GroupLog(string id, IEnumerable<TeamLog> teams)
         {
             Id = id;
             Teams = teams;
@@ -13,6 +13,6 @@ namespace Soccer.Core.Leagues.Models
 
         public string Id { get; }
 
-        public IEnumerable<TeamNote> Teams { get; }
+        public IEnumerable<TeamLog> Teams { get; }
     }
 }

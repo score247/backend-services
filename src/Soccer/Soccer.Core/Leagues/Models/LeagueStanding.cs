@@ -5,9 +5,9 @@ namespace Soccer.Core.Leagues.Models
     public class LeagueStanding
     {
         public LeagueStanding(
-            League league, 
-            LeagueSeason leagueSeason, 
-            IEnumerable<GroupStanding> standings, 
+            League league,
+            LeagueSeason leagueSeason,
+            IEnumerable<Standing> standings,
             IEnumerable<Note> notes)
         {
             League = league;
@@ -20,7 +20,7 @@ namespace Soccer.Core.Leagues.Models
 
         public LeagueSeason LeagueSeason { get; }
 
-        public IEnumerable<GroupStanding> Standings { get; }
+        public IEnumerable<Standing> Standings { get; }
 
         public IEnumerable<Note> Notes { get; }
     }

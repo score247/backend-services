@@ -44,11 +44,6 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             this.logger = logger;
         }
 
-        public Task<League> GetLeague(string leagueId, Language language)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IEnumerable<League>> GetLeagues(Language language)
         {
             try
@@ -101,14 +96,54 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             return Enumerable.Empty<Match>();
         }
 
-        public Task<LeagueStanding> GetLeagueStandings(string leagueId, Language language, string region)
+        public async Task<LeagueStanding> GetLeagueStandings(string leagueId, Language language, string regionName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == regionName).Key;
+
+                var sportRadarLanguage = language.ToSportRadarFormat();
+                var tournamentStandingDto = await leagueApi.GetTournamentStandings(
+                    soccerSettings.AccessLevel,
+                    soccerSettings.Version,
+                    regionName,
+                    sportRadarLanguage,
+                    leagueId,
+                    apiKey);
+
+                return LeagueStandingMapper.MapLeagueStanding(tournamentStandingDto, regionName);
+            }
+            catch (Exception ex)
+            {
+                await logger.ErrorAsync(ex.ToString());
+            }
+
+            return null;
         }
 
-        public Task<LeagueStanding> GetLeagueLiveStandings(string leagueId, Language language, string region)
+        public async Task<LeagueStanding> GetLeagueLiveStandings(string leagueId, Language language, string regionName)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == regionName).Key;
+
+                var sportRadarLanguage = language.ToSportRadarFormat();
+                var tournamentStandingDto = await leagueApi.GetTournamentLiveStandings(
+                    soccerSettings.AccessLevel,
+                    soccerSettings.Version,
+                    regionName,
+                    sportRadarLanguage,
+                    leagueId,
+                    apiKey);
+
+                return LeagueStandingMapper.MapLeagueStanding(tournamentStandingDto, regionName);
+            }
+            catch (Exception ex)
+            {
+                await logger.ErrorAsync(ex.ToString());
+            }
+
+            return null;
         }
     }
 }

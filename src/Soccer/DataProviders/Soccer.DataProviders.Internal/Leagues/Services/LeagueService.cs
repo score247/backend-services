@@ -33,12 +33,7 @@ namespace Soccer.DataProviders.Internal.Leagues.Services
             this.logger = logger;
         }
 
-        public Task<League> GetLeague(string leagueId, Language language)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<LeagueStanding> GetLeagueLiveStandings(string leagueId, Language language, string region)
+        public Task<LeagueStanding> GetLeagueLiveStandings(string leagueId, Language language, string regionName)
         {
             throw new NotImplementedException();
         }
@@ -68,7 +63,7 @@ namespace Soccer.DataProviders.Internal.Leagues.Services
             }
         }
 
-        public Task<LeagueStanding> GetLeagueStandings(string leagueId, Language language, string region)
+        public Task<LeagueStanding> GetLeagueStandings(string leagueId, Language language, string regionName)
         {
             throw new NotImplementedException();
         }

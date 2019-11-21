@@ -4,6 +4,11 @@ namespace Soccer.Core.Leagues.Models
 {
     public class Note
     {
-        public GroupNote Group { get; }
+        public GroupLog Group { get; }
+
+        public Note(GroupLog groupNote)
+        {
+            Group = groupNote;
+        }
     }
 }
