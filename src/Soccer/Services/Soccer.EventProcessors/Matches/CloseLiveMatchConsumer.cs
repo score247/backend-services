@@ -16,11 +16,11 @@
         }
 
         public Task Consume(ConsumeContext<ILiveMatchClosedMessage> context)
-            => UpdateMatchResultAndMigrateLiveData(context.Message);
+            => UpdateMatchResult(context.Message);
 
-        private Task UpdateMatchResultAndMigrateLiveData(ILiveMatchClosedMessage message)
+        private Task UpdateMatchResult(ILiveMatchClosedMessage message)
         {
-            var command = new UpdateMatchResultAndMigrateLiveData(message.MatchId, message.MatchResult);
+            var command = new UpdateLiveMatchResultCommand(message.MatchId, message.MatchResult);
 
             return dynamicRepository.ExecuteAsync(command);
         }
