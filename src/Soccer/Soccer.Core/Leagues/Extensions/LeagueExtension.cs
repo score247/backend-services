@@ -150,7 +150,7 @@ namespace Soccer.Core.Leagues.Extensions
 
             if (numOfComma == 1)
             {
-                return BuildLeagueWithCountryName(league).Replace(commaString, termsplit);
+                return $"{league?.CountryName} {league.Name}".Replace(commaString, termsplit).TrimStart();
             }
 
             return string.Empty;
@@ -168,9 +168,7 @@ namespace Soccer.Core.Leagues.Extensions
             {
                 var words = league.Name.Split(commaChar);
 
-                return BuildLeagueWithCountryName(
-                    league,
-                    string.Join(termsplit, words[0], words[second], words[1]));
+                return $"{league?.CountryName} {string.Join(termsplit, words[0], words[second], words[1])}".TrimStart();
             }
 
             return string.Empty;
