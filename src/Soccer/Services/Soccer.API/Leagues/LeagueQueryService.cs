@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Data.Repository;
@@ -55,9 +56,21 @@ namespace Soccer.API.Leagues
 
         public async Task<IEnumerable<MatchSummary>> GetMatches(string id, Language language)
         {
-            var matches = await dynamicRepository.FetchAsync<Match>(new GetMatchesByLeagueCriteria(id, language));
+            int dateSpan = 4;
+            var matches = new List<MatchSummary>();
 
-            return matches.Select(m => new MatchSummary(m));
+            var formerMatches = dynamicRepository.FetchAsync<Match>(new GetMatchesByLeagueCriteria(id, language, DateTime.Now.AddDays(-dateSpan)));
+            var aheadMatches = dynamicRepository.FetchAsync<Match>(new GetMatchesByLeagueCriteria(id, language, DateTime.Now.AddDays(dateSpan)));
+            var currentMatches = dynamicRepository.FetchAsync<Match>(new GetMatchesByLeagueCriteria(id, language));
+
+            var results = await Task.WhenAll(currentMatches, aheadMatches, formerMatches);
+
+            foreach (var result in results)
+            {
+                matches.AddRange(result.Select(m => new MatchSummary(m)));
+            }
+
+            return matches;
         }
     }
 }
