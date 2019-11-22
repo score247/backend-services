@@ -53,7 +53,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
                 teamStandingDto.rank,
                 string.IsNullOrWhiteSpace(teamStandingDto.current_outcome)
                     ? TeamOutcome.Unknown
-                    : Enumeration.FromDisplayName<TeamOutcome>(teamStandingDto.current_outcome),
+                    : Enumeration.FromDisplayName<TeamOutcome>(teamStandingDto.current_outcome.ToLowerInvariant()),
                 teamStandingDto.played,
                 teamStandingDto.win,
                 teamStandingDto.draw,
