@@ -7,6 +7,7 @@ using Fanex.Data.Repository;
 using Fanex.Logging;
 using MassTransit;
 using Score247.Shared;
+using Soccer.Core.Leagues.QueueMessages;
 using Soccer.Core.Matches.Extensions;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;

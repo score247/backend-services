@@ -9,6 +9,7 @@ using Soccer.Core.Shared.Enumerations;
 using Soccer.DataProviders._Shared.Enumerations;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.Matches.Services;
+using Soccer.DataReceivers.ScheduleTasks.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Teams;
 
 namespace Soccer.DataReceivers.ScheduleTasks.Matches
@@ -64,6 +65,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
                 BackgroundJob.Enqueue<IFetchTimelineTask>(
                     task => task.FetchTimelines(closedMatches, language));
+
+                BackgroundJob.Enqueue<IFetchLeagueStandingsTask>(
+                    task => task.FetchClosedMatchesStanding(closedMatches, language));
             }
         }
     }
