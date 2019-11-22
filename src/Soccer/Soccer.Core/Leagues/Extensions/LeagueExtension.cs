@@ -105,7 +105,7 @@ namespace Soccer.Core.Leagues.Extensions
         }
 
         private static string ExtractGroupName(League league, string groupName)
-            => groupName.Equals(league.Name)
+            => groupName.Equals(league.Name, StringComparison.InvariantCultureIgnoreCase)
                 ? string.Empty
                 : groupName[groupName.Length - 1].ToString().ToUpperInvariant();
 
