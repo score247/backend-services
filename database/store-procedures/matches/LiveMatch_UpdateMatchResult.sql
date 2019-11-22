@@ -7,5 +7,9 @@ CREATE DEFINER=`user`@`%` PROCEDURE `LiveMatch_UpdateMatchResult`(
 BEGIN
 			UPDATE `LiveMatch` as LM
 			SET `Value` = JSON_SET(`Value`,  '$.MatchResult', JSON_EXTRACT(matchResult, '$'))
-			WHERE LM.`SportId` = sportId AND LM.Id = matchId;	 
+			WHERE LM.`SportId` = sportId AND LM.Id = matchId;
+            
+            UPDATE `Match` as M
+			SET `Value` = JSON_SET(`Value`,  '$.MatchResult', JSON_EXTRACT(matchResult, '$'))
+			WHERE M.`SportId` = sportId AND M.Id = matchId;
 END

@@ -8,4 +8,8 @@ BEGIN
 	UPDATE `LiveMatch` as LM
 	SET `Value` = JSON_SET(`Value`,  '$.LatestTimeline', JSON_EXTRACT(timelineEvent, '$'))
 	WHERE LM.`SportId` = sportId AND LM.Id = matchId;
+    
+    UPDATE `LiveMatch` as M
+	SET `Value` = JSON_SET(`Value`,  '$.LatestTimeline', JSON_EXTRACT(timelineEvent, '$'))
+	WHERE M.`SportId` = sportId AND M.Id = matchId;
 END

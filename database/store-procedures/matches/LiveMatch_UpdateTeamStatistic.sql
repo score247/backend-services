@@ -5,4 +5,8 @@ BEGIN
 	UPDATE `LiveMatch` as LM
     SET Value = JSON_SET(Value, CONCAT('$.Teams[', teamIndex ,'].Statistic'), JSON_EXTRACT(statistic, '$'))
     WHERE LM.`SportId` = sportId AND LM.`Id` = matchId;
+    
+    UPDATE `Match` as M
+    SET Value = JSON_SET(Value, CONCAT('$.Teams[', teamIndex ,'].Statistic'), JSON_EXTRACT(statistic, '$'))
+    WHERE M.`SportId` = sportId AND M.`Id` = matchId;
 END

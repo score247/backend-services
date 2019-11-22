@@ -12,4 +12,10 @@ BEGIN
 			CONCAT('$.Teams[', teamIndex ,'].Statistic.RedCards'), redCards,
             CONCAT('$.Teams[', teamIndex ,'].Statistic.YellowRedCards'), yellowRedCards)
     WHERE LM.`SportId` = sportId AND LM.`Id` = matchId;
+    
+    UPDATE `Match` as M
+    SET Value = JSON_SET(Value, 
+			CONCAT('$.Teams[', teamIndex ,'].Statistic.RedCards'), redCards,
+            CONCAT('$.Teams[', teamIndex ,'].Statistic.YellowRedCards'), yellowRedCards)
+    WHERE M.`SportId` = sportId AND M.`Id` = matchId;
 END
