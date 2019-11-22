@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Score247.Shared.Enumerations;
 using Soccer.Core._Shared.Enumerations;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
@@ -50,7 +51,9 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
                 teamStandingDto.team.id,
                 teamStandingDto.team.name,
                 teamStandingDto.rank,
-                teamStandingDto.current_outcome,
+                string.IsNullOrWhiteSpace(teamStandingDto.current_outcome)
+                    ? TeamOutcome.Unknown
+                    : Enumeration.FromDisplayName<TeamOutcome>(teamStandingDto.current_outcome),
                 teamStandingDto.played,
                 teamStandingDto.win,
                 teamStandingDto.draw,

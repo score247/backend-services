@@ -8,10 +8,11 @@ using Soccer.Core.Matches.Models;
 
 namespace Soccer.API.Leagues
 {
-    public class LeagueHandler 
-        : IRequestHandler<MajorLeaguesRequest, IEnumerable<League>>
-        , IRequestHandler<UnprocessedLeagueSeasonRequest, IEnumerable<LeagueSeasonProcessedInfo>>
-        , IRequestHandler<MatchesByLeagueRequest, IEnumerable<MatchSummary>>
+    public class LeagueHandler : 
+        IRequestHandler<MajorLeaguesRequest, IEnumerable<League>>, 
+        IRequestHandler<UnprocessedLeagueSeasonRequest, IEnumerable<LeagueSeasonProcessedInfo>>, 
+        IRequestHandler<MatchesByLeagueRequest, IEnumerable<MatchSummary>>,
+        IRequestHandler<LeagueTableRequest, LeagueTable>
     {
         private readonly ILeagueQueryService leagueQueryService;
 
@@ -24,9 +25,12 @@ namespace Soccer.API.Leagues
             => leagueQueryService.GetMajorLeagues(request.Language);
 
         public Task<IEnumerable<LeagueSeasonProcessedInfo>> Handle(UnprocessedLeagueSeasonRequest request, CancellationToken cancellationToken)
-        => leagueQueryService.GetLeagueSeasonFecth();
+            => leagueQueryService.GetLeagueSeasonFecth();
 
         public Task<IEnumerable<MatchSummary>> Handle(MatchesByLeagueRequest request, CancellationToken cancellationToken)
-        => leagueQueryService.GetMatches(request.LeagueId, request.Language);
+            => leagueQueryService.GetMatches(request.LeagueId, request.Language);
+
+        public Task<LeagueTable> Handle(LeagueTableRequest request, CancellationToken cancellationToken)
+            => throw new System.NotImplementedException();
     }
 }

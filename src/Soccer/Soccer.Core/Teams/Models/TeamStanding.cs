@@ -6,8 +6,8 @@
         public TeamStanding(
             string id, 
             string name, 
-            int rank, 
-            string currentOutcome, 
+            int rank,
+            TeamOutcome outcome, 
             int played, 
             int win, 
             int draw, 
@@ -22,7 +22,7 @@
             Id = id;
             Name = name;
             Rank = rank;
-            CurrentOutcome = currentOutcome;
+            Outcome = outcome;
             Played = played;
             Win = win;
             Draw = draw;
@@ -40,7 +40,7 @@
 
         public int Rank { get; }
 
-        public string CurrentOutcome { get; }
+        public TeamOutcome Outcome { get; }
 
         public int Played { get; }
 

@@ -1,23 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Fanex.Data.Repository;
+﻿using Fanex.Data.Repository;
+using Soccer.Core._Shared.Enumerations;
+using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.Database.Leagues.Criteria
 {
     public class GetLeagueTableCriteria : CriteriaBase
     {
+        public GetLeagueTableCriteria(
+            string leagueId,
+            string seasonId,
+            Language language)
+        {
+            LeagueId = leagueId;
+            SeasonId = seasonId;
+            Language = language?.DisplayName;
+        }
+
         public string LeagueId { get; }
+
         public string SeasonId { get; }
-        public string TableType { get; }
+
         public string Language { get; }
+
+        public string TableType { get; } = LeagueTableType.Total;
 
         public override string GetSettingKey()
             => "League_GetStandings";
 
         public override bool IsValid()
-            => !string.IsNullOrEmpty(LeagueId)
-                && !string.IsNullOrEmpty(SeasonId)
-                && !string.IsNullOrEmpty(TableType);
+            => !string.IsNullOrWhiteSpace(LeagueId)
+                && !string.IsNullOrWhiteSpace(SeasonId)
+                && !string.IsNullOrWhiteSpace(Language);
     }
 }
