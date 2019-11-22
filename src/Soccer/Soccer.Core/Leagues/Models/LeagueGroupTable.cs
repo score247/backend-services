@@ -7,13 +7,13 @@ namespace Soccer.Core.Leagues.Models
     {
         public LeagueGroupTable(
             string id, 
-            string name, 
-            LeagueGroupNote groupNote, 
+            string name,
+            IEnumerable<LeagueGroupNote> groupNotes, 
             IEnumerable<TeamStanding> teamStandings)
         {
             Id = id;
             Name = name;
-            GroupNote = groupNote;
+            GroupNotes = groupNotes;
             TeamStandings = teamStandings;
         }
 
@@ -21,7 +21,7 @@ namespace Soccer.Core.Leagues.Models
 
         public string Name { get; }
 
-        public LeagueGroupNote GroupNote { get; }
+        public IEnumerable<LeagueGroupNote> GroupNotes { get; }
 
         public IEnumerable<TeamStanding> TeamStandings { get; }
     }
