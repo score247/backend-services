@@ -4,6 +4,16 @@
       "host": "10.18.200.109",
       "port": "3396",
       "database": "score247_local_test"
+    },
+    {
+      "host": "10.18.200.109",
+      "port": "3396",
+      "database": "score247_local_test_former"
+    },
+    {
+      "host": "10.18.200.109",
+      "port": "3396",
+      "database": "score247_local_test_ahead"
     }
   ]
 }

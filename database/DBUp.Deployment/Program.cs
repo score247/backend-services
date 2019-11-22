@@ -13,7 +13,7 @@ namespace DBUp.Deployment
     {
         private static int Main(string[] args)
         {
-            var settingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "app-settings.dev2.json");
+            var settingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "app-settings.dev.json");
             var settings = File.ReadAllText(settingPath);
             var connectionConfiguration = JsonConvert.DeserializeObject<ConnectionConfiguration>(settings);
 
@@ -30,9 +30,9 @@ namespace DBUp.Deployment
 
                 //InstallNewDatabase(config.ToString()); // Only run when you create new database
 
-                //InstallStoredProcedures(config.ToString());
+                InstallStoredProcedures(config.ToString());
 
-                InstallSprintChanges(config.ToString());
+                //InstallSprintChanges(config.ToString());
             }
 
             Console.ForegroundColor = ConsoleColor.Green;

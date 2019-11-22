@@ -1,10 +1,10 @@
 {
   "Connections": [
-    //{
-    //  "host": "10.18.200.109",
-    //  "port": "3396",
-    //  "database": "score247_local_dev"
-    //},
+    {
+      "host": "10.18.200.109",
+      "port": "3396",
+      "database": "score247_local_dev"
+    },
     {
       "host": "10.18.200.109",
       "port": "3396",
