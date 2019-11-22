@@ -20,7 +20,7 @@ namespace Soccer.API.Leagues
 
         Task<IEnumerable<MatchSummary>> GetMatches(string id, Language language);
 
-        Task<LeagueTable> GetLeagueTable(string id, string seasonId, Language language);
+        Task<LeagueTable> GetLeagueTable(string id, string seasonId, string groupName, Language language);
     }
 
     public class LeagueQueryService : ILeagueQueryService
@@ -42,14 +42,9 @@ namespace Soccer.API.Leagues
         public Task<IEnumerable<LeagueSeasonProcessedInfo>> GetLeagueSeasonFecth()
             => dynamicRepository.FetchAsync<LeagueSeasonProcessedInfo>(new GetUnprocessedLeagueSeasonCriteria());
 
-        public Task<LeagueTable> GetLeagueTable(string id, string seasonId, Language language)
+        public async Task<LeagueTable> GetLeagueTable(string id, string seasonId, string groupName, Language language)
         {
-            var leagueTable = dynamicRepository.GetAsync<LeagueTable>(new GetLeagueTableCriteria(id, seasonId, language));
-
-            if(leagueTable == null)
-            {
-                return leagueTable;
-            }
+            var leagueTable = await dynamicRepository.GetAsync<LeagueTable>(new GetLeagueTableCriteria(id, seasonId, language));
 
             return leagueTable;
         }

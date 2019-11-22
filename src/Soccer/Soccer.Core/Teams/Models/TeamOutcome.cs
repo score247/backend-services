@@ -67,7 +67,9 @@ namespace Soccer.Core.Teams.Models
         {
         }
 
+#pragma warning disable S109 // Magic numbers should not be used
         [Key(2)]
+#pragma warning restore S109 // Magic numbers should not be used
         public string FriendlyName { get; private set; }
     }
 }

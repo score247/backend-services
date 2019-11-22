@@ -6,7 +6,7 @@ CREATE PROCEDURE `League_GetStandings`(
     IN tableType VARCHAR(10),
     IN language VARCHAR(10))
 BEGIN
-	SELECT `Value` FROM `Standing` as SD 
+	SELECT `Value` FROM `Standings` AS SD 
 		WHERE SD.LeagueId = leagueId
 			AND SD.SeasonId = seasonId
 			AND SD.TableType = tableType
