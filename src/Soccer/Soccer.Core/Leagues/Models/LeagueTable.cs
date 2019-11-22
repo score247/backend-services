@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
+using Soccer.Core._Shared.Enumerations;
 
 namespace Soccer.Core.Leagues.Models
 {
     public class LeagueTable
     {
         public LeagueTable(
-            League league, 
-            string type, 
+            League league,
+            LeagueTableType type, 
             LeagueSeason leagueSeason, 
             IEnumerable<LeagueGroupTable> groupTables)
         {
@@ -18,7 +19,7 @@ namespace Soccer.Core.Leagues.Models
 
         public League League { get; }
 
-        public string Type { get; }
+        public LeagueTableType Type { get; }
 
         public LeagueSeason LeagueSeason { get; }
 
