@@ -21,7 +21,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 
         [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
-        Task FetchLeagueMatches(IList<LeagueSeasonProcessedInfo> leagueSeasons);
+        Task FetchMatchesForLeague(IList<LeagueSeasonProcessedInfo> leagueSeasons);
     }
     public class FetchLeagueMatchesTask : IFetchLeagueMatchesTask
     {
@@ -61,11 +61,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             {
                 var batchOfLeague = unprocessedLeagueSeason.Skip(i * NumberOfFetchInTask).Take(NumberOfFetchInTask).ToList();
 
-                jobClient.Enqueue<IFetchLeagueMatchesTask>(t => t.FetchLeagueMatches(batchOfLeague));
+                jobClient.Enqueue<IFetchLeagueMatchesTask>(t => t.FetchMatchesForLeague(batchOfLeague));
             }
         }
 
-        public async Task FetchLeagueMatches(IList<LeagueSeasonProcessedInfo> leagueSeasons)
+        public async Task FetchMatchesForLeague(IList<LeagueSeasonProcessedInfo> leagueSeasons)
         {
             foreach (var season in leagueSeasons)
             {
@@ -73,8 +73,6 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
                 {
                     var matches = await leagueScheduleService.GetLeagueMatches(season.Region, season.LeagueId, language);
                     await PublishPreMatchesMessage(language, matches);
-
-                    //TODO schedule to fetch timelines, lineups, team results
                 }
             }
         }
