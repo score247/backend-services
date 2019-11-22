@@ -1,11 +1,12 @@
 DROP procedure IF EXISTS `League_InsertOrUpdateStandings`;
 
-CREATE PROCEDURE `League_InsertOrUpdateStandings`(IN leagueId VARCHAR(45), IN seasonId VARCHAR(45), IN standings TEXT, IN language TEXT)
+CREATE PROCEDURE `League_InsertOrUpdateStandings`(IN leagueId VARCHAR(45), IN seasonId VARCHAR(45), IN tableType VARCHAR(10), IN standings TEXT, IN language TEXT)
 BEGIN
 	 INSERT INTO `Standings` VALUES (
 			leagueId,
 			seasonId,
             language,
+            tableType,
 			JSON_UNQUOTE(JSON_EXTRACT(standings, '$')),
             now(),
             now())
