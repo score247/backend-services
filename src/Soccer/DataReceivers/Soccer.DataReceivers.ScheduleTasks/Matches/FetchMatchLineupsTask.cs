@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
 using MassTransit;
 using Score247.Shared.Enumerations;
+using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.DataProviders._Shared.Enumerations;
@@ -21,6 +23,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         [AutomaticRetry(Attempts = 1)]
         [Queue("medium")]
         Task FetchMatchLineups();
+
+        [AutomaticRetry(Attempts = 1)]
+        [Queue("medium")]
+        Task FetchMatchLineups(IEnumerable<Match> matches, Language language);
     }
 
     public class FetchMatchLineupsTask : IFetchMatchLineupsTask
@@ -48,10 +54,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                 var todayMatches = (await matchService.GetPreMatches(DateTime.Now.Date, language))
                     .Where(match => majorLeagues?.Any(league => league.Id == match.League.Id) == true);
 
-                foreach (var match in todayMatches)
-                {
-                    await FetchMatchLineups(match.Id, match.Region, language);
-                }
+                await FetchMatchLineups(todayMatches, language);
             }
         }
 
@@ -66,6 +69,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                 {
                     await messageBus.Publish<IMatchLineupsMessage>(new MatchLineupsMessage(matchLineups, language));
                 }
+            }
+        }
+
+        public async Task FetchMatchLineups(IEnumerable<Match> matches, Language language)
+        {
+            foreach (var match in matches)
+            {
+                await FetchMatchLineups(match.Id, match.Region, language);
             }
         }
     }

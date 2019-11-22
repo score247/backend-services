@@ -5,6 +5,7 @@ using Hangfire;
 using MassTransit;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.Core.Teams.Models;
 using Soccer.Core.Teams.QueueMessages;
 using Soccer.DataProviders.Teams.Services;
 
@@ -31,6 +32,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
         [AutomaticRetry(Attempts = 1)]
         [Queue("medium")]
         Task FetchTeamResults(string teamId, Language language);
+
+        [AutomaticRetry(Attempts = 1)]
+        [Queue("low")]
+        Task FetchTeamResults(IEnumerable<Team> teams, Language language);
     }
 
     public class FetchHeadToHeadsTask : IFetchHeadToHeadsTask
@@ -87,6 +92,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
                     await messageBus.Publish<IHeadToHeadFetchedMessage>(
                           new HeadToHeadFetchedMessage(headToHeadMatch, language));
                 }
+            }
+        }
+
+        public async Task FetchTeamResults(IEnumerable<Team> teams, Language language)
+        {
+            foreach (var team in teams)
+            {
+                await FetchTeamResults(team.Id, language);
             }
         }
 

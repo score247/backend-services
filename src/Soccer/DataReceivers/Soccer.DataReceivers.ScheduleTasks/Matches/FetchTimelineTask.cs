@@ -22,6 +22,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         [AutomaticRetry(Attempts = 1)]
         [Queue("mediumlive")]
         Task FetchTimelines(string matchId, string region, Language language);
+
+        [AutomaticRetry(Attempts = 1)]
+        [Queue("low")]
+        Task FetchTimelinesForClosedMatch(IEnumerable<Match> matches, Language language);
     }
 
     public class FetchTimelineTask : IFetchTimelineTask
@@ -36,6 +40,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             this.messageBus = messageBus;
             this.timelineService = timelineService;
         }
+
+        public Task FetchTimelinesForClosedMatch(IEnumerable<Match> matches, Language language)
+        => FetchTimelines(matches, language);
 
         public async Task FetchTimelines(IEnumerable<Match> matches, Language language)
         {
