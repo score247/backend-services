@@ -26,17 +26,21 @@ namespace Soccer.EventProcessors.Matches
         {
             var message = context.Message;
             var majorLeagues = await leagueService.GetMajorLeagues();
+
             var updatedMatches = message.Matches
                 .Select(match =>
                 {
                     match.League.UpdateMajorLeagueInfo(majorLeagues);
 
                     return match;
-                });
+                }).GroupBy(match => match.EventDate.Date);
 
-            var command = new InsertOrUpdateMatchesCommand(updatedMatches, message.Language);
+            foreach (var matchGroup in updatedMatches)
+            {
+                var command = new InsertOrUpdateMatchesCommand(matchGroup.ToList(), message.Language, matchGroup.Key);
 
-            await dynamicRepository.ExecuteAsync(command);
+                await dynamicRepository.ExecuteAsync(command);
+            }
         }
     }
 }

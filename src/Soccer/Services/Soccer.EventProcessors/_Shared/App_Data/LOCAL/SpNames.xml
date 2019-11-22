@@ -1,6 +1,10 @@
 ﻿<Functions>
   <Function Name="Match">
+    
     <Setting Key="Match_InsertMatches" SpName="Match_InsertMatches" DbName="DefaultConnection" />
+    <Setting Key="Match_InsertMatches_Former" SpName="Match_InsertMatches" DbName="FormerDbConnection" />
+    <Setting Key="Match_InsertMatches_Ahead" SpName="Match_InsertMatches" DbName="AheadDbConnection" />
+    
     <Setting Key="Match_InsertTimeline" SpName="Match_InsertTimeline" DbName="DefaultConnection" />
     <Setting Key="Match_UpdateMatchResultAndMigrateLiveData" SpName="Match_UpdateMatchResultAndMigrateLiveData" DbName="DefaultConnection" />
     <Setting Key="Match_GetTimelineEvents" SpName="Match_GetTimelineEvents" DbName="DefaultConnection" />
