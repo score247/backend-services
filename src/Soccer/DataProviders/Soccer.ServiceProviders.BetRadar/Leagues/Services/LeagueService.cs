@@ -96,7 +96,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             return Enumerable.Empty<Match>();
         }
 
-        public async Task<LeagueStanding> GetLeagueStandings(string leagueId, Language language, string regionName)
+        public async Task<LeagueTable> GetLeagueStandings(string leagueId, Language language, string regionName)
         {
             try
             {
@@ -121,7 +121,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             return null;
         }
 
-        public async Task<LeagueStanding> GetLeagueLiveStandings(string leagueId, Language language, string regionName)
+        public async Task<LeagueTable> GetLeagueLiveStandings(string leagueId, Language language, string regionName)
         {
             try
             {

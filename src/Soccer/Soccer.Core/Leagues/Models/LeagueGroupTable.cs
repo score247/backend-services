@@ -3,18 +3,25 @@ using Soccer.Core.Teams.Models;
 
 namespace Soccer.Core.Leagues.Models
 {
-    public class GroupStanding
+    public class LeagueGroupTable
     {
-        public GroupStanding(string id, string name, IEnumerable<TeamStanding> teamStandings)
+        public LeagueGroupTable(
+            string id, 
+            string name, 
+            LeagueGroupNote groupNote, 
+            IEnumerable<TeamStanding> teamStandings)
         {
             Id = id;
             Name = name;
+            GroupNote = groupNote;
             TeamStandings = teamStandings;
         }
 
         public string Id { get; }
 
         public string Name { get; }
+
+        public LeagueGroupNote GroupNote { get; }
 
         public IEnumerable<TeamStanding> TeamStandings { get; }
     }
