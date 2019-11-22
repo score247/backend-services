@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Data.Repository;
+using Soccer.API.Shared.Configurations;
 using Soccer.Cache.Leagues;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Leagues.Criteria;
-using Soccer.Database.Matches.Criteria;
 
 namespace Soccer.API.Leagues
 {
@@ -23,13 +23,16 @@ namespace Soccer.API.Leagues
 
     public class LeagueQueryService : ILeagueQueryService
     {
+        private readonly IAppSettings appSetting;
         private readonly IDynamicRepository dynamicRepository;
         private readonly ILeagueCache leagueCache;
 
         public LeagueQueryService(
+            IAppSettings appSetting,
             IDynamicRepository dynamicRepository,
             ILeagueCache leagueCache)
         {
+            this.appSetting = appSetting;
             this.dynamicRepository = dynamicRepository;
             this.leagueCache = leagueCache;
         }
@@ -56,12 +59,24 @@ namespace Soccer.API.Leagues
 
         public async Task<IEnumerable<MatchSummary>> GetMatches(string id, Language language)
         {
-            int dateSpan = 4;
             var matches = new List<MatchSummary>();
 
-            var formerMatches = dynamicRepository.FetchAsync<Match>(new GetMatchesByLeagueCriteria(id, language, DateTime.Now.AddDays(-dateSpan)));
-            var aheadMatches = dynamicRepository.FetchAsync<Match>(new GetMatchesByLeagueCriteria(id, language, DateTime.Now.AddDays(dateSpan)));
-            var currentMatches = dynamicRepository.FetchAsync<Match>(new GetMatchesByLeagueCriteria(id, language));
+            var formerMatches = dynamicRepository
+                .FetchAsync<Match>(new GetMatchesByLeagueCriteria(
+                    id, 
+                    language, 
+                    DateTime.Now.AddDays(-appSetting.DatabaseQueryDateSpan)));
+
+            var aheadMatches = dynamicRepository
+                .FetchAsync<Match>(new GetMatchesByLeagueCriteria(
+                    id, 
+                    language, 
+                    DateTime.Now.AddDays(appSetting.DatabaseQueryDateSpan)));
+
+            var currentMatches = dynamicRepository
+                .FetchAsync<Match>(new GetMatchesByLeagueCriteria(
+                    id, 
+                    language));
 
             var results = await Task.WhenAll(currentMatches, aheadMatches, formerMatches);
 

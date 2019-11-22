@@ -1,24 +1,21 @@
 ﻿using System;
-using Fanex.Data.Repository;
 using Score247.Shared.Enumerations;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Database._Shared.Extensions;
 
 namespace Soccer.Database.Leagues.Criteria
 {
-    public class GetMatchesByLeagueCriteria : CriteriaBase
+    public class GetMatchesByLeagueCriteria : CustomCriteria
     {
         private const string SpName = "Match_GetByLeagueId";
         public GetMatchesByLeagueCriteria(
             string leagueId, 
             Language language,
-            DateTime eventDate = default)
+            DateTime eventDate = default) : base(eventDate)
         {
             SportId = Sport.Soccer.Value;
             LeagueId = leagueId;
             Language = language.DisplayName;
-
-            EventDate = eventDate == default ? DateTime.Now : eventDate;
         }
 
         public int SportId { get; }
@@ -26,8 +23,6 @@ namespace Soccer.Database.Leagues.Criteria
         public string  LeagueId { get; }
 
         public string Language { get; }
-
-        DateTime EventDate { get; }
 
         public override string GetSettingKey() => SpName.GetCorrespondingKey(EventDate);
 

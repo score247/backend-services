@@ -21,6 +21,8 @@
         int OddsLongCacheTimeDuration { get; }
 
         int NumOfMinutesToExpireClosedMatch { get; }
+
+        int DatabaseQueryDateSpan { get; }
     }
 
     public class AppSettings : IAppSettings
@@ -39,6 +41,7 @@
             MatchLongCacheTimeDuration = GetValue<int>(nameof(MatchLongCacheTimeDuration));
             OddsShortCacheTimeDuration = GetValue<int>(nameof(OddsShortCacheTimeDuration));
             OddsLongCacheTimeDuration = GetValue<int>(nameof(OddsLongCacheTimeDuration));
+            DatabaseQueryDateSpan = GetValue<int>(nameof(DatabaseQueryDateSpan));
 
             if (NumberOfTopMatches <= 0)
             {
@@ -61,6 +64,8 @@
         public int OddsLongCacheTimeDuration { get; }
 
         public int NumOfMinutesToExpireClosedMatch { get; }
+
+        public int DatabaseQueryDateSpan { get; }
 
         public T GetValue<T>(string key)
         {
