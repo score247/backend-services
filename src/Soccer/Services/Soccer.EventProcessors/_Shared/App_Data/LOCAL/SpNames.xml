@@ -1,10 +1,10 @@
 ﻿<Functions>
   <Function Name="Match">
-    
+
     <Setting Key="Match_InsertMatches" SpName="Match_InsertMatches" DbName="DefaultConnection" />
     <Setting Key="Match_InsertMatches_Former" SpName="Match_InsertMatches" DbName="FormerDbConnection" />
     <Setting Key="Match_InsertMatches_Ahead" SpName="Match_InsertMatches" DbName="AheadDbConnection" />
-    
+
     <Setting Key="Match_InsertTimeline" SpName="Match_InsertTimeline" DbName="DefaultConnection" />
     <Setting Key="Match_UpdateMatchResultAndMigrateLiveData" SpName="Match_UpdateMatchResultAndMigrateLiveData" DbName="DefaultConnection" />
     <Setting Key="Match_GetTimelineEvents" SpName="Match_GetTimelineEvents" DbName="DefaultConnection" />
@@ -35,6 +35,8 @@
     <Setting Key="League_InsertInternationalLeagues" SpName="League_InsertInternationalLeagues" DbName="DefaultConnection" />
     <Setting Key="League_InsertCountryLeagues" SpName="League_InsertCountryLeagues" DbName="DefaultConnection" />
     <Setting Key="League_InsertLeagueSeason" SpName="League_InsertLeagueSeason" DbName="DefaultConnection" />
+    <Setting Key="League_InsertOrUpdateStandings" SpName="League_InsertOrUpdateStandings" DbName="DefaultConnection" />
+    <Setting Key="League_GetStandings" SpName="League_GetStandings" DbName="DefaultConnection" />
   </Function>
   <Function Name="Team">
     <Setting Key="Team_InsertOrUpdateHeadToHead" SpName="Team_InsertOrUpdateHeadToHead" DbName="DefaultConnection" />

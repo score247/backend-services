@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Fanex.Data.Repository;
 using MassTransit;
-using Soccer.Core.Leagues.Models;
+using Newtonsoft.Json;
 using Soccer.Core.Leagues.QueueMessages;
-using Soccer.Core.Shared.Enumerations;
+using Soccer.Database.Leagues.Commands;
 using Soccer.EventProcessors.Leagues.Services;
 
 namespace Soccer.EventProcessors.Leagues
@@ -13,17 +11,25 @@ namespace Soccer.EventProcessors.Leagues
     public class FetchLeagueStandingConsumer : IConsumer<ILeagueStandingFetchedMessage>
     {
         private readonly IDynamicRepository dynamicRepository;
-        private readonly ILeagueService leagueService;
 
-        public FetchLeagueStandingConsumer(IDynamicRepository dynamicRepository, ILeagueService leagueService)
+        public FetchLeagueStandingConsumer(IDynamicRepository dynamicRepository)
         {
             this.dynamicRepository = dynamicRepository;
-            this.leagueService = leagueService;
         }
 
-        public async Task Consume(ConsumeContext<ILeagueStandingFetchedMessage> context)
+        public Task Consume(ConsumeContext<ILeagueStandingFetchedMessage> context)
         {
             var message = context.Message;
+            var standings = JsonConvert.SerializeObject(message.LeagueStanding);
+
+            var command = new InsertOrUpdateStandingCommand(
+                message.LeagueStanding.League.Id,
+                message.LeagueStanding.LeagueSeason.Id,
+                message.LeagueStanding.Type.DisplayName,
+                standings,
+                message.Language);
+
+            return dynamicRepository.ExecuteAsync(command);
         }
     }
 }
