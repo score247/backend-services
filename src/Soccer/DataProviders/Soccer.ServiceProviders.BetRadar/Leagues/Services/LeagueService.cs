@@ -96,7 +96,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             return Enumerable.Empty<Match>();
         }
 
-        public async Task<LeagueTable> GetLeagueStandings(string leagueId, Language language, string regionName)
+        public async Task<IEnumerable<LeagueTable>> GetLeagueStandings(string leagueId, Language language, string regionName)
         {
             try
             {
@@ -111,7 +111,8 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
                     leagueId,
                     apiKey);
 
-                return LeagueStandingMapper.MapLeagueStanding(tournamentStandingDto, regionName);
+                return tournamentStandingDto.standings.Select(standing =>
+                    LeagueTableMapper.MapLeagueTable(tournamentStandingDto.tournament, tournamentStandingDto.season, tournamentStandingDto.notes, standing, regionName));
             }
             catch (Exception ex)
             {
@@ -121,7 +122,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             return null;
         }
 
-        public async Task<LeagueTable> GetLeagueLiveStandings(string leagueId, Language language, string regionName)
+        public async Task<IEnumerable<LeagueTable>> GetLeagueLiveStandings(string leagueId, Language language, string regionName)
         {
             try
             {
@@ -136,7 +137,8 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
                     leagueId,
                     apiKey);
 
-                return LeagueStandingMapper.MapLeagueStanding(tournamentStandingDto, regionName);
+                return tournamentStandingDto.standings.Select(standing =>
+                    LeagueTableMapper.MapLeagueTable(tournamentStandingDto.tournament, tournamentStandingDto.season, tournamentStandingDto.notes, standing, regionName));
             }
             catch (Exception ex)
             {

@@ -7,8 +7,8 @@ namespace Soccer.Core.Leagues.Models
     {
         public LeagueTable(
             League league,
-            LeagueTableType type, 
-            LeagueSeason leagueSeason, 
+            LeagueTableType type,
+            LeagueSeason leagueSeason,
             IEnumerable<LeagueGroupTable> groupTables)
         {
             League = league;

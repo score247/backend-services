@@ -51,8 +51,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
         public async Task FetchLeagueStandings(string leagueId, string region, Language language)
         {
             var leagueTables = await sportradarLeagueService.GetLeagueStandings(leagueId, language, region);
-            await messageBus.Publish<ILeagueStandingFetchedMessage>(
-                    new LeagueStandingFetchedMessage(leagueTables, language.DisplayName));
+            foreach (var leagueTable in leagueTables)
+            {
+                await messageBus.Publish<ILeagueStandingFetchedMessage>(
+                        new LeagueStandingFetchedMessage(leagueTable, language.DisplayName));
+            }
         }
     }
 }
