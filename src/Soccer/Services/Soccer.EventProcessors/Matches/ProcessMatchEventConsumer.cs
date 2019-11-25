@@ -1,5 +1,6 @@
 ﻿namespace Soccer.EventProcessors.Matches
 {
+    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
@@ -45,6 +46,10 @@
         }
 
         private async Task InsertTimeline(MatchEvent matchEvent)
-            => await dynamicRepository.ExecuteAsync(new InsertTimelineCommand(matchEvent.MatchId, matchEvent.Timeline, Language.en_US));
+            => await dynamicRepository.ExecuteAsync(new InsertTimelineCommand(
+                matchEvent.MatchId, 
+                matchEvent.Timeline, 
+                Language.en_US, 
+                matchEvent.Timeline.Time.Date));
     }
 }

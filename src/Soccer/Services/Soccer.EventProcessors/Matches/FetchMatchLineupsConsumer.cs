@@ -24,7 +24,7 @@ namespace Soccer.EventProcessors.Matches
                 return;
             }
 
-            var command = new InsertOrUpdateMatchLineupsCommand(message.MatchLineups, message.Language);
+            var command = new InsertOrUpdateMatchLineupsCommand(message.MatchLineups, message.Language, message.MatchLineups.EventDate.Date);
 
             await dynamicRepository.ExecuteAsync(command);
         }

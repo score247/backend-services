@@ -6,6 +6,9 @@
     <Setting Key="Match_InsertMatches_Ahead" SpName="Match_InsertMatches" DbName="AheadDbConnection" />
 
     <Setting Key="Match_InsertTimeline" SpName="Match_InsertTimeline" DbName="DefaultConnection" />
+    <Setting Key="Match_InsertTimeline_Former" SpName="Match_InsertTimeline" DbName="FormerDbConnection" />
+    <Setting Key="Match_InsertTimeline_Ahead" SpName="Match_InsertTimeline" DbName="AheadDbConnection" />
+    
     <Setting Key="Match_GetTimelineEvents" SpName="Match_GetTimelineEvents" DbName="DefaultConnection" />
     <Setting Key="Match_GetByDateRange" SpName="Match_GetByDateRange" DbName="DefaultConnection" />
     <Setting Key="Match_UpdateRefereeAndAttendance" SpName="Match_UpdateRefereeAndAttendance" DbName="DefaultConnection" />
@@ -13,7 +16,10 @@
     <Setting Key="Match_InsertOrUpdatePostMatches" SpName="Match_InsertOrUpdatePostMatches" DbName="DefaultConnection" />
     <Setting Key="Match_UpdateCoverage" SpName="Match_UpdateCoverage" DbName="DefaultConnection" />
     <Setting Key="Match_InsertCommentary" SpName="Match_InsertCommentary" DbName="DefaultConnection" />
+    
     <Setting Key="Match_InsertOrUpdateLineups" SpName="Match_InsertOrUpdateLineups" DbName="DefaultConnection" />
+    <Setting Key="Match_InsertOrUpdateLineups_Former" SpName="Match_InsertOrUpdateLineups" DbName="FormerDbConnection" />
+    <Setting Key="Match_InsertOrUpdateLineups_Ahead" SpName="Match_InsertOrUpdateLineups" DbName="AheadDbConnection" />
   </Function>
   <Function Name="LiveMatch">
     <Setting Key="LiveMatch_RemoveById" SpName="LiveMatch_RemoveById" DbName="DefaultConnection" />

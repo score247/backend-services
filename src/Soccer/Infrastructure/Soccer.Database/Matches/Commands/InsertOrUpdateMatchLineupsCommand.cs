@@ -1,11 +1,19 @@
-﻿using Soccer.Core.Matches.Models;
+﻿using System;
+using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.Database._Shared.Extensions;
 
 namespace Soccer.Database.Matches.Commands
 {
     public class InsertOrUpdateMatchLineupsCommand : BaseCommand
     {
-        public InsertOrUpdateMatchLineupsCommand(MatchLineups match, Language language)
+        private const string SpName = "Match_InsertOrUpdateLineups";
+
+        public InsertOrUpdateMatchLineupsCommand(
+            MatchLineups match, 
+            Language language, 
+            DateTime eventDate = default) 
+            : base(eventDate)
         {
             MatchId = match.Id;
             Lineups = ToJsonString(match);
@@ -18,8 +26,8 @@ namespace Soccer.Database.Matches.Commands
 
         public string Language { get; }
 
-        public override string GetSettingKey()
-            => "Match_InsertOrUpdateLineups";
+        public override string GetSettingKey() 
+            => SpName.GetCorrespondingKey(EventDate);
 
         public override bool IsValid()
             => !string.IsNullOrWhiteSpace(Lineups)
