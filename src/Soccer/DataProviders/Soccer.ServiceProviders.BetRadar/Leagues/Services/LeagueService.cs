@@ -10,6 +10,7 @@ using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.SportRadar.Leagues.DataMappers;
+using Soccer.DataProviders.SportRadar.Leagues.Dtos;
 using Soccer.DataProviders.SportRadar.Matches.DataMappers;
 using Soccer.DataProviders.SportRadar.Shared.Configurations;
 using Soccer.DataProviders.SportRadar.Shared.Extensions;
@@ -97,52 +98,43 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
         }
 
         public async Task<IEnumerable<LeagueTable>> GetLeagueStandings(string leagueId, Language language, string regionName)
-        {
-            try
-            {
-                var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == regionName).Key;
-
-                var sportRadarLanguage = language.ToSportRadarFormat();
-                var tournamentStandingDto = await leagueApi.GetTournamentStandings(
-                    soccerSettings.AccessLevel,
-                    soccerSettings.Version,
-                    regionName,
-                    sportRadarLanguage,
-                    leagueId,
-                    apiKey);
-
-                return tournamentStandingDto.standings.Select(standing =>
-                    LeagueTableMapper.MapLeagueTable(tournamentStandingDto.tournament, tournamentStandingDto.season, tournamentStandingDto.notes, standing, regionName));
-            }
-            catch (ApiException ex)
-            {
-                await logger.ErrorAsync($"Url: {ex.RequestMessage.RequestUri}, {ex}");
-            }
-            catch (Exception ex)
-            {
-                await logger.ErrorAsync(ex.ToString());
-            }
-
-            return Enumerable.Empty<LeagueTable>();
-        }
+            => await GetLeagueStandings(leagueId, language, regionName, leagueApi.GetTournamentStandings);
 
         public async Task<IEnumerable<LeagueTable>> GetLeagueLiveStandings(string leagueId, Language language, string regionName)
+            => await GetLeagueStandings(leagueId, language, regionName, leagueApi.GetTournamentLiveStandings);
+
+        private async Task<IEnumerable<LeagueTable>> GetLeagueStandings(
+            string leagueId, 
+            Language language, 
+            string regionName,
+            Func<string, string, string, string, string, string, Task<TournamentStandingDto>> getTournamentStandings)
         {
             try
             {
-                var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == regionName).Key;
+                var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == regionName)?.Key;
 
-                var sportRadarLanguage = language.ToSportRadarFormat();
-                var tournamentStandingDto = await leagueApi.GetTournamentLiveStandings(
-                    soccerSettings.AccessLevel,
-                    soccerSettings.Version,
-                    regionName,
-                    sportRadarLanguage,
-                    leagueId,
-                    apiKey);
+                if (!string.IsNullOrWhiteSpace(apiKey))
+                {
+                    var sportRadarLanguage = language.ToSportRadarFormat();
+                    var tournamentStandingDto = await getTournamentStandings(
+                        soccerSettings.AccessLevel,
+                        soccerSettings.Version,
+                        regionName,
+                        sportRadarLanguage,
+                        leagueId,
+                        apiKey);
 
-                return tournamentStandingDto.standings.Select(standing =>
-                    LeagueTableMapper.MapLeagueTable(tournamentStandingDto.tournament, tournamentStandingDto.season, tournamentStandingDto.notes, standing, regionName));
+                    if (tournamentStandingDto?.standings != null)
+                    {
+                        return tournamentStandingDto.standings.Select(
+                            standing => LeagueTableMapper.MapLeagueTable(
+                                tournamentStandingDto.tournament,
+                                tournamentStandingDto.season,
+                                tournamentStandingDto.notes,
+                                standing,
+                                regionName));
+                    }
+                }
             }
             catch (ApiException ex)
             {
