@@ -2,7 +2,7 @@ DROP EVENT IF EXISTS Event_ShiftMatchData;
 
 CREATE EVENT Event_ShiftMatchData
     ON SCHEDULE
-      EVERY 5 MINUTE
+      EVERY 3 HOUR
       STARTS CURRENT_TIMESTAMP
     DO  
     BEGIN 
