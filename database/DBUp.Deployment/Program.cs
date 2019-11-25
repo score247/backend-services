@@ -13,13 +13,14 @@ namespace DBUp.Deployment
     {
         private static int Main(string[] args)
         {
-            var settingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "app-settings.test.json");
+            var environment = "dev";
+            var settingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), $"app-settings.{environment}.json");
             var settings = File.ReadAllText(settingPath);
             var connectionConfiguration = JsonConvert.DeserializeObject<ConnectionConfiguration>(settings);
 
             foreach (var config in connectionConfiguration.Connections)
             {
-                
+
                 Console.ForegroundColor = ConsoleColor.Blue;
 
                 Console.WriteLine("==============");
@@ -31,6 +32,8 @@ namespace DBUp.Deployment
                 //InstallNewDatabase(config.ToString()); // Only run when you create new database
 
                 InstallStoredProcedures(config.ToString());
+                InstallReProcessStoredProcedures(config.ToString(), environment);
+                InstallEventSchedulers(config.ToString());
 
                 //InstallSprintChanges(config.ToString());
             }
@@ -57,7 +60,7 @@ namespace DBUp.Deployment
             return 0;
         }
 
-        public static int InstallSprintChanges(string connectionString) 
+        public static int InstallSprintChanges(string connectionString)
         {
             //1. run schema scripts: create tables + indexes
             InstallSchemas(connectionString, true);
@@ -83,6 +86,13 @@ namespace DBUp.Deployment
             return RunScripts(connectionString, new string[] { dir });
         }
 
+        public static int InstallEventSchedulers(string connectionString)
+        {
+            var dir = new DirectoryInfo("../../../../event-scheduler").FullName;
+
+            return RunScripts(connectionString, new string[] { dir });
+        }
+
         public static int InitData(string connectionString)
         {
             var dir = new DirectoryInfo("../../../../import").FullName;
@@ -100,20 +110,21 @@ namespace DBUp.Deployment
             return RunScripts(connectionString, subDirs);
         }
 
-        private static int RunScripts(string connectionString, string[] subDirs)
+        public static int InstallReProcessStoredProcedures(string connectionString, string environment)
+        {
+            var dir = new DirectoryInfo("../../../../reprocess-store-procedures").FullName;
+            var subDirs = Directory.GetDirectories(dir);
+
+            return RunScripts(connectionString, subDirs, true, environment);
+        }
+
+        private static int RunScripts(string connectionString, string[] subDirs, bool changeDbName = false, string environment = "")
         {
             foreach (var sub in subDirs)
             {
                 Console.WriteLine($"Deploying scripts in {sub}");
 
-                var upgrader =
-                    DeployChanges.To
-                        .MySqlDatabase(connectionString)
-                        .WithPreprocessor(new DelimiterPreProcessor())
-                        .WithScriptsFromFileSystem(sub)
-                        .LogToConsole()
-                        .JournalTo(new NullJournal())
-                        .Build();
+                var upgrader = BuildUpgrader(connectionString, sub, changeDbName, environment);
 
                 var result = upgrader.PerformUpgrade();
 
@@ -131,5 +142,23 @@ namespace DBUp.Deployment
 
             return 0;
         }
+
+        private static DbUp.Engine.UpgradeEngine BuildUpgrader(string connectionString, string sub, bool changeDbName = false, string environment = "")
+           => changeDbName
+               ? DeployChanges.To
+                           .MySqlDatabase(connectionString)
+                           .WithPreprocessor(new DatabaseNamePreProcessor(environment))
+                           .WithPreprocessor(new DelimiterPreProcessor())
+                           .WithScriptsFromFileSystem(sub)
+                           .LogToConsole()
+                           .JournalTo(new NullJournal())
+                           .Build()
+               : DeployChanges.To
+                       .MySqlDatabase(connectionString)
+                       .WithPreprocessor(new DelimiterPreProcessor())
+                       .WithScriptsFromFileSystem(sub)
+                       .LogToConsole()
+                       .JournalTo(new NullJournal())
+                       .Build();
     }
 }
