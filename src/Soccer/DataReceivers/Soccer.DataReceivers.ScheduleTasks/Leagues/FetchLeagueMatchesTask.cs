@@ -6,6 +6,7 @@ using Hangfire;
 using MassTransit;
 using Score247.Shared.Enumerations;
 using Soccer.Core.Leagues.Models;
+using Soccer.Core.Leagues.QueueMessages;
 using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
@@ -88,6 +89,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
                     ScheduleTeamResultsTasks(language, matches);
                 }
             }
+
+            await messageBus.Publish<ILeagueMatchesFetchedMessage>(
+                new LeagueMatchesFetchedMessage(leagueSeasons));
         }
 
         private async Task PublishPreMatchesMessage(Language language, IEnumerable<Match> matches)
@@ -109,7 +113,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             {
                 jobClient.Schedule<IFetchTimelineTask>(t => t.FetchTimelines(closedMatches, language), TimelineDelayTimespan);
 
-                //consider missing coverage info
+                //TODO: consider missing coverage info
                 jobClient.Schedule<IFetchMatchLineupsTask>(t => t.FetchMatchLineups(closedMatches, language), LineupsDelayTimespan);
             }
         }
