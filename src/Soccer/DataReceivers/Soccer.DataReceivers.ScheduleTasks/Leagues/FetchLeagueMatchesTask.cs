@@ -29,9 +29,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
     public class FetchLeagueMatchesTask : IFetchLeagueMatchesTask
     {
         private const int NumberOfFetchInTask = 5;
-        private readonly TimeSpan TimelineFetchDelayInMinutes = TimeSpan.FromMinutes(10);
-        private readonly TimeSpan LineupsFetchDelayInMinutes = TimeSpan.FromMinutes(30);
-        private readonly TimeSpan TeamResultsFetchDelayInMinutes = TimeSpan.FromMinutes(40);
+        private readonly TimeSpan TimelineDelayTimespan;
+        private readonly TimeSpan LineupsDelayTimespan;
+        private readonly TimeSpan TeamResultsDelayTimespan;
 
         private readonly IAppSettings appSettings;
         private readonly IBus messageBus;
@@ -52,6 +52,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             this.leagueScheduleService = leagueScheduleService;
             this.leagueSeasonService = leagueSeasonService;
             this.jobClient = jobClient;
+
+            TimelineDelayTimespan = TimeSpan.FromMinutes(appSettings.ScheduleTasksSettings.FetchTimelineDelayedMinutes);
+            LineupsDelayTimespan = TimeSpan.FromMinutes(appSettings.ScheduleTasksSettings.FetchLineupsDelayedMinutes);
+            TeamResultsDelayTimespan = TimeSpan.FromMinutes(appSettings.ScheduleTasksSettings.FetchTeamResultsDelayedMinutes);
         }
 
         public async Task FetchLeagueMatches()
@@ -103,15 +107,24 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
         {
             foreach (var match in closedMatches)
             {
-                jobClient.Schedule<IFetchTimelineTask>(t => t.FetchTimelines(closedMatches, language), TimelineFetchDelayInMinutes);
-                jobClient.Schedule<IFetchMatchLineupsTask>(t => t.FetchMatchLineups(closedMatches, language), LineupsFetchDelayInMinutes);
+                jobClient.Schedule<IFetchTimelineTask>(t => t.FetchTimelines(closedMatches, language), TimelineDelayTimespan);
+
+                //consider missing coverage info
+                jobClient.Schedule<IFetchMatchLineupsTask>(t => t.FetchMatchLineups(closedMatches, language), LineupsDelayTimespan);
             }
         }
 
         private void ScheduleTeamResultsTasks(Language language, IEnumerable<Match> matches)
         {
-            var teams = matches.SelectMany(match => match.Teams).Distinct();
-            jobClient.Schedule<IFetchHeadToHeadsTask>(task => task.FetchTeamResults(teams, language), TeamResultsFetchDelayInMinutes);
+            var teams = matches
+                .SelectMany(match => match.Teams)
+                .GroupBy(team => team.Id)
+                .Select(grp => grp.FirstOrDefault());
+
+            if (teams?.Any() == true)
+            {
+                jobClient.Schedule<IFetchHeadToHeadsTask>(task => task.FetchTeamResults(teams, language), TeamResultsDelayTimespan);
+            }
         }
     }
 }

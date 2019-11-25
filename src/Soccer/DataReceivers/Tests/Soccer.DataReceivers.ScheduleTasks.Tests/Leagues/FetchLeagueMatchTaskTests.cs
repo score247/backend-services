@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using FakeItEasy;
 using Hangfire;
@@ -6,13 +8,17 @@ using Hangfire.Common;
 using Hangfire.States;
 using MassTransit;
 using NSubstitute;
+using Score247.Shared.Tests;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.Core.Teams.Models;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Leagues;
+using Soccer.DataReceivers.ScheduleTasks.Matches;
 using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
+using Soccer.DataReceivers.ScheduleTasks.Teams;
 using Xunit;
 
 namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
@@ -35,6 +41,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
             appSettings = Substitute.For<IAppSettings>();
             messageBus = Substitute.For<IBus>();
             jobClient = Substitute.For<IBackgroundJobClient>();
+
+            appSettings.ScheduleTasksSettings.Returns(A.Dummy<ScheduleTasksSettings>());
 
             fetchLeagueMatchesTask = new FetchLeagueMatchesTask(messageBus, appSettings, leagueScheduleService, leagueSeasonService, jobClient);
         }
@@ -142,5 +150,72 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
             // Assert
             await messageBus.Received(2).Publish<IPreMatchesFetchedMessage>(Arg.Any<PreMatchesFetchedMessage>());
         }
+
+        [Fact]
+        public async Task FetchMatchesForLeague_HasClosedMatch_ScheduleToFetchTimelineAndLineups()
+        {
+            // Arrange
+            appSettings.ScheduleTasksSettings.Returns(new ScheduleTasksSettings { QueueBatchSize = 5 });
+            var unprocessedLeagues = A.CollectionOfDummy<LeagueSeasonProcessedInfo>(1);
+
+            leagueScheduleService
+                .GetLeagueMatches(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Language>())
+                .Returns(new List<Match>
+                {
+                    StubMatchWithEventStatus(MatchStatus.Closed),
+                    StubMatchWithEventStatus(MatchStatus.NotStarted),
+                    StubMatchWithEventStatus(MatchStatus.Cancelled),
+                });
+
+            // Act
+            await fetchLeagueMatchesTask.FetchMatchesForLeague(unprocessedLeagues);
+
+            // Assert
+            jobClient
+                .Received(1)
+                .Create(Arg.Is<Job>(job => job.Method.Name == nameof(IFetchTimelineTask.FetchTimelines)), Arg.Any<ScheduledState>());
+
+            jobClient
+               .Received(1)
+               .Create(Arg.Is<Job>(job => job.Method.Name == nameof(IFetchMatchLineupsTask.FetchMatchLineups)), Arg.Any<ScheduledState>());
+        }
+
+
+        [Fact]
+        public async Task FetchMatchesForLeague_Always_ScheduleTeamResultsTasksForDistinctTeams()
+        {
+            // Arrange
+            appSettings.ScheduleTasksSettings.Returns(new ScheduleTasksSettings { QueueBatchSize = 5 });
+            var unprocessedLeagues = A.CollectionOfDummy<LeagueSeasonProcessedInfo>(1);
+
+            leagueScheduleService
+                .GetLeagueMatches(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Language>())
+                .Returns(new List<Match>
+                {
+                    StubMatchWithTeam("team:1", "team:2"),
+                    StubMatchWithTeam("team:3", "team:4"),
+                    StubMatchWithTeam("team:1", "team:4"),
+                    StubMatchWithTeam("team:2", "team:3"),
+                    StubMatchWithTeam("team:1", "team:3")
+                });
+
+            // Act
+            await fetchLeagueMatchesTask.FetchMatchesForLeague(unprocessedLeagues);
+
+            // Assert
+            jobClient
+                .Received(1)
+                .Create(Arg.Is<Job>(job => job.Method.Name == nameof(IFetchHeadToHeadsTask.FetchTeamResults)), Arg.Any<ScheduledState>());
+        }
+
+        private static Match StubMatchWithEventStatus(MatchStatus status)
+            => A.Dummy<Match>().With(match => match.MatchResult, A.Dummy<MatchResult>().With(result => result.EventStatus, status));
+
+        private static Match StubMatchWithTeam(string homeTeamId, string awayTeamId)
+           => A.Dummy<Match>().With(match => match.Teams, new List<Team>
+           {
+                A.Dummy<Team>().With(team => team.Id, homeTeamId).With(team=>team.IsHome, true),
+                A.Dummy<Team>().With(team => team.Id, awayTeamId).With(team=>team.IsHome, false)
+           });
     }
 }
