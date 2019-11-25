@@ -21,7 +21,6 @@
     {
 #pragma warning disable S3996 // URI properties should not be strings
         public string ServiceUrl { get; set; }
-        public string DefaultServiceUrl { get; set; }
 #pragma warning restore S3996 // URI properties should not be strings
 
         public string PushEventEndpoint { get; set; }
