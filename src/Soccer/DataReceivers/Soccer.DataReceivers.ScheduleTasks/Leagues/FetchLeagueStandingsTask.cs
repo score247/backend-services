@@ -40,7 +40,15 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 
         public void FetchClosedMatchesStanding(IEnumerable<Match> closedMatches, Language language)
         {
-            var leagues = closedMatches.Select(closedMatch => closedMatch.League).GroupBy(league => league.Id).Select(group => group.First());
+            if(!closedMatches.Any())
+            {
+                return;
+            }
+
+            var leagues = closedMatches
+                .Select(closedMatch => closedMatch.League)
+                .GroupBy(league => league.Id)
+                .Select(group => group.First());
 
             foreach (var league in leagues)
             {

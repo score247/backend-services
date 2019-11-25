@@ -46,7 +46,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             services.AddSingleton<ITimelineService, TimelineService>();
 
             services.AddSingleton<ILeagueCache, LeagueCache>();
-            services.AddSingleton(RestService.For<ISportRadarLeagueApi>(sportRadarDataProviderSettings.DefaultServiceUrl));
+            services.AddSingleton(RestService.For<ISportRadarLeagueApi>(sportRadarDataProviderSettings.ServiceUrl));
             services.AddSingleton(RestService.For<IInternalLeagueApi>(internalDataProviderSettings.ServiceUrl));
             services.AddSingleton<SportRadarLeagueService>();
             services.AddSingleton<InternalLeagueService>();

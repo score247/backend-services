@@ -114,12 +114,16 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
                 return tournamentStandingDto.standings.Select(standing =>
                     LeagueTableMapper.MapLeagueTable(tournamentStandingDto.tournament, tournamentStandingDto.season, tournamentStandingDto.notes, standing, regionName));
             }
+            catch (ApiException ex)
+            {
+                await logger.ErrorAsync($"Url: {ex.RequestMessage.RequestUri}, {ex}");
+            }
             catch (Exception ex)
             {
                 await logger.ErrorAsync(ex.ToString());
             }
 
-            return null;
+            return Enumerable.Empty<LeagueTable>();
         }
 
         public async Task<IEnumerable<LeagueTable>> GetLeagueLiveStandings(string leagueId, Language language, string regionName)
@@ -140,12 +144,16 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
                 return tournamentStandingDto.standings.Select(standing =>
                     LeagueTableMapper.MapLeagueTable(tournamentStandingDto.tournament, tournamentStandingDto.season, tournamentStandingDto.notes, standing, regionName));
             }
+            catch (ApiException ex)
+            {
+                await logger.ErrorAsync($"Url: {ex.RequestMessage.RequestUri}, {ex}");
+            }
             catch (Exception ex)
             {
                 await logger.ErrorAsync(ex.ToString());
             }
 
-            return null;
+            return Enumerable.Empty<LeagueTable>();
         }
     }
 }
