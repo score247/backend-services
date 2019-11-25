@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using MessagePack;
 using Newtonsoft.Json;
 using Soccer.Core._Shared.Enumerations;
@@ -33,7 +35,27 @@ namespace Soccer.Core.Leagues.Models
         public LeagueSeason LeagueSeason { get; }
 
         [Key(3)]
-        public IEnumerable<LeagueGroupTable> GroupTables { get; }
+        public IEnumerable<LeagueGroupTable> GroupTables { get; private set; }
+
+
+        public void FilterAndCalculateGroupTableOutcome(string groupName)
+        {
+            if (GroupTables == null || !GroupTables.Any())
+            {
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(groupName) && GroupTables.Count() > 1)
+            {
+                groupName = groupName.Trim();
+                GroupTables = GroupTables.Where(table => groupName.Equals(table?.Name, StringComparison.InvariantCultureIgnoreCase));
+            }
+
+            foreach (var groupTable in GroupTables)
+            {
+                groupTable.CalculateOutcomeList();
+            }
+        }
 
 #pragma warning restore S109 // Magic numbers should not be used
     }

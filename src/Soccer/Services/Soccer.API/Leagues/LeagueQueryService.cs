@@ -46,6 +46,11 @@ namespace Soccer.API.Leagues
         {
             var leagueTable = await dynamicRepository.GetAsync<LeagueTable>(new GetLeagueTableCriteria(id, seasonId, language));
 
+            if(leagueTable != null)
+            {
+                leagueTable.FilterAndCalculateGroupTableOutcome(groupName);
+            }
+
             return leagueTable;
         }
 
