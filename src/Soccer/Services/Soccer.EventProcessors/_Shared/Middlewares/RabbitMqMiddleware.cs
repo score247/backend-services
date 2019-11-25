@@ -55,6 +55,7 @@
                 serviceCollectionConfigurator.AddConsumer<CleanMajorLeaguesCacheConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchLeaguesSeasonConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchLeagueStandingConsumer>();
+                serviceCollectionConfigurator.AddConsumer<FetchedLeagueMatchesConsumer>();
             });
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -177,6 +178,7 @@
 
                     e.Consumer<FetchLeaguesConsumer>(provider);
                     e.Consumer<FetchLeaguesSeasonConsumer>(provider);
+                    e.Consumer<FetchedLeagueMatchesConsumer>(provider);
                 });
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_HeadToHead", e =>
