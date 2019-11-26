@@ -12,6 +12,8 @@
 
         string PushEventEndpoint { get; set; }
 
+        bool EnabledResponseLog { get; set; }
+
         IEnumerable<SportSettings> Sports { get; set; }
 
         SportSettings SoccerSettings { get; }
@@ -28,6 +30,8 @@
         public IEnumerable<SportSettings> Sports { get; set; }
 
         public SportSettings SoccerSettings => Sports.FirstOrDefault(sport => sport.Id == Sport.Soccer.Value);
+
+        public bool EnabledResponseLog { get; set; }
     }
 
     public class OddsSetting

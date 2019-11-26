@@ -14,7 +14,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
         public static LeagueTable MapLeagueTable(TournamentDto tournamentDto, SeasonDto seasonDto, IEnumerable<NoteDto> noteDtos, StandingDto standingDto, string region)
         {
             var groupTable = standingDto.groups.Select(group => MapGroupTable(group, noteDtos));
-            var tableType = Score247.Shared.Enumerations.Enumeration.FromDisplayName<LeagueTableType>(standingDto.type);
+            var tableType = Enumeration.FromDisplayName<LeagueTableType>(standingDto.type);
             var leagueTable = new LeagueTable(
                     LeagueMapper.MapLeague(tournamentDto, region),
                     tableType,

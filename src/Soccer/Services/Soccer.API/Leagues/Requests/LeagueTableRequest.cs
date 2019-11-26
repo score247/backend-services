@@ -9,19 +9,19 @@ namespace Soccer.API.Leagues.Requests
     {
         public LeagueTableRequest(
             string leagueId,
-            string seasionId,
+            string seasonId,
             string groupName,
             string language)
         {
             LeagueId = leagueId;
-            SeasionId = seasionId;
+            seasonId = seasonId;
             GroupName = groupName;
             Language = Enumeration.FromDisplayName<Language>(language);
         }
 
         public string LeagueId { get; }
 
-        public string SeasionId { get; }
+        public string seasonId { get; }
 
         public string GroupName { get; }
 

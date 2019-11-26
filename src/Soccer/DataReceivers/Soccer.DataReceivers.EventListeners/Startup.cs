@@ -15,6 +15,7 @@ using Score247.Shared;
 using Sentry;
 using Soccer.Cache.Leagues;
 using Soccer.Core.Shared.Configurations;
+using Soccer.DataProviders._Shared.Enumerations;
 using Soccer.DataProviders.Internal._Share.Configurations;
 using Soccer.DataProviders.Internal.Leagues.Services;
 using Soccer.DataProviders.Leagues;
@@ -51,12 +52,31 @@ namespace Soccer.DataReceivers.EventListeners
             services.AddSingleton<IAppSettings>(appSettings);
             var internalDataProviderSettings = new InternalProviderSettings();
             Configuration.GetSection("DataProviders:Internal").Bind(internalDataProviderSettings);
+
+            var sportRadarDataProviderSettings = new SportRadarSettings();
+            Configuration.GetSection("DataProviders:SportRadar").Bind(sportRadarDataProviderSettings);
+
             services.AddSingleton<ICacheManager, CacheManager>();
             services.AddSingleton<ICacheService, CacheService>();
             services.AddSingleton<ILeagueCache, LeagueCache>();
             services.AddSingleton(RestService.For<IInternalLeagueApi>(internalDataProviderSettings.ServiceUrl));
+            services.AddSingleton(RestService.For<ISportRadarLeagueApi>(sportRadarDataProviderSettings.ServiceUrl));
             services.AddSingleton<SportRadarLeagueService>();
-            services.AddSingleton<ILeagueService, InternalLeagueService>();
+            services.AddSingleton<SportRadarLeagueService>();
+            services.AddSingleton<InternalLeagueService>();
+            services.AddSingleton<Func<DataProviderType, ILeagueService>>(serviceProvider => dataProviderType =>
+            {
+#pragma warning disable S1301 // "switch" statements should have at least 3 "case" clauses
+                switch (dataProviderType)
+                {
+                    case DataProviderType.Internal:
+                        return serviceProvider.GetService<InternalLeagueService>();
+
+                    default:
+                        return serviceProvider.GetService<SportRadarLeagueService>();
+                }
+            });
+#pragma warning restore S1301 // "switch" statements should have at least 3 "case" clauses
 
             RegisterLogging(services);
             RegisterRabbitMq(services);
@@ -141,7 +161,7 @@ namespace Soccer.DataReceivers.EventListeners
                         serviceProvider.GetService<IBus>(),
                         new MatchEventListenerService(sportRadarDataProviderSettings, region, serviceProvider.GetService<ILogger>()),
                         serviceProvider.GetService<ILogger>(),
-                        serviceProvider.GetService<ILeagueService>()));
+                        serviceProvider.GetService<Func<DataProviderType, ILeagueService>>()));
             }
         }
     }

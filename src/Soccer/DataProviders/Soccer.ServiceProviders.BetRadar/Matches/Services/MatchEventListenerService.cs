@@ -136,9 +136,7 @@
 
                     if (matchEvent != default(MatchEvent))
                     {
-                        handler.Invoke(matchEvent.AddScoreToSpecialTimeline(matchEvent.MatchResult));
-
-                        await logger.InfoAsync($"{DateTime.Now} - region {regionStream.Key} Receiving: {matchEventPayload}");
+                        await HandleEvent(regionStream, handler, matchEventPayload, matchEvent);
                     }
                     else
                     {
@@ -151,6 +149,19 @@
             catch (Exception ex)
             {
                 await logger.ErrorAsync($"Message: {ex}\r\nPayload: {matchEventPayload}");
+            }
+        }
+
+        private async Task HandleEvent(
+            KeyValuePair<string, StreamReader> regionStream,
+            Action<MatchEvent> handler, string matchEventPayload, 
+            MatchEvent matchEvent)
+        {
+            handler.Invoke(matchEvent.AddScoreToSpecialTimeline(matchEvent.MatchResult));
+
+            if (sportRadarSettings.EnabledResponseLog)
+            {
+                await logger.InfoAsync($"{DateTime.Now} - region {regionStream.Key} Receiving: {matchEventPayload}");
             }
         }
 

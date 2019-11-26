@@ -17,7 +17,9 @@ namespace Soccer.DataReceivers.EventListeners.Matches
     using MassTransit;
     using Microsoft.Extensions.Hosting;
     using Newtonsoft.Json;
+    using Soccer.Core.Leagues.QueueMessages;
     using Soccer.Core.Matches.QueueMessages;
+    using Soccer.DataProviders._Shared.Enumerations;
     using Soccer.DataProviders.Matches.Services;
 
     public class MatchEventListener : BackgroundService
@@ -26,17 +28,21 @@ namespace Soccer.DataReceivers.EventListeners.Matches
         private readonly IMatchEventListenerService eventListenerService;
         private readonly ILogger logger;
         private readonly ILeagueService internalLeagueService;
+        private readonly ILeagueService sportRadarLeagueService;
+        private readonly Func<DataProviderType, ILeagueService> leagueServiceFactory;
 
         public MatchEventListener(
             IBus messageBus,
             IMatchEventListenerService eventListenerService,
             ILogger logger,
-            ILeagueService internalLeagueService)
+            Func<DataProviderType, ILeagueService> leagueServiceFactory)
         {
             this.messageBus = messageBus;
             this.eventListenerService = eventListenerService;
             this.logger = logger;
-            this.internalLeagueService = internalLeagueService;
+            this.leagueServiceFactory = leagueServiceFactory;
+            internalLeagueService = leagueServiceFactory(DataProviderType.Internal);
+            sportRadarLeagueService = leagueServiceFactory(DataProviderType.SportRadar);
         }
 
         internal IEnumerable<League> MajorLeagues { get; set; }
@@ -77,10 +83,25 @@ namespace Soccer.DataReceivers.EventListeners.Matches
         {
             try
             {
-                if (MajorLeagues.Any(league => league.Id == matchEvent.LeagueId))
+                var currentLeague = MajorLeagues.FirstOrDefault(league => league.Id == matchEvent.LeagueId);
+                if (currentLeague != null)
                 {
-                    await Task.WhenAll(
-                        messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent), cancellationToken));
+                    await messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent), cancellationToken);
+
+                    if(matchEvent?.Timeline?.Type == EventType.ScoreChange 
+                        || matchEvent?.Timeline?.Type == EventType.MatchEnded)
+                    {
+                        var leagueTables = await sportRadarLeagueService.GetLeagueLiveStandings(currentLeague.Id, Language.en_US, currentLeague.Region);
+
+                        if(leagueTables.Any())
+                        {
+                            foreach (var leagueTable in leagueTables)
+                            {
+                                await messageBus.Publish<ILeagueStandingFetchedMessage>(
+                                        new LeagueStandingFetchedMessage(leagueTable, Language.en_US.DisplayName));
+                            }
+                        }
+                    }
                 }
             }
             catch (Exception ex)

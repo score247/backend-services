@@ -4,7 +4,12 @@ namespace Soccer.Core.Matches.Models
 {
     public class MatchEvent
     {
-        public MatchEvent(string leagueId, string matchId, MatchResult matchResult, TimelineEvent timeline, bool isLatest = true)
+        public MatchEvent(
+            string leagueId, 
+            string matchId, 
+            MatchResult matchResult, 
+            TimelineEvent timeline, 
+            bool isLatest = true)
         {
             LeagueId = leagueId;
             MatchId = matchId;

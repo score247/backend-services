@@ -8,6 +8,7 @@ using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.DataProviders._Shared.Enumerations;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.Matches.Services;
 using Soccer.DataReceivers.EventListeners.Matches;
@@ -29,12 +30,23 @@ namespace Soccer.DataReceivers.EventListeners.Tests.Matches
             internalLeagueService = Substitute.For<ILeagueService>();
             logger = Substitute.For<ILogger>();
             eventListenerService = Substitute.For<IMatchEventListenerService>();
-            matchEventListener = new MatchEventListener(messageBus, eventListenerService, logger, internalLeagueService);
+            matchEventListener = new MatchEventListener(messageBus, eventListenerService, logger, StubLeagueServiceFactory);
+        }
 
-            internalLeagueService.GetLeagues(Language.en_US).Returns(new List<League> {
-                new League("1", "A"),
-                new League("2", "A")
-            });
+        private ILeagueService StubLeagueServiceFactory(DataProviderType dataProviderType)
+        {
+            switch (dataProviderType)
+            {
+                case DataProviderType.Internal:
+                    internalLeagueService.GetLeagues(Language.en_US).Returns(new List<League> {
+                        new League("1", "A"),
+                        new League("2", "A")
+                    });
+                    return internalLeagueService;
+
+                default:
+                    return Substitute.For<ILeagueService>();
+            }
         }
 
         [Fact]

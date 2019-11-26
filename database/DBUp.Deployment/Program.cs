@@ -13,7 +13,7 @@ namespace DBUp.Deployment
     {
         private static int Main(string[] args)
         {
-            var settingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "app-settings.dev.json");
+            var settingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "app-settings.test.json");
             var settings = File.ReadAllText(settingPath);
             var connectionConfiguration = JsonConvert.DeserializeObject<ConnectionConfiguration>(settings);
 

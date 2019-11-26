@@ -31,6 +31,6 @@ namespace Soccer.API.Leagues
             => leagueQueryService.GetMatches(request.LeagueId, request.Language);
 
         public Task<LeagueTable> Handle(LeagueTableRequest request, CancellationToken cancellationToken)
-            => leagueQueryService.GetLeagueTable(request.LeagueId, request.SeasionId, request.GroupName, request.Language);
+            => leagueQueryService.GetLeagueTable(request.LeagueId, request.seasonId, request.GroupName, request.Language);
     }
 }
