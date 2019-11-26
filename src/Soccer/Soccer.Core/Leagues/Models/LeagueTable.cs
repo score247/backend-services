@@ -10,7 +10,9 @@ namespace Soccer.Core.Leagues.Models
     [MessagePackObject]
     public class LeagueTable
     {
-        [JsonConstructor]
+        public LeagueTable() { }
+
+        [JsonConstructor, SerializationConstructor]
         public LeagueTable(
             League league,
             LeagueTableType type,

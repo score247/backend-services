@@ -51,7 +51,7 @@ namespace Soccer.API.Leagues
                 leagueTable.FilterAndCalculateGroupTableOutcome(groupName);
             }
 
-            return leagueTable;
+            return leagueTable ?? new LeagueTable();
         }
 
         public async Task<IEnumerable<League>> GetMajorLeagues(Language language)
