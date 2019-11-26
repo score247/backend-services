@@ -20,13 +20,12 @@ namespace Soccer.EventProcessors.Leagues
         public Task Consume(ConsumeContext<ILeagueStandingFetchedMessage> context)
         {
             var message = context.Message;
-            var standings = JsonConvert.SerializeObject(message.LeagueStanding);
 
             var command = new InsertOrUpdateStandingCommand(
                 message.LeagueStanding.League.Id,
                 message.LeagueStanding.LeagueSeason.Id,
                 message.LeagueStanding.Type.DisplayName,
-                standings,
+                message.LeagueStanding,
                 message.Language);
 
             return dynamicRepository.ExecuteAsync(command);
