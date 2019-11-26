@@ -1,15 +1,17 @@
-CREATE TABLE IF NOT EXISTS `LeagueSeason` (
-  `LeagueId` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `SeasonId` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Region` VARCHAR(45) NOT NULL,
-  `Fetched` TINYINT NULL DEFAULT '0',
+DROP TABLE IF EXISTS `LeagueSeason`;
+CREATE TABLE `LeagueSeason` (
+  `LeagueId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `SeasonId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Region` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Fetched` tinyint(4) DEFAULT '0',
   `FetchedDate` timestamp NULL DEFAULT NULL,
   `CreatedTime` timestamp NULL DEFAULT NULL,
   `ModifiedTime` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`SeasonId`)
+  PRIMARY KEY (`SeasonId`,`LeagueId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `Standings` (
+DROP TABLE IF EXISTS `Standings`;
+CREATE TABLE `Standings` (
   `LeagueId` VARCHAR(45) COLLATE utf8mb4_unicode_ci NOT NULL,
   `SeasonId` VARCHAR(45) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Language` VARCHAR(10) NOT NULL,

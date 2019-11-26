@@ -7,14 +7,14 @@ CREATE TABLE `Commentary` (
   `TimelineId` bigint(20) NOT NULL,
   `MatchId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Value` json NOT NULL,
-  `Language` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Language` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `CreatedTime` timestamp NOT NULL,
   `ModifiedTime` timestamp NOT NULL,
   `Id` bigint(20) NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`Id`),
-  KEY `commentary_match_index` (`MatchId`)
-) ENGINE=InnoDB AUTO_INCREMENT=214953 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
+  `EventDate` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=218431 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+SELECT * FROM score247_local_dev.Commentary;
 --
 -- Table structure for table `Commentary_Archived`
 --
@@ -77,9 +77,10 @@ DROP TABLE IF EXISTS `Lineups`;
 CREATE TABLE `Lineups` (
   `MatchId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Value` json NOT NULL,
-  `Language` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Language` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `CreatedTime` timestamp NOT NULL,
   `ModifiedTime` timestamp NOT NULL,
+  `EventDate` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`MatchId`,`Language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -192,11 +193,13 @@ CREATE TABLE `Timeline` (
   `Id` bigint(20) NOT NULL,
   `MatchId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Value` json NOT NULL,
-  `Language` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'en-US',
+  `Language` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'en-US',
   `CreatedTime` timestamp NULL DEFAULT NULL,
   `ModifiedTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `EventDate` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`Id`,`MatchId`,`Language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 --
 -- Table structure for table `Timeline_Archived`
@@ -216,15 +219,16 @@ CREATE TABLE `Timeline_Archived` (
 
 DROP TABLE IF EXISTS `LeagueSeason`;
 CREATE TABLE `LeagueSeason` (
-  `LeagueId` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `SeasonId` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Region` VARCHAR(45) NOT NULL,
-  `Fetched` TINYINT NULL DEFAULT '0',
+  `LeagueId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `SeasonId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Region` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Fetched` tinyint(4) DEFAULT '0',
   `FetchedDate` timestamp NULL DEFAULT NULL,
   `CreatedTime` timestamp NULL DEFAULT NULL,
   `ModifiedTime` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`SeasonId`)
+  PRIMARY KEY (`SeasonId`,`LeagueId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 DROP TABLE IF EXISTS `Standings`;
 CREATE TABLE IF NOT EXISTS `Standings` (
