@@ -87,7 +87,10 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
                     leagueId,
                     apiKey);
 
-                return tournamentScheduleDto.sport_events.Select(ms => MatchMapper.MapMatch(ms, null, null, regionName, language));
+                if (tournamentScheduleDto.sport_events?.Any() == true)
+                {
+                    return tournamentScheduleDto.sport_events.Select(ms => MatchMapper.MapMatch(ms, null, null, regionName, language));
+                }
             }
             catch (Exception ex)
             {
