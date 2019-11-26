@@ -49,7 +49,7 @@ namespace Soccer.Core.Teams.Models
         public static readonly TeamOutcome TopSix = new TeamOutcome(39, "top six", "Top Six");
         public static readonly TeamOutcome UEFACup = new TeamOutcome(40, "uefa cup", "UEFA Cup");
         public static readonly TeamOutcome UEFACupQualification = new TeamOutcome(41, "uefa cup qualification", "UEFA Cup Qualification");
-        public static readonly TeamOutcome UEFAIntertotoCup = new TeamOutcome(42, "uefa intertoto Cup", "UEFA Intertoto Cup");
+        public static readonly TeamOutcome UEFAIntertotoCup = new TeamOutcome(42, "uefa intertoto cup", "UEFA Intertoto Cup");
         public static readonly TeamOutcome Unknown = new TeamOutcome(43, "unknown", "Unknown");
 
         public TeamOutcome()
@@ -68,6 +68,7 @@ namespace Soccer.Core.Teams.Models
         }
 
 #pragma warning disable S109 // Magic numbers should not be used
+
         [Key(2)]
 #pragma warning restore S109 // Magic numbers should not be used
         public string FriendlyName { get; private set; }
