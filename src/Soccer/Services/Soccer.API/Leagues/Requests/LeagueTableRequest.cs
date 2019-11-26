@@ -14,14 +14,14 @@ namespace Soccer.API.Leagues.Requests
             string language)
         {
             LeagueId = leagueId;
-            seasonId = seasonId;
+            SeasonId = seasonId;
             GroupName = groupName;
             Language = Enumeration.FromDisplayName<Language>(language);
         }
 
         public string LeagueId { get; }
 
-        public string seasonId { get; }
+        public string SeasonId { get; }
 
         public string GroupName { get; }
 
