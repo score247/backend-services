@@ -141,7 +141,10 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             }
             catch (ApiException ex)
             {
-                await logger.ErrorAsync($"Url: {ex.RequestMessage.RequestUri}, {ex}");
+                if (ex.ReasonPhrase != "Not Found")
+                {
+                    await logger.ErrorAsync($"Message:{ex.Message}\r\nUrl:{ex.Uri}", ex);
+                }
             }
             catch (Exception ex)
             {
