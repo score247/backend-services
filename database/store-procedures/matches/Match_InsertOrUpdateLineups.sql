@@ -15,7 +15,7 @@ BEGIN
             language,
             now(),
             now(),
-            JSON_UNQUOTE(JSON_EXTRACT(lineups, '$.EventDate')))
+            STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(lineups, '$.EventDate')),'%Y-%m-%dT%H:%i:%s+00:00'))
 	 ON DUPLICATE KEY UPDATE
 			`Value` = JSON_UNQUOTE(JSON_EXTRACT(lineups, '$')),
 			ModifiedTime = now();
