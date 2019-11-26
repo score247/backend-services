@@ -173,11 +173,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
             // Assert
             jobClient
                 .Received(1)
-                .Create(Arg.Is<Job>(job => job.Method.Name == nameof(IFetchTimelineTask.FetchTimelines)), Arg.Any<ScheduledState>());
+                .Create(Arg.Is<Job>(job => job.Method.Name == nameof(IFetchTimelineTask.FetchTimelinesForClosedMatch)), Arg.Any<ScheduledState>());
 
             jobClient
                .Received(1)
-               .Create(Arg.Is<Job>(job => job.Method.Name == nameof(IFetchMatchLineupsTask.FetchMatchLineups)), Arg.Any<ScheduledState>());
+               .Create(Arg.Is<Job>(job => job.Method.Name == nameof(IFetchMatchLineupsTask.FetchMatchLineupsForCLosedMatch)), Arg.Any<ScheduledState>());
         }
 
 

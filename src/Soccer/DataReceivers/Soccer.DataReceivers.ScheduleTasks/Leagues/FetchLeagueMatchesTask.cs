@@ -29,9 +29,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
     }
     public class FetchLeagueMatchesTask : IFetchLeagueMatchesTask
     {
-        private const int NumberOfFetchInTask = 5;
-        private readonly TimeSpan TimelineDelayTimespan;
-        private readonly TimeSpan LineupsDelayTimespan;
+        private const int BactchOfLeagueSize = 5;
+        private const int BactchOfMatchSize = 15;
         private readonly TimeSpan TeamResultsDelayTimespan;
 
         private readonly IAppSettings appSettings;
@@ -54,8 +53,6 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             this.leagueSeasonService = leagueSeasonService;
             this.jobClient = jobClient;
 
-            TimelineDelayTimespan = TimeSpan.FromMinutes(appSettings.ScheduleTasksSettings.FetchTimelineDelayedMinutes);
-            LineupsDelayTimespan = TimeSpan.FromMinutes(appSettings.ScheduleTasksSettings.FetchLineupsDelayedMinutes);
             TeamResultsDelayTimespan = TimeSpan.FromMinutes(appSettings.ScheduleTasksSettings.FetchTeamResultsDelayedMinutes);
         }
 
@@ -68,9 +65,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
                 return;
             }
 
-            for (var i = 0; i * NumberOfFetchInTask < unprocessedLeagueSeason.Count(); i++)
+            for (var i = 0; i * BactchOfLeagueSize < unprocessedLeagueSeason.Count(); i++)
             {
-                var batchOfLeague = unprocessedLeagueSeason.Skip(i * NumberOfFetchInTask).Take(NumberOfFetchInTask).ToList();
+                var batchOfLeague = unprocessedLeagueSeason.Skip(i * BactchOfLeagueSize).Take(BactchOfLeagueSize).ToList();
 
                 jobClient.Enqueue<IFetchLeagueMatchesTask>(t => t.FetchMatchesForLeague(batchOfLeague));
             }
@@ -109,12 +106,15 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 
         private void ScheduleTimelineAndLineUpsTasks(IEnumerable<Match> closedMatches, Language language)
         {
-            foreach (var match in closedMatches)
+            for (var i = 0; i * BactchOfMatchSize < closedMatches.Count(); i++)
             {
-                jobClient.Schedule<IFetchTimelineTask>(t => t.FetchTimelines(closedMatches, language), TimelineDelayTimespan);
+                var batchOfMatches = closedMatches.Skip(i * BactchOfMatchSize).Take(BactchOfMatchSize).ToList();
 
-                //TODO: consider missing coverage info
-                jobClient.Schedule<IFetchMatchLineupsTask>(t => t.FetchMatchLineups(closedMatches, language), LineupsDelayTimespan);
+                var timelineDelayTimespan = TimeSpan.FromMinutes(appSettings.ScheduleTasksSettings.FetchTimelineDelayedMinutes + i);
+                var lineupsDelayTimespan = TimeSpan.FromMinutes(appSettings.ScheduleTasksSettings.FetchLineupsDelayedMinutes + i);
+
+                jobClient.Schedule<IFetchTimelineTask>(t => t.FetchTimelinesForClosedMatch(batchOfMatches, language), timelineDelayTimespan);
+                jobClient.Schedule<IFetchMatchLineupsTask>(t => t.FetchMatchLineupsForCLosedMatch(batchOfMatches, language), lineupsDelayTimespan);
             }
         }
 

@@ -70,6 +70,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             await PublishMatchTimelines(language, match);
 
             await PublishMatchCommentaries(matchId, language, match, commentaries);
+
+            await messageBus.Publish<IMatchUpdatedCoverageInfo>(new MatchUpdatedCoverageInfo(matchId, match.Coverage));
         }
 
         private async Task PubishMatchCondition(string matchId, Language language, Match match)
