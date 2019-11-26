@@ -7,7 +7,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Soccer.DataReceivers.ScheduleTasks.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Matches;
-using Soccer.DataReceivers.ScheduleTasks.Odds;
 using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
 using Soccer.DataReceivers.ScheduleTasks.Teams;
 
@@ -23,7 +22,6 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             services.AddScoped<IFetchPreMatchesTask, FetchPreMatchesTask>();
             services.AddScoped<IFetchPostMatchesTask, FetchPostMatchesTask>();
             services.AddScoped<IFetchLiveMatchesTask, FetchLiveMatchesTask>();
-            services.AddScoped<IFetchOddsScheduleTask, FetchOddsScheduleTask>();
             services.AddScoped<IFetchTimelineTask, FetchTimelineTask>();
             services.AddScoped<IFetchLiveMatchesTimelineTask, FetchLiveMatchesTimelineTask>();
             services.AddScoped<IFetchPreMatchesTimelineTask, FetchPreMatchesTimelineTask>();

@@ -13,7 +13,6 @@
     using Soccer.EventProcessors.Leagues;
     using Soccer.EventProcessors.Matches;
     using Soccer.EventProcessors.Matches.MatchEvents;
-    using Soccer.EventProcessors.Odds;
     using Soccer.EventProcessors.Teams;
     using Soccer.EventProcessors.Timeline;
 
@@ -42,7 +41,6 @@
                 serviceCollectionConfigurator.AddConsumer<BreakStartEventConsumer>();
                 serviceCollectionConfigurator.AddConsumer<ReceiveMatchEventConsumer>();
                 serviceCollectionConfigurator.AddConsumer<ProcessMatchEventConsumer>();
-                serviceCollectionConfigurator.AddConsumer<OddsChangeConsumer>();
                 serviceCollectionConfigurator.AddConsumer<UpdateMatchConditionsConsumer>();
                 serviceCollectionConfigurator.AddConsumer<UpdateTeamStatisticConsumer>();
                 serviceCollectionConfigurator.AddConsumer<UpdateMatchCoverageConsumer>();
@@ -145,14 +143,6 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<UpdateTeamStatisticConsumer>(provider);
-                });
-
-                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_Odds", e =>
-                {
-                    e.PrefetchCount = PrefetchCount;
-                    e.UseMessageRetry(RetryAndLogError(services));
-
-                    e.Consumer<OddsChangeConsumer>(provider);
                 });
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_Timelines", e =>

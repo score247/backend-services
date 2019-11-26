@@ -22,7 +22,6 @@ using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.Matches.Services;
 using Soccer.DataProviders.SportRadar.Leagues.Services;
 using Soccer.DataProviders.SportRadar.Matches.Services;
-using Soccer.DataProviders.SportRadar.Odds;
 using Soccer.DataProviders.SportRadar.Shared.Configurations;
 using Soccer.DataReceivers.EventListeners.Matches;
 using Soccer.DataReceivers.EventListeners.Shared.Configurations;
@@ -150,7 +149,6 @@ namespace Soccer.DataReceivers.EventListeners
             services.AddSingleton(RestService.For<IMatchApi>(sportRadarDataProviderSettings.ServiceUrl));
             services.AddSingleton<IMatchService, MatchService>();
 
-            services.AddSingleton(RestService.For<IOddsApi>(sportRadarDataProviderSettings.ServiceUrl));
             services.AddSingleton<Func<DateTimeOffset>>(() => DateTimeOffset.Now);
 
             var soccerSettings = sportRadarDataProviderSettings.SoccerSettings;

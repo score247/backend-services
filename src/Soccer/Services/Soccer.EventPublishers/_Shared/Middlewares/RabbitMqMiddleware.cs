@@ -9,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Soccer.Core.Shared.Configurations;
 using Soccer.EventPublishers.Matches;
-using Soccer.EventPublishers.Odds;
 using Soccer.EventPublishers.Teams;
 
 namespace Soccer.EventPublishers._Shared.Middlewares
@@ -27,8 +26,6 @@ namespace Soccer.EventPublishers._Shared.Middlewares
             {
                 serviceCollectionConfigurator.AddConsumer<ProcessMatchEventPublisher>();
                 serviceCollectionConfigurator.AddConsumer<UpdateTeamStatisticPublisher>();
-                serviceCollectionConfigurator.AddConsumer<OddsMovementPublisher>();
-                serviceCollectionConfigurator.AddConsumer<OddsComparisonPublisher>();
                 serviceCollectionConfigurator.AddConsumer<UpdateLiveMatchPublisher>();
             });
 
@@ -50,22 +47,6 @@ namespace Soccer.EventPublishers._Shared.Middlewares
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<ProcessMatchEventPublisher>(provider);
-                });
-
-                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_OddsMovement", e =>
-                {
-                    e.PrefetchCount = prefetCount;
-                    e.UseMessageRetry(RetryAndLogError(services));
-
-                    e.Consumer<OddsComparisonPublisher>(provider);
-                });
-
-                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_OddsComparison", e =>
-                {
-                    e.PrefetchCount = prefetCount;
-                    e.UseMessageRetry(RetryAndLogError(services));
-
-                    e.Consumer<OddsMovementPublisher>(provider);
                 });
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_TeamStatistic", e =>

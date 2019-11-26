@@ -29,7 +29,6 @@ namespace Soccer.DataReceivers.EventListeners.Matches
         private readonly ILogger logger;
         private readonly ILeagueService internalLeagueService;
         private readonly ILeagueService sportRadarLeagueService;
-        private readonly Func<DataProviderType, ILeagueService> leagueServiceFactory;
 
         public MatchEventListener(
             IBus messageBus,
@@ -40,7 +39,6 @@ namespace Soccer.DataReceivers.EventListeners.Matches
             this.messageBus = messageBus;
             this.eventListenerService = eventListenerService;
             this.logger = logger;
-            this.leagueServiceFactory = leagueServiceFactory;
             internalLeagueService = leagueServiceFactory(DataProviderType.Internal);
             sportRadarLeagueService = leagueServiceFactory(DataProviderType.SportRadar);
         }
