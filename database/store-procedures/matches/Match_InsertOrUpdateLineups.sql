@@ -15,7 +15,7 @@ BEGIN
             language,
             now(),
             now(),
-            (SELECT M.EventDate FROM `Match` AS M WHERE M.Id = matchId LIMIT 1))
+            JSON_UNQUOTE(JSON_EXTRACT(lineups, '$.EventDate')))
 	 ON DUPLICATE KEY UPDATE
 			`Value` = JSON_UNQUOTE(JSON_EXTRACT(lineups, '$')),
 			ModifiedTime = now();
