@@ -8,21 +8,22 @@ BEGIN
 							AND Commentary.TimelineId = timelineId 
                             AND Commentary.Language = language)
     THEN        
-		 INSERT INTO `Commentary` (
+		 INSERT INTO `Commentary` 
+         (`TimelineId`,
 			`MatchId`,
-			`TimelineId`,
 			`Value`,
 			`Language`,
 			`CreatedTime`,
-			`ModifiedTime`
-			)
+			`ModifiedTime`,
+			`EventDate`)
 			VALUES (			
 				matchId,
 				timelineId,
 				JSON_UNQUOTE(JSON_EXTRACT(commentaries, '$')),
 				language,
 				now(),
-				now());
+				now(),
+                (SELECT M.EventDate FROM `Match` AS M WHERE M.Id = matchId LIMIT 1));
 	ELSE
 			UPDATE `Commentary` AS Commentary
 			SET 
