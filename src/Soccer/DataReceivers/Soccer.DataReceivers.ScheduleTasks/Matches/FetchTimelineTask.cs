@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
@@ -71,14 +72,19 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
             await PublishMatchCommentaries(matchId, language, match, commentaries);
 
-            await messageBus.Publish<IMatchUpdatedCoverageInfo>(new MatchUpdatedCoverageInfo(matchId, match.Coverage));
+            await messageBus.Publish<IMatchUpdatedCoverageInfo>(new MatchUpdatedCoverageInfo(matchId, match.Coverage, match.EventDate));
         }
 
         private async Task PubishMatchCondition(string matchId, Language language, Match match)
         {
             if (!string.IsNullOrWhiteSpace(match.Referee) || match.Attendance > 0)
             {
-                await messageBus.Publish<IMatchUpdatedConditionsMessage>(new MatchUpdatedConditionsMessage(matchId, match.Referee, match.Attendance, language));
+                await messageBus.Publish<IMatchUpdatedConditionsMessage>(new MatchUpdatedConditionsMessage(
+                    matchId, 
+                    match.Referee, 
+                    match.Attendance, 
+                    language,
+                    match.EventDate));
             }
         }
 
@@ -87,7 +93,12 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             foreach (var team in match.Teams.Where(team => team.Statistic != null).Select(team => team))
             {
                 await messageBus.Publish<ITeamStatisticUpdatedMessage>(
-                    new TeamStatisticUpdatedMessage(matchId, team.IsHome, team.Statistic));
+                    new TeamStatisticUpdatedMessage(
+                        matchId, 
+                        team.IsHome, 
+                        team.Statistic,
+                        false,
+                        match.EventDate));
             }
         }
 
@@ -95,7 +106,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         {
             if (match.TimeLines != null && match.TimeLines.Any())
             {
-                await messageBus.Publish<IMatchTimelinesFetchedMessage>(new MatchTimelinesFetchedMessage(match, language));
+                await messageBus.Publish<IMatchTimelinesFetchedMessage>(new MatchTimelinesFetchedMessage(
+                    match, 
+                    language));
             }
         }
 
@@ -108,7 +121,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                                            select commentary)
                 {
                     await messageBus.Publish<IMatchCommentaryFetchedMessage>(
-                        new MatchCommentaryFetchedMessage(match.League.Id, matchId, commentary, language));
+                        new MatchCommentaryFetchedMessage(match.League.Id, matchId, commentary, language, match.EventDate));
                 }
             }
         }

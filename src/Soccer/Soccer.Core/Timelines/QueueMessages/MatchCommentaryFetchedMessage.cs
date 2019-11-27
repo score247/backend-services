@@ -1,4 +1,5 @@
-﻿using Soccer.Core.Shared.Enumerations;
+﻿using System;
+using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Timelines.Models;
 
 namespace Soccer.Core.Timelines.QueueMessages
@@ -12,16 +13,24 @@ namespace Soccer.Core.Timelines.QueueMessages
         TimelineCommentary Commentary { get; }
 
         Language Language { get; }
+
+        DateTimeOffset EventDate { get; }
     }
 
     public class MatchCommentaryFetchedMessage : IMatchCommentaryFetchedMessage
     {
-        public MatchCommentaryFetchedMessage(string leagueId, string matchId, TimelineCommentary commentary, Language language)
+        public MatchCommentaryFetchedMessage(
+            string leagueId, 
+            string matchId, 
+            TimelineCommentary commentary, 
+            Language language, 
+            DateTimeOffset eventDate = default)
         {
             LeagueId = leagueId;
             MatchId = matchId;
             Commentary = commentary;
             Language = language;
+            EventDate = eventDate;
         }
 
         public string MatchId { get; }
@@ -31,5 +40,7 @@ namespace Soccer.Core.Timelines.QueueMessages
         public TimelineCommentary Commentary { get; }
 
         public Language Language { get; }
+
+        public DateTimeOffset EventDate { get; }
     }
 }

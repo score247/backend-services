@@ -1,11 +1,17 @@
 ﻿namespace Soccer.Database.Matches.Commands
 {
+    using System;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
+    using Soccer.Database._Shared.Extensions;
 
     public class UpdateLiveMatchResultCommand : BaseCommand
     {
-        public UpdateLiveMatchResultCommand(string matchId, MatchResult matchResult)
+        public UpdateLiveMatchResultCommand(
+            string matchId, 
+            MatchResult matchResult,
+            DateTimeOffset eventDate = default)
+            : base(eventDate)
         {
             SportId = Sport.Soccer.Value;
             MatchId = matchId;
@@ -18,7 +24,7 @@
 
         public string MatchResult { get; }
 
-        public override string GetSettingKey() => "LiveMatch_UpdateMatchResult";
+        public override string GetSettingKey() => "LiveMatch_UpdateMatchResult".GetCorrespondingKey(EventDate);
 
         public override bool IsValid() =>
             !string.IsNullOrWhiteSpace(MatchId)

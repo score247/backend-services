@@ -1,4 +1,5 @@
-﻿using Soccer.Core.Matches.Extensions;
+﻿using System;
+using Soccer.Core.Matches.Extensions;
 
 namespace Soccer.Core.Matches.Models
 {
@@ -9,13 +10,15 @@ namespace Soccer.Core.Matches.Models
             string matchId, 
             MatchResult matchResult, 
             TimelineEvent timeline, 
-            bool isLatest = true)
+            bool isLatest = true,
+            DateTimeOffset eventDate = default)
         {
             LeagueId = leagueId;
             MatchId = matchId;
             MatchResult = matchResult;
             Timeline = timeline;
             IsLatest = isLatest;
+            EventDate = eventDate;
         }
 
         public string LeagueId { get; }
@@ -27,6 +30,8 @@ namespace Soccer.Core.Matches.Models
         public MatchResult MatchResult { get; }
 
         public TimelineEvent Timeline { get; }
+
+        public DateTimeOffset EventDate { get; }
 
         public MatchEvent AddScoreToSpecialTimeline(MatchResult matchResult)
         {

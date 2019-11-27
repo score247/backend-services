@@ -61,7 +61,7 @@ namespace Soccer.EventProcessors.Timeline
 
                 //TODO should process languages
                 await messageBus.Publish<IMatchEventReceivedMessage>(
-                    new MatchEventReceivedMessage(new MatchEvent(match.League.Id, match.Id, match.MatchResult, timeline, false)));
+                    new MatchEventReceivedMessage(new MatchEvent(match.League.Id, match.Id, match.MatchResult, timeline, false, match.EventDate)));
             }
         }
 
@@ -105,7 +105,7 @@ namespace Soccer.EventProcessors.Timeline
             var lastShootoutEvent = HandlePairOfPenaltyEvents(lastShootout, firstShootoutEvent, shootoutHomeScore, shootoutAwayScore);
 
             await messageBus.Publish<IMatchEventReceivedMessage>(
-                new MatchEventProcessedMessage(new MatchEvent(match.League.Id, match.Id, match.MatchResult, lastShootoutEvent, false)));
+                new MatchEventProcessedMessage(new MatchEvent(match.League.Id, match.Id, match.MatchResult, lastShootoutEvent, false, match.EventDate)));
 
             return lastShootoutEvent;
         }
@@ -119,7 +119,7 @@ namespace Soccer.EventProcessors.Timeline
             var firstShootoutEvent = GetShootoutEvent(firstShootout, true, shootoutHomeScore, shootoutAwayScore);
 
             await messageBus.Publish<IMatchEventReceivedMessage>(
-                    new MatchEventProcessedMessage(new MatchEvent(match.League.Id, match.Id, match.MatchResult, firstShootoutEvent, false)));
+                    new MatchEventProcessedMessage(new MatchEvent(match.League.Id, match.Id, match.MatchResult, firstShootoutEvent, false, match.EventDate)));
 
             return firstShootoutEvent;
         }

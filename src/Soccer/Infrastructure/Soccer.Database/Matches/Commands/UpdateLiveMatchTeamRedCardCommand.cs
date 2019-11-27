@@ -1,10 +1,18 @@
 ﻿namespace Soccer.Database.Matches.Commands
 {
+    using System;
     using Score247.Shared.Enumerations;
+    using Soccer.Database._Shared.Extensions;
 
     public class UpdateLiveMatchTeamRedCardCommand : BaseCommand
     {
-        public UpdateLiveMatchTeamRedCardCommand(string matchId, bool isHome, int redCards, int yellowRedCards)
+        public UpdateLiveMatchTeamRedCardCommand(
+            string matchId, 
+            bool isHome, 
+            int redCards, 
+            int yellowRedCards,
+            DateTimeOffset eventDate = default)
+            : base(eventDate)
         {
             SportId = Sport.Soccer.Value;
             MatchId = matchId;
@@ -24,7 +32,7 @@
         public int YellowRedCards { get; }
 
         public override string GetSettingKey()
-            => "LiveMatch_UpdateTeamRedCards";
+            => "LiveMatch_UpdateTeamRedCards".GetCorrespondingKey(EventDate);
 
         public override bool IsValid()
             => !string.IsNullOrWhiteSpace(MatchId);

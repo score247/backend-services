@@ -13,7 +13,7 @@
             string matchId,
             TimelineEvent timeline,
             Language language,
-            DateTime eventDate = default)
+            DateTimeOffset eventDate = default)
             : base(eventDate)
 
         {

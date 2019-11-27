@@ -1,6 +1,5 @@
 ﻿namespace Soccer.EventProcessors.Matches
 {
-    using System;
     using System.Collections.Generic;
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
@@ -37,19 +36,16 @@
 
         private async Task UpdateLiveMatchResult(MatchEvent matchEvent)
         {
-            if (matchEvent.MatchResult.EventStatus.IsLive())
-            {
-                //TODO reduce calls of update live match results
-                await dynamicRepository.ExecuteAsync(new UpdateLiveMatchResultCommand(matchEvent.MatchId, matchEvent.MatchResult));
-                await dynamicRepository.ExecuteAsync(new UpdateLiveMatchLastTimelineCommand(matchEvent.MatchId, matchEvent.Timeline));
-            }
+            //TODO reduce calls of update match results
+            await dynamicRepository.ExecuteAsync(new UpdateLiveMatchResultCommand(matchEvent.MatchId, matchEvent.MatchResult, matchEvent.EventDate));
+            await dynamicRepository.ExecuteAsync(new UpdateLiveMatchLastTimelineCommand(matchEvent.MatchId, matchEvent.Timeline, matchEvent.EventDate));
         }
 
         private async Task InsertTimeline(MatchEvent matchEvent)
             => await dynamicRepository.ExecuteAsync(new InsertTimelineCommand(
-                matchEvent.MatchId, 
-                matchEvent.Timeline, 
-                Language.en_US, 
-                matchEvent.Timeline.Time.Date));
+                matchEvent.MatchId,
+                matchEvent.Timeline,
+                Language.en_US,
+                matchEvent.EventDate));
     }
 }
