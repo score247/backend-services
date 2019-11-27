@@ -16,8 +16,13 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
     {
         public static void RegisterHangfire(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddHangfire(x
-                => x.UseStorage(new MySqlStorage(configuration.GetConnectionString("Hangfire"))));
+            services.AddHangfire(
+                globalConfiguration
+                =>
+                {
+                    globalConfiguration
+                        .UseStorage(new MySqlStorage(configuration.GetConnectionString("Hangfire")));
+                });
 
             services.AddScoped<IFetchPreMatchesTask, FetchPreMatchesTask>();
             services.AddScoped<IFetchPostMatchesTask, FetchPostMatchesTask>();
@@ -34,7 +39,11 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             services.AddScoped<IFetchLeagueStandingsTask, FetchLeagueStandingsTask>();
         }
 
+#pragma warning disable S138 // Functions should not have too many lines of code
+#pragma warning disable S1541 // Methods and properties should not be too complex
         public static void UseHangfire(this IApplicationBuilder app, IConfiguration configuration)
+#pragma warning restore S1541 // Methods and properties should not be too complex
+#pragma warning restore S138 // Functions should not have too many lines of code
         {
             var appSettings = app.ApplicationServices.GetService<IAppSettings>();
             var taskSettings = appSettings.ScheduleTasksSettings;

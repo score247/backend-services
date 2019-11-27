@@ -8,6 +8,8 @@
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Hosting.WindowsServices;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Logging;
+    using Soccer.DataReceivers.ScheduleTasks._Shared.Helpers;
 
     public static class Program
     {
@@ -46,6 +48,7 @@
             return WebHost.CreateDefaultBuilder(args)
                .ConfigureLogging((hostingContext, logging) =>
                {
+                   logging.AddProvider(new HangfireLogProvider());
                })
                .UseConfiguration(configuration)
                .UseStartup<Startup>()
