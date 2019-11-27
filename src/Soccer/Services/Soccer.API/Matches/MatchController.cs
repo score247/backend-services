@@ -33,7 +33,7 @@ namespace Soccer.API.Matches
             => await mediator.Send(new MatchesByDateRequest(fd, td, language));
 
         /// <summary>
-        /// Get Matches By Date Range
+        /// Get Match By Id
         /// </summary>
         /// <param name="id">sr:match:13635269</param>
         /// <param name="language"></param>
