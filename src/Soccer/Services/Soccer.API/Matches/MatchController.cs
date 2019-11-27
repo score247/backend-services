@@ -32,10 +32,16 @@ namespace Soccer.API.Matches
                 string language = Language.English)
             => await mediator.Send(new MatchesByDateRequest(fd, td, language));
 
+        /// <summary>
+        /// Get Matches By Date Range
+        /// </summary>
+        /// <param name="id">sr:match:13635269</param>
+        /// <param name="language"></param>
+        /// <param name="eventDate">2019-07-16T23:59:59+07:00</param>
         [HttpGet]
         [Route("{id}")]
-        public async Task<MatchInfo> Get(string id, string language = Language.English)
-            => await mediator.Send(new MatchInfoByIdRequest(id, language));
+        public async Task<MatchInfo> Get(string id, string language = Language.English, DateTimeOffset eventDate = default)
+            => await mediator.Send(new MatchInfoByIdRequest(id, language, eventDate));
 
         [HttpGet]
         [Route("live")]
