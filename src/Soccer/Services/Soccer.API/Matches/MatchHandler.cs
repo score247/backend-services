@@ -43,17 +43,17 @@
             => await matchQueryService.GetLiveMatchCount(request.Language);
 
         public async Task<MatchCoverage> Handle(MatchCoverageByIdRequest request, CancellationToken cancellationToken)
-            => await matchQueryService.GetMatchCoverage(request.Id, request.Language);
+            => await matchQueryService.GetMatchCoverage(request.Id, request.Language, request.EventDate);
 
         public Task<IEnumerable<MatchCommentary>> Handle(MatchCommentaryByIdRequest request, CancellationToken cancellationToken)
-            => matchQueryService.GetMatchCommentary(request.Id, request.Language);
+            => matchQueryService.GetMatchCommentary(request.Id, request.Language, request.EventDate);
 
         public async Task<MatchStatistic> Handle(MatchStatisticRequest request, CancellationToken cancellationToken)
-            => await matchQueryService.GetMatchStatistic(request.Id);
+            => await matchQueryService.GetMatchStatistic(request.Id, request.EventDate);
 
         public async Task<MatchPitchViewLineups> Handle(MatchLineupsRequest request, CancellationToken cancellationToken)
         {
-            var matchLineups = await matchQueryService.GetMatchLineups(request.Id, request.Language);
+            var matchLineups = await matchQueryService.GetMatchLineups(request.Id, request.Language, request.EventDate);
 
             var lineupsSvg = matchLineupsGenerator.Generate(matchLineups);
 

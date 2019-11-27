@@ -50,22 +50,22 @@ namespace Soccer.API.Matches
 
         [HttpGet]
         [Route("{id}/coverage")]
-        public async Task<MatchCoverage> GetMatchCoverage(string id, string language = Language.English)
-           => await mediator.Send(new MatchCoverageByIdRequest(id, language));
+        public async Task<MatchCoverage> GetMatchCoverage(string id, string language = Language.English, DateTimeOffset eventDate = default)
+           => await mediator.Send(new MatchCoverageByIdRequest(id, language, eventDate));
 
         [HttpGet]
         [Route("{id}/commentaries")]
-        public async Task<IEnumerable<MatchCommentary>> GetMatchCommentaries(string id, string language = Language.English)
-           => await mediator.Send(new MatchCommentaryByIdRequest(id, language));
+        public async Task<IEnumerable<MatchCommentary>> GetMatchCommentaries(string id, string language = Language.English, DateTimeOffset eventDate = default)
+           => await mediator.Send(new MatchCommentaryByIdRequest(id, language, eventDate));
 
         [HttpGet]
         [Route("{id}/statistic")]
-        public async Task<MatchStatistic> GetMatchStatistic(string id)
-           => await mediator.Send(new MatchStatisticRequest(id));
+        public async Task<MatchStatistic> GetMatchStatistic(string id, DateTimeOffset eventDate = default)
+           => await mediator.Send(new MatchStatisticRequest(id, eventDate));
 
         [HttpGet]
         [Route("{id}/lineups")]
-        public async Task<MatchPitchViewLineups> GetMatchLineups(string id, string language = Language.English)
-           => await mediator.Send(new MatchLineupsRequest(id, language));
+        public async Task<MatchPitchViewLineups> GetMatchLineups(string id, string language = Language.English, DateTimeOffset eventDate = default)
+           => await mediator.Send(new MatchLineupsRequest(id, language, eventDate));
     }
 }

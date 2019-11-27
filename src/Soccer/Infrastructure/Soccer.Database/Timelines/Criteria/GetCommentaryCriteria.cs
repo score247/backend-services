@@ -1,11 +1,12 @@
-﻿using Fanex.Data.Repository;
+﻿using System;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.Database._Shared.Extensions;
 
 namespace Soccer.Database.Timelines.Criteria
 {
-    public class GetCommentaryCriteria : CriteriaBase
+    public class GetCommentaryCriteria : CustomCriteria
     {
-        public GetCommentaryCriteria(string matchId, Language language)
+        public GetCommentaryCriteria(string matchId, Language language, DateTimeOffset eventDate = default) : base(eventDate)
         {
             MatchId = matchId;
             Language = language.DisplayName;
@@ -15,7 +16,7 @@ namespace Soccer.Database.Timelines.Criteria
 
         public string Language { get; }
 
-        public override string GetSettingKey() => "Match_GetCommentaries";
+        public override string GetSettingKey() => "Match_GetCommentaries".GetCorrespondingKey(EventDate);
 
         public override bool IsValid() => !string.IsNullOrEmpty(MatchId);
     }

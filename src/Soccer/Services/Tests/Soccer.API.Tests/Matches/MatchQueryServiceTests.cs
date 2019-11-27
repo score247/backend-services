@@ -41,7 +41,7 @@ namespace Soccer.API.Tests.Matches
         public async Task GetMatchCommentary_ExecuteGetOrSetAsync()
 #pragma warning restore S2699 // Tests should include assertions
         {
-            await matchQueryService.GetMatchCommentary("sr:match:1", Language.en_US);
+            await matchQueryService.GetMatchCommentary("sr:match:1", Language.en_US, default(DateTimeOffset));
 
             await cacheManager.Received(1).GetOrSetAsync(
                 "MatchQuery_MatchCommentaryCacheKey_sr:match:1",
@@ -56,7 +56,7 @@ namespace Soccer.API.Tests.Matches
         public async Task GetMatchStatisticData_Always_GetFromCache()
 #pragma warning restore S2699 // Tests should include assertions
         {
-            await matchQueryService.GetMatchStatistic("sr:match:1");
+            await matchQueryService.GetMatchStatistic("sr:match:1", default(DateTimeOffset));
 
             await cacheManager.Received(1).GetOrSetAsync(
                 "MatchQuery_MatchStatisticCacheKey_sr:match:1",
@@ -70,7 +70,7 @@ namespace Soccer.API.Tests.Matches
 #pragma warning restore S2699 // Tests should include assertions
         {
             var matchId = "matchId";
-            await matchQueryService.GetMatchStatisticData(matchId);
+            await matchQueryService.GetMatchStatisticData(matchId, default(DateTimeOffset));
 
             await dynamicRepository.Received(1).GetAsync<Match>(
                 Arg.Is<GetMatchByIdCriteria>(criteria => criteria.Id == matchId));
@@ -82,7 +82,7 @@ namespace Soccer.API.Tests.Matches
             var matchId = "matchId";
             StubMatchStatistic(matchId, null);
 
-            var match = await matchQueryService.GetMatchStatisticData(matchId);
+            var match = await matchQueryService.GetMatchStatisticData(matchId, default(DateTimeOffset));
 
             Assert.Null(match.MatchId);
         }
@@ -99,7 +99,7 @@ namespace Soccer.API.Tests.Matches
                         });
             StubMatchStatistic(matchId, returnedMatch);
 
-            var match = await matchQueryService.GetMatchStatisticData(matchId);
+            var match = await matchQueryService.GetMatchStatisticData(matchId, default(DateTimeOffset));
 
             Assert.Equal(1, match.HomeStatistic.RedCards);
             Assert.Equal(2, match.AwayStatistic.RedCards);
@@ -121,7 +121,7 @@ namespace Soccer.API.Tests.Matches
             var language = Language.en_US;
             StubRetunLineupsFromCache(matchId, language);
 
-            var matchLineups = await matchQueryService.GetMatchLineups(matchId, language);
+            var matchLineups = await matchQueryService.GetMatchLineups(matchId, language, default(DateTimeOffset));
 
             Assert.Equal(matchId, matchLineups.Id);
         }
@@ -133,7 +133,7 @@ namespace Soccer.API.Tests.Matches
         {
             var matchId = "matchid_testexecuteasync";
 
-            await matchQueryService.GetMatchLineupsData(matchId, Language.en_US);
+            await matchQueryService.GetMatchLineupsData(matchId, Language.en_US, default(DateTimeOffset));
 
             await dynamicRepository.Received(1).GetAsync<MatchLineups>(Arg.Is<GetMatchLineupsCriteria>(criteria => criteria.MatchId == matchId));
         }
@@ -145,7 +145,7 @@ namespace Soccer.API.Tests.Matches
             StubTimelineEvents(matchId);
             StubMatchLineups(matchId);
 
-            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US);
+            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US, default(DateTimeOffset));
 
             var player = matchLineups.Home.Players.FirstOrDefault(pl => pl.Id == Player7ID);
             Assert.Equal(2, player.EventStatistic[EventType.ScoreChange]);
@@ -158,7 +158,7 @@ namespace Soccer.API.Tests.Matches
             StubTimelineEvents(matchId);
             StubMatchLineups(matchId);
 
-            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US);
+            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US, default(DateTimeOffset));
 
             var player = matchLineups.Home.Players.FirstOrDefault(pl => pl.Id == Player5ID);
             Assert.Equal(2, player.EventStatistic[EventType.ScoreChangeByOwnGoal]);
@@ -171,7 +171,7 @@ namespace Soccer.API.Tests.Matches
             StubTimelineEvents(matchId);
             StubMatchLineups(matchId);
 
-            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US);
+            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US, default(DateTimeOffset));
 
             var player = matchLineups.Home.Players.FirstOrDefault(pl => pl.Id == Player6ID);
             Assert.Equal(1, player.EventStatistic[EventType.ScoreChangeByPenalty]);
@@ -184,7 +184,7 @@ namespace Soccer.API.Tests.Matches
             StubTimelineEvents(matchId);
             StubMatchLineups(matchId);
 
-            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US);
+            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US, default(DateTimeOffset));
 
             var player = matchLineups.Home.Players.FirstOrDefault(pl => pl.Id == Player7ID);
             Assert.Equal(1, player.EventStatistic[EventType.YellowCard]);
@@ -197,7 +197,7 @@ namespace Soccer.API.Tests.Matches
             StubTimelineEvents(matchId);
             StubMatchLineups(matchId);
 
-            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US);
+            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US, default(DateTimeOffset));
 
             var player = matchLineups.Home.Players.FirstOrDefault(pl => pl.Id == Player7ID);
             Assert.Equal(1, player.EventStatistic[EventType.YellowRedCard]);
@@ -210,7 +210,7 @@ namespace Soccer.API.Tests.Matches
             StubTimelineEvents(matchId);
             StubMatchLineups(matchId);
 
-            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US);
+            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US, default(DateTimeOffset));
 
             var player = matchLineups.Home.Players.FirstOrDefault(pl => pl.Id == Player7ID);
             Assert.Equal(1, player.EventStatistic[EventType.RedCard]);
@@ -223,7 +223,7 @@ namespace Soccer.API.Tests.Matches
             StubTimelineEvents(matchId);
             StubMatchLineups(matchId);
 
-            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US);
+            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US, default(DateTimeOffset));
 
             var homeSubstitutionEvents = matchLineups.Home.SubstitutionEvents;
 
@@ -245,7 +245,7 @@ namespace Soccer.API.Tests.Matches
             StubTimelineEvents(matchId);
             StubMatchLineups(matchId);
 
-            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US);
+            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US, default(DateTimeOffset));
 
             var player = matchLineups.Home.Substitutions.FirstOrDefault(pl => pl.Id == Player1ID);
             Assert.Equal(1, player.EventStatistic[EventType.ScoreChange]);
@@ -258,7 +258,7 @@ namespace Soccer.API.Tests.Matches
             StubTimelineEvents(matchId);
             StubMatchLineups(matchId);
 
-            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US);
+            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US, default(DateTimeOffset));
 
             var player = matchLineups.Home.Substitutions.FirstOrDefault(pl => pl.Id == Player1ID);
             Assert.Equal(1, player.EventStatistic[EventType.YellowCard]);
@@ -271,7 +271,7 @@ namespace Soccer.API.Tests.Matches
             StubTimelineEvents(matchId);
             StubMatchLineups(matchId);
 
-            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US);
+            var matchLineups = await matchQueryService.GetMatchLineupsData(matchId, Language.en_US, default(DateTimeOffset));
 
             var player = matchLineups.Away.Players.FirstOrDefault(pl => pl.Id == Player8ID);
             Assert.Equal(1, player.EventStatistic[EventType.YellowCard]);

@@ -31,10 +31,10 @@ namespace Soccer.API.Tests.Matches
         public async Task HandleMatchLineupsRequest_MatchLineupsHasData_ReturnMatchPitchViewLineups()
         {
             var matchId = "match-id";
-            var request = new MatchLineupsRequest(matchId, Language.en_US.DisplayName);
+            var request = new MatchLineupsRequest(matchId, Language.en_US.DisplayName, default(DateTimeOffset));
             var matchLineups = new MatchLineups(matchId, DateTimeOffset.Now, A.Dummy<TeamLineups>(), A.Dummy<TeamLineups>());
             matchQueryService
-                .GetMatchLineups(request.Id, request.Language)
+                .GetMatchLineups(request.Id, request.Language, default(DateTimeOffset))
                 .Returns(Task.FromResult(matchLineups));
             matchLineupsGenerator.Generate(Arg.Is<MatchLineups>(matchLineups => matchLineups.Id == matchId)).Returns("matchlineup-svg");
 
@@ -99,18 +99,18 @@ namespace Soccer.API.Tests.Matches
 
             await matchHandler.Handle(request, new CancellationToken());
 
-            await matchQueryService.Received(1).GetMatchCoverage(matchId, request.Language);
+            await matchQueryService.Received(1).GetMatchCoverage(matchId, request.Language, default(DateTimeOffset));
         }
 
         [Fact]
         public async Task HandleMatchCommentaryByIdRequest_Execute_GetMatchCommentary()
         {
             var matchId = "MatchID";
-            var request = new MatchCommentaryByIdRequest(matchId, Language.English);
+            var request = new MatchCommentaryByIdRequest(matchId, Language.English, default(DateTimeOffset));
 
             await matchHandler.Handle(request, new CancellationToken());
 
-            await matchQueryService.Received(1).GetMatchCommentary(matchId, request.Language);
+            await matchQueryService.Received(1).GetMatchCommentary(matchId, request.Language, default(DateTimeOffset));
         }
 
 
@@ -120,11 +120,11 @@ namespace Soccer.API.Tests.Matches
 
         {
             var matchId = "MatchID";
-            var request = new MatchStatisticRequest(matchId);
+            var request = new MatchStatisticRequest(matchId, default(DateTimeOffset));
 
             await matchHandler.Handle(request, new CancellationToken());
 
-            await matchQueryService.Received(1).GetMatchStatistic(matchId);
+            await matchQueryService.Received(1).GetMatchStatistic(matchId, default(DateTimeOffset));
         }
 #pragma warning restore S2699 // Tests should include assertions
     }

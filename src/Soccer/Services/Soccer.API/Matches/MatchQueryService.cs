@@ -27,13 +27,13 @@ namespace Soccer.API.Matches
 
         Task<int> GetLiveMatchCount(Language language);
 
-        Task<MatchCoverage> GetMatchCoverage(string id, Language language);
+        Task<MatchCoverage> GetMatchCoverage(string id, Language language, DateTimeOffset eventDate);
 
-        Task<IEnumerable<MatchCommentary>> GetMatchCommentary(string id, Language language);
+        Task<IEnumerable<MatchCommentary>> GetMatchCommentary(string id, Language language, DateTimeOffset eventDate);
 
-        Task<MatchStatistic> GetMatchStatistic(string id);
+        Task<MatchStatistic> GetMatchStatistic(string id, DateTimeOffset eventDate);
 
-        Task<MatchLineups> GetMatchLineups(string id, Language language);
+        Task<MatchLineups> GetMatchLineups(string id, Language language, DateTimeOffset eventDate);
     }
 
     public class MatchQueryService : IMatchQueryService
@@ -95,18 +95,18 @@ namespace Soccer.API.Matches
             return cacheMatch ?? await GetAndCacheMatchInfo(id, language, eventDate);
         }
 
-        public async Task<MatchCoverage> GetMatchCoverage(string id, Language language)
+        public async Task<MatchCoverage> GetMatchCoverage(string id, Language language, DateTimeOffset eventDate)
         {
-            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language));
+            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language, eventDate));
 
             return new MatchCoverage(match.Id, match.Coverage);
         }
 
-        public async Task<IEnumerable<MatchCommentary>> GetMatchCommentary(string id, Language language)
+        public async Task<IEnumerable<MatchCommentary>> GetMatchCommentary(string id, Language language, DateTimeOffset eventDate)
         {
             var timelineEvents = await cacheManager.GetOrSetAsync(
                 $"{MatchCommentaryCacheKey}_{id}",
-                async () => await dynamicRepository.FetchAsync<TimelineEvent>(new GetCommentaryCriteria(id, language)),
+                async () => await dynamicRepository.FetchAsync<TimelineEvent>(new GetCommentaryCriteria(id, language, eventDate)),
                 GetCacheOptions());
 
             return timelineEvents.Select(t => new MatchCommentary(t));
@@ -115,28 +115,28 @@ namespace Soccer.API.Matches
         private CacheItemOptions GetCacheOptions(int cachedMinutes = MatchDataCacheInMinutes)
             => new CacheItemOptions().SetAbsoluteExpiration(dateTimeNowFunc().AddMinutes(cachedMinutes));
 
-        public async Task<MatchStatistic> GetMatchStatistic(string id)
+        public async Task<MatchStatistic> GetMatchStatistic(string id, DateTimeOffset eventDate)
             => await cacheManager.GetOrSetAsync(
                 $"{MatchStatisticCacheKey}_{id}",
-                async () => await GetMatchStatisticData(id),
+                async () => await GetMatchStatisticData(id, eventDate),
                 GetCacheOptions());
 
-        public async Task<MatchLineups> GetMatchLineups(string id, Language language)
+        public async Task<MatchLineups> GetMatchLineups(string id, Language language, DateTimeOffset eventDate)
             => await cacheManager.GetOrSetAsync(
                 $"{MatchLineupCacheKey}_{id}_{language.Value}",
-                async () => await GetMatchLineupsData(id, language),
+                async () => await GetMatchLineupsData(id, language, eventDate),
                 GetCacheOptions(0));
 
-        internal async Task<MatchLineups> GetMatchLineupsData(string id, Language language)
+        internal async Task<MatchLineups> GetMatchLineupsData(string id, Language language, DateTimeOffset eventDate)
         {
-            var matchLineups = await dynamicRepository.GetAsync<MatchLineups>(new GetMatchLineupsCriteria(id, language));
+            var matchLineups = await dynamicRepository.GetAsync<MatchLineups>(new GetMatchLineupsCriteria(id, language, eventDate));
 
             if (matchLineups == null)
             {
                 return new MatchLineups();
             }
 
-            var timelines = (await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id))).ToList();
+            var timelines = (await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id, eventDate))).ToList();
 
             CombineTimelineEventsIntoLineups(matchLineups.Home, timelines);
             CombineTimelineEventsIntoLineups(matchLineups.Away, timelines);
@@ -236,9 +236,9 @@ namespace Soccer.API.Matches
             }
         }
 
-        internal async Task<MatchStatistic> GetMatchStatisticData(string id)
+        internal async Task<MatchStatistic> GetMatchStatisticData(string id, DateTimeOffset eventDate)
         {
-            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, Language.en_US));
+            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, Language.en_US, eventDate));
 
             if (match == null)
             {

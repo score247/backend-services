@@ -1,11 +1,12 @@
-﻿using Fanex.Data.Repository;
+﻿using System;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.Database._Shared.Extensions;
 
 namespace Soccer.Database.Matches.Criteria
 {
-    public class GetMatchLineupsCriteria : CriteriaBase
+    public class GetMatchLineupsCriteria : CustomCriteria
     {
-        public GetMatchLineupsCriteria(string id, Language language)
+        public GetMatchLineupsCriteria(string id, Language language, DateTimeOffset eventDate) : base(eventDate)
         {
             MatchId = id;
             Language = language.DisplayName;
@@ -16,7 +17,7 @@ namespace Soccer.Database.Matches.Criteria
         public string Language { get; }
 
         public override string GetSettingKey()
-            => "Match_GetLineups";
+            => "Match_GetLineups".GetCorrespondingKey(EventDate);
 
         public override bool IsValid()
             => !string.IsNullOrWhiteSpace(MatchId)
