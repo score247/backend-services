@@ -31,11 +31,11 @@ namespace DBUp.Deployment
 
                 //InstallNewDatabase(config.ToString()); // Only run when you create new database
 
-                //InstallStoredProcedures(config.ToString());
+                InstallStoredProcedures(config.ToString());
                 //InstallReProcessStoredProcedures(config.ToString(), environment);
                 //InstallEventSchedulers(config.ToString(), environment);
 
-                InstallSprintChanges(config.ToString());
+                //InstallSprintChanges(config.ToString());
             }
 
             Console.ForegroundColor = ConsoleColor.Green;
