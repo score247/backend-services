@@ -14,7 +14,10 @@ namespace DBUp.Deployment.PreProcessors
 
         public string Process(string contents)
         {
-            return contents.Replace("score247db", $"score247_local_{Environment}");
+            var formattedContents = contents.Replace("score247db", $"score247_local_{Environment}");
+            formattedContents = formattedContents.Replace("environment", $"{Environment}");
+
+            return formattedContents;
         }
     }
 }

@@ -31,11 +31,11 @@ namespace DBUp.Deployment
 
                 //InstallNewDatabase(config.ToString()); // Only run when you create new database
 
-                InstallStoredProcedures(config.ToString());
-                InstallReProcessStoredProcedures(config.ToString(), environment);
-                InstallEventSchedulers(config.ToString());
+                //InstallStoredProcedures(config.ToString());
+                //InstallReProcessStoredProcedures(config.ToString(), environment);
+                //InstallEventSchedulers(config.ToString(), environment);
 
-                //InstallSprintChanges(config.ToString());
+                InstallSprintChanges(config.ToString());
             }
 
             Console.ForegroundColor = ConsoleColor.Green;
@@ -86,11 +86,11 @@ namespace DBUp.Deployment
             return RunScripts(connectionString, new string[] { dir });
         }
 
-        public static int InstallEventSchedulers(string connectionString)
+        public static int InstallEventSchedulers(string connectionString, string environment)
         {
             var dir = new DirectoryInfo("../../../../event-scheduler").FullName;
 
-            return RunScripts(connectionString, new string[] { dir });
+            return RunScripts(connectionString, new string[] { dir }, true, environment);
         }
 
         public static int InitData(string connectionString)
