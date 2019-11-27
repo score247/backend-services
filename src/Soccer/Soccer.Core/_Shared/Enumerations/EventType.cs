@@ -117,5 +117,7 @@
         public bool IsYellowRedCard() => this == YellowRedCard;
 
         public bool IsBreakStart() => this == BreakStart;
+
+        public bool IsMatchStarted() => this == MatchStarted;
     }
 }

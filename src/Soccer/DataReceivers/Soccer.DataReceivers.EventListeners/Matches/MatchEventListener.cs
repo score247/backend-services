@@ -84,22 +84,9 @@ namespace Soccer.DataReceivers.EventListeners.Matches
                 var currentLeague = MajorLeagues.FirstOrDefault(league => league.Id == matchEvent.LeagueId);
                 if (currentLeague != null)
                 {
-                    await messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent), cancellationToken);
-
-                    if(matchEvent?.Timeline?.Type == EventType.ScoreChange 
-                        || matchEvent?.Timeline?.Type == EventType.MatchEnded)
-                    {
-                        var leagueTables = await sportRadarLeagueService.GetLeagueLiveStandings(currentLeague.Id, Language.en_US, currentLeague.Region);
-
-                        if(leagueTables.Any())
-                        {
-                            foreach (var leagueTable in leagueTables)
-                            {
-                                await messageBus.Publish<ILeagueStandingFetchedMessage>(
-                                        new LeagueStandingFetchedMessage(leagueTable, Language.en_US.DisplayName));
-                            }
-                        }
-                    }
+                    await Task.WhenAll(
+                        messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent), cancellationToken),
+                        UpdateLeagueTable(matchEvent, currentLeague));
                 }
             }
             catch (Exception ex)
@@ -110,6 +97,43 @@ namespace Soccer.DataReceivers.EventListeners.Matches
                         $"Match Event {eventListenerService.Name}: {JsonConvert.SerializeObject(matchEvent)}",
                         $"Exception: {ex}"),
                     ex);
+            }
+        }
+
+        private async Task UpdateLeagueTable(MatchEvent matchEvent, League currentLeague)
+        {
+            try
+            {
+                if (matchEvent?.Timeline?.Type.IsScoreChange() == true
+                        || matchEvent?.Timeline?.Type.IsMatchStarted() == true
+                        || matchEvent?.Timeline?.Type.IsMatchEnd() == true)
+                {
+                    await PublishLeagueTable(currentLeague);
+                }
+            }
+            catch (Exception ex)
+            {
+                await logger.ErrorAsync(
+                    string.Join(
+                        "\r\n",
+                        "Update League Table Failed",
+                        $"Match Event {eventListenerService.Name}: {JsonConvert.SerializeObject(matchEvent)}",
+                        $"Exception: {ex}"),
+                    ex);
+            }
+        }
+
+        private async Task PublishLeagueTable(League currentLeague)
+        {
+            var leagueTables = await sportRadarLeagueService.GetLeagueLiveStandings(currentLeague.Id, Language.en_US, currentLeague.Region);
+
+            if (leagueTables.Any())
+            {
+                foreach (var leagueTable in leagueTables)
+                {
+                    await messageBus.Publish<ILeagueStandingFetchedMessage>(
+                            new LeagueStandingFetchedMessage(leagueTable, Language.en_US.DisplayName));
+                }
             }
         }
     }
