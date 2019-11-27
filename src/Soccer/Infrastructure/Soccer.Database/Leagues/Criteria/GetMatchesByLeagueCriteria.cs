@@ -11,7 +11,7 @@ namespace Soccer.Database.Leagues.Criteria
         public GetMatchesByLeagueCriteria(
             string leagueId, 
             Language language,
-            DateTime eventDate = default) : base(eventDate)
+            DateTimeOffset eventDate = default) : base(eventDate)
         {
             SportId = Sport.Soccer.Value;
             LeagueId = leagueId;

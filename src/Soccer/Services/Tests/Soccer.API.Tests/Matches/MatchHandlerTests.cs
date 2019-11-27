@@ -78,7 +78,7 @@ namespace Soccer.API.Tests.Matches
 
             await matchHandler.Handle(request, new CancellationToken());
 
-            await matchQueryService.Received(1).GetMatchInfo(matchId, request.Language);
+            await matchQueryService.Received(1).GetMatchInfo(matchId, request.Language, request.EventDate);
         }
 
         [Fact]

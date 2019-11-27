@@ -37,7 +37,7 @@
             => await matchQueryService.GetLive(request.Language);
 
         public async Task<MatchInfo> Handle(MatchInfoByIdRequest request, CancellationToken cancellationToken)
-            => await matchQueryService.GetMatchInfo(request.Id, request.Language);
+            => await matchQueryService.GetMatchInfo(request.Id, request.Language, request.EventDate);
 
         public async Task<int> Handle(LiveMatchCountRequest request, CancellationToken cancellationToken)
             => await matchQueryService.GetLiveMatchCount(request.Language);

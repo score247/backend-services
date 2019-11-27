@@ -5,11 +5,11 @@ namespace Soccer.Database
 {
     public abstract class CustomCriteria : CriteriaBase
     {
-        protected CustomCriteria(DateTime eventDate = default)
+        protected CustomCriteria(DateTimeOffset eventDate = default)
         {
-            EventDate = eventDate == default ? DateTime.Now : eventDate;
+            EventDate = eventDate == default ? DateTimeOffset.Now : eventDate;
         }
 
-        protected DateTime EventDate { get; }
+        protected DateTimeOffset EventDate { get; }
     }
 }

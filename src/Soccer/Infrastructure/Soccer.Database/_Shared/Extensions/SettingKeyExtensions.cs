@@ -6,14 +6,14 @@ namespace Soccer.Database._Shared.Extensions
     {
         private const int DateSpan = 3;
 
-        public static string GetCorrespondingKey(this string settingKey, DateTime dateTime)
+        public static string GetCorrespondingKey(this string settingKey, DateTimeOffset dateTime)
         {
-            if (dateTime < DateTime.Now.AddDays(-DateSpan))
+            if (dateTime < DateTimeOffset.Now.AddDays(-DateSpan))
             {
                 return $"{settingKey}_Former";
             }
 
-            if (dateTime > DateTime.Now.AddDays(DateSpan))
+            if (dateTime > DateTimeOffset.Now.AddDays(DateSpan))
             {
                 return $"{settingKey}_Ahead";
             }

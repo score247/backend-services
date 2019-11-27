@@ -21,7 +21,7 @@ namespace Soccer.API.Matches
     {
         Task<IEnumerable<MatchSummary>> GetByDateRange(DateTime from, DateTime to, Language language);
 
-        Task<MatchInfo> GetMatchInfo(string id, Language language);
+        Task<MatchInfo> GetMatchInfo(string id, Language language, DateTimeOffset eventDate);
 
         Task<IEnumerable<MatchSummary>> GetLive(Language language);
 
@@ -88,11 +88,11 @@ namespace Soccer.API.Matches
             return cachedMatches;
         }
 
-        public async Task<MatchInfo> GetMatchInfo(string id, Language language)
+        public async Task<MatchInfo> GetMatchInfo(string id, Language language, DateTimeOffset eventDate)
         {
             var cacheMatch = await cacheManager.GetAsync<MatchInfo>(BuildMatchInfoCacheKey(id));
 
-            return cacheMatch ?? await GetAndCacheMatchInfo(id, language);
+            return cacheMatch ?? await GetAndCacheMatchInfo(id, language, eventDate);
         }
 
         public async Task<MatchCoverage> GetMatchCoverage(string id, Language language)
@@ -250,9 +250,9 @@ namespace Soccer.API.Matches
             return matchStatistic;
         }
 
-        private async Task<MatchInfo> GetAndCacheMatchInfo(string id, Language language)
+        private async Task<MatchInfo> GetAndCacheMatchInfo(string id, Language language, DateTimeOffset eventDate)
         {
-            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language));
+            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language, eventDate));
 
             if (match == null)
             {
@@ -260,7 +260,7 @@ namespace Soccer.API.Matches
                 return null;
             }
 
-            var timelineEvents = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id));
+            var timelineEvents = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id, eventDate));
             var matchInfo = new MatchInfo(new MatchSummary(match), timelineEvents, match.Venue, match.Referee, match.Attendance);
             await cacheManager.SetAsync(
                 BuildMatchInfoCacheKey(id), matchInfo, BuildCacheOptions(match.EventDate.DateTime));

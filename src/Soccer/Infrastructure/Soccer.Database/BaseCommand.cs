@@ -7,13 +7,13 @@ namespace Soccer.Database
 {
     public abstract class BaseCommand : NonQueryCommand
     {
-        protected BaseCommand(DateTime eventDate = default) 
+        protected BaseCommand(DateTimeOffset eventDate = default) 
         {
-            EventDate = eventDate == default ? DateTime.Now : eventDate;
+            EventDate = eventDate == default ? DateTimeOffset.Now : eventDate;
         }
 
         [SpParam(Ignored = true)]
-        protected DateTime EventDate { get; }
+        protected DateTimeOffset EventDate { get; }
 
         protected string ToJsonString(object obj)
           => obj == null
