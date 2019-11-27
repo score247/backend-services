@@ -14,7 +14,6 @@ CREATE TABLE `Commentary` (
   `EventDate` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=218431 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-SELECT * FROM score247_local_dev.Commentary;
 --
 -- Table structure for table `Commentary_Archived`
 --

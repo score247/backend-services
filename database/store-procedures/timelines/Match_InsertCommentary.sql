@@ -16,9 +16,9 @@ BEGIN
 			`CreatedTime`,
 			`ModifiedTime`,
 			`EventDate`)
-			VALUES (			
-				matchId,
-				timelineId,
+			VALUES (	
+				timelineId,			
+				matchId,				
 				JSON_UNQUOTE(JSON_EXTRACT(commentaries, '$')),
 				language,
 				now(),
