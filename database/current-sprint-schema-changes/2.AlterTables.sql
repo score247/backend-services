@@ -1,14 +1,17 @@
-ALTER TABLE `Match` 
-ADD COLUMN `LeagueSeasonId` VARCHAR(45) NULL DEFAULT NULL AFTER `Region`;
+alter table `Match` 
+add column `LeagueSeasonId` varchar(45) null default null after `Region`;
 
-ALTER TABLE `LiveMatch` 
-ADD COLUMN `LeagueSeasonId` VARCHAR(45) NULL DEFAULT NULL AFTER `Region`;
+alter table `LiveMatch` 
+add column `LeagueSeasonId` varchar(45) null default null after `Region`;
 
-ALTER TABLE `Commentary` 
+alter table `Commentary` 
+add column `EventDate` timestamp null after `Id`;
+
+alter table `Timeline` 
+add column `EventDate` timestamp null after `ModifiedTime`;
+
+alter table `Lineups` 
+add column `EventDate` timestamp null after `ModifiedTime`;
+
+ALTER TABLE `Odds` 
 ADD COLUMN `EventDate` TIMESTAMP NULL AFTER `Id`;
-
-ALTER TABLE `Timeline` 
-ADD COLUMN `EventDate` TIMESTAMP NULL AFTER `ModifiedTime`;
-
-ALTER TABLE `Lineups` 
-ADD COLUMN `EventDate` TIMESTAMP NULL AFTER `ModifiedTime`;
