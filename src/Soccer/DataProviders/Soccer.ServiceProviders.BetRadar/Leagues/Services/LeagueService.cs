@@ -145,6 +145,10 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
                 {
                     await logger.ErrorAsync($"Message:{ex.Message}\r\nUrl:{ex.Uri}", ex);
                 }
+                else
+                {
+                    await logger.InfoAsync($"Url:{ex.Uri}\r\nMessage:{ex}");
+                }
             }
             catch (Exception ex)
             {

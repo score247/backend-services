@@ -51,6 +51,7 @@ namespace Soccer.Core.Teams.Models
         public static readonly TeamOutcome UEFACupQualification = new TeamOutcome(41, "uefa cup qualification", "UEFA Cup Qualification");
         public static readonly TeamOutcome UEFAIntertotoCup = new TeamOutcome(42, "uefa intertoto cup", "UEFA Intertoto Cup");
         public static readonly TeamOutcome Unknown = new TeamOutcome(43, "unknown", "Unknown");
+        public static readonly TeamOutcome CupWinner = new TeamOutcome(44, "cup winner", "Cup Winner");
 
         public TeamOutcome()
         {
