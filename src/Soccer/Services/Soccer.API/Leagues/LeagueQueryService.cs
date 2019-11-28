@@ -18,7 +18,7 @@ namespace Soccer.API.Leagues
 
         Task<IEnumerable<LeagueSeasonProcessedInfo>> GetLeagueSeasonFecth();
 
-        Task<IEnumerable<MatchSummary>> GetMatches(string id, string groupName, Language language);
+        Task<IEnumerable<MatchSummary>> GetMatches(string id, string leagueGroupName, Language language);
 
         Task<LeagueTable> GetLeagueTable(string id, string seasonId, string groupName, Language language);
     }
@@ -71,7 +71,7 @@ namespace Soccer.API.Leagues
             return majorLeagues;
         }
 
-        public async Task<IEnumerable<MatchSummary>> GetMatches(string id, string groupName, Language language)
+        public async Task<IEnumerable<MatchSummary>> GetMatches(string id, string leagueGroupName, Language language)
         {
             var matches = new List<MatchSummary>();
 
@@ -99,9 +99,9 @@ namespace Soccer.API.Leagues
                 matches.AddRange(result.Select(m => new MatchSummary(m)));
             }
 
-            if (!string.IsNullOrWhiteSpace(groupName))
+            if (!string.IsNullOrWhiteSpace(leagueGroupName))
             {
-                return matches.Where(match => match.LeagueGroupName.Equals(groupName, StringComparison.InvariantCultureIgnoreCase));
+                return matches.Where(match => match.LeagueGroupName.Equals(leagueGroupName, StringComparison.InvariantCultureIgnoreCase));
             }
 
             return matches;
