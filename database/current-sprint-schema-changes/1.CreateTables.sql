@@ -21,3 +21,12 @@ CREATE TABLE `Standings` (
   `ModifiedTime` TIMESTAMP NOT NULL,
   PRIMARY KEY (`LeagueId`, `SeasonId`, `Language`, `TableType`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `Standings`;
+CREATE TABLE `EventSchedulerLog` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `EventName` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Status` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=810 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

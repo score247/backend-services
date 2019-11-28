@@ -15,3 +15,6 @@ add column `EventDate` timestamp null after `ModifiedTime`;
 
 ALTER TABLE `Odds` 
 ADD COLUMN `EventDate` TIMESTAMP NULL AFTER `Id`;
+
+ALTER TABLE `Timeline` 
+ADD COLUMN `Type` VARCHAR(45) NULL AFTER `EventDate`;

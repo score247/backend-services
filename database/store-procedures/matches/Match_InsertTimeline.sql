@@ -9,7 +9,8 @@ BEGIN
 	`Language`,
 	`CreatedTime`,
 	`ModifiedTime`,
-	`EventDate`)
+	`EventDate`,
+    `Type`)
      VALUES (
 			JSON_UNQUOTE(JSON_EXTRACT(timeline, '$.Id')),
 			matchId,
@@ -17,8 +18,10 @@ BEGIN
             language,
             now(),
             now(),
-            (SELECT M.EventDate FROM `Match` AS M WHERE M.Id = matchId LIMIT 1))
+            (SELECT M.EventDate FROM `Match` AS M WHERE M.Id = matchId LIMIT 1),
+            JSON_UNQUOTE(JSON_EXTRACT(timeline, '$.Type.DisplayName')))
 	 ON DUPLICATE KEY UPDATE
 			`Value` = JSON_UNQUOTE(JSON_EXTRACT(timeline, '$')),
+            `Type` = JSON_UNQUOTE(JSON_EXTRACT(timeline, '$.Type.DisplayName')),
 			ModifiedTime = now();
 END
