@@ -22,7 +22,8 @@ namespace Soccer.Core.Leagues.Models
             string countryName,
             string countryCode,
             sbyte isInternational,
-            string region) : base(id, name)
+            string region,
+            string currentSeasonId) : base(id, name)
         {
             Order = order;
             CategoryId = categoryId;
@@ -30,6 +31,7 @@ namespace Soccer.Core.Leagues.Models
             CountryCode = countryCode;
             IsInternational = Convert.ToBoolean(isInternational);
             Region = region;
+            SeasonId = currentSeasonId;
         }
 
         public League(League league, string leagueName)

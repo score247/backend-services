@@ -10,7 +10,8 @@ BEGIN
         `Country` as 'CountryName', 
         `CountryCode`, 
         `IsInternational`, 
-        `Region` 
+        `Region`,
+        `SeasonId` 
         FROM `League` as L
         WHERE L.`IsActive` = '1' AND L.`Language` = languageCode;
 END
