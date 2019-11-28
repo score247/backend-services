@@ -10,9 +10,9 @@ namespace Soccer.Core._Shared.Enumerations
         public const string Home = "home";
         public const string Away = "away";
 
-        public static readonly LeagueTableType CupRound = new LeagueTableType(1, Total);
-        public static readonly LeagueTableType GroupRound = new LeagueTableType(2, Home);
-        public static readonly LeagueTableType PlayOffRound = new LeagueTableType(3, Away);
+        public static readonly LeagueTableType TotalTable = new LeagueTableType(1, Total);
+        public static readonly LeagueTableType HomeTable = new LeagueTableType(2, Home);
+        public static readonly LeagueTableType AwayTable = new LeagueTableType(3, Away);
 
         public LeagueTableType()
         {
