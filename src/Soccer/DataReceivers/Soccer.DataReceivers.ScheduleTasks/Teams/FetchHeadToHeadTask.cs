@@ -15,19 +15,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
     {
         [AutomaticRetry(Attempts = 1)]
         [Queue("medium")]
-        void FetchHeadToHeads(Language language, IEnumerable<Match> matches);
-
-        [AutomaticRetry(Attempts = 1)]
-        [Queue("medium")]
         void FetchTeamResults(Language language, IEnumerable<Match> matches);
-
-        [AutomaticRetry(Attempts = 1)]
-        [Queue("medium")]
-        Task PublishHeadToHeads(Language language, IEnumerable<Match> matches);
-
-        [AutomaticRetry(Attempts = 1)]
-        [Queue("medium")]
-        Task FetchHeadToHeads(string homeTeamId, string awayTeamId, Language language);
 
         [AutomaticRetry(Attempts = 1)]
         [Queue("medium")]
@@ -36,6 +24,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
         [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
         Task FetchTeamResults(IEnumerable<Team> teams, Language language);
+
+        [AutomaticRetry(Attempts = 1)]
+        [Queue("medium")]
+        Task PublishHeadToHeads(Language language, IEnumerable<Match> matches);
     }
 
     public class FetchHeadToHeadsTask : IFetchHeadToHeadsTask
@@ -51,16 +43,6 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
             this.messageBus = messageBus;
         }
 
-        public void FetchHeadToHeads(Language language, IEnumerable<Match> matches)
-        {
-            foreach (var match in matches)
-            {
-                (var homeTeamId, var awayTeamId) = GenerateTeamId(match);
-
-                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
-                    t.FetchHeadToHeads(homeTeamId, awayTeamId, language));
-            }
-        }
 
         public void FetchTeamResults(Language language, IEnumerable<Match> matches)
         {
@@ -73,25 +55,6 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
 
                 BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
                     t.FetchTeamResults(awayTeamId, language));
-            }
-        }
-
-        public async Task FetchHeadToHeads(string homeTeamId, string awayTeamId, Language language)
-        {
-            if (string.IsNullOrEmpty(homeTeamId) || string.IsNullOrEmpty(awayTeamId))
-            {
-                return;
-            }
-
-            var headToHeadMatches = await headToHeadService.GetTeamHeadToHeads(homeTeamId, awayTeamId, language);
-
-            if (headToHeadMatches?.Any() == true)
-            {
-                foreach (var headToHeadMatch in headToHeadMatches)
-                {
-                    await messageBus.Publish<IHeadToHeadFetchedMessage>(
-                          new HeadToHeadFetchedMessage(headToHeadMatch, language));
-                }
             }
         }
 

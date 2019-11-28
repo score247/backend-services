@@ -1,10 +1,15 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Data.Repository;
 using MassTransit;
+using Score247.Shared.Enumerations;
 using Soccer.Core.Leagues.Extensions;
 using Soccer.Core.Matches.Events;
+using Soccer.Core.Matches.Models;
+using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Matches.Commands;
+using Soccer.Database.Teams;
 using Soccer.EventProcessors.Leagues.Services;
 
 namespace Soccer.EventProcessors.Matches
@@ -37,10 +42,33 @@ namespace Soccer.EventProcessors.Matches
 
             foreach (var matchGroup in updatedMatches)
             {
-                var command = new InsertOrUpdateMatchesCommand(matchGroup.ToList(), message.Language, matchGroup.Key);
+                var matches = matchGroup.ToList();
+                var command = new InsertOrUpdateMatchesCommand(matches, message.Language, matchGroup.Key);
 
                 await dynamicRepository.ExecuteAsync(command);
+
+                await InsertHeadToHeads(matches, message.Language);
             }
+        }
+
+        private async Task InsertHeadToHeads(IList<Match> matches, string language) 
+        {
+            foreach (var match in matches)
+            {
+                if (match.Teams?.Any() == false)
+                {
+                    continue;
+                }
+
+                var homeTeamId = match.Teams.FirstOrDefault(t => t.IsHome)?.Id;
+                var awayTeamId = match.Teams.FirstOrDefault(t => !t.IsHome)?.Id;
+
+                await dynamicRepository.ExecuteAsync(new InsertOrUpdateHeadToHeadCommand(
+                    homeTeamId,
+                    awayTeamId,
+                    match,
+                    Enumeration.FromDisplayName<Language>(language)));
+            }            
         }
     }
 }
