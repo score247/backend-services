@@ -29,7 +29,7 @@ namespace Soccer.API.Leagues
             => await mediator.Send(new UnprocessedLeagueSeasonRequest());
 
         [HttpGet]
-        [Route("{id}/{groupName}/matches")]
+        [Route("{id}/matches/{groupName}")]
         public async Task<IEnumerable<MatchSummary>> GetMatches(
               string id,
               string groupName = "",
