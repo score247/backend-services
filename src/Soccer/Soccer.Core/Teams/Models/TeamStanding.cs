@@ -44,7 +44,7 @@ namespace Soccer.Core.Teams.Models
         public string Id { get; }
 
         [Key(1)]
-        public string Name { get; }
+        public string Name { get; private set; }
 
 #pragma warning disable S109 // Magic numbers should not be used
 
@@ -52,7 +52,7 @@ namespace Soccer.Core.Teams.Models
         public int Rank { get; }
 
         [Key(3)]
-        public TeamOutcome Outcome { get; }
+        public TeamOutcome Outcome { get; private set; }
 
         [Key(4)]
         public int Played { get; }
