@@ -38,6 +38,7 @@ namespace Soccer.API
                 services.AddSwagger();
                 services
                     .AddMvc()
+                    .AddNewtonsoftJson()
                     .AddMvcOptions(option =>
                     {
                         option.OutputFormatters.Add(new MessagePackOutputFormatter(ContractlessStandardResolver.Instance));
