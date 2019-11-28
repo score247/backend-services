@@ -13,7 +13,7 @@ namespace DBUp.Deployment
     {
         private static int Main(string[] args)
         {
-            var environment = "dev";
+            var environment = "dev1";
             var settingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), $"app-settings.{environment}.json");
             var settings = File.ReadAllText(settingPath);
             var connectionConfiguration = JsonConvert.DeserializeObject<ConnectionConfiguration>(settings);
@@ -32,11 +32,8 @@ namespace DBUp.Deployment
 
                 InstallStoredProcedures(config.ToString());
                 //InstallReProcessStoredProcedures(config.ToString(), environment);
-<<<<<<< Updated upstream
+
                 //InstallEventSchedulers(config.ToString(), environment);
-=======
-                //InstallEventSchedulers(config.ToString());
->>>>>>> Stashed changes
 
                 //InstallSprintChanges(config.ToString());
             }
