@@ -39,6 +39,9 @@
   </Function>
   <Function Name="LiveMatch">
     <Setting Key="LiveMatch_RemoveById" SpName="LiveMatch_RemoveById" DbName="DefaultConnection" />
+    <Setting Key="LiveMatch_UpdateCurrentPeriodStartTime" SpName="LiveMatch_UpdateCurrentPeriodStartTime" DbName="DefaultConnection" />
+    <Setting Key="LiveMatch_GetBySportId" SpName="LiveMatch_GetBySportId" DbName="DefaultConnection" />
+    <Setting Key="LiveMatch_InsertOrRemove" SpName="LiveMatch_InsertOrRemove" DbName="DefaultConnection" />
     
     <Setting Key="LiveMatch_UpdateMatchResult" SpName="LiveMatch_UpdateMatchResult" DbName="DefaultConnection" />
     <Setting Key="LiveMatch_UpdateMatchResult_Former" SpName="LiveMatch_UpdateMatchResult" DbName="FormerDbConnection" />
@@ -52,17 +55,18 @@
     <Setting Key="LiveMatch_UpdateTeamStatistic_Former" SpName="LiveMatch_UpdateTeamStatistic" DbName="FormerDbConnection" />
     <Setting Key="LiveMatch_UpdateTeamStatistic_Ahead" SpName="LiveMatch_UpdateTeamStatistic" DbName="AheadDbConnection" />
     
-    <Setting Key="LiveMatch_UpdateCurrentPeriodStartTime" SpName="LiveMatch_UpdateCurrentPeriodStartTime" DbName="DefaultConnection" />
-    <Setting Key="LiveMatch_GetBySportId" SpName="LiveMatch_GetBySportId" DbName="DefaultConnection" />
-    <Setting Key="LiveMatch_InsertOrRemove" SpName="LiveMatch_InsertOrRemove" DbName="DefaultConnection" />
-    
     <Setting Key="LiveMatch_UpdateTeamRedCards" SpName="LiveMatch_UpdateTeamRedCards" DbName="DefaultConnection" />
     <Setting Key="LiveMatch_UpdateTeamRedCards_Former" SpName="LiveMatch_UpdateTeamRedCards" DbName="FormerDbConnection" />
     <Setting Key="LiveMatch_UpdateTeamRedCards_Ahead" SpName="LiveMatch_UpdateTeamRedCards" DbName="AheadDbConnection" />
   </Function>
   <Function Name="Odds">
     <Setting Key="Odds_InsertOdds" SpName="Odds_InsertOdds" DbName="DefaultConnection" />
+    <Setting Key="Odds_InsertOdds_Former" SpName="Odds_InsertOdds" DbName="FormerDbConnection" />
+    <Setting Key="Odds_InsertOdds_Ahead" SpName="Odds_InsertOdds" DbName="AheadDbConnection" />
+    
     <Setting Key="Odds_GetOdds" SpName="Odds_GetOdds" DbName="DefaultConnection" />
+    <Setting Key="Odds_GetOdds_Former" SpName="Odds_GetOdds" DbName="FormerDbConnection" />
+    <Setting Key="Odds_GetOdds_Ahead" SpName="Odds_GetOdds" DbName="AheadDbConnection" />
   </Function>
   <Function Name="League">
     <Setting Key="League_GetActive" SpName="League_GetActive" DbName="DefaultConnection" />

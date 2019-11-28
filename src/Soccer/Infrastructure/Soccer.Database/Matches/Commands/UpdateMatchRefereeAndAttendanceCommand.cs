@@ -1,10 +1,17 @@
 ﻿namespace Soccer.Database.Matches.Commands
 {
+    using System;
     using Score247.Shared.Enumerations;
+    using Soccer.Database._Shared.Extensions;
 
     public class UpdateMatchRefereeAndAttendanceCommand : BaseCommand
     {
-        public UpdateMatchRefereeAndAttendanceCommand(string matchId, string referee, int attendance, string language)
+        public UpdateMatchRefereeAndAttendanceCommand(
+            string matchId, 
+            string referee, 
+            int attendance, 
+            string language,
+            DateTimeOffset eventDate) : base(eventDate)
         {
             SportId = Sport.Soccer.Value;
             MatchId = matchId;
@@ -23,7 +30,7 @@
 
         public string Language { get; }
 
-        public override string GetSettingKey() => "Match_UpdateRefereeAndAttendance";
+        public override string GetSettingKey() => "Match_UpdateRefereeAndAttendance".GetCorrespondingKey(EventDate);
 
         public override bool IsValid() =>
             !string.IsNullOrWhiteSpace(MatchId)

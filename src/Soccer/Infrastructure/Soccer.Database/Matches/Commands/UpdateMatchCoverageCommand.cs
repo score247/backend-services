@@ -1,11 +1,13 @@
 ﻿namespace Soccer.Database.Matches.Commands
 {
+    using System;
     using Score247.Shared.Enumerations;
     using Soccer.Core.Matches.Models;
+    using Soccer.Database._Shared.Extensions;
 
     public class UpdateMatchCoverageCommand : BaseCommand
     {
-        public UpdateMatchCoverageCommand(string matchId, Coverage coverage)
+        public UpdateMatchCoverageCommand(string matchId, Coverage coverage, DateTimeOffset eventDate) : base(eventDate)
         {
             SportId = Sport.Soccer.Value;
             MatchId = matchId;
@@ -18,7 +20,7 @@
 
         public string Coverage { get; }
 
-        public override string GetSettingKey() => "Match_UpdateCoverage";
+        public override string GetSettingKey() => "Match_UpdateCoverage".GetCorrespondingKey(EventDate);
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(MatchId)
             && !string.IsNullOrWhiteSpace(Coverage);

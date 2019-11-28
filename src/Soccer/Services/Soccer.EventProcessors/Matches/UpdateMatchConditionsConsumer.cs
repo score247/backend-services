@@ -15,13 +15,18 @@
             this.dynamicRepository = dynamicRepository;
         }
 
-        public async Task Consume(ConsumeContext<IMatchUpdatedConditionsMessage> context)
+        public Task Consume(ConsumeContext<IMatchUpdatedConditionsMessage> context)
         {
             var message = context.Message;
 
-            var command = new UpdateMatchRefereeAndAttendanceCommand(message.MatchId, message.Referee, message.Attendance, message.Language.DisplayName);
+            var command = new UpdateMatchRefereeAndAttendanceCommand(
+                message.MatchId, 
+                message.Referee, 
+                message.Attendance, 
+                message.Language.DisplayName, 
+                message.EventDate);
 
-            await dynamicRepository.ExecuteAsync(command);
+            return dynamicRepository.ExecuteAsync(command);
         }
     }
 }
