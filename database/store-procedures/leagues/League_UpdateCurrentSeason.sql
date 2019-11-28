@@ -8,8 +8,7 @@ BEGIN
     WHILE i < e DO
 			UPDATE `League` AS League
             SET 
-				CurrentSeasonId = JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].SeasonId'))),
-				ModifiedTime = now()
+				CurrentSeasonId = JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].SeasonId')))
             WHERE League.Id = JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].Id')))
 				AND League.Region = JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].Region')));
                 
