@@ -12,23 +12,22 @@ CREATE TABLE `Commentary` (
   `ModifiedTime` timestamp NOT NULL,
   `Id` bigint(20) NOT NULL AUTO_INCREMENT,
   `EventDate` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`Id`)
+  PRIMARY KEY (`Id`),
+  KEY `commentary_match_index` (`MatchId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=218431 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 --
--- Table structure for table `Commentary_Archived`
+-- Table structure for table `EventSchedulerLog`
 --
 
-DROP TABLE IF EXISTS `Commentary_Archived`;
-CREATE TABLE `Commentary_Archived` (
-  `TimelineId` bigint(20) NOT NULL,
-  `MatchId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Value` json NOT NULL,
-  `Language` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `CreatedTime` timestamp NOT NULL,
-  `ModifiedTime` timestamp NOT NULL,
-  `Id` bigint(20) NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS `EventSchedulerLog`;
+CREATE TABLE `EventSchedulerLog` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `EventName` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Status` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=210082 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=810 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `HeadToHead`
@@ -54,18 +53,35 @@ CREATE TABLE `HeadToHead` (
 
 DROP TABLE IF EXISTS `League`;
 CREATE TABLE `League` (
-  `Id` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Id` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `Order` int(11) DEFAULT '10000',
-  `CategoryId` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `Country` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `Region` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `CategoryId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Country` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Region` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `IsActive` tinyint(4) DEFAULT '0',
-  `CountryCode` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `Language` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'en-US',
+  `CountryCode` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `Language` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'en-US',
   `IsMajor` tinyint(4) DEFAULT '0',
   `IsInternational` tinyint(4) DEFAULT '0',
+  `CurrentSeasonId` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`Id`,`Language`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Table structure for table `LeagueSeason`
+--
+
+DROP TABLE IF EXISTS `LeagueSeason`;
+CREATE TABLE `LeagueSeason` (
+  `LeagueId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `SeasonId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Region` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Fetched` tinyint(4) DEFAULT '0',
+  `FetchedDate` timestamp NULL DEFAULT NULL,
+  `CreatedTime` timestamp NULL DEFAULT NULL,
+  `ModifiedTime` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`SeasonId`,`LeagueId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -84,20 +100,6 @@ CREATE TABLE `Lineups` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Table structure for table `Lineups_Archived`
---
-
-DROP TABLE IF EXISTS `Lineups_Archived`;
-CREATE TABLE `Lineups_Archived` (
-  `MatchId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Value` json NOT NULL,
-  `Language` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `CreatedTime` timestamp NOT NULL,
-  `ModifiedTime` timestamp NOT NULL,
-  PRIMARY KEY (`MatchId`,`Language`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
 -- Table structure for table `LiveMatch`
 --
 
@@ -110,12 +112,11 @@ CREATE TABLE `LiveMatch` (
   `LeagueId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `EventDate` timestamp NOT NULL,
   `Region` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `LeagueSeasonId` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `LeagueSeasonId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `CreatedTime` timestamp NULL DEFAULT NULL,
   `ModifiedTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`,`Language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
 --
 -- Table structure for table `Match`
 --
@@ -129,25 +130,7 @@ CREATE TABLE `Match` (
   `LeagueId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `EventDate` timestamp NOT NULL,
   `Region` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `LeagueSeasonId` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `CreatedTime` timestamp NULL DEFAULT NULL,
-  `ModifiedTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`Id`,`Language`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Table structure for table `Match_Archived`
---
-
-DROP TABLE IF EXISTS `Match_Archived`;
-CREATE TABLE `Match_Archived` (
-  `Id` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Value` json NOT NULL,
-  `Language` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `SportId` int(11) NOT NULL,
-  `LeagueId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `EventDate` timestamp NOT NULL,
-  `Region` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `LeagueSeasonId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `CreatedTime` timestamp NULL DEFAULT NULL,
   `ModifiedTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`,`Language`)
@@ -165,23 +148,25 @@ CREATE TABLE `Odds` (
   `BetTypeId` int(11) NOT NULL,
   `BookmakerId` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `EventDate` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1540956 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Table structure for table `Odds_Archived`
+-- Table structure for table `Standings`
 --
 
-DROP TABLE IF EXISTS `Odds_Archived`;
-CREATE TABLE `Odds_Archived` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
-  `CreatedTime` timestamp NOT NULL,
+DROP TABLE IF EXISTS `Standings`;
+CREATE TABLE `Standings` (
+  `LeagueId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `SeasonId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Language` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `TableType` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Value` json NOT NULL,
-  `MatchId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `BetTypeId` int(11) NOT NULL,
-  `BookmakerId` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1605220 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `CreatedTime` timestamp NOT NULL,
+  `ModifiedTime` timestamp NOT NULL,
+  PRIMARY KEY (`LeagueId`,`SeasonId`,`Language`,`TableType`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Table structure for table `Timeline`
@@ -196,54 +181,6 @@ CREATE TABLE `Timeline` (
   `CreatedTime` timestamp NULL DEFAULT NULL,
   `ModifiedTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `EventDate` timestamp NULL DEFAULT NULL,
+  `Type` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`Id`,`MatchId`,`Language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
---
--- Table structure for table `Timeline_Archived`
---
-
-DROP TABLE IF EXISTS `Timeline_Archived`;
-CREATE TABLE `Timeline_Archived` (
-  `Id` bigint(20) NOT NULL,
-  `MatchId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Value` json NOT NULL,
-  `Language` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'en-US',
-  `CreatedTime` timestamp NULL DEFAULT NULL,
-  `ModifiedTime` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`Id`,`MatchId`,`Language`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-DROP TABLE IF EXISTS `LeagueSeason`;
-CREATE TABLE `LeagueSeason` (
-  `LeagueId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `SeasonId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Region` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Fetched` tinyint(4) DEFAULT '0',
-  `FetchedDate` timestamp NULL DEFAULT NULL,
-  `CreatedTime` timestamp NULL DEFAULT NULL,
-  `ModifiedTime` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`SeasonId`,`LeagueId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-DROP TABLE IF EXISTS `Standings`;
-CREATE TABLE IF NOT EXISTS `Standings` (
-  `LeagueId` VARCHAR(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `SeasonId` VARCHAR(45) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `Language` VARCHAR(10) NOT NULL,
-  `TableType` VARCHAR(10) NOT NULL,
-  `Value` JSON NOT NULL,
-  `CreatedTime` TIMESTAMP NOT NULL,
-  `ModifiedTime` TIMESTAMP NOT NULL,
-  PRIMARY KEY (`LeagueId`, `SeasonId`, `Language`, `TableType`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-
-
-
-
- 
-
