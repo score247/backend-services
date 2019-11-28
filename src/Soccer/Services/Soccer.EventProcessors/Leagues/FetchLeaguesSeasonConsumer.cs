@@ -25,9 +25,14 @@ namespace Soccer.EventProcessors.Leagues
                 return;
             }
 
-            var command = new InsertLeagueSeasonCommand(message.Leagues);
-
-            await dynamicRepository.ExecuteAsync(command);
+            await InsertLeagueSeasons(message);
+            await UpdateLeagueCurrentSeason(message);
         }
+
+        private Task InsertLeagueSeasons(ILeaguesSeasonFetchedMessage message)
+        => dynamicRepository.ExecuteAsync(new InsertLeagueSeasonCommand(message.Leagues));
+
+        private Task UpdateLeagueCurrentSeason(ILeaguesSeasonFetchedMessage message)
+        => dynamicRepository.ExecuteAsync(new UpdateLeagueCurrentSeasonCommand(message.Leagues));
     }
 }
