@@ -101,7 +101,7 @@ namespace Soccer.API.Leagues
 
             if (!string.IsNullOrWhiteSpace(groupName))
             {
-                return matches.Where(match => match.LeagueGroupName == groupName);
+                return matches.Where(match => match.LeagueGroupName.Equals(groupName, StringComparison.InvariantCultureIgnoreCase));
             }
 
             return matches;
