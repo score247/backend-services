@@ -22,7 +22,7 @@ CREATE TABLE `Standings` (
   PRIMARY KEY (`LeagueId`, `SeasonId`, `Language`, `TableType`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-DROP TABLE IF EXISTS `Standings`;
+DROP TABLE IF EXISTS `EventSchedulerLog`;
 CREATE TABLE `EventSchedulerLog` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `EventName` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,

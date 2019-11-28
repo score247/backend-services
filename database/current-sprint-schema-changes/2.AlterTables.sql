@@ -19,5 +19,5 @@ ADD COLUMN `EventDate` TIMESTAMP NULL AFTER `Id`;
 ALTER TABLE `Timeline` 
 ADD COLUMN `Type` VARCHAR(45) NULL AFTER `EventDate`;
 
-ALTER TABLE `score247_local_dev`.`League` 
+ALTER TABLE `League` 
 ADD COLUMN `CurrentSeasonId` VARCHAR(45) NULL AFTER `IsInternational`;
