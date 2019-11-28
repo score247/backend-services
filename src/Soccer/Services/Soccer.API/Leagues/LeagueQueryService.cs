@@ -93,10 +93,11 @@ namespace Soccer.API.Leagues
                     language));
 
             var results = await Task.WhenAll(currentMatches, aheadMatches, formerMatches);
+            var league = (await GetMajorLeagues(language)).FirstOrDefault(league => league.Id == id);
 
             foreach (var result in results)
             {
-                matches.AddRange(result.Select(m => new MatchSummary(m)));
+                matches.AddRange(result.Select(m => new MatchSummary(m)).Where(m => m.LeagueSeasonId == league?.SeasonId));
             }
 
             if (!string.IsNullOrWhiteSpace(leagueGroupName))
