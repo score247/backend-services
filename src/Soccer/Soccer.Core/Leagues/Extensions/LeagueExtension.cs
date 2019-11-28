@@ -39,7 +39,7 @@ namespace Soccer.Core.Leagues.Extensions
 
                 if (!string.IsNullOrWhiteSpace(leagueName))
                 {
-                    return leagueName;
+                    return CombinePlayoffsInfomration(leagueRound, leagueName);
                 }
             }
 
@@ -50,7 +50,6 @@ namespace Soccer.Core.Leagues.Extensions
         private static readonly List<Func<League, LeagueRound, Language, string>> leagueNameBuilders =
             new List<Func<League, LeagueRound, Language, string>>
             {
-                LeagueNameRule4Builder,
                 LeagueNameRule3Builder,
                 LeagueNameRule2Builder,
                 LeagueNameRule1Builder
@@ -176,10 +175,9 @@ namespace Soccer.Core.Leagues.Extensions
             return string.Empty;
         }
 
-        private static string LeagueNameRule4Builder(
-            League league,
+        private static string CombinePlayoffsInfomration(
             LeagueRound leagueRound,
-            Language language)
+            string leagueName)
         {
             if (leagueRound?.Phase != null)
             {
@@ -187,13 +185,11 @@ namespace Soccer.Core.Leagues.Extensions
 
                 if (isPlayOffs)
                 {
-                    var leagueName = LeagueNameRule1Builder(league, leagueRound, language);
-
                     return $"{leagueName}{termsplit} {playoffs}";
                 }
             }
 
-            return string.Empty;
+            return leagueName;
         }
 
 #pragma warning restore S1172 // Unused method parameters should be removed
