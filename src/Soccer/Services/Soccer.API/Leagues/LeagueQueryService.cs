@@ -18,7 +18,7 @@ namespace Soccer.API.Leagues
 
         Task<IEnumerable<LeagueSeasonProcessedInfo>> GetLeagueSeasonFecth();
 
-        Task<IEnumerable<MatchSummary>> GetMatches(string id, Language language);
+        Task<IEnumerable<MatchSummary>> GetMatches(string id, string groupName, Language language);
 
         Task<LeagueTable> GetLeagueTable(string id, string seasonId, string groupName, Language language);
     }
@@ -46,7 +46,7 @@ namespace Soccer.API.Leagues
         {
             var leagueTable = await dynamicRepository.GetAsync<LeagueTable>(new GetLeagueTableCriteria(id, seasonId, language));
 
-            if(leagueTable != null)
+            if (leagueTable != null)
             {
                 leagueTable.FilterAndCalculateGroupTableOutcome(groupName);
             }
@@ -71,25 +71,25 @@ namespace Soccer.API.Leagues
             return majorLeagues;
         }
 
-        public async Task<IEnumerable<MatchSummary>> GetMatches(string id, Language language)
+        public async Task<IEnumerable<MatchSummary>> GetMatches(string id, string groupName, Language language)
         {
             var matches = new List<MatchSummary>();
 
             var formerMatches = dynamicRepository
                 .FetchAsync<Match>(new GetMatchesByLeagueCriteria(
-                    id, 
-                    language, 
+                    id,
+                    language,
                     DateTime.Now.AddDays(-appSetting.DatabaseQueryDateSpan)));
 
             var aheadMatches = dynamicRepository
                 .FetchAsync<Match>(new GetMatchesByLeagueCriteria(
-                    id, 
-                    language, 
+                    id,
+                    language,
                     DateTime.Now.AddDays(appSetting.DatabaseQueryDateSpan)));
 
             var currentMatches = dynamicRepository
                 .FetchAsync<Match>(new GetMatchesByLeagueCriteria(
-                    id, 
+                    id,
                     language));
 
             var results = await Task.WhenAll(currentMatches, aheadMatches, formerMatches);
@@ -97,6 +97,11 @@ namespace Soccer.API.Leagues
             foreach (var result in results)
             {
                 matches.AddRange(result.Select(m => new MatchSummary(m)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(groupName))
+            {
+                return matches.Where(match => match.LeagueGroupName == groupName);
             }
 
             return matches;

@@ -20,7 +20,6 @@ namespace DBUp.Deployment
 
             foreach (var config in connectionConfiguration.Connections)
             {
-
                 Console.ForegroundColor = ConsoleColor.Blue;
 
                 Console.WriteLine("==============");
@@ -33,7 +32,11 @@ namespace DBUp.Deployment
 
                 InstallStoredProcedures(config.ToString());
                 //InstallReProcessStoredProcedures(config.ToString(), environment);
+<<<<<<< Updated upstream
                 //InstallEventSchedulers(config.ToString(), environment);
+=======
+                //InstallEventSchedulers(config.ToString());
+>>>>>>> Stashed changes
 
                 //InstallSprintChanges(config.ToString());
             }
@@ -75,7 +78,6 @@ namespace DBUp.Deployment
 
         public static int InstallSchemas(string connectionString, bool forSprint = false)
         {
-
             var dir = new DirectoryInfo("../../../../schema").FullName;
 
             if (forSprint)

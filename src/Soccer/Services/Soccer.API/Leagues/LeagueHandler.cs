@@ -8,9 +8,9 @@ using Soccer.Core.Matches.Models;
 
 namespace Soccer.API.Leagues
 {
-    public class LeagueHandler : 
-        IRequestHandler<MajorLeaguesRequest, IEnumerable<League>>, 
-        IRequestHandler<UnprocessedLeagueSeasonRequest, IEnumerable<LeagueSeasonProcessedInfo>>, 
+    public class LeagueHandler :
+        IRequestHandler<MajorLeaguesRequest, IEnumerable<League>>,
+        IRequestHandler<UnprocessedLeagueSeasonRequest, IEnumerable<LeagueSeasonProcessedInfo>>,
         IRequestHandler<MatchesByLeagueRequest, IEnumerable<MatchSummary>>,
         IRequestHandler<LeagueTableRequest, LeagueTable>
     {
@@ -28,7 +28,7 @@ namespace Soccer.API.Leagues
             => leagueQueryService.GetLeagueSeasonFecth();
 
         public Task<IEnumerable<MatchSummary>> Handle(MatchesByLeagueRequest request, CancellationToken cancellationToken)
-            => leagueQueryService.GetMatches(request.LeagueId, request.Language);
+            => leagueQueryService.GetMatches(request.LeagueId, request.LeagueGroupName, request.Language);
 
         public Task<LeagueTable> Handle(LeagueTableRequest request, CancellationToken cancellationToken)
             => leagueQueryService.GetLeagueTable(request.LeagueId, request.SeasonId, request.GroupName, request.Language);
