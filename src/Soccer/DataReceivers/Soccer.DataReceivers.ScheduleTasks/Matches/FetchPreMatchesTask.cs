@@ -12,6 +12,7 @@ using Soccer.Core.Shared.Enumerations;
 using Soccer.DataProviders._Shared.Enumerations;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.Matches.Services;
+using Soccer.DataReceivers.ScheduleTasks.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
 using Soccer.DataReceivers.ScheduleTasks.Teams;
 
@@ -83,6 +84,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                 .ToList();
 
             await PublishPreMatchFetchedMessage(language, batchSize, matches);
+
+            FetchPreMatchLeagueStanding(language, matches);
         }
 
         private async Task PublishPreMatchFetchedMessage(Language language, int batchSize, ICollection<Match> matches)
@@ -102,6 +105,16 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
                 BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(
                     task => task.FetchTeamResults(language, batchOfMatches));
+            }
+        }
+
+        private static void FetchPreMatchLeagueStanding(Language language, ICollection<Match> matches)
+        {
+            var leagueWithMatchesGroups = matches.GroupBy(match => new { match.League.Id, match.League.Region });
+
+            foreach (var leagueWithMatches in leagueWithMatchesGroups)
+            {
+                BackgroundJob.Enqueue<IFetchLeagueStandingsTask>(task => task.FetchLeagueStandings(leagueWithMatches.Key.Id, leagueWithMatches.Key.Region, language));
             }
         }
     }
