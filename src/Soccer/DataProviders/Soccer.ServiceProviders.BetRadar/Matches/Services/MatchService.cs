@@ -168,7 +168,7 @@
             }
             catch (Exception ex)
             {
-                await logger.ErrorAsync(ex.Message, ex);
+                await logger.ErrorAsync($"MatchId: {matchId}, Region: {region}\r\n" + ex.Message, ex);
             }
 
             return default(MatchLineups);
