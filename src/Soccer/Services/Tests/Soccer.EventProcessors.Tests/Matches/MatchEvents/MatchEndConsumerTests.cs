@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using FakeItEasy;
-using Fanex.Data.Repository;
 using MassTransit;
 using NSubstitute;
 using Score247.Shared.Tests;
-using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Matches.QueueMessages.MatchEvents;
 using Soccer.Core.Shared.Enumerations;
-using Soccer.Database.Matches.Commands;
 using Soccer.EventProcessors.Matches.MatchEvents;
 using Xunit;
 
@@ -19,7 +16,6 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
     public class MatchEndConsumerTests
     {
         private readonly IBus messageBus;
-        private readonly IDynamicRepository dynamicRepository;
         private readonly ConsumeContext<IMatchEndEventMessage> context;
 
         private readonly MatchEndEventConsumer matchEndConsumer;
@@ -28,9 +24,8 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
         {
             context = Substitute.For<ConsumeContext<IMatchEndEventMessage>>();
             messageBus = Substitute.For<IBus>();
-            dynamicRepository = Substitute.For<IDynamicRepository>();
 
-            matchEndConsumer = new MatchEndEventConsumer(messageBus, dynamicRepository);
+            matchEndConsumer = new MatchEndEventConsumer(messageBus);
         }
 
         [Fact]
@@ -39,7 +34,6 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             await matchEndConsumer.Consume(context);
 
             await messageBus.DidNotReceive().Publish<IMatchEventProcessedMessage>(Arg.Any<MatchEventProcessedMessage>());
-            await messageBus.DidNotReceive().Publish<ILiveMatchClosedMessage>(Arg.Any<LiveMatchClosedMessage>());
         }
 
         [Fact]
@@ -55,9 +49,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
                 ));
 
             await matchEndConsumer.Consume(context);
-
-            await dynamicRepository.Received(1).ExecuteAsync(Arg.Any<UpdateLiveMatchLastTimelineCommand>());
-            await messageBus.Received(1).Publish<ILiveMatchClosedMessage>(Arg.Any<LiveMatchClosedMessage>());
+   
             await messageBus.Received(1).Publish<IMatchEventProcessedMessage>(
                 Arg.Is<MatchEventProcessedMessage>(evt => evt.MatchEvent.Timeline.MatchTime == 91));
         }
@@ -76,8 +68,6 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
 
             await matchEndConsumer.Consume(context);
 
-            await dynamicRepository.Received(1).ExecuteAsync(Arg.Any<UpdateLiveMatchLastTimelineCommand>());
-            await messageBus.Received(1).Publish<ILiveMatchClosedMessage>(Arg.Any<LiveMatchClosedMessage>());
             await messageBus.Received(1).Publish<IMatchEventProcessedMessage>(
                 Arg.Is<MatchEventProcessedMessage>(evt => evt.MatchEvent.Timeline.MatchTime == 91));
         }
@@ -96,8 +86,6 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
 
             await matchEndConsumer.Consume(context);
 
-            await dynamicRepository.Received(1).ExecuteAsync(Arg.Any<UpdateLiveMatchLastTimelineCommand>());
-            await messageBus.Received(1).Publish<ILiveMatchClosedMessage>(Arg.Any<LiveMatchClosedMessage>());
             await messageBus.Received(1).Publish<IMatchEventProcessedMessage>(
                 Arg.Is<MatchEventProcessedMessage>(evt => evt.MatchEvent.Timeline.MatchTime == 121));
         }
@@ -116,8 +104,6 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
 
             await matchEndConsumer.Consume(context);
 
-            await dynamicRepository.Received(1).ExecuteAsync(Arg.Any<UpdateLiveMatchLastTimelineCommand>());
-            await messageBus.Received(1).Publish<ILiveMatchClosedMessage>(Arg.Any<LiveMatchClosedMessage>());
             await messageBus.Received(1).Publish<IMatchEventProcessedMessage>(
                 Arg.Is<MatchEventProcessedMessage>(evt => evt.MatchEvent.Timeline.MatchTime == 122));
         }
