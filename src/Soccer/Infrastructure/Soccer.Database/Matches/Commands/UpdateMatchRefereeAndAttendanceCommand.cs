@@ -30,7 +30,7 @@
 
         public string Language { get; }
 
-        public override string GetSettingKey() => "Match_UpdateRefereeAndAttendance".GetCorrespondingKey(EventDate);
+        public override string GetSettingKey() => "Match_UpdateRefereeAndAttendance".GetCorrespondingKey(EventDate, DateTimeOffset.Now);
 
         public override bool IsValid() =>
             !string.IsNullOrWhiteSpace(MatchId)

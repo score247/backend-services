@@ -79,13 +79,13 @@ namespace Soccer.API.Leagues
                 .FetchAsync<Match>(new GetMatchesByLeagueCriteria(
                     id,
                     language,
-                    DateTime.Now.AddDays(-appSetting.DatabaseQueryDateSpan)));
+                    DateTimeOffset.Now.AddDays(-appSetting.DatabaseQueryDateSpan)));
 
             var aheadMatches = dynamicRepository
                 .FetchAsync<Match>(new GetMatchesByLeagueCriteria(
                     id,
                     language,
-                    DateTime.Now.AddDays(appSetting.DatabaseQueryDateSpan)));
+                    DateTimeOffset.Now.AddDays(appSetting.DatabaseQueryDateSpan)));
 
             var currentMatches = dynamicRepository
                 .FetchAsync<Match>(new GetMatchesByLeagueCriteria(

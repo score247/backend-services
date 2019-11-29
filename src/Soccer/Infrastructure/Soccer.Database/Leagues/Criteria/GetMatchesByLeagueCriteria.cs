@@ -24,7 +24,7 @@ namespace Soccer.Database.Leagues.Criteria
 
         public string Language { get; }
 
-        public override string GetSettingKey() => SpName.GetCorrespondingKey(EventDate);
+        public override string GetSettingKey() => SpName.GetCorrespondingKey(EventDate, DateTimeOffset.Now);
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(LeagueId);
     }

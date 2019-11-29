@@ -20,7 +20,7 @@
 
         public string Coverage { get; }
 
-        public override string GetSettingKey() => "Match_UpdateCoverage".GetCorrespondingKey(EventDate);
+        public override string GetSettingKey() => "Match_UpdateCoverage".GetCorrespondingKey(EventDate, DateTimeOffset.Now);
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(MatchId)
             && !string.IsNullOrWhiteSpace(Coverage);

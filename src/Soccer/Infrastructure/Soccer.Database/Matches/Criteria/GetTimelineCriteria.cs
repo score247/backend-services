@@ -12,7 +12,7 @@ namespace Soccer.Database.Matches.Criteria
 
         public string MatchId { get; }
 
-        public override string GetSettingKey() => "Match_GetTimelineEvents".GetCorrespondingKey(EventDate);
+        public override string GetSettingKey() => "Match_GetTimelineEvents".GetCorrespondingKey(EventDate, DateTimeOffset.Now);
 
         public override bool IsValid() => !string.IsNullOrEmpty(MatchId);
     }

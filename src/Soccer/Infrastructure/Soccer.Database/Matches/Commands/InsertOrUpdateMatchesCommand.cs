@@ -13,7 +13,7 @@ namespace Soccer.Database.Matches.Commands
         public InsertOrUpdateMatchesCommand(
             IEnumerable<Match> matches,
             string language,
-            DateTime eventDate = default) : base(eventDate)
+            DateTimeOffset eventDate = default) : base(eventDate)
         {
             SportId = Sport.Soccer.Value;
             Matches = ToJsonString(matches);
@@ -26,7 +26,7 @@ namespace Soccer.Database.Matches.Commands
 
         public string Language { get; }
 
-        public override string GetSettingKey() => SpName.GetCorrespondingKey(EventDate);
+        public override string GetSettingKey() => SpName.GetCorrespondingKey(EventDate, DateTimeOffset.Now);
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(Matches) && !string.IsNullOrWhiteSpace(Language);
     }

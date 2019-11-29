@@ -28,7 +28,7 @@
 
         public string Statistic { get; }
 
-        public override string GetSettingKey() => "LiveMatch_UpdateTeamStatistic".GetCorrespondingKey(EventDate);
+        public override string GetSettingKey() => "LiveMatch_UpdateTeamStatistic".GetCorrespondingKey(EventDate, DateTimeOffset.Now);
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(MatchId) && !string.IsNullOrEmpty(Statistic);
     }

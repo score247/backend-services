@@ -16,7 +16,7 @@ namespace Soccer.Database.Timelines.Criteria
 
         public string Language { get; }
 
-        public override string GetSettingKey() => "Match_GetCommentaries".GetCorrespondingKey(EventDate);
+        public override string GetSettingKey() => "Match_GetCommentaries".GetCorrespondingKey(EventDate, DateTimeOffset.Now);
 
         public override bool IsValid() => !string.IsNullOrEmpty(MatchId);
     }

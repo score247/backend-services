@@ -32,7 +32,7 @@
         public int YellowRedCards { get; }
 
         public override string GetSettingKey()
-            => "LiveMatch_UpdateTeamRedCards".GetCorrespondingKey(EventDate);
+            => "LiveMatch_UpdateTeamRedCards".GetCorrespondingKey(EventDate, DateTimeOffset.Now);
 
         public override bool IsValid()
             => !string.IsNullOrWhiteSpace(MatchId);

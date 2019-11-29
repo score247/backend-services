@@ -24,7 +24,7 @@
 
         public string TimelineEvent { get; }
 
-        public override string GetSettingKey() => "LiveMatch_UpdateLastTimeline".GetCorrespondingKey(EventDate);
+        public override string GetSettingKey() => "LiveMatch_UpdateLastTimeline".GetCorrespondingKey(EventDate, DateTimeOffset.Now);
 
         public override bool IsValid() =>
             !string.IsNullOrWhiteSpace(MatchId)

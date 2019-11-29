@@ -24,7 +24,7 @@
 
         public string MatchResult { get; }
 
-        public override string GetSettingKey() => "LiveMatch_UpdateMatchResult".GetCorrespondingKey(EventDate);
+        public override string GetSettingKey() => "LiveMatch_UpdateMatchResult".GetCorrespondingKey(EventDate, DateTimeOffset.Now);
 
         public override bool IsValid() =>
             !string.IsNullOrWhiteSpace(MatchId)

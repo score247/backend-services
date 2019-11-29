@@ -11,8 +11,8 @@ namespace Soccer.Database.Matches.Commands
 
         public InsertOrUpdateMatchLineupsCommand(
             MatchLineups match, 
-            Language language, 
-            DateTime eventDate = default) 
+            Language language,
+            DateTimeOffset eventDate = default) 
             : base(eventDate)
         {
             MatchId = match.Id;
@@ -27,7 +27,7 @@ namespace Soccer.Database.Matches.Commands
         public string Language { get; }
 
         public override string GetSettingKey() 
-            => SpName.GetCorrespondingKey(EventDate);
+            => SpName.GetCorrespondingKey(EventDate, DateTimeOffset.Now);
 
         public override bool IsValid()
             => !string.IsNullOrWhiteSpace(Lineups)
