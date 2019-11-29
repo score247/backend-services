@@ -17,7 +17,7 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
 
         public EventDateFilterTests()
         {
-            liveMatchFilter = new LiveMatchFilter(new LiveMatchRangeValidator());
+            liveMatchFilter = new LiveMatchFilter();
         }
 
         [Fact]
@@ -185,7 +185,7 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
         }
 
         [Fact]
-        public void FilterAsync_InvalidClosedMatch_ShouldReturnCorrectList()
+        public void FilterAsync_ClosedMatchLaterThanTenMinutes_ShouldReturnCorrectList()
         {
             var matches = new List<Match>
             {
@@ -220,7 +220,7 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
         }
 
         [Fact]
-        public void FilterAsync_ClosedMatchButLatestTimelineIsNull_ShouldReturnCorrectList()
+        public void FilterAsync_ClosedMatchButNoTimelines_ShouldRemoveAfter3Hours()
         {
             var matches = new List<Match>
             {
@@ -229,12 +229,13 @@ namespace Soccer.EventProcessors.Tests.Matches.Filters
                     .With(m => m.MatchResult,
                         A.Dummy<MatchResult>()
                         .With(r => r.EventStatus, MatchStatus.Closed))
+                    .With(m => m.EventDate, DateTimeOffset.UtcNow.AddHours(-4))
                     .With(m => m.LatestTimeline,  null)
             };
 
             var filteredMatches = liveMatchFilter.FilterClosed(liveMatchFilter.FilterNotStarted(matches)).ToList();
 
-            Assert.Single(filteredMatches);
+            Assert.Empty(filteredMatches);
         }
 
         [Fact]

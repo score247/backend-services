@@ -35,7 +35,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             logger = Substitute.For<ILogger>();
             context = Substitute.For<ConsumeContext<ILiveMatchFetchedMessage>>();
             var messageBus = Substitute.For<IBus>();
-            var liveMatchFilter = new LiveMatchFilter(new LiveMatchRangeValidator());
+            var liveMatchFilter = new LiveMatchFilter();
 
             fetchedLiveMatchConsumer = new FetchedLiveMatchConsumer(messageBus, dynamicRepository, liveMatchFilter, logger);
         }

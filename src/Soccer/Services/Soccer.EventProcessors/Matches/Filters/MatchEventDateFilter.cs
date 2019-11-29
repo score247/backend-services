@@ -13,23 +13,16 @@ namespace Soccer.EventProcessors.Matches.Filters
 
     public class LiveMatchFilter : ILiveMatchFilter
     {
-        private readonly ILiveMatchRangeValidator rangeValidator;
-
-        public LiveMatchFilter(ILiveMatchRangeValidator rangeValidator)
-        {
-            this.rangeValidator = rangeValidator;
-        }
-
         // remove invalid closed match
         public IEnumerable<Match> FilterClosed(IEnumerable<Match> matches)
          => matches.Where(m => m.MatchResult.EventStatus.IsLive()
                                 || m.MatchResult.EventStatus.IsNotStart()
-                                || rangeValidator.IsValidClosedMatch(m));
+                                || LiveMatchRangeValidator.IsValidClosedMatch(m));
 
         // remove invalid not started match
         public IEnumerable<Match> FilterNotStarted(IEnumerable<Match> matches)
         => matches.Where(m => m.MatchResult.EventStatus.IsLive()
-                                || rangeValidator.IsValidNotStartedMatch(m)
+                                || LiveMatchRangeValidator.IsValidNotStartedMatch(m)
                                 || m.MatchResult.EventStatus.IsClosed());
     }
 }

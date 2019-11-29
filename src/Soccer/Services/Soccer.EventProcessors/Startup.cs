@@ -69,7 +69,6 @@ namespace Soccer.EventProcessors
         {
             services.AddSingleton<ILeagueService, LeagueService>();
             services.AddSingleton<ILeagueCache, LeagueCache>();
-            services.AddSingleton<ILiveMatchRangeValidator, LiveMatchRangeValidator>();
             services.AddSingleton<ILiveMatchFilter, LiveMatchFilter>();
         }
     }

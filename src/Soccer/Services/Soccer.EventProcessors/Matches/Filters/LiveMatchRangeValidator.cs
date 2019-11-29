@@ -3,23 +3,25 @@ using Soccer.Core.Matches.Models;
 
 namespace Soccer.EventProcessors.Matches.Filters
 {
-    public interface ILiveMatchRangeValidator
-    {
-        bool IsValidNotStartedMatch(Match match);
-
-        bool IsValidClosedMatch(Match match);
-    }
-
-    public class LiveMatchRangeValidator : ILiveMatchRangeValidator
+    public static class LiveMatchRangeValidator
     {
         //TODO refactor to use Range 
         private const int TimeSpanInMinutes = 10;
+        private const int TimeSpanToForceRemove = 3;
 
-        public bool IsValidClosedMatch(Match match)
-        => match.MatchResult.EventStatus.IsClosed()
-                && (match.LatestTimeline?.Time == null || match.LatestTimeline.Time >= DateTimeOffset.UtcNow.AddMinutes(-TimeSpanInMinutes));
+        public static bool IsValidClosedMatch(Match match)
+        {
+            if (!match.MatchResult.EventStatus.IsClosed())
+            {
+                return false;
+            }
 
-        public bool IsValidNotStartedMatch(Match match)
+            return match.LatestTimeline?.Time == null
+                ? match.EventDate > DateTimeOffset.UtcNow.AddHours(-TimeSpanToForceRemove)
+                : match.LatestTimeline.Time >= DateTimeOffset.UtcNow.AddMinutes(-TimeSpanInMinutes);
+        }
+
+        public static bool IsValidNotStartedMatch(Match match)
         => match.MatchResult.EventStatus.IsNotStart()
                 && match.EventDate >= DateTimeOffset.UtcNow.AddMinutes(-TimeSpanInMinutes)
                 && match.EventDate <= DateTimeOffset.UtcNow.AddMinutes(TimeSpanInMinutes);
