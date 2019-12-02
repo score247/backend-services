@@ -54,6 +54,7 @@
                 serviceCollectionConfigurator.AddConsumer<FetchLeaguesSeasonConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchLeagueStandingConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchedLeagueMatchesConsumer>();
+                serviceCollectionConfigurator.AddConsumer<RemoveTimelinesConsumer>();
             });
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -201,6 +202,14 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<FetchLeagueStandingConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_ConfirimedTimelines", e =>
+                {
+                    e.PrefetchCount = PrefetchCount;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<RemoveTimelinesConsumer>(provider);
                 });
             }));
 

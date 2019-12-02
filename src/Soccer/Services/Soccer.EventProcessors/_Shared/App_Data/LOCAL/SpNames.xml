@@ -1,5 +1,8 @@
 ﻿<Functions>
   <Function Name="Match">
+    <Setting Key="Match_InsertOrUpdatePostMatches" SpName="Match_InsertOrUpdatePostMatches" DbName="DefaultConnection" />
+    <Setting Key="Match_RemoveTimelines" SpName="Match_RemoveTimelines" DbName="DefaultConnection" />
+    <Setting Key="Match_GetByDateRange" SpName="Match_GetByDateRange" DbName="DefaultConnection" />
 
     <Setting Key="Match_InsertMatches" SpName="Match_InsertMatches" DbName="DefaultConnection" />
     <Setting Key="Match_InsertMatches_Former" SpName="Match_InsertMatches" DbName="FormerDbConnection" />
@@ -13,8 +16,6 @@
     <Setting Key="Match_GetTimelineEvents_Former" SpName="Match_GetTimelineEvents" DbName="FormerDbConnection" />
     <Setting Key="Match_GetTimelineEvents_Ahead" SpName="Match_GetTimelineEvents" DbName="AheadDbConnection" />
     
-    <Setting Key="Match_GetByDateRange" SpName="Match_GetByDateRange" DbName="DefaultConnection" />
-    
     <Setting Key="Match_UpdateRefereeAndAttendance" SpName="Match_UpdateRefereeAndAttendance" DbName="DefaultConnection" />
     <Setting Key="Match_UpdateRefereeAndAttendance_Former" SpName="Match_UpdateRefereeAndAttendance" DbName="FormerDbConnection" />
     <Setting Key="Match_UpdateRefereeAndAttendance_Ahead" SpName="Match_UpdateRefereeAndAttendance" DbName="AheadDbConnection" />
@@ -22,8 +23,6 @@
     <Setting Key="Match_GetById" SpName="Match_GetById" DbName="DefaultConnection" />
     <Setting Key="Match_GetById_Former" SpName="Match_GetById" DbName="FormerDbConnection" />
     <Setting Key="Match_GetById_Ahead" SpName="Match_GetById" DbName="AheadDbConnection" />
-    
-    <Setting Key="Match_InsertOrUpdatePostMatches" SpName="Match_InsertOrUpdatePostMatches" DbName="DefaultConnection" />
     
     <Setting Key="Match_UpdateCoverage" SpName="Match_UpdateCoverage" DbName="DefaultConnection" />
     <Setting Key="Match_UpdateCoverage_Former" SpName="Match_UpdateCoverage" DbName="FormerDbConnection" />
