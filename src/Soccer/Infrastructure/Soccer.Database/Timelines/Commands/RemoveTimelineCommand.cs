@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Soccer.Core.Matches.Models;
 
 namespace Soccer.Database.Timelines.Commands
@@ -8,7 +9,7 @@ namespace Soccer.Database.Timelines.Commands
         public RemoveTimelineCommand(string matchId, IReadOnlyList<TimelineEvent> timelines)
         {
             MatchId = matchId;
-            Timelines = ToJsonString(timelines);
+            Timelines = ToJsonString(timelines.Select(timeline => timeline.Id));
         }
 
         public string MatchId { get; }
