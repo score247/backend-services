@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Data.Repository;
 using MassTransit;
@@ -20,7 +21,9 @@ namespace Soccer.EventProcessors.Timeline
 
         public async Task Consume(ConsumeContext<IMatchTimelinesConfirmedMessage> context)
         {
-            if (string.IsNullOrWhiteSpace(context?.Message?.MatchId))
+            if (context?.Message == null
+                || string.IsNullOrWhiteSpace(context.Message.MatchId)
+                || context.Message.Timelines?.Any() == false)
             {
                 return;
             }
@@ -29,32 +32,26 @@ namespace Soccer.EventProcessors.Timeline
                 .OrderBy(timeline => timeline.Time)
                 .LastOrDefault();
 
-            if (latestTimeline == null)
+            var currentTimelines = await GetCurrentTimelines(context.Message, latestTimeline);
+
+            if (currentTimelines?.Any() == false)
             {
                 return;
             }
 
-            //TODO if closed match???
-            var currentTimelines = (await dynamicRepository
-                .FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(
-                    context.Message.MatchId,
-                    context.Message.EventDate)))
-                ?.Where(timeline => timeline.Time <= latestTimeline.Time)
-                .ToList();
-
-            if (currentTimelines?.Count == 0)
-            {
-                return;
-            }
-
-            var removedTimelines = currentTimelines 
-                .Except(context.Message.Timelines)
-                .ToList();
+            var removedTimelines = currentTimelines.Except(context.Message.Timelines);
 
             if (removedTimelines.Any())
             {
-                await dynamicRepository.ExecuteAsync(new RemoveTimelineCommand(context.Message.MatchId, removedTimelines));
+                await dynamicRepository.ExecuteAsync(new RemoveTimelineCommand(context.Message.MatchId, removedTimelines.ToList()));
             }
         }
+
+        private async Task<IEnumerable<TimelineEvent>> GetCurrentTimelines(IMatchTimelinesConfirmedMessage message, TimelineEvent latestTimeline)
+        => (await dynamicRepository
+                .FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(
+                    message.MatchId,
+                    message.EventDate)))
+                ?.Where(timeline => timeline.Time <= latestTimeline.Time);
     }
 }

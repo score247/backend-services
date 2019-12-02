@@ -7,6 +7,8 @@
     public interface IAppSettings
     {
         int NumOfDaysToShowOddsBeforeKickoffDate { get; }
+
+        int CorrectTimelineSpanInMinutes { get; }
     }
 
     public class AppSettings : IAppSettings
@@ -19,9 +21,12 @@
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
 
             NumOfDaysToShowOddsBeforeKickoffDate = GetValue<int>(nameof(NumOfDaysToShowOddsBeforeKickoffDate));
+            CorrectTimelineSpanInMinutes = GetValue<int>(nameof(CorrectTimelineSpanInMinutes));
         }
 
         public int NumOfDaysToShowOddsBeforeKickoffDate { get; }
+
+        public int CorrectTimelineSpanInMinutes { get; }
 
         public T GetValue<T>(string key)
         {

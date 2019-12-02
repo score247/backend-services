@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MassTransit;
 using Soccer.Core.Matches.Extensions;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
+using Soccer.Core.Timelines.QueueMessages;
+using Soccer.EventProcessors.Shared.Configurations;
 
 namespace Soccer.EventProcessors.Timeline
 {
@@ -13,10 +16,12 @@ namespace Soccer.EventProcessors.Timeline
         private const byte DefaultPenaltyMatchTime = 121;
 
         private readonly IBus messageBus;
+        private readonly IAppSettings appSettings;
 
-        public FetchTimelinesConsumer(IBus messageBus)
+        public FetchTimelinesConsumer(IBus messageBus, IAppSettings appSettings)
         {
             this.messageBus = messageBus;
+            this.appSettings = appSettings;
         }
 
         public async Task Consume(ConsumeContext<IMatchTimelinesFetchedMessage> context)
@@ -40,6 +45,8 @@ namespace Soccer.EventProcessors.Timeline
             await ProcessTimelinesNotInPenalty(match, timelinesSkipLastAndPenalty);
 
             await ProcessPenaltyTimelines(match);
+
+            await PublishConfirmedTimelines(match.Id, match.EventDate, match.MatchResult, match.TimeLines.ToList());
         }
 
         private async Task ProcessTimelinesNotInPenalty(Match match, List<TimelineEvent> timelinesSkipLastAndPenalty)
@@ -177,6 +184,18 @@ namespace Soccer.EventProcessors.Timeline
                                     .AddScoreToSpecialTimeline(matchResult);
 
             return messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent));
+        }
+
+        private Task PublishConfirmedTimelines(string matchId, DateTimeOffset eventDate, MatchResult matchResult, IList<TimelineEvent> timelines)
+        {
+            var dateTime = matchResult.EventStatus.IsClosed() 
+                ? DateTimeOffset.Now 
+                : DateTimeOffset.Now.AddMinutes(-appSettings.CorrectTimelineSpanInMinutes);
+
+            return messageBus.Publish<IMatchTimelinesConfirmedMessage>(new MatchTimelinesConfirmedMessage(
+                matchId, 
+                eventDate, 
+                timelines.Where(timeline => timeline.Time <= dateTime).ToList()));
         }
     }
 }
