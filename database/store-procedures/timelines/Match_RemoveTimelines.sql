@@ -1,7 +1,7 @@
 DROP procedure IF EXISTS `Match_RemoveTimelines`;
 
 CREATE DEFINER=`user`@`%` PROCEDURE `Match_RemoveTimelines`(
-	IN matchId varchar(50),
+	IN matchId varchar(45),
     IN timelineIds TEXT)
 BEGIN
     DECLARE i INT DEFAULT 0;     
