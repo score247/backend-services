@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.Database._Shared.Extensions;
 
 namespace Soccer.Database.Timelines.Commands
 {
@@ -10,7 +12,9 @@ namespace Soccer.Database.Timelines.Commands
           string matchId,
           long timelineId,
           IReadOnlyList<Commentary> commentaries,
-          Language language)
+          Language language,
+          DateTimeOffset eventDate = default)
+            : base(eventDate)
         {
             MatchId = matchId;
             TimelineId = timelineId;
@@ -26,7 +30,7 @@ namespace Soccer.Database.Timelines.Commands
 
         public string Language { get; }
 
-        public override string GetSettingKey() => "Match_InsertCommentary";
+        public override string GetSettingKey() => "Match_InsertCommentary".GetCorrespondingKey(EventDate, DateTimeOffset.Now);
 
         public override bool IsValid()
             => !string.IsNullOrWhiteSpace(MatchId)

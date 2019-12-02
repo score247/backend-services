@@ -28,7 +28,6 @@ namespace Soccer.EventProcessors.Timeline
                 return;
             }
 
-            //TODO process latest in case of penalty shootout
             var latestTimeline = match.TimeLines.LastOrDefault(t => !t.IsShootOutInPenalty() && !t.IsScoreChangeInPenalty());
 
             if (latestTimeline != null)
