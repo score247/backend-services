@@ -8,6 +8,7 @@
     using Microsoft.AspNetCore.SignalR.Client;
     using Newtonsoft.Json;
     using Sentry;
+    using Soccer.Core._Shared.Helpers;
     using Soccer.DataProviders.SportRadar.Matches.Services;
     using Soccer.DataProviders.SportRadar.Shared.Configurations;
 
@@ -17,9 +18,18 @@
 
         private static void Main(string[] args)
         {
-            TestSignalRHubs();
-
+            //TestSignalRHubs();
+            TestCryptographyHelper();
             //StartListenStream();
+        }
+
+        private static void TestCryptographyHelper()
+        {
+            var key = "1d41231bf4fdc398ac142e70ef6e3f48";
+            var cryptoHelper = new CryptographyHelper();
+            var encryptedData = cryptoHelper.Encrypt("test", key);
+
+            var decryptedData = cryptoHelper.Decrypt(encryptedData, key);
         }
 
         private static void TestSignalRHubs()

@@ -3,10 +3,13 @@ using System.Reflection;
 using Fanex.Logging;
 using MediatR;
 using MessagePack.Resolvers;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Soccer.API._Shared.Formatters;
@@ -31,11 +34,13 @@ namespace Soccer.API
             try
             {
                 services.AddLogging(Configuration);
-                services.AddSettings(Configuration);
+                var appSettings = services.AddSettings(Configuration);
                 services.AddMediatR(Assembly.GetExecutingAssembly());
                 services.AddServices();
                 services.AddHealthCheck();
                 services.AddSwagger();
+                services.AddMemoryCache();
+                services.AddAuthentication(appSettings);
                 services
                     .AddMvc()
                     .AddNewtonsoftJson()
@@ -43,6 +48,15 @@ namespace Soccer.API
                     {
                         option.OutputFormatters.Add(new MessagePackOutputFormatter(ContractlessStandardResolver.Instance));
                         option.InputFormatters.Add(new MessagePackInputFormatter(ContractlessStandardResolver.Instance));
+
+
+                        if (appSettings.EnabledAuthentication)
+                        {
+                            var policy = new AuthorizationPolicyBuilder()
+                                        .RequireAuthenticatedUser()
+                                        .Build();
+                            option.Filters.Add(new AuthorizeFilter(policy));
+                        }
                     })
                     .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             }
@@ -64,6 +78,9 @@ namespace Soccer.API
                 app.UseDatabase(Configuration);
                 app.ConfigureSwagger(Configuration);
                 app.UseRouting();
+
+                app.ConfigureAuthentication();
+
                 app.UseEndpoints(endpoints =>
                 {
                     endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");

@@ -6,10 +6,12 @@
 
     public static class AppSettingsMiddleware
     {
-        public static void AddSettings(this IServiceCollection services, IConfiguration configuration)
+        public static IAppSettings AddSettings(this IServiceCollection services, IConfiguration configuration)
         {
             var appSettings = new AppSettings(configuration);
             services.AddSingleton<IAppSettings>(appSettings);
+
+            return appSettings;
         }
     }
 }

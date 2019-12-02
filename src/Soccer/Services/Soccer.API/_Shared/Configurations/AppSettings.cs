@@ -23,6 +23,12 @@
         int NumOfMinutesToExpireClosedMatch { get; }
 
         int DatabaseQueryDateSpan { get; }
+
+        string JwtSecretKey { get; }
+
+        bool EnabledAuthentication { get; }
+
+        string EncryptKey { get; }
     }
 
     public class AppSettings : IAppSettings
@@ -42,6 +48,9 @@
             OddsShortCacheTimeDuration = GetValue<int>(nameof(OddsShortCacheTimeDuration));
             OddsLongCacheTimeDuration = GetValue<int>(nameof(OddsLongCacheTimeDuration));
             DatabaseQueryDateSpan = GetValue<int>(nameof(DatabaseQueryDateSpan));
+            JwtSecretKey = GetValue<string>(nameof(JwtSecretKey));
+            EnabledAuthentication = GetValue<bool>(nameof(EnabledAuthentication));
+            EncryptKey = GetValue<string>(nameof(EncryptKey));
 
             if (NumberOfTopMatches <= 0)
             {
@@ -66,6 +75,12 @@
         public int NumOfMinutesToExpireClosedMatch { get; }
 
         public int DatabaseQueryDateSpan { get; }
+
+        public string JwtSecretKey { get; }
+
+        public bool EnabledAuthentication { get; }
+
+        public string EncryptKey { get; }
 
         public T GetValue<T>(string key)
         {
