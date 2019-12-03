@@ -30,10 +30,10 @@ namespace DBUp.Deployment
 
                 //InstallNewDatabase(config.ToString()); // Only run when you create new database
 
-                //InstallStoredProcedures(config.ToString());
-                InstallReProcessStoredProcedures(config.ToString(), environment, config.Database);
+                InstallStoredProcedures(config.ToString());
+                //InstallReProcessStoredProcedures(config.ToString(), environment, config.Database);
 
-                InstallEventSchedulers(config.ToString(), environment, config.Database);
+                //InstallEventSchedulers(config.ToString(), environment, config.Database);
 
                 //InstallSprintChanges(config.ToString());
             }
