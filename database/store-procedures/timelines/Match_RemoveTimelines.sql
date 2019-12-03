@@ -8,7 +8,7 @@ BEGIN
     DECLARE e INT DEFAULT JSON_LENGTH(timelineIds);
     
     WHILE i < e DO 
-		SET @DeleteId = JSON_UNQUOTE(JSON_EXTRACT(removedMatchIds, CONCAT('$[', i, '].Id')));         
+		SET @DeleteId = JSON_UNQUOTE(JSON_EXTRACT(timelineIds, CONCAT('$[', i, '].Id')));         
 		DELETE FROM `Timeline` WHERE Id = @DeleteId AND MatchId = matchId;         
         -- Increment the loop variable                                                                                                                                                        
         SET i = i + 1;

@@ -9,7 +9,7 @@ namespace Soccer.Database.Timelines.Commands
         public RemoveTimelineCommand(string matchId, IReadOnlyList<TimelineEvent> timelines)
         {
             MatchId = matchId;
-            TimelineIds = ToJsonString(timelines.Select(timeline => timeline.Id));
+            TimelineIds = ToJsonString(timelines.Select(timeline => new { timeline.Id }));
         }
 
         public string MatchId { get; }
