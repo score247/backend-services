@@ -13,7 +13,7 @@ namespace DBUp.Deployment
     {
         private static int Main(string[] args)
         {
-            var environment = "dev1";
+            var environment = "azure";
             var settingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), $"app-settings.{environment}.json");
             var settings = File.ReadAllText(settingPath);
             var connectionConfiguration = JsonConvert.DeserializeObject<ConnectionConfiguration>(settings);
@@ -30,10 +30,10 @@ namespace DBUp.Deployment
 
                 //InstallNewDatabase(config.ToString()); // Only run when you create new database
 
-                InstallStoredProcedures(config.ToString());
-                //InstallReProcessStoredProcedures(config.ToString(), environment);
+                //InstallStoredProcedures(config.ToString());
+                InstallReProcessStoredProcedures(config.ToString(), environment, config.Database);
 
-                //InstallEventSchedulers(config.ToString(), environment);
+                InstallEventSchedulers(config.ToString(), environment, config.Database);
 
                 //InstallSprintChanges(config.ToString());
             }
@@ -85,11 +85,11 @@ namespace DBUp.Deployment
             return RunScripts(connectionString, new string[] { dir });
         }
 
-        public static int InstallEventSchedulers(string connectionString, string environment)
+        public static int InstallEventSchedulers(string connectionString, string environment, string dbName)
         {
             var dir = new DirectoryInfo("../../../../event-scheduler").FullName;
 
-            return RunScripts(connectionString, new string[] { dir }, true, environment);
+            return RunScripts(connectionString, new string[] { dir }, true, environment, dbName);
         }
 
         public static int InitData(string connectionString)
@@ -109,21 +109,21 @@ namespace DBUp.Deployment
             return RunScripts(connectionString, subDirs);
         }
 
-        public static int InstallReProcessStoredProcedures(string connectionString, string environment)
+        public static int InstallReProcessStoredProcedures(string connectionString, string environment, string dbName)
         {
             var dir = new DirectoryInfo("../../../../reprocess-store-procedures").FullName;
             var subDirs = Directory.GetDirectories(dir);
 
-            return RunScripts(connectionString, subDirs, true, environment);
+            return RunScripts(connectionString, subDirs, true, environment, dbName);
         }
 
-        private static int RunScripts(string connectionString, string[] subDirs, bool changeDbName = false, string environment = "")
+        private static int RunScripts(string connectionString, string[] subDirs, bool changeDbName = false, string environment = "", string dbName = "")
         {
             foreach (var sub in subDirs)
             {
                 Console.WriteLine($"Deploying scripts in {sub}");
 
-                var upgrader = BuildUpgrader(connectionString, sub, changeDbName, environment);
+                var upgrader = BuildUpgrader(connectionString, sub, changeDbName, environment, dbName);
 
                 var result = upgrader.PerformUpgrade();
 
@@ -142,11 +142,11 @@ namespace DBUp.Deployment
             return 0;
         }
 
-        private static DbUp.Engine.UpgradeEngine BuildUpgrader(string connectionString, string sub, bool changeDbName = false, string environment = "")
+        private static DbUp.Engine.UpgradeEngine BuildUpgrader(string connectionString, string sub, bool changeDbName = false, string environment = "", string dbName = "")
            => changeDbName
                ? DeployChanges.To
                            .MySqlDatabase(connectionString)
-                           .WithPreprocessor(new DatabaseNamePreProcessor(environment))
+                           .WithPreprocessor(new DatabaseNamePreProcessor(dbName, environment))
                            .WithPreprocessor(new DelimiterPreProcessor())
                            .WithScriptsFromFileSystem(sub)
                            .LogToConsole()
