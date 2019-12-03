@@ -40,12 +40,21 @@ namespace Soccer.API._Shared.Controllers
                 return userId;
             }
 
-            var decryptedUserId = cryptographyHelper.Decrypt(encryptedInfo, "1d41231bf4fdc398ac142e70ef6e3f48");
-
-            if (decryptedUserId != userId)
+            try
             {
-                await logger.InfoAsync($"Failed decrypted user {userId}, decrypted user {decryptedUserId}");
+                var decryptedUserId = cryptographyHelper.Decrypt(encryptedInfo, appSettings.EncryptKey);
+
+                if (decryptedUserId != userId)
+                {
+                    await logger.InfoAsync($"Failed decrypted user {userId}, decrypted user {decryptedUserId}");
+                }
             }
+            catch(Exception ex)
+            {
+                await logger.InfoAsync($"Failed decrypted user {userId}, encrypted info {encryptedInfo} {ex.ToString()}");
+            }
+            
+            
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(appSettings.JwtSecretKey);
