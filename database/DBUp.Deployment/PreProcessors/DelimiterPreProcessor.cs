@@ -12,6 +12,9 @@ namespace DBUp.Deployment.PreProcessors
 
             var newContents = $"{startDelimiter} {ReplaceLastOccurrence(contents, "END", "END$$")} {endDelimiter}";
 
+            newContents = newContents.Replace("DEFINER=`user`@`%`", string.Empty);
+            newContents = newContents.Replace("DEFINER=`root`@`%`", string.Empty);
+
             return newContents;
         }
 
