@@ -36,8 +36,7 @@
     <Setting Key="Match_InsertOrUpdateLineups_Former" SpName="Match_InsertOrUpdateLineups" DbName="FormerDbConnection" />
     <Setting Key="Match_InsertOrUpdateLineups_Ahead" SpName="Match_InsertOrUpdateLineups" DbName="AheadDbConnection" />
   </Function>
-  <Function Name="LiveMatch">
-    <Setting Key="LiveMatch_RemoveById" SpName="LiveMatch_RemoveById" DbName="DefaultConnection" />
+  <Function Name="LiveMatch">    
     <Setting Key="LiveMatch_UpdateCurrentPeriodStartTime" SpName="LiveMatch_UpdateCurrentPeriodStartTime" DbName="DefaultConnection" />
     <Setting Key="LiveMatch_GetBySportId" SpName="LiveMatch_GetBySportId" DbName="DefaultConnection" />
     <Setting Key="LiveMatch_InsertOrRemove" SpName="LiveMatch_InsertOrRemove" DbName="DefaultConnection" />
