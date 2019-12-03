@@ -12,6 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="app-settings.azure.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="app-settings.dev_history.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

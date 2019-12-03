@@ -1,0 +1,19 @@
+{
+  "Connections": [
+    {
+      "host": "score247-db.mysql.database.azure.com",
+      "port": "3306",
+      "database": "score247_main"
+    },
+    {
+      "host": "score247-db.mysql.database.azure.com",
+      "port": "3306",
+      "database": "score247_main_former"
+    },
+    {
+      "host": "score247-db.mysql.database.azure.com",
+      "port": "3306",
+      "database": "score247_main_ahead"
+    }
+  ]
+}
