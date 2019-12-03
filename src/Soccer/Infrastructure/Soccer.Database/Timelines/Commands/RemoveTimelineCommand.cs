@@ -9,15 +9,15 @@ namespace Soccer.Database.Timelines.Commands
         public RemoveTimelineCommand(string matchId, IReadOnlyList<TimelineEvent> timelines)
         {
             MatchId = matchId;
-            Timelines = ToJsonString(timelines.Select(timeline => timeline.Id));
+            TimelineIds = ToJsonString(timelines.Select(timeline => timeline.Id));
         }
 
         public string MatchId { get; }
 
-        public string Timelines { get; }
+        public string TimelineIds { get; }
 
         public override string GetSettingKey() => "Match_RemoveTimelines";
 
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(MatchId) && !string.IsNullOrWhiteSpace(Timelines);
+        public override bool IsValid() => !string.IsNullOrWhiteSpace(MatchId) && !string.IsNullOrWhiteSpace(TimelineIds);
     }
 }

@@ -188,8 +188,8 @@ namespace Soccer.EventProcessors.Tests.Timelines
                 .Received(1)
                 .ExecuteAsync(Arg.Is<RemoveTimelineCommand>(command => 
                     command.MatchId == message.MatchId &&
-                    command.Timelines.Contains("sr:timeline:2") &&
-                    command.Timelines.Contains("sr:timeline:3")
+                    command.TimelineIds.Contains("sr:timeline:2") &&
+                    command.TimelineIds.Contains("sr:timeline:3")
                 ));
         }
 
