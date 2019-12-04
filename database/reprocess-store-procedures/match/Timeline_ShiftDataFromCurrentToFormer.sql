@@ -2,7 +2,7 @@ DROP procedure IF EXISTS `Timeline_ShiftDataFromCurrentToFormer`;
 
 CREATE DEFINER=`user`@`%` PROCEDURE `Timeline_ShiftDataFromCurrentToFormer`()
 BEGIN
-	START TRANSACTION;
+	
 		INSERT INTO score247db_former.`Timeline`
 		SELECT * FROM score247db.`Timeline` as T
 		WHERE T.EventDate <= (UTC_TIMESTAMP() - INTERVAL 3 DAY)
@@ -11,5 +11,5 @@ BEGIN
 		
 		DELETE FROM score247db.`Timeline`
 		WHERE EventDate <= (UTC_TIMESTAMP() - INTERVAL 3 DAY);
-	COMMIT;
+	
 END

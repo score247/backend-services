@@ -12,10 +12,8 @@ CREATE EVENT Event_ShiftMatchData_environment
 		Call score247db.Match_ShiftDataFromAheadToCurrent();
 		
 		Call score247db.Timeline_ShiftDataFromCurrentToFormer();
-		Call score247db.Timeline_ShiftDataFromAheadToCurrent();
 		
 		Call score247db.Commentary_ShiftDataFromCurrentToFormer();
-		Call score247db.Commentary_ShiftDataFromAheadToCurrent();
 		
 		Call score247db.Lineups_ShiftDataFromAheadToCurrent();
 		Call score247db.Lineups_ShiftDataFromCurrentToFormer();
