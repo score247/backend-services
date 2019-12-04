@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using Soccer.DataProviders.SportRadar._Shared.Extensions;
 
 namespace Soccer.DataProviders.SportRadar.Matches.Dtos
 {
     public class MatchLineupsDto
     {
         public DateTime generated_at { get; set; }
+
         public string schema { get; set; }
+
         public SportEventDto sport_event { get; set; }
 
-        [JsonConverter(typeof(IgnoreUnexpectedArraysConverter<Lineup>))]
         public IList<Lineup> lineups { get; set; }
     }
 
