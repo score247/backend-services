@@ -82,7 +82,7 @@ namespace Soccer.DataReceivers.EventListeners
             RegisterRabbitMq(services);
             RegisterSportRadarDataProvider(services);
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
 #pragma warning disable S2325 // Methods and properties that don't access instance data should be static
@@ -102,7 +102,12 @@ namespace Soccer.DataReceivers.EventListeners
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseStaticFiles();
-            app.UseMvc();
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+            });
         }
 
         public void RegisterLogging(IServiceCollection services)
