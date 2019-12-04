@@ -33,7 +33,7 @@ namespace Soccer.DataReceivers.ScheduleTasks
             services.AddRabbitMq(Configuration);
             services.RegisterHangfire(Configuration);
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -42,7 +42,12 @@ namespace Soccer.DataReceivers.ScheduleTasks
             app.UseHangfire(Configuration);
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseStaticFiles();
-            app.UseMvc();
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+            });
         }
     }
 }
