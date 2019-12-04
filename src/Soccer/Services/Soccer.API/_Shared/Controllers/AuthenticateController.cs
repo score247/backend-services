@@ -34,6 +34,14 @@ namespace Soccer.API._Shared.Controllers
         [Route("generateToken")]
         [AllowAnonymous, HttpGet]
         public async Task<string> GenerateToken(string userId, string encryptedInfo)
+            => await CheckAndGenerateToken(userId, encryptedInfo);
+
+        [Route("generateToken")]
+        [AllowAnonymous, HttpPost]
+        public async Task<string> GenerateTokenPost([FromBody]AuthenticateInfo authenticateInfo)
+            => await CheckAndGenerateToken(authenticateInfo?.UserId, authenticateInfo?.EncryptedInfo);
+
+        private async Task<string> CheckAndGenerateToken(string userId, string encryptedInfo)
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
@@ -49,12 +57,10 @@ namespace Soccer.API._Shared.Controllers
                     await logger.InfoAsync($"Failed decrypted user {userId}, decrypted user {decryptedUserId}");
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 await logger.InfoAsync($"Failed decrypted user {userId}, encrypted info {encryptedInfo} {ex.ToString()}");
             }
-            
-            
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(appSettings.JwtSecretKey);
@@ -73,5 +79,12 @@ namespace Soccer.API._Shared.Controllers
 
             return token;
         }
+    }
+
+    public class AuthenticateInfo
+    {
+        public string UserId { get; set; }
+
+        public string EncryptedInfo { get; set; }
     }
 }
