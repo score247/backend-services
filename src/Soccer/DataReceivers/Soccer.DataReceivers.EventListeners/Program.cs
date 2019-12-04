@@ -15,15 +15,16 @@
         public static void Main(string[] args)
         {
             var isService = !(Debugger.IsAttached || args.Contains("--console"));
+            var pathToContentRoot = Directory.GetCurrentDirectory();
 
             if (isService)
             {
                 var pathToExe = Process.GetCurrentProcess().MainModule.FileName;
-                var pathToContentRoot = Path.GetDirectoryName(pathToExe);
+                pathToContentRoot = Path.GetDirectoryName(pathToExe);
                 Directory.SetCurrentDirectory(pathToContentRoot);
             }
 
-            var builder = CreateWebHostBuilder(args.Where(arg => arg != "--console").ToArray());
+            var builder = CreateWebHostBuilder(args.Where(arg => arg != "--console").ToArray(), pathToContentRoot);
 
             var host = builder.Build();
 
@@ -37,10 +38,10 @@
             }
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args, string path)
         {
             var configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .SetBasePath(path)
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                     .Build();
 
