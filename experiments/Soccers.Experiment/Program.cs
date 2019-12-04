@@ -115,10 +115,11 @@
                    {
                        Dsn = new Dsn("https://c1354e53bd554c5185e97538260b0baa@sentry.nexdev.net/52")
                    }));
-
+            var healthcheckContainer = new Dictionary<string, DateTime>();
             foreach (var region in sportRadarSettings.SoccerSettings.Regions)
             {
-                var eventListenerService = new MatchEventListenerService(sportRadarSettings, region, Logger.Log);
+                healthcheckContainer.Add(region.Name, DateTime.Now);
+                var eventListenerService = new MatchEventListenerService(sportRadarSettings, region, Logger.Log, healthcheckContainer);
 
                 Task.Run(() => eventListenerService.ListenEvents((matchEvent) =>
                 {

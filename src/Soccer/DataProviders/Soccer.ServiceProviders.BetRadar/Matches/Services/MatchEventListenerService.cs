@@ -17,26 +17,27 @@
     {
         private const int MillisecondsTimeout = 10 * 1000;
         private const int DelayTime = 5000;
-        private const int FiveMinutes = 5;
         private const byte MaxRetryTimes = 5;
         private const int TimeDelayForStartingOtherEventListener = 500;
         private static byte retryCount;
         private readonly Region region;
         private readonly ILogger logger;
-        private bool isWroteHeartbeatLog;
         private readonly ISportRadarSettings sportRadarSettings;
+        private readonly Dictionary<string, DateTime> healthCheckContainer;
 
         public string Name { get; }
 
         public MatchEventListenerService(
             ISportRadarSettings sportRadarSettings,
             Region region,
-            ILogger logger)
+            ILogger logger,
+            Dictionary<string, DateTime> healthCheckContainer)
         {
             this.logger = logger;
             this.region = region;
             this.sportRadarSettings = sportRadarSettings;
             Name = region.Name;
+            this.healthCheckContainer = healthCheckContainer;
         }
 
         public async Task ListenEvents(Action<MatchEvent> handler, CancellationToken cancellationToken)
@@ -132,7 +133,7 @@
 
                     var matchEvent = MatchMapper.MapMatchEvent(matchEventPayload);
 
-                    await WriteHeartbeatLog(regionStream.Key);
+                    WriteHeartbeatLog(regionStream.Key);
 
                     if (matchEvent != default(MatchEvent))
                     {
@@ -165,18 +166,9 @@
             }
         }
 
-        private async Task WriteHeartbeatLog(string region)
+        private void WriteHeartbeatLog(string region)
         {
-            if (DateTime.Now.Minute % FiveMinutes == 0 && !isWroteHeartbeatLog)
-            {
-                await logger.InfoAsync($"Region {region} - Event Listener Heartbeat at {DateTime.Now}");
-                isWroteHeartbeatLog = true;
-            }
-
-            if (DateTime.Now.Minute % FiveMinutes != 0)
-            {
-                isWroteHeartbeatLog = false;
-            }
+            healthCheckContainer[region] = DateTime.Now;
         }
     }
 }

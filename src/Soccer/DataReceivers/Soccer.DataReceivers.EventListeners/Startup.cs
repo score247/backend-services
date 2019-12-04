@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Fanex.Caching;
 using Fanex.Logging;
 using Fanex.Logging.Sentry;
@@ -152,15 +153,20 @@ namespace Soccer.DataReceivers.EventListeners
             services.AddSingleton<Func<DateTimeOffset>>(() => DateTimeOffset.Now);
 
             var soccerSettings = sportRadarDataProviderSettings.SoccerSettings;
+            var healthcheckContainer = new Dictionary<string, DateTime>();
             foreach (var region in soccerSettings.Regions)
             {
                 services.AddSingleton<IHostedService>((serviceProvider)
                     => new MatchEventListener(
                         serviceProvider.GetService<IBus>(),
-                        new MatchEventListenerService(sportRadarDataProviderSettings, region, serviceProvider.GetService<ILogger>()),
+                        new MatchEventListenerService(sportRadarDataProviderSettings, region, serviceProvider.GetService<ILogger>(), healthcheckContainer),
                         serviceProvider.GetService<ILogger>(),
                         serviceProvider.GetService<Func<DataProviderType, ILeagueService>>()));
+
+                healthcheckContainer.Add(region.Name, DateTime.Now);
             }
+
+            services.AddSingleton(healthcheckContainer);
         }
     }
 }
