@@ -41,7 +41,7 @@ namespace Soccer.EventProcessors
 
             RegisterFilters(services);
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,11 +52,11 @@ namespace Soccer.EventProcessors
             app.UseRabbitMq(applicationLifetime);
             app.ConfigureExceptionHandler();
 
-            app.UseMvc(routes =>
+            app.UseRouting();
+
+            app.UseEndpoints(endpoints =>
             {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}");
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
 
             app.UseCors(options => options.AllowAnyOrigin());
