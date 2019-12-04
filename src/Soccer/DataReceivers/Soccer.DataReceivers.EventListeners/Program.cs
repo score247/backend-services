@@ -14,34 +14,13 @@
     {
         public static void Main(string[] args)
         {
-            var isService = !(Debugger.IsAttached || args.Contains("--console"));
-            var pathToContentRoot = Directory.GetCurrentDirectory();
-
-            if (isService)
-            {
-                var pathToExe = Process.GetCurrentProcess().MainModule.FileName;
-                pathToContentRoot = Path.GetDirectoryName(pathToExe);
-                Directory.SetCurrentDirectory(pathToContentRoot);
-            }
-
-            var builder = CreateWebHostBuilder(args.Where(arg => arg != "--console").ToArray(), pathToContentRoot);
-
-            var host = builder.Build();
-
-            if (isService)
-            {
-                host.RunAsService();
-            }
-            else
-            {
-                host.Run();
-            }
+            CreateWebHostBuilder(args).Build().Run();
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args, string path)
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             var configuration = new ConfigurationBuilder()
-                    .SetBasePath(path)
+                    .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                     .Build();
 
