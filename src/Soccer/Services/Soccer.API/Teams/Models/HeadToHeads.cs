@@ -5,7 +5,7 @@ using Soccer.Core.Teams.Models;
 
 namespace Soccer.API.Teams.Models
 {
-    [MessagePackObject]
+    [MessagePackObject(keyAsPropertyName: true)]
     public class HeadToHeads
     {
         public HeadToHeads(IEnumerable<Team> teams, IEnumerable<MatchSummary> matches)

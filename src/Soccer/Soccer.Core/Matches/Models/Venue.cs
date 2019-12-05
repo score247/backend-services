@@ -6,7 +6,7 @@ namespace Soccer.Core.Matches.Models
 {
 #pragma warning disable S109 // Magic numbers should not be used
 
-    [MessagePackObject]
+    [MessagePackObject(keyAsPropertyName: true)]
     public class Venue : BaseModel
     {
         [SerializationConstructor, JsonConstructor]
@@ -18,16 +18,12 @@ namespace Soccer.Core.Matches.Models
             CountryCode = countryCode;
         }
 
-        [Key(2)]
         public int Capacity { get; }
 
-        [Key(3)]
         public string CityName { get; }
 
-        [Key(4)]
         public string CountryName { get; }
 
-        [Key(5)]
         public string CountryCode { get; }
     }
 

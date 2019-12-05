@@ -4,7 +4,7 @@ using Score247.Shared.Base;
 
 namespace Soccer.Core.Teams.Models
 {
-    [MessagePackObject]
+    [MessagePackObject(keyAsPropertyName: true)]
     public class Coach : BaseModel
     {
         [JsonConstructor]
@@ -15,11 +15,8 @@ namespace Soccer.Core.Teams.Models
         }
 
 #pragma warning disable S109 // Magic numbers should not be used
-
-        [Key(2)]
         public string Nationality { get; }
 
-        [Key(3)]
         public string CountryCode { get; }
 
 #pragma warning restore S109 // Magic numbers should not be used

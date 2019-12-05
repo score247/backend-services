@@ -3,7 +3,7 @@
     using MessagePack;
     using Score247.Shared.Enumerations;
 
-    [MessagePackObject]
+    [MessagePackObject(keyAsPropertyName: true)]
     public class MatchStatus : Enumeration
     {
         ////not_started – The match is scheduled to be played

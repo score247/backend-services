@@ -8,7 +8,7 @@ namespace Soccer.Core.Teams.Models
 {
 #pragma warning disable S109 // Magic numbers should not be used
 
-    [MessagePackObject]
+    [MessagePackObject(keyAsPropertyName: true)]
     public class Player : BaseModel
     {
         public Player(string id, string name) : base(id, name)
@@ -39,23 +39,18 @@ namespace Soccer.Core.Teams.Models
             Order = order;
         }
 
-        [Key(2)]
         public PlayerType Type { get; }
 
-        [Key(3)]
         public int JerseyNumber { get; }
 
-        [Key(4)]
         public Position Position { get; }
 
-        [Key(5)]
         public int Order { get; }
 
-        [Key(6)]
         public IDictionary<EventType, int> EventStatistic { get; set; }
     }
 
-    [MessagePackObject]
+    [MessagePackObject(keyAsPropertyName: true)]
     public class GoalScorer : BaseModel
     {
         public const string OwnGoal = "own_goal";
@@ -67,7 +62,6 @@ namespace Soccer.Core.Teams.Models
             Method = method;
         }
 
-        [Key(2)]
         public string Method { get; }
 
         public EventType GetEventTypeFromGoalMethod()
@@ -77,6 +71,7 @@ namespace Soccer.Core.Teams.Models
                 : Method == Penalty
                     ? EventType.ScoreChangeByPenalty
                     : EventType.ScoreChange;
+
 #pragma warning restore S3358 // Ternary operators should not be nested
     }
 

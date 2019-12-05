@@ -5,7 +5,7 @@ using Score247.Shared.Base;
 
 namespace Soccer.Core.Leagues.Models
 {
-    [MessagePackObject]
+    [MessagePackObject(keyAsPropertyName: true)]
     public class League : BaseModel
     {
         public League(string id, string name) : base(id, name)
@@ -46,7 +46,6 @@ namespace Soccer.Core.Leagues.Models
                   league.Region,
                   league.SeasonId)
         {
-
         }
 
         [SerializationConstructor, JsonConstructor]
@@ -75,25 +74,18 @@ namespace Soccer.Core.Leagues.Models
 
 #pragma warning disable S109 // Magic numbers should not be used
 
-        [Key(2)]
         public int Order { get; private set; }
 
-        [Key(3)]
         public string CategoryId { get; }
 
-        [Key(4)]
         public string CountryName { get; }
 
-        [Key(5)]
         public string CountryCode { get; private set; }
 
-        [Key(6)]
         public bool IsInternational { get; private set; }
 
-        [Key(7)]
         public string Region { get; private set; }
 
-        [Key(8)]
         public string SeasonId { get; private set; }
 
 #pragma warning restore S109 // Magic numbers should not be used

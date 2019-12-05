@@ -6,7 +6,7 @@
     /// <summary>
     /// <![CDATA[https://enterprisecraftsmanship.com/2014/11/08/domain-object-base-class/]]>
     /// </summary>
-    [MessagePackObject]
+    [MessagePackObject(keyAsPropertyName: true)]
     public class BaseEntity
     {
         protected BaseEntity(string id)
@@ -14,7 +14,6 @@
             Id = id;
         }
 
-        [Key(0)]
         public string Id { get; protected set; }
 
         [IgnoreMember]
@@ -49,6 +48,7 @@
         }
 
 #pragma warning disable S3875 // "operator==" should not be overloaded on reference types
+
         public static bool operator ==(BaseEntity a, BaseEntity b)
 #pragma warning restore S3875 // "operator==" should not be overloaded on reference types
         {

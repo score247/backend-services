@@ -5,7 +5,7 @@ using Score247.Shared.Enumerations;
 namespace Soccer.Core.Teams.Models
 {
     [Serializable]
-    [MessagePackObject]
+    [MessagePackObject(keyAsPropertyName: true)]
     public class TeamOutcome : Enumeration
     {
         public static readonly TeamOutcome AFCChampionsLeague = new TeamOutcome(1, "afc champions league", "AFC Champions League");
@@ -68,10 +68,6 @@ namespace Soccer.Core.Teams.Models
         {
         }
 
-#pragma warning disable S109 // Magic numbers should not be used
-
-        [Key(2)]
-#pragma warning restore S109 // Magic numbers should not be used
         public string FriendlyName { get; private set; }
     }
 }

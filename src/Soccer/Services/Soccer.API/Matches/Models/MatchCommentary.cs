@@ -7,7 +7,7 @@ using Soccer.Core.Teams.Models;
 
 namespace Soccer.API.Matches.Models
 {
-    [MessagePackObject]
+    [MessagePackObject(keyAsPropertyName: true)]
     public class MatchCommentary
     {
         [SerializationConstructor]
@@ -28,30 +28,22 @@ namespace Soccer.API.Matches.Models
                                      || (!timelineEvent.IsHome && timelineEvent.IsAwayShootoutScored);
         }
 
-        [Key(0)]
         public string TimelineId { get; }
 
-        [Key(1)]
         public EventType TimelineType { get; }
 
 #pragma warning disable S109 // Magic numbers should not be used
 
-        [Key(2)]
         public DateTimeOffset Time { get; }
 
-        [Key(3)]
         public byte MatchTime { get; }
 
-        [Key(4)]
         public string StoppageTime { get; }
 
-        [Key(5)]
         public IEnumerable<Commentary> Commentaries { get; }
 
-        [Key(6)]
         public GoalScorer GoalScorer { get; }
 
-        [Key(7)]
         public bool IsPenaltyShootOutScored { get; }
 
 #pragma warning restore S109 // Magic numbers should not be used

@@ -6,7 +6,7 @@ using Soccer.Core.Teams.Models;
 
 namespace Soccer.Core.Leagues.Models
 {
-    [MessagePackObject]
+    [MessagePackObject(keyAsPropertyName: true)]
     public class LeagueGroupTable
     {
         [JsonConstructor]
@@ -24,19 +24,14 @@ namespace Soccer.Core.Leagues.Models
 
 #pragma warning disable S109 // Magic numbers should not be used
 
-        [Key(0)]
         public string Id { get; }
 
-        [Key(1)]
         public string Name { get; }
 
-        [Key(2)]
         public IEnumerable<LeagueGroupNote> GroupNotes { get; }
 
-        [Key(3)]
         public IEnumerable<TeamStanding> TeamStandings { get; }
 
-        [Key(4)]
         public IEnumerable<TeamOutcome> OutcomeList { get; private set; }
 
         public void CalculateOutcomeList()

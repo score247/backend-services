@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Score247.Shared.Base
 {
-    [MessagePackObject]
+    [MessagePackObject(keyAsPropertyName: true)]
     public class BaseModel
     {
         [SerializationConstructor, JsonConstructor]
@@ -13,10 +13,8 @@ namespace Score247.Shared.Base
             Name = name;
         }
 
-        [Key(0)]
         public string Id { get; protected set; }
 
-        [Key(1)]
         public string Name { get; protected set; }
 
         public override bool Equals(object obj)

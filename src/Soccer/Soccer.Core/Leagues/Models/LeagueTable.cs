@@ -7,10 +7,12 @@ using Soccer.Core._Shared.Enumerations;
 
 namespace Soccer.Core.Leagues.Models
 {
-    [MessagePackObject]
+    [MessagePackObject(keyAsPropertyName: true)]
     public class LeagueTable
     {
-        public LeagueTable() { }
+        public LeagueTable()
+        {
+        }
 
         [JsonConstructor, SerializationConstructor]
         public LeagueTable(
@@ -26,19 +28,13 @@ namespace Soccer.Core.Leagues.Models
         }
 
 #pragma warning disable S109 // Magic numbers should not be used
-
-        [Key(0)]
         public League League { get; }
 
-        [Key(1)]
         public LeagueTableType Type { get; }
 
-        [Key(2)]
         public LeagueSeason LeagueSeason { get; }
 
-        [Key(3)]
         public IEnumerable<LeagueGroupTable> GroupTables { get; private set; }
-
 
         public void FilterAndCalculateGroupTableOutcome(string groupName)
         {

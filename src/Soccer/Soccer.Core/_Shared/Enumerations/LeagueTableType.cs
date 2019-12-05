@@ -3,7 +3,7 @@ using Score247.Shared.Enumerations;
 
 namespace Soccer.Core._Shared.Enumerations
 {
-    [MessagePackObject]
+    [MessagePackObject(keyAsPropertyName: true)]
     public class LeagueTableType : Enumeration
     {
         public const string Total = "total";
