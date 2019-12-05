@@ -27,6 +27,7 @@ namespace Soccer.EventPublishers._Shared.Middlewares
                 serviceCollectionConfigurator.AddConsumer<ProcessMatchEventPublisher>();
                 serviceCollectionConfigurator.AddConsumer<UpdateTeamStatisticPublisher>();
                 serviceCollectionConfigurator.AddConsumer<UpdateLiveMatchPublisher>();
+                serviceCollectionConfigurator.AddConsumer<RemoveMatchEventPublisher>();
             });
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -64,6 +65,14 @@ namespace Soccer.EventPublishers._Shared.Middlewares
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<UpdateLiveMatchPublisher>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_RemovedEvents", e =>
+                {
+                    e.PrefetchCount = prefetCount;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<RemoveMatchEventPublisher>(provider);
                 });
             }));
 

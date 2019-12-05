@@ -29,11 +29,10 @@ namespace Soccer.EventProcessors.Tests.Timeline
         public FetchTimelineConsumerTests()
         {
             messageBus = Substitute.For<IBus>();
-            appSettings = Substitute.For<IAppSettings>();
 
             context = Substitute.For<ConsumeContext<IMatchTimelinesFetchedMessage>>();
 
-            fetchTimelineConsumer = new FetchTimelinesConsumer(messageBus, appSettings);
+            fetchTimelineConsumer = new FetchTimelinesConsumer(messageBus);
         }
 
         [Fact]
@@ -380,15 +379,14 @@ namespace Soccer.EventProcessors.Tests.Timeline
         }
 
         [Fact]
-        public async Task Consume_ClosedMatch_PublishAllTimelinesAsConfirmed() 
+        public async Task Consume_Timelines_PublishAllTimelinesAsConfirmed() 
         {
             var match = A.Dummy<Match>()
                .With(m => m.League, new League("league:1", ""))
                .With(m => m.MatchResult,
                    A.Dummy<MatchResult>()
                        .With(r => r.HomeScore, 1)
-                       .With(r => r.AwayScore, 1)
-                       .With(r => r.EventStatus, MatchStatus.Closed))                        
+                       .With(r => r.AwayScore, 1))                        
                .With(m => m.TimeLines, new List<TimelineEvent>
                {
                     A.Dummy<TimelineEvent>()
@@ -410,43 +408,6 @@ namespace Soccer.EventProcessors.Tests.Timeline
 
             await messageBus.Received(1).Publish<IMatchTimelinesConfirmedMessage>(Arg.Is<MatchTimelinesConfirmedMessage>(
                     msg => msg.Timelines.Count == match.TimeLines.Count()
-                ));
-        }
-
-        [Fact]
-        public async Task Consume_LiveMatch_PublishConfirmedTimelinesWithSpan()
-        {
-            appSettings.CorrectTimelineSpanInMinutes.Returns(3);
-            var match = A.Dummy<Match>()
-               .With(m => m.League, new League("league:1", ""))
-               .With(m => m.MatchResult,
-                   A.Dummy<MatchResult>()
-                       .With(r => r.HomeScore, 1)
-                       .With(r => r.AwayScore, 1))
-               .With(m => m.TimeLines, new List<TimelineEvent>
-               {
-                    A.Dummy<TimelineEvent>()
-                        .With(t => t.Type, EventType.ScoreChange)
-                        .With(t => t.HomeScore, 1)
-                        .With(t => t.AwayScore, 0),
-                    A.Dummy<TimelineEvent>()
-                        .With(t => t.Type, EventType.YellowCard),
-                    A.Dummy<TimelineEvent>()
-                        .With(t => t.Type, EventType.RedCard)
-                        .With(t => t.Time, DateTimeOffset.Now),
-                    A.Dummy<TimelineEvent>()
-                        .With(t => t.Type, EventType.Substitution)
-                        .With(t => t.Time, DateTimeOffset.Now)
-               });
-
-            context.Message.Returns(new MatchTimelinesFetchedMessage(
-                match,
-                Language.en_US));
-
-            await fetchTimelineConsumer.Consume(context);
-
-            await messageBus.Received(1).Publish<IMatchTimelinesConfirmedMessage>(Arg.Is<MatchTimelinesConfirmedMessage>(
-                    msg => msg.Timelines.Count == 2
                 ));
         }
 

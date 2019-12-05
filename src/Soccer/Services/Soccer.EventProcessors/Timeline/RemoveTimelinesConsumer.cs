@@ -13,10 +13,12 @@ namespace Soccer.EventProcessors.Timeline
     public class RemoveTimelinesConsumer : IConsumer<IMatchTimelinesConfirmedMessage>
     {
         private readonly IDynamicRepository dynamicRepository;
+        private readonly IBus messageBus;
 
-        public RemoveTimelinesConsumer(IDynamicRepository dynamicRepository)
+        public RemoveTimelinesConsumer(IDynamicRepository dynamicRepository, IBus messageBus)
         {
             this.dynamicRepository = dynamicRepository;
+            this.messageBus = messageBus;
         }
 
         public async Task Consume(ConsumeContext<IMatchTimelinesConfirmedMessage> context)
@@ -43,7 +45,13 @@ namespace Soccer.EventProcessors.Timeline
 
             if (removedTimelines.Any())
             {
-                await dynamicRepository.ExecuteAsync(new RemoveTimelineCommand(context.Message.MatchId, removedTimelines.ToList()));
+                await dynamicRepository.ExecuteAsync(new RemoveTimelineCommand(
+                    context.Message.MatchId, 
+                    removedTimelines.ToList()));
+
+                await messageBus.Publish<IMatchTimelinesRemovedMessage>(new MatchTimelinesRemovedMessage(
+                    context.Message.MatchId, 
+                    removedTimelines.Select(timeline => timeline.Id ).ToArray()));
             }
         }
 

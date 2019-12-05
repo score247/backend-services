@@ -20,6 +20,7 @@ namespace Soccer.EventProcessors.Tests.Timelines
     public class RemoveTimelinesConsumerTests
     {
         private readonly IDynamicRepository dynamicRepository;
+        private readonly IBus messageBus;
         private readonly ConsumeContext<IMatchTimelinesConfirmedMessage> context;
         private readonly Fixture fixture;
 
@@ -28,11 +29,12 @@ namespace Soccer.EventProcessors.Tests.Timelines
         public RemoveTimelinesConsumerTests()
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
+            messageBus = Substitute.For<IBus>();
             fixture = new Fixture();
 
             context = Substitute.For<ConsumeContext<IMatchTimelinesConfirmedMessage>>();
 
-            removeTimelineConsumer = new RemoveTimelinesConsumer(dynamicRepository);
+            removeTimelineConsumer = new RemoveTimelinesConsumer(dynamicRepository, messageBus);
         }
 
         [Fact]
@@ -190,6 +192,13 @@ namespace Soccer.EventProcessors.Tests.Timelines
                     command.MatchId == message.MatchId &&
                     command.TimelineIds.Contains("sr:timeline:2") &&
                     command.TimelineIds.Contains("sr:timeline:3")
+                ));
+
+            await messageBus
+                .Received(1)
+                .Publish(Arg.Is<MatchTimelinesRemovedMessage>(msg => 
+                    msg.MatchId == message.MatchId &&
+                    msg.TimelineIds.Count() == 2
                 ));
         }
 
