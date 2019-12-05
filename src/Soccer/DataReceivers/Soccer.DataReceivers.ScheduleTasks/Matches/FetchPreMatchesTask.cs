@@ -14,6 +14,7 @@ using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.Matches.Services;
 using Soccer.DataReceivers.ScheduleTasks.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
+using Soccer.DataReceivers.ScheduleTasks.Teams;
 
 namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
@@ -98,6 +99,12 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
                 BackgroundJob.Enqueue<IFetchPreMatchesTimelineTask>(
                     task => task.FetchPreMatchTimeline(batchOfMatches));
+
+                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(
+                    task => task.FetchHeadToHeads(language, batchOfMatches));
+
+                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(
+                    task => task.FetchTeamResults(language, batchOfMatches));
             }
         }
 
