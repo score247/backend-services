@@ -20,6 +20,8 @@ namespace Soccer.API
 {
     public class Startup
     {
+        private bool EnableSwagger = false;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -38,7 +40,11 @@ namespace Soccer.API
                 services.AddMediatR(Assembly.GetExecutingAssembly());
                 services.AddServices();
                 services.AddHealthCheck();
-                services.AddSwagger();
+                EnableSwagger = appSettings.EnabledSwagger;
+                if (EnableSwagger)
+                {
+                    services.AddSwagger();
+                }
                 services.AddMemoryCache();
                 services.AddAuthentication(appSettings);
                 services
@@ -48,7 +54,6 @@ namespace Soccer.API
                     {
                         option.OutputFormatters.Add(new MessagePackOutputFormatter(ContractlessStandardResolver.Instance));
                         option.InputFormatters.Add(new MessagePackInputFormatter(ContractlessStandardResolver.Instance));
-
 
                         if (appSettings.EnabledAuthentication)
                         {
@@ -76,7 +81,10 @@ namespace Soccer.API
                 app.ConfigureExceptionHandler();
                 app.UseHealthCheck();
                 app.UseDatabase(Configuration);
-                app.ConfigureSwagger(Configuration);
+                if (EnableSwagger)
+                {
+                    app.ConfigureSwagger(Configuration);
+                }
                 app.UseRouting();
 
                 app.ConfigureAuthentication();

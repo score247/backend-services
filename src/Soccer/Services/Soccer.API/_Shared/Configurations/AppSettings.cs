@@ -29,6 +29,8 @@
         bool EnabledAuthentication { get; }
 
         string EncryptKey { get; }
+
+        bool EnabledSwagger { get; }
     }
 
     public class AppSettings : IAppSettings
@@ -51,6 +53,7 @@
             JwtSecretKey = GetValue<string>(nameof(JwtSecretKey));
             EnabledAuthentication = GetValue<bool>(nameof(EnabledAuthentication));
             EncryptKey = GetValue<string>(nameof(EncryptKey));
+            EnabledSwagger = GetValue<bool>(nameof(EnabledSwagger));
 
             if (NumberOfTopMatches <= 0)
             {
@@ -81,6 +84,8 @@
         public bool EnabledAuthentication { get; }
 
         public string EncryptKey { get; }
+
+        public bool EnabledSwagger { get; }
 
         public T GetValue<T>(string key)
         {
