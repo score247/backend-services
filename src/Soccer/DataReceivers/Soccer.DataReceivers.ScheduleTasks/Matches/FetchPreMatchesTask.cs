@@ -102,9 +102,6 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
                 BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(
                     task => task.FetchHeadToHeads(language, batchOfMatches));
-
-                BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(
-                    task => task.FetchTeamResults(language, batchOfMatches));
             }
         }
 
