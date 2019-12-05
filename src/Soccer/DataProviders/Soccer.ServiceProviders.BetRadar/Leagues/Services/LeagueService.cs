@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Fanex.Logging;
 using Refit;
@@ -101,17 +102,27 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
         }
 
         public async Task<IEnumerable<LeagueTable>> GetLeagueStandings(string leagueId, Language language, string regionName)
-            => await GetLeagueStandings(leagueId, language, regionName, leagueApi.GetTournamentStandings);
+        {
+            var liveLeagueStanding = await GetLeagueStandings(leagueId, language, regionName, leagueApi.GetTournamentLiveStandings);
+
+            if (liveLeagueStanding.Any())
+            {
+                return liveLeagueStanding;
+            }
+
+            return await GetLeagueStandings(leagueId, language, regionName, leagueApi.GetTournamentStandings);
+        }
 
         public async Task<IEnumerable<LeagueTable>> GetLeagueLiveStandings(string leagueId, Language language, string regionName)
             => await GetLeagueStandings(leagueId, language, regionName, leagueApi.GetTournamentLiveStandings);
 
         private async Task<IEnumerable<LeagueTable>> GetLeagueStandings(
-            string leagueId, 
-            Language language, 
+            string leagueId,
+            Language language,
             string regionName,
             Func<string, string, string, string, string, string, Task<TournamentStandingDto>> getTournamentStandings)
         {
+            var leagueInfo = $"LeagueId: {leagueId}, Region: {regionName}";
             try
             {
                 var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == regionName)?.Key;
@@ -141,18 +152,18 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             }
             catch (ApiException ex)
             {
-                if (ex.ReasonPhrase != "Not Found")
+                if (ex.StatusCode == HttpStatusCode.NotFound)
                 {
-                    await logger.ErrorAsync($"Message:{ex.Message}\r\nUrl:{ex.Uri}", ex);
+                    await logger.ErrorAsync($"{leagueInfo} Message:{ex.Message}\r\nUrl:{ex.Uri}", ex);
                 }
                 else
                 {
-                    await logger.InfoAsync($"Url:{ex.Uri}\r\nMessage:{ex}");
+                    await logger.InfoAsync($"{leagueInfo} Url:{ex.Uri}\r\nMessage:{ex}");
                 }
             }
             catch (Exception ex)
             {
-                await logger.ErrorAsync(ex.ToString());
+                await logger.ErrorAsync($"{leagueInfo} {ex.ToString()}");
             }
 
             return Enumerable.Empty<LeagueTable>();
