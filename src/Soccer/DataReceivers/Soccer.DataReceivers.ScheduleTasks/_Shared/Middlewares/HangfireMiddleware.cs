@@ -41,6 +41,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
 
 #pragma warning disable S138 // Functions should not have too many lines of code
 #pragma warning disable S1541 // Methods and properties should not be too complex
+
         public static void UseHangfire(this IApplicationBuilder app, IConfiguration configuration)
 #pragma warning restore S1541 // Methods and properties should not be too complex
 #pragma warning restore S138 // Functions should not have too many lines of code
@@ -48,11 +49,16 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             var appSettings = app.ApplicationServices.GetService<IAppSettings>();
             var taskSettings = appSettings.ScheduleTasksSettings;
 
-            app.UseHangfireDashboard(options: new DashboardOptions
+            if (appSettings.EnabledHangfireUI)
             {
-                Authorization = Enumerable.Empty<IDashboardAuthorizationFilter>(),
-                IgnoreAntiforgeryToken = true
-            }).UseHangfireServer(options: new BackgroundJobServerOptions
+                app.UseHangfireDashboard(options: new DashboardOptions
+                {
+                    Authorization = Enumerable.Empty<IDashboardAuthorizationFilter>(),
+                    IgnoreAntiforgeryToken = true
+                });
+            }
+
+            app.UseHangfireServer(options: new BackgroundJobServerOptions
             {
                 WorkerCount = configuration.GetSection("HangfireWorkers").Get<int>(),
                 Queues = configuration.GetSection("HangfireQueues").Get<string[]>()

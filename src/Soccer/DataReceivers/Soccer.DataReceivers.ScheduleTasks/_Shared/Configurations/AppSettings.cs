@@ -6,7 +6,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Shared.Configurations
 {
     public interface IAppSettings
     {
-        ScheduleTasksSettings ScheduleTasksSettings { get; set; }
+        ScheduleTasksSettings ScheduleTasksSettings { get; }
+
+        bool EnabledHangfireUI { get; }
     }
 
     public class AppSettings : IAppSettings
@@ -20,9 +22,13 @@ namespace Soccer.DataReceivers.ScheduleTasks.Shared.Configurations
             var scheduleTaskSetting = new ScheduleTasksSettings();
             configuration.Bind("ScheduleTasks", scheduleTaskSetting);
             ScheduleTasksSettings = scheduleTaskSetting;
+
+            EnabledHangfireUI = GetValue<bool>(nameof(EnabledHangfireUI));
         }
 
-        public ScheduleTasksSettings ScheduleTasksSettings { get; set; }
+        public ScheduleTasksSettings ScheduleTasksSettings { get; }
+
+        public bool EnabledHangfireUI { get; }
 
         public T GetValue<T>(string key)
         {
