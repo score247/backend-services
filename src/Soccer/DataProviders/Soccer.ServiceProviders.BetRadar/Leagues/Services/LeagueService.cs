@@ -154,11 +154,11 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             {
                 if (ex.StatusCode == HttpStatusCode.NotFound)
                 {
-                    await logger.ErrorAsync($"{leagueInfo} Message:{ex.Message}\r\nUrl:{ex.Uri}", ex);
+                    await logger.InfoAsync($"{leagueInfo} Message:{ex.Message}\r\nUrl:{ex.Uri}", ex);
                 }
                 else
                 {
-                    await logger.InfoAsync($"{leagueInfo} Url:{ex.Uri}\r\nMessage:{ex}");
+                    await logger.ErrorAsync($"{leagueInfo} Url:{ex.Uri}\r\nMessage:{ex}");
                 }
             }
             catch (Exception ex)
