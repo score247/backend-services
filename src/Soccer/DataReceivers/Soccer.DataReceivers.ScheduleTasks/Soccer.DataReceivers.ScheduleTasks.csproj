@@ -83,4 +83,6 @@
     <ProjectReference Include="..\..\DataProviders\Soccer.ServiceProviders.BetRadar\Soccer.DataProviders.SportRadar.csproj" />
     <ProjectReference Include="..\..\Soccer.Core\Soccer.Core.csproj" />
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1pro_1json__JsonSchema="http://json.schemastore.org/asmdef" /></VisualStudio></ProjectExtensions>
 </Project>

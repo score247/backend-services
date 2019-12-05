@@ -16,10 +16,16 @@
   <ItemGroup>
     <None Remove="appsettings.local-dev1.json" />
     <None Remove="appsettings.local-dev2.json" />
+    <None Remove="appsettings.pro.json" />
+    <None Remove="_Shared\App_Data\PRO\SpNames.xml" />
     <None Remove="_Shared\App_Data\LOCAL\SpNames.xml" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="_Shared\App_Data\PRO\SpNames.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Generator>MSBuild:Compile</Generator>
+    </Content>
     <EmbeddedResource Include="_Shared\App_Data\LOCAL\SpNames.xml">
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -58,6 +64,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="appsettings.pro.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="appsettings.local-dev2.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
