@@ -1,0 +1,39 @@
+﻿<Functions>
+  <Function Name="Matches">
+    <Setting Key="Match_GetByDateRange" SpName="Match_GetByDateRange" DbName="DefaultConnection" />
+    
+    <Setting Key="Match_GetById" SpName="Match_GetById" DbName="DefaultConnection" />
+    <Setting Key="Match_GetById_Former" SpName="Match_GetById" DbName="FormerDbConnection" />
+    <Setting Key="Match_GetById_Ahead" SpName="Match_GetById" DbName="AheadDbConnection" />
+    
+    <Setting Key="Match_GetTimelineEvents" SpName="Match_GetTimelineEvents" DbName="DefaultConnection" />
+    <Setting Key="Match_GetTimelineEvents_Former" SpName="Match_GetTimelineEvents" DbName="FormerDbConnection" />
+    <Setting Key="Match_GetTimelineEvents_Ahead" SpName="Match_GetTimelineEvents" DbName="AheadDbConnection" />
+    
+    <Setting Key="LiveMatch_GetBySportId" SpName="LiveMatch_GetBySportId" DbName="DefaultConnection" />
+    
+    <Setting Key="Match_GetCommentaries" SpName="Match_GetCommentaries" DbName="DefaultConnection" />
+    <Setting Key="Match_GetCommentaries_Former" SpName="Match_GetCommentaries" DbName="FormerDbConnection" />
+    <Setting Key="Match_GetCommentaries_Ahead" SpName="Match_GetCommentaries" DbName="AheadDbConnection" />
+    
+    <Setting Key="Match_GetLineups" SpName="Match_GetLineups" DbName="DefaultConnection" />
+    <Setting Key="Match_GetLineups_Former" SpName="Match_GetLineups" DbName="FormerDbConnection" />
+    <Setting Key="Match_GetLineups_Ahead" SpName="Match_GetLineups" DbName="AheadDbConnection" />
+    
+    <Setting Key="Match_GetByLeagueId" SpName="Match_GetByLeagueId" DbName="DefaultConnection" />
+    <Setting Key="Match_GetByLeagueId_Former" SpName="Match_GetByLeagueId" DbName="FormerDbConnection" />
+    <Setting Key="Match_GetByLeagueId_Ahead" SpName="Match_GetByLeagueId" DbName="AheadDbConnection" />
+  </Function>
+  <Function Name="Odds">
+    <Setting Key="Odds_GetOdds" SpName="Odds_GetOdds" DbName="DefaultConnection" />
+  </Function>
+  <Function Name="League">
+    <Setting Key="League_GetActive" SpName="League_GetActive" DbName="DefaultConnection" />
+    <Setting Key="League_GetUnprocessedLeagueSeason" SpName="League_GetUnprocessedLeagueSeason" DbName="DefaultConnection" />
+    <Setting Key="League_GetStandings" SpName="League_GetStandings" DbName="DefaultConnection" />
+  </Function>
+  <Function Name="Team">
+    <Setting Key="Team_GetHeadToHeads" SpName="Team_GetHeadToHeads" DbName="DefaultConnection" />
+    <Setting Key="Team_GetTeamResults" SpName="Team_GetTeamResults" DbName="DefaultConnection" />
+  </Function>
+</Functions>
