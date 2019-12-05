@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <SonarQubeExclude>true</SonarQubeExclude>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -21,5 +21,4 @@
     <ProjectReference Include="..\..\..\Soccer.Core\Soccer.Core.csproj" />
     <ProjectReference Include="..\..\Soccer.EventProcessors\Soccer.EventProcessors.csproj" />
   </ItemGroup>
-
 </Project>
