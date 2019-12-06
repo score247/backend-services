@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Soccer.DataProviders.SportRadar.Shared.Extensions;
 
 namespace Soccer.DataProviders.SportRadar.Matches.Dtos
 {
@@ -11,7 +14,8 @@ namespace Soccer.DataProviders.SportRadar.Matches.Dtos
 
         public SportEventDto sport_event { get; set; }
 
-        public IList<Lineup> lineups { get; set; }
+        [JsonConverter(typeof(SingleOrArrayConverter<Lineup>))]
+        public List<Lineup> lineups { get; set; }
     }
 
     public class Lineup
