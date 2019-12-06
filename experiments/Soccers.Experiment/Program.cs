@@ -18,8 +18,8 @@
 
         private static void Main(string[] args)
         {
-            //TestSignalRHubs();
-            TestCryptographyHelper();
+            TestSignalRHubs();
+            //TestCryptographyHelper();
             //StartListenStream();
         }
 
@@ -35,7 +35,7 @@
         private static void TestSignalRHubs()
         {
             connection = new HubConnectionBuilder()
-                            .WithUrl("http://10.18.200.142:7872/dev/hubs/soccerhub")
+                            .WithUrl("https://publisher.score247.net/hubs/soccerhub")
                             .Build();
 
             connection.Closed += async (error) =>

@@ -1,12 +1,8 @@
 ﻿namespace Soccer.DataReceivers.ScheduleTasks
 {
-    using System;
-    using System.Diagnostics;
     using System.IO;
-    using System.Linq;
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Hosting.WindowsServices;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
     using Soccer.DataReceivers.ScheduleTasks._Shared.Helpers;

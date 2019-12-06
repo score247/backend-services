@@ -13,6 +13,7 @@ using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Matches.QueueMessages.MatchEvents;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.QueueMessages;
+using Soccer.Database.Matches.Criteria;
 using Soccer.EventProcessors.Matches.MatchEvents;
 using Xunit;
 
@@ -22,19 +23,20 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
     public class RedCardEventConsumerTests
     {
         private readonly IBus messageBus;
-        private readonly ICacheManager cacheManager;
         private readonly ConsumeContext<IRedCardEventMessage> context;
         private readonly RedCardEventConsumer consumer;
+        private readonly IDynamicRepository dynamicRepository;
 
         public RedCardEventConsumerTests()
         {
             messageBus = Substitute.For<IBus>();
-            cacheManager = Substitute.For<ICacheManager>();
             context = Substitute.For<ConsumeContext<IRedCardEventMessage>>();
 
-            var dynamicRepository = Substitute.For<IDynamicRepository>();
-            consumer = new RedCardEventConsumer(messageBus, cacheManager, dynamicRepository);
+            dynamicRepository = Substitute.For<IDynamicRepository>();
+            consumer = new RedCardEventConsumer(messageBus, dynamicRepository);
         }
+
+#pragma warning disable S2699 // Tests should include assertions
 
         [Fact]
         public async Task Consume_InvalidMessage_ShouldNotPublishMatchEvent()
@@ -47,7 +49,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
         [Fact]
         public async Task Consume_RedCard_ShouldPublishCorrectStatistic()
         {
-            var matchId = "sr:match";
+            const string matchId = "sr:match";
             context.Message.Returns(new RedCardEventMessage(new MatchEvent(
                 "sr:league",
                 matchId,
@@ -55,7 +57,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
                 StubRedCard()
                 )));
 
-            cacheManager.GetOrSetAsync(Arg.Any<string>(), Arg.Any<Func<Task<IList<TimelineEvent>>>>(), Arg.Any<CacheItemOptions>())
+            dynamicRepository.FetchAsync<TimelineEvent>(Arg.Is<GetTimelineEventsCriteria>(c => c.MatchId == matchId))
                 .Returns(new List<TimelineEvent>
                 {
                     StubRedCard()
@@ -70,7 +72,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
         [Fact]
         public async Task Consume_RedCardAndYellowRedCard_ShouldPublishCorrectStatistic()
         {
-            var matchId = "sr:match";
+            const string matchId = "sr:match";
             context.Message.Returns(new RedCardEventMessage(new MatchEvent(
                 "sr:league",
                 matchId,
@@ -78,12 +80,12 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
                 StubRedCard()
                 )));
 
-            cacheManager.GetOrSetAsync(Arg.Any<string>(), Arg.Any<Func<Task<IList<TimelineEvent>>>>(), Arg.Any<CacheItemOptions>())
-                .Returns(new List<TimelineEvent>
-                {
+            dynamicRepository.FetchAsync<TimelineEvent>(Arg.Is<GetTimelineEventsCriteria>(c => c.MatchId == matchId))
+              .Returns(new List<TimelineEvent>
+              {
                     StubRedCard(),
                     StubYellowRedCard()
-                });
+              });
 
             await consumer.Consume(context);
 
@@ -101,4 +103,6 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             => A.Dummy<TimelineEvent>()
                 .With(t => t.Type, EventType.YellowRedCard);
     }
+
+#pragma warning restore S2699 // Tests should include assertions
 }

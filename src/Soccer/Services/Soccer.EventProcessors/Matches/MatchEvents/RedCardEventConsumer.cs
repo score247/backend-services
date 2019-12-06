@@ -17,19 +17,12 @@
 
     public class RedCardEventConsumer : IConsumer<IRedCardEventMessage>
     {
-        private static readonly CacheItemOptions EventCacheOptions = new CacheItemOptions
-        {
-            SlidingExpiration = TimeSpan.FromMinutes(10),
-        };
-
         private readonly IBus messageBus;
-        private readonly ICacheManager cacheManager;
         private readonly IDynamicRepository dynamicRepository;
 
-        public RedCardEventConsumer(IBus messageBus, ICacheManager cacheManager, IDynamicRepository dynamicRepository)
+        public RedCardEventConsumer(IBus messageBus, IDynamicRepository dynamicRepository)
         {
             this.messageBus = messageBus;
-            this.cacheManager = cacheManager;
             this.dynamicRepository = dynamicRepository;
         }
 
@@ -54,13 +47,7 @@
 
         private async Task<IList<TimelineEvent>> GetProcessedRedCards(string matchId, string teamId)
         {
-            var timelineEventsCacheKey = $"MatchPushEvent_Match_{matchId}";
-
-            var timelineEvents = await cacheManager.GetOrSetAsync<IList<TimelineEvent>>(
-                    timelineEventsCacheKey,
-                    async () => (await dynamicRepository.FetchAsync<TimelineEvent>
-                        (new GetTimelineEventsCriteria(matchId))).ToList(),
-                    EventCacheOptions);
+            var timelineEvents = (await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(matchId))).ToList();
 
             return timelineEvents == null
                 ? new List<TimelineEvent>()
