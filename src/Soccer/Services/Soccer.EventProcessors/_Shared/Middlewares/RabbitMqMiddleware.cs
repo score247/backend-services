@@ -204,7 +204,7 @@
                     e.Consumer<FetchLeagueStandingConsumer>(provider);
                 });
 
-                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_ConfirimedTimelines", e =>
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_ConfirmedTimelines", e =>
                 {
                     e.PrefetchCount = PrefetchCount;
                     e.UseMessageRetry(RetryAndLogError(services));
