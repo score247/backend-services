@@ -12,6 +12,7 @@ using Soccer.Core.Matches.Models;
 using Soccer.Core.Timelines.QueueMessages;
 using Soccer.Database.Matches.Criteria;
 using Soccer.Database.Timelines.Commands;
+using Soccer.EventProcessors.Shared.Configurations;
 using Soccer.EventProcessors.Timeline;
 using Xunit;
 
@@ -21,6 +22,7 @@ namespace Soccer.EventProcessors.Tests.Timelines
     {
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
+        private readonly IAppSettings appSettings;
         private readonly ConsumeContext<IMatchTimelinesConfirmedMessage> context;
         private readonly Fixture fixture;
 
@@ -30,11 +32,12 @@ namespace Soccer.EventProcessors.Tests.Timelines
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
             messageBus = Substitute.For<IBus>();
+            appSettings = Substitute.For<IAppSettings>();
             fixture = new Fixture();
 
             context = Substitute.For<ConsumeContext<IMatchTimelinesConfirmedMessage>>();
 
-            removeTimelineConsumer = new RemoveTimelinesConsumer(dynamicRepository, messageBus);
+            removeTimelineConsumer = new RemoveTimelinesConsumer(dynamicRepository, messageBus, appSettings);
         }
 
         [Fact]
@@ -158,23 +161,23 @@ namespace Soccer.EventProcessors.Tests.Timelines
         public async Task Consume_HasRemovedTimelines_ShouldExecuteCommandWithCorrectTimelines()
         {
             // Arrange           
-            var timelines = new List<TimelineEvent>
+            var confirmedTimelines = new List<TimelineEvent>
             {
                 StubTimeline("1", new DateTime(2019, 10, 10, 10, 20, 00)),
                 StubTimeline("3", new DateTime(2019, 10, 10, 10, 22, 00)),
             };
 
-            var currentTimelines = new List<TimelineEvent>
+            var incorrectTimelines = new List<TimelineEvent>
             {
                 StubTimeline("sr:timeline:2", new DateTime(2019, 10, 10, 10, 21, 00)),
                 StubTimeline("sr:timeline:3", new DateTime(2019, 10, 10, 10, 21, 30))
             };
 
-            currentTimelines.AddRange(timelines);
+            List<TimelineEvent> currentTimelines = StubCurrentTimelines(confirmedTimelines, incorrectTimelines);
 
             var message = A.Dummy<MatchTimelinesConfirmedMessage>()
                 .With(msg => msg.MatchId, fixture.Create<string>())
-                .With(msg => msg.Timelines, timelines);
+                .With(msg => msg.Timelines, confirmedTimelines);
 
             context.Message.Returns(message);
 
@@ -188,7 +191,7 @@ namespace Soccer.EventProcessors.Tests.Timelines
             // Assert
             await dynamicRepository
                 .Received(1)
-                .ExecuteAsync(Arg.Is<RemoveTimelineCommand>(command => 
+                .ExecuteAsync(Arg.Is<RemoveTimelineCommand>(command =>
                     command.MatchId == message.MatchId &&
                     command.TimelineIds.Contains("sr:timeline:2") &&
                     command.TimelineIds.Contains("sr:timeline:3")
@@ -196,10 +199,68 @@ namespace Soccer.EventProcessors.Tests.Timelines
 
             await messageBus
                 .Received(1)
-                .Publish(Arg.Is<MatchTimelinesRemovedMessage>(msg => 
+                .Publish(Arg.Is<MatchTimelinesRemovedMessage>(msg =>
                     msg.MatchId == message.MatchId &&
                     msg.TimelineIds.Count() == 2
                 ));
+        }
+
+        [Fact]
+        public async Task Consume_LiveMatch_CurrentTimelineInCorrectSpan_ShouldNotRemove()
+        {
+            // Arrange             
+            appSettings.CorrectTimelineSpanInMinutes.Returns(1);
+
+            var confirmedTimelines = new List<TimelineEvent>
+            {
+                StubTimeline("1", DateTime.Now.AddMinutes(-10)),
+                StubTimeline("3", DateTime.Now.AddMinutes(-9)),
+            };
+
+            var incorrectTimelines = new List<TimelineEvent>
+            {
+                StubTimeline("sr:timeline:2", DateTime.Now.AddMinutes(-4)),
+                StubTimeline("sr:timeline:3", DateTime.Now)
+            };
+
+            List<TimelineEvent> currentTimelines = StubCurrentTimelines(confirmedTimelines, incorrectTimelines);
+
+            var message = A.Dummy<MatchTimelinesConfirmedMessage>()
+                .With(msg => msg.MatchId, fixture.Create<string>())
+                .With(msg => msg.Timelines, confirmedTimelines);
+
+            context.Message.Returns(message);
+
+            dynamicRepository
+                .FetchAsync<TimelineEvent>(Arg.Is<GetTimelineEventsCriteria>(criteria => criteria.MatchId == message.MatchId))
+                .Returns(currentTimelines);
+
+            // Act
+            await removeTimelineConsumer.Consume(context);
+
+            // Assert
+            await dynamicRepository
+                .Received(1)
+                .ExecuteAsync(Arg.Is<RemoveTimelineCommand>(command =>
+                    command.MatchId == message.MatchId &&
+                    command.TimelineIds.Contains("sr:timeline:2") 
+                ));
+
+            await messageBus
+                .Received(1)
+                .Publish(Arg.Is<MatchTimelinesRemovedMessage>(msg =>
+                    msg.MatchId == message.MatchId &&
+                    msg.TimelineIds.Count() == 1
+                ));
+        }
+
+        private List<TimelineEvent> StubCurrentTimelines(List<TimelineEvent> confirmedTimelines, List<TimelineEvent> incorrectTimelines)
+        {
+            var currentTimelines = new List<TimelineEvent>(incorrectTimelines);
+
+            currentTimelines.AddRange(confirmedTimelines);
+
+            return currentTimelines;
         }
 
         private TimelineEvent StubTimeline(string id, DateTimeOffset time)

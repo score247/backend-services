@@ -6,6 +6,7 @@ using MassTransit;
 using Soccer.Core.Matches.Extensions;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
+using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Timelines.QueueMessages;
 
 namespace Soccer.EventProcessors.Timeline
@@ -43,7 +44,7 @@ namespace Soccer.EventProcessors.Timeline
 
             await ProcessPenaltyTimelines(match);
 
-            await PublishConfirmedTimelines(match.Id, match.EventDate, match.TimeLines.ToList());
+            await PublishConfirmedTimelines(match.Id, match.EventDate, match.MatchResult.EventStatus, match.TimeLines.ToList());
         }
 
         private async Task ProcessTimelinesNotInPenalty(Match match, List<TimelineEvent> timelinesSkipLastAndPenalty)
@@ -183,10 +184,11 @@ namespace Soccer.EventProcessors.Timeline
             return messageBus.Publish<IMatchEventReceivedMessage>(new MatchEventReceivedMessage(matchEvent));
         }
 
-        private Task PublishConfirmedTimelines(string matchId, DateTimeOffset eventDate, IList<TimelineEvent> timelines)
+        private Task PublishConfirmedTimelines(string matchId, DateTimeOffset eventDate, MatchStatus eventStatus, IList<TimelineEvent> timelines)
         => messageBus.Publish<IMatchTimelinesConfirmedMessage>(new MatchTimelinesConfirmedMessage(
                 matchId,
                 eventDate,
+                eventStatus,
                 timelines));
     }
 }
