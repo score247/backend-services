@@ -37,6 +37,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             services.AddScoped<IFetchLeaguesSeasonTask, FetchLeaguesSeasonTask>();
             services.AddScoped<IFetchLeagueMatchesTask, FetchLeagueMatchesTask>();
             services.AddScoped<IFetchLeagueStandingsTask, FetchLeagueStandingsTask>();
+            services.AddScoped<IFetchLeagueHeadToHeadTask, FetchLeagueHeadToHeadTask>();
         }
 
 #pragma warning disable S138 // Functions should not have too many lines of code
@@ -143,6 +144,12 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
                 job => job.FetchLeagueStandings(),
                 taskSettings.FetchLeagueStandingCron);
             }
+
+            //TODO Remove this task after completely fetching old data
+            RecurringJob.AddOrUpdate<IFetchLeagueHeadToHeadTask>(
+            nameof(IFetchLeagueHeadToHeadTask.FetchHeadToHeadOfAllLeague),
+            job => job.FetchHeadToHeadOfAllLeague(),
+            Cron.Yearly);
         }
     }
 }

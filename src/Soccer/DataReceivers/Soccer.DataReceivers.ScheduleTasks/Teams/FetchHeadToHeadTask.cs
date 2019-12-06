@@ -51,7 +51,6 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
             this.messageBus = messageBus;
         }
 
-
         public void FetchTeamResults(Language language, IEnumerable<Match> matches)
         {
             foreach (var match in matches)
