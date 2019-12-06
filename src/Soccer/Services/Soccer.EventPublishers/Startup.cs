@@ -1,5 +1,6 @@
 ﻿using JsonNet.ContractResolvers;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -45,6 +46,11 @@ namespace Soccer.EventPublishers
         public void Configure(IApplicationBuilder app, IHostApplicationLifetime applicationLifetime)
         {
             app.ConfigureExceptionHandler();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+
             app.UseRabbitMq(applicationLifetime);
             app.UseRouting();
             app.UseEndpoints(endpoints =>
