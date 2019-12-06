@@ -66,13 +66,13 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
             await PubishMatchCondition(matchId, language, match);
 
-            await PublishTeamStatistic(matchId, match);
-
             await PublishMatchTimelines(language, match);
 
             await PublishMatchCommentaries(matchId, language, match, commentaries);
 
             await messageBus.Publish<IMatchUpdatedCoverageInfo>(new MatchUpdatedCoverageInfo(matchId, match.Coverage, match.EventDate));
+
+            await PublishTeamStatistic(matchId, match);
         }
 
         private async Task PubishMatchCondition(string matchId, Language language, Match match)

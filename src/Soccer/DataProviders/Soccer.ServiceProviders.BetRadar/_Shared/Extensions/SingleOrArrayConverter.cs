@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+/// <summary>
+/// https://blog.bitscry.com/2017/08/31/single-or-array-json-converter/
+/// </summary>
 namespace Soccer.DataProviders.SportRadar.Shared.Extensions
 {
     public class SingleOrArrayConverter<T> : JsonConverter
