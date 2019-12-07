@@ -99,7 +99,9 @@ namespace Soccer.API.Matches
         {
             var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language, eventDate));
 
-            return new MatchCoverage(match.Id, match.Coverage);
+            return match == null 
+                ? new MatchCoverage(id, default) 
+                : new MatchCoverage(match.Id, match.Coverage);
         }
 
         public async Task<IEnumerable<MatchCommentary>> GetMatchCommentary(string id, Language language, DateTimeOffset eventDate)
