@@ -7,6 +7,7 @@ using MassTransit;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.Core.Teams.Models;
 using Soccer.Core.Teams.QueueMessages;
 using Soccer.Core.Timelines.Models;
 using Soccer.Core.Timelines.QueueMessages;
@@ -27,19 +28,27 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
         Task FetchTimelinesForClosedMatch(IEnumerable<Match> matches, Language language);
+
+        [AutomaticRetry(Attempts = 1)]
+        [Queue("low")]
+        Task PublishTeamStatistic(string matchId, DateTimeOffset eventDate, Team team);
     }
 
     public class FetchTimelineTask : IFetchTimelineTask
     {
+        private static TimeSpan insertStatisticDelayTime = new TimeSpan(0, 0, 30);
         private readonly ITimelineService timelineService;
+        private readonly IBackgroundJobClient jobClient;
         private readonly IBus messageBus;
 
         public FetchTimelineTask(
             IBus messageBus,
-            ITimelineService timelineService)
+            ITimelineService timelineService,
+            IBackgroundJobClient jobClient)
         {
             this.messageBus = messageBus;
             this.timelineService = timelineService;
+            this.jobClient = jobClient;
         }
 
         public Task FetchTimelinesForClosedMatch(IEnumerable<Match> matches, Language language)
@@ -72,7 +81,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
             await messageBus.Publish<IMatchUpdatedCoverageInfo>(new MatchUpdatedCoverageInfo(matchId, match.Coverage, match.EventDate));
 
-            await PublishTeamStatistic(matchId, match);
+            PublishMatchStatistic(matchId, match);
         }
 
         private async Task PubishMatchCondition(string matchId, Language language, Match match)
@@ -88,19 +97,23 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             }
         }
 
-        private async Task PublishTeamStatistic(string matchId, Match match)
+        private void PublishMatchStatistic(string matchId, Match match)
         {
             foreach (var team in match.Teams.Where(team => team.Statistic != null).Select(team => team))
             {
-                await messageBus.Publish<ITeamStatisticUpdatedMessage>(
-                    new TeamStatisticUpdatedMessage(
-                        matchId, 
-                        team.IsHome, 
-                        team.Statistic,
-                        false,
-                        match.EventDate));
+                jobClient.Schedule<IFetchTimelineTask>(
+                    t => t.PublishTeamStatistic(matchId, match.EventDate, team), insertStatisticDelayTime);
             }
         }
+
+        public async Task PublishTeamStatistic(string matchId, DateTimeOffset eventDate, Team team)
+            => await messageBus.Publish<ITeamStatisticUpdatedMessage>(
+                                new TeamStatisticUpdatedMessage(
+                                    matchId,
+                                    team.IsHome,
+                                    team.Statistic,
+                                    false,
+                                    eventDate));
 
         private async Task PublishMatchTimelines(Language language, Match match)
         {
