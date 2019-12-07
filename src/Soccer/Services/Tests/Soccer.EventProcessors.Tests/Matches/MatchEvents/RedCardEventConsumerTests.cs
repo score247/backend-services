@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoFixture;
 using FakeItEasy;
-using Fanex.Caching;
 using Fanex.Data.Repository;
 using MassTransit;
 using NSubstitute;
-using Score247.Shared;
 using Score247.Shared.Tests;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
@@ -26,9 +24,11 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
         private readonly ConsumeContext<IRedCardEventMessage> context;
         private readonly RedCardEventConsumer consumer;
         private readonly IDynamicRepository dynamicRepository;
+        private readonly Fixture fixture;
 
         public RedCardEventConsumerTests()
         {
+            fixture = new Fixture();
             messageBus = Substitute.For<IBus>();
             context = Substitute.For<ConsumeContext<IRedCardEventMessage>>();
 
@@ -47,7 +47,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
         }
 
         [Fact]
-        public async Task Consume_RedCard_ShouldPublishCorrectStatistic()
+        public async Task Consume_RedCard_ExistInDatabase_ShouldPublishCorrectStatistic()
         {
             const string matchId = "sr:match";
             context.Message.Returns(new RedCardEventMessage(new MatchEvent(
@@ -66,11 +66,11 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
             await consumer.Consume(context);
 
             await messageBus.Received(1).Publish(Arg.Any<MatchEventProcessedMessage>());
-            await messageBus.Received(1).Publish(Arg.Is<TeamStatisticUpdatedMessage>(stats => stats.TeamStatistic.RedCards == 1));
+            await messageBus.Received(1).Publish(Arg.Is<TeamStatisticUpdatedMessage>(stats => stats.TeamStatistic.RedCards == 2));
         }
 
         [Fact]
-        public async Task Consume_RedCardAndYellowRedCard_ShouldPublishCorrectStatistic()
+        public async Task Consume_RedCard_NotExistInDatabase_ShouldPublishCorrectStatistic()
         {
             const string matchId = "sr:match";
             context.Message.Returns(new RedCardEventMessage(new MatchEvent(
@@ -81,10 +81,29 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
                 )));
 
             dynamicRepository.FetchAsync<TimelineEvent>(Arg.Is<GetTimelineEventsCriteria>(c => c.MatchId == matchId))
-              .Returns(new List<TimelineEvent>
-              {
-                    StubRedCard(),
-                    StubYellowRedCard()
+                .Returns(new List<TimelineEvent>());
+
+            await consumer.Consume(context);
+
+            await messageBus.Received(1).Publish(Arg.Any<MatchEventProcessedMessage>());
+            await messageBus.Received(1).Publish(Arg.Is<TeamStatisticUpdatedMessage>(stats => stats.TeamStatistic.RedCards == 1));
+        }
+
+        [Fact]
+        public async Task Consume_YellowRedCard_NotExistInDatabase_ShouldPublishCorrectStatistic()
+        {
+            const string matchId = "sr:match";
+            context.Message.Returns(new RedCardEventMessage(new MatchEvent(
+                "sr:league",
+                matchId,
+                A.Dummy<MatchResult>(),
+                StubYellowRedCard()
+                )));
+
+            dynamicRepository.FetchAsync<TimelineEvent>(Arg.Is<GetTimelineEventsCriteria>(c => c.MatchId == matchId))
+              .Returns(new List<TimelineEvent> 
+              { 
+                    StubRedCard()
               });
 
             await consumer.Consume(context);
@@ -95,13 +114,40 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
                         && stats.TeamStatistic.YellowRedCards == 1));
         }
 
-        private static TimelineEvent StubRedCard()
-            => A.Dummy<TimelineEvent>()
-                .With(t => t.Type, EventType.RedCard);
+        [Fact]
+        public async Task Consume_YellowRedCard_ExistInDatabase_ShouldPublishCorrectStatistic()
+        {
+            const string matchId = "sr:match";
+            context.Message.Returns(new RedCardEventMessage(new MatchEvent(
+                "sr:league",
+                matchId,
+                A.Dummy<MatchResult>(),
+                StubYellowRedCard()
+                )));
 
-        private static TimelineEvent StubYellowRedCard()
+            dynamicRepository.FetchAsync<TimelineEvent>(Arg.Is<GetTimelineEventsCriteria>(c => c.MatchId == matchId))
+              .Returns(new List<TimelineEvent> {
+                  StubRedCard(),
+                  StubYellowRedCard()
+              });
+
+            await consumer.Consume(context);
+
+            await messageBus.Received(1).Publish(Arg.Any<MatchEventProcessedMessage>());
+            await messageBus.Received(1).Publish(Arg.Is<TeamStatisticUpdatedMessage>(
+                stats => stats.TeamStatistic.RedCards == 1
+                        && stats.TeamStatistic.YellowRedCards == 2));
+        }
+
+        private TimelineEvent StubRedCard()
             => A.Dummy<TimelineEvent>()
-                .With(t => t.Type, EventType.YellowRedCard);
+                .With(t => t.Type, EventType.RedCard)
+                .With(t => t.Id, fixture.Create<string>());
+
+        private TimelineEvent StubYellowRedCard()
+            => A.Dummy<TimelineEvent>()
+                .With(t => t.Type, EventType.YellowRedCard)
+                .With(t => t.Id, fixture.Create<string>());
     }
 
 #pragma warning restore S2699 // Tests should include assertions

@@ -11,6 +11,7 @@
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
+    using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.Models;
     using Soccer.Core.Teams.QueueMessages;
     using Soccer.Database.Matches.Criteria;
@@ -38,8 +39,8 @@
             var processedRedCards = await GetProcessedRedCards(matchEvent.MatchId, matchEvent.Timeline.Team);
 
             var teamStats = new TeamStatistic(
-                processedRedCards.Count(x => x.Type.IsRedCard()),
-                processedRedCards.Count(x => x.Type.IsYellowRedCard()));
+                GetNumberOfCardEvents(matchEvent.Timeline, processedRedCards, EventType.RedCard),
+                GetNumberOfCardEvents(matchEvent.Timeline, processedRedCards, EventType.YellowRedCard));
 
             await messageBus.Publish<ITeamStatisticUpdatedMessage>(new TeamStatisticUpdatedMessage(matchEvent.MatchId, matchEvent.Timeline.IsHome, teamStats, true));
             await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
@@ -54,6 +55,18 @@
                 : timelineEvents
                     .Where(t => t.Team == teamId && (t.Type.IsRedCard() || t.Type.IsYellowRedCard()))
                     .ToList();
+        }
+
+        internal static int GetNumberOfCardEvents(TimelineEvent timelineEvent, IList<TimelineEvent> processedCards, EventType eventType)
+        {
+            var numberOfCards = processedCards.Count(x => x.Type == eventType);
+
+            if (timelineEvent.Type == eventType && !processedCards.Any(timeline => timeline.Id == timelineEvent.Id))
+            {
+                return numberOfCards + 1;
+            }
+
+            return numberOfCards;
         }
     }
 }
