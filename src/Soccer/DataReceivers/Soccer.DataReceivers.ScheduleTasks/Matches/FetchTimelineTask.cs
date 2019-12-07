@@ -36,7 +36,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
     public class FetchTimelineTask : IFetchTimelineTask
     {
-        private static TimeSpan insertStatisticDelayTime = new TimeSpan(0, 0, 30);
+        private static TimeSpan insertStatisticDelayTime = new TimeSpan(0, 0, 60);
         private readonly ITimelineService timelineService;
         private readonly IBackgroundJobClient jobClient;
         private readonly IBus messageBus;
