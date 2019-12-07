@@ -1,13 +1,10 @@
 ﻿namespace Soccer.EventProcessors.Matches.MatchEvents
 {
-    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
-    using Fanex.Caching;
     using Fanex.Data.Repository;
     using MassTransit;
-    using Score247.Shared;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Matches.QueueMessages;
     using Soccer.Core.Matches.QueueMessages.MatchEvents;
