@@ -166,10 +166,10 @@ namespace Soccer.API.Matches
 
         private static TimelineEvent MapPlayerJerseyNumberForSubstitutionEvent(TeamLineups teamLineups, TimelineEvent timeline)
         {
-            var playerIn = teamLineups.Substitutions.FirstOrDefault(player => player.Id == timeline.PlayerIn.Id);
+            var playerIn = teamLineups.Substitutions.FirstOrDefault(player => player.Id == timeline?.PlayerIn?.Id);
             var timelinePlayerIn = playerIn == null ? timeline.PlayerIn : new Player(playerIn);
 
-            var playerOut = teamLineups.Players.FirstOrDefault(player => player.Id == timeline.PlayerOut.Id);
+            var playerOut = teamLineups.Players.FirstOrDefault(player => player.Id == timeline?.PlayerOut?.Id);
             var timelinePlayerOut = playerOut == null ? timeline.PlayerOut : new Player(playerOut);
 
             return new TimelineEvent(
