@@ -45,6 +45,7 @@ namespace Soccer.EventPublishers
 
         public void Configure(IApplicationBuilder app, IHostApplicationLifetime applicationLifetime)
         {
+            app.UseStaticFiles();
             app.ConfigureExceptionHandler();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
@@ -56,6 +57,7 @@ namespace Soccer.EventPublishers
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<SoccerHub>("/hubs/soccerhub");
+                endpoints.MapHub<ChatHub>("/chat");
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
         }

@@ -7,7 +7,7 @@ using Soccer.EventPublishers.Hubs;
 
 namespace Soccer.EventPublishers
 {
-    public class HomeController : ControllerBase
+    public class HomeController : Controller
     {
         private readonly IHubContext<SoccerHub> hubContext;
 
@@ -25,6 +25,11 @@ namespace Soccer.EventPublishers
                 Content = $"Clients Info: {clients}",
                 ContentType = "text/html"
             };
+        }
+
+        public IActionResult Chat()
+        {
+            return View();
         }
     }
 }
