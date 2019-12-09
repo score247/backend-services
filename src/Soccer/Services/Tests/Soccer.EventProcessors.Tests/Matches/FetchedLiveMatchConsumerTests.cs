@@ -130,7 +130,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             // Arrange
             var newMatch = StubNotStartedMatch("match:not:started", DateTimeOffset.Now.AddMinutes(3));
             var liveMatch = StubLiveMatch("match:live");
-            var closedMatch = StubClosedMatch("match:closed", endedTime: null);
+            var closedMatch = StubClosedMatch("match:closed", endedTime: DateTimeOffset.Now.AddMinutes(-5));
             var matchesFromApi = new List<Match> { newMatch, liveMatch, closedMatch };
 
             context.Message
@@ -204,6 +204,28 @@ namespace Soccer.EventProcessors.Tests.Matches
                 cmd => cmd.RemovedMatchIds.Contains("match:closed")
                         && cmd.NewMatches.Equals("[]")));
         }
+
+
+        [Fact]
+        public async Task Consume_ClosedMatchInApiButOutOfRange_ShouldExecuteCommand()
+        {
+            // Arrange
+            var closedMatch = StubClosedMatch("match:closed", endedTime: null);
+            var matchesFromApi = new List<Match> { closedMatch };
+
+            context.Message
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi));
+
+            dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
+                .Returns(new List<Match>());
+
+            // Act
+            await fetchedLiveMatchConsumer.Consume(context);
+
+            // Assert
+            await dynamicRepository.DidNotReceive().ExecuteAsync(Arg.Any<InsertOrRemoveLiveMatchesCommand>());
+        }
+
 
         [Fact]
         public async Task Consume_LiveMatchedNotChanged_ShouldNotExecuteCommand()

@@ -45,7 +45,7 @@ namespace Soccer.EventProcessors.Matches
 
             var currentLiveMatches = (await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(message.Language))).ToList();
             var removedMatches = GetRemovedMatches(message.Matches, currentLiveMatches);
-            var newMatches = GetNewMatches(message.Matches, currentLiveMatches);
+            var newMatches = GetNewMatches(message.Matches, currentLiveMatches).Except(removedMatches).ToList();
 
             if (removedMatches.Count > 0 || newMatches.Count > 0)
             {
@@ -64,7 +64,13 @@ namespace Soccer.EventProcessors.Matches
             var inRangeNotStarted = liveMatchRangeFilter
                 .FilterNotStarted(fetchedLiveMatches).ToList();
 
-            return inRangeNotStarted.Except(currentLiveMatches).ToList();
+            // remove out range closed match in api
+            var outRangeClosedMatches = GetOutOfRangeClosedMatches(fetchedLiveMatches);
+
+            return inRangeNotStarted
+                .Except(currentLiveMatches)
+                .Except(outRangeClosedMatches)
+                .ToList();
         }
 
         private IList<Match> GetRemovedMatches(IEnumerable<Match> fetchedLiveMatches, IEnumerable<Match> currentLiveMatches)
@@ -72,7 +78,7 @@ namespace Soccer.EventProcessors.Matches
             // closed matches were removed from api
             var removedMatches = currentLiveMatches.Except(fetchedLiveMatches).ToList();
 
-            // closed match still in api but out of range
+            // closed match in db but out of range
             removedMatches.AddRange(GetOutOfRangeClosedMatches(currentLiveMatches));
 
             // not started match still in api but out of range
