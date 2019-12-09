@@ -11,6 +11,7 @@ using NSubstitute.ExceptionExtensions;
 using Score247.Shared.Tests;
 using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
+using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Matches.Commands;
 using Soccer.Database.Matches.Criteria;
@@ -27,6 +28,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         private readonly ILogger logger;
         private readonly FetchedLiveMatchConsumer fetchedLiveMatchConsumer;
         private readonly ConsumeContext<ILiveMatchFetchedMessage> context;
+        private readonly IBus messageBus;
 #pragma warning disable S2699 // Tests should include assertions
 
         public FetchedLiveMatchConsumerTests()
@@ -34,7 +36,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             dynamicRepository = Substitute.For<IDynamicRepository>();
             logger = Substitute.For<ILogger>();
             context = Substitute.For<ConsumeContext<ILiveMatchFetchedMessage>>();
-            var messageBus = Substitute.For<IBus>();
+            messageBus = Substitute.For<IBus>();
             var liveMatchFilter = new LiveMatchFilter();
 
             fetchedLiveMatchConsumer = new FetchedLiveMatchConsumer(messageBus, dynamicRepository, liveMatchFilter, logger);
@@ -80,9 +82,8 @@ namespace Soccer.EventProcessors.Tests.Matches
         public async Task Consume_RemoveMatches_ShouldExecuteCommand()
         {
             var match = A.Dummy<Match>()
-                .With(m => m.Id, "match:closed")
-                .With(m => m.MatchResult, A.Dummy<MatchResult>().With(r => r.EventStatus, MatchStatus.Live))
-                ;
+                .With(m => m.Id, "match:closed");
+
             context.Message
                 .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>()));
 
@@ -93,6 +94,10 @@ namespace Soccer.EventProcessors.Tests.Matches
             await dynamicRepository.Received(1).ExecuteAsync(Arg.Is<InsertOrRemoveLiveMatchesCommand>(
                 cmd => cmd.RemovedMatchIds.Contains("match:closed")
                         && cmd.NewMatches.Equals("[]")));
+
+            await messageBus.Received(1).Publish(Arg.Is<LiveMatchUpdatedMessage>(
+                msg => msg.RemovedMatches.Count() == 1
+                        && !msg.NewMatches.Any()));
         }
 
         [Fact]
