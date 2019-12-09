@@ -9,6 +9,8 @@
         int NumOfDaysToShowOddsBeforeKickoffDate { get; }
 
         int CorrectTimelineSpanInMinutes { get; }
+
+        byte HeadToHeadIntervalInYears { get; }
     }
 
     public class AppSettings : IAppSettings
@@ -22,11 +24,14 @@
 
             NumOfDaysToShowOddsBeforeKickoffDate = GetValue<int>(nameof(NumOfDaysToShowOddsBeforeKickoffDate));
             CorrectTimelineSpanInMinutes = GetValue<int>(nameof(CorrectTimelineSpanInMinutes));
+            HeadToHeadIntervalInYears = GetValue<byte>(nameof(HeadToHeadIntervalInYears));
         }
 
         public int NumOfDaysToShowOddsBeforeKickoffDate { get; }
 
         public int CorrectTimelineSpanInMinutes { get; }
+
+        public byte HeadToHeadIntervalInYears { get; }
 
         public T GetValue<T>(string key)
         {

@@ -18,7 +18,7 @@ namespace Soccer.Core.Teams.QueueMessages
             Language = language;
         }
 
-        public Match Match { get; }
+        public Match Match { get; private set; }
 
         public Language Language { get; }
     }
