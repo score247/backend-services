@@ -43,16 +43,24 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         {
             var majorLeagues = await internalLeagueService.GetLeagues(Language.en_US);
 
+            if (majorLeagues == null || !majorLeagues.Any())
+            {
+                return;
+            }
+
             foreach (var language in Enumeration.GetAll<Language>())
             {
                 var matches = (await matchService.GetLiveMatches(Language.en_US))
-                    .Where(match => majorLeagues?.Any(league => league.Id == match.League.Id) == true);
+                    .Where(match => majorLeagues.Any(league => league.Id == match.League.Id));
 
                 foreach (var match in matches)
                 {
-                    await Task.WhenAll(
-                        fetchTimelineTask.FetchTimelines(match.Id, match.Region, language),
-                        fetchMatchLineupsTask.FetchMatchLineups(match.Id, match.Region, language));
+                    await fetchTimelineTask.FetchTimelines(match.Id, match.Region, language);
+
+                    if (match.MatchResult?.EventStatus?.IsClosed() == false)
+                    {
+                        await fetchMatchLineupsTask.FetchMatchLineups(match.Id, match.Region, language);
+                    }
                 }
             }
         }

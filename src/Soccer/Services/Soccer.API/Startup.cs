@@ -20,7 +20,7 @@ namespace Soccer.API
 {
     public class Startup
     {
-        private bool EnableSwagger = false;
+        private bool EnableSwagger;
 
         public Startup(IConfiguration configuration)
         {
