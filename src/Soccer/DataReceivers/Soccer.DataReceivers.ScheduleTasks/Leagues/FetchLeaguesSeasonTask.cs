@@ -36,9 +36,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             var batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
 
             //Notes: language not needed
-            var soccerLeagues = (await leagueService.GetLeagues(Language.en_US)).ToList();
+            var soccerLeagues = (await leagueService.GetLeagues(Language.en_US))?.ToList();
 
-            for (var i = 0; i * batchSize < soccerLeagues.Count; i++)
+            for (var i = 0; i * batchSize < soccerLeagues?.Count; i++)
             {
                 var leaguesBatch = soccerLeagues.Skip(i * batchSize).Take(batchSize);
 
