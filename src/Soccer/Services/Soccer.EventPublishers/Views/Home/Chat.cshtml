@@ -140,7 +140,7 @@
             }
 
             var connection = new signalR.HubConnectionBuilder()
-                                        .withUrl('@(Url.Action(""))/chat')
+                                        .withUrl('@(Url.Content("~"))/chat')
                                         .build();
             bindConnectionMessage(connection);
             connection.start()
