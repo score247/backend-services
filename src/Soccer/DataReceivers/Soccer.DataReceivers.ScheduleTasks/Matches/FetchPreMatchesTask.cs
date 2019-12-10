@@ -14,7 +14,6 @@ using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.Matches.Services;
 using Soccer.DataReceivers.ScheduleTasks.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
-using Soccer.DataReceivers.ScheduleTasks.Teams;
 
 namespace Soccer.DataReceivers.ScheduleTasks.Matches
 {
@@ -35,39 +34,41 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         private readonly IMatchService matchService;
         private readonly IBus messageBus;
         private readonly ILeagueService internalLeagueService;
+        private readonly IBackgroundJobClient jobClient;
 
         public FetchPreMatchesTask(
             IBus messageBus,
             IAppSettings appSettings,
             IMatchService matchService,
-            Func<DataProviderType, ILeagueService> leagueServiceFactory)
+            Func<DataProviderType, ILeagueService> leagueServiceFactory,
+            IBackgroundJobClient jobClient)
         {
             this.appSettings = appSettings;
             this.messageBus = messageBus;
             this.matchService = matchService;
             internalLeagueService = leagueServiceFactory(DataProviderType.Internal);
+            this.jobClient = jobClient;
         }
 
         public async Task FetchPreMatches(int dateSpan)
         {
             var majorLeagues = await internalLeagueService.GetLeagues(Language.en_US);
 
+            if (majorLeagues == null || !majorLeagues.Any())
+            {
+                return;
+            }
+
             foreach (var language in Enumeration.GetAll<Language>())
             {
-                for (var dayAdd = 0; dayAdd <= dateSpan; dayAdd++)
+                for (var dayAdd = 0; dayAdd < dateSpan; dayAdd++)
                 {
                     var fetchDate = DateTime.UtcNow.AddDays(dayAdd);
+                    var delayedHour = appSettings.ScheduleTasksSettings.FetchMatchesByDateDelayedHours + dayAdd - 1;
 
-                    if (dayAdd > 0)
-                    {
-                        BackgroundJob.Schedule<IFetchPreMatchesTask>(
-                            t => t.FetchPreMatchesForDate(fetchDate, language, majorLeagues),
-                            TimeSpan.FromHours(appSettings.ScheduleTasksSettings.FetchMatchesByDateDelayedHours * dayAdd));
-                    }
-                    else
-                    {
-                        BackgroundJob.Enqueue<IFetchPreMatchesTask>(t => t.FetchPreMatchesForDate(fetchDate, language, majorLeagues));
-                    }
+                    jobClient.Schedule<IFetchPreMatchesTask>(
+                        t => t.FetchPreMatchesForDate(fetchDate, language, majorLeagues),
+                        TimeSpan.FromHours(delayedHour));
                 }
             }
         }
@@ -97,18 +98,21 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                 await messageBus.Publish<IPreMatchesFetchedMessage>(
                     new PreMatchesFetchedMessage(batchOfMatches, language.DisplayName));
 
-                BackgroundJob.Enqueue<IFetchPreMatchesTimelineTask>(
+                jobClient.Enqueue<IFetchPreMatchesTimelineTask>(
                     task => task.FetchPreMatchTimeline(batchOfMatches));
             }
         }
 
-        private static void FetchPreMatchLeagueStanding(Language language, ICollection<Match> matches)
+        private void FetchPreMatchLeagueStanding(Language language, ICollection<Match> matches)
         {
             var leagueWithMatchesGroups = matches.GroupBy(match => new { match.League.Id, match.League.Region });
 
             foreach (var leagueWithMatches in leagueWithMatchesGroups)
             {
-                BackgroundJob.Enqueue<IFetchLeagueStandingsTask>(task => task.FetchLeagueStandings(leagueWithMatches.Key.Id, leagueWithMatches.Key.Region, language));
+                jobClient.Enqueue<IFetchLeagueStandingsTask>(task => task.FetchLeagueStandings(
+                    leagueWithMatches.Key.Id,
+                    leagueWithMatches.Key.Region,
+                    language));
             }
         }
     }
