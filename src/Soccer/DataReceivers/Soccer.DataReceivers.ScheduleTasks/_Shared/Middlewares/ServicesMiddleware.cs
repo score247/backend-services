@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Net.Http;
 using Fanex.Caching;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
 using Score247.Shared;
 using Soccer.Cache.Leagues;
+using Soccer.Core._Shared.Helpers;
 using Soccer.DataProviders._Shared.Enumerations;
 using Soccer.DataProviders.Internal._Share.Configurations;
 using Soccer.DataProviders.Internal.Leagues.Services;
+using Soccer.DataProviders.Internal.Share.Helpers;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.Matches.Services;
 using Soccer.DataProviders.Odds;
@@ -17,12 +20,13 @@ using Soccer.DataProviders.SportRadar.Odds;
 using Soccer.DataProviders.SportRadar.Shared.Configurations;
 using Soccer.DataProviders.SportRadar.Teams.Services;
 using Soccer.DataProviders.Teams.Services;
+using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
 
 namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
 {
     public static class ServicesMiddleware
     {
-        public static void AddServices(this IServiceCollection services, IConfiguration configuration)
+        public static void AddServices(this IServiceCollection services, IConfiguration configuration, IAppSettings appSettings)
         {
             services.AddSingleton<ICacheManager, CacheManager>();
             services.AddSingleton<ICacheService, CacheService>();
@@ -47,7 +51,18 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
 
             services.AddSingleton<ILeagueCache, LeagueCache>();
             services.AddSingleton(RestService.For<ISportRadarLeagueApi>(sportRadarDataProviderSettings.ServiceUrl));
-            services.AddSingleton(RestService.For<IInternalLeagueApi>(internalDataProviderSettings.ServiceUrl));
+            var authenticateApi = RestService.For<IAuthenticateApi>(internalDataProviderSettings.ServiceUrl);
+            services.AddSingleton(authenticateApi);
+            var cryptoHelper = new CryptographyHelper();
+            services.AddSingleton<ICryptographyHelper>(cryptoHelper);
+            var leagueApi = RestService.For<IInternalLeagueApi>(
+                new HttpClient(
+                    new AuthenticatedHttpClientHandler(authenticateApi.Authenticate, cryptoHelper, appSettings.EncryptKey))
+                {
+                    BaseAddress = new Uri(internalDataProviderSettings.ServiceUrl.TrimEnd('/'))
+                }
+                );
+            services.AddSingleton(leagueApi);
             services.AddSingleton<SportRadarLeagueService>();
             services.AddSingleton<InternalLeagueService>();
             services.AddSingleton<Func<DataProviderType, ILeagueService>>(serviceProvider => dataProviderType =>

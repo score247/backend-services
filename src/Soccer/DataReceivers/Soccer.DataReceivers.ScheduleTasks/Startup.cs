@@ -29,7 +29,7 @@ namespace Soccer.DataReceivers.ScheduleTasks
 
             var appSettings = new AppSettings(Configuration);
             services.AddSingleton<IAppSettings>(appSettings);
-            services.AddServices(Configuration);
+            services.AddServices(Configuration, appSettings);
             services.AddRabbitMq(Configuration);
             services.RegisterHangfire(Configuration);
 

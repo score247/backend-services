@@ -9,6 +9,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Shared.Configurations
         ScheduleTasksSettings ScheduleTasksSettings { get; }
 
         bool EnabledHangfireUI { get; }
+
+        string EncryptKey { get; }
     }
 
     public class AppSettings : IAppSettings
@@ -24,11 +26,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Shared.Configurations
             ScheduleTasksSettings = scheduleTaskSetting;
 
             EnabledHangfireUI = GetValue<bool>(nameof(EnabledHangfireUI));
+            EncryptKey = GetValue<string>(nameof(EncryptKey));
         }
 
         public ScheduleTasksSettings ScheduleTasksSettings { get; }
 
         public bool EnabledHangfireUI { get; }
+
+        public string EncryptKey { get; }
 
         public T GetValue<T>(string key)
         {
