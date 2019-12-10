@@ -31,11 +31,9 @@ namespace Soccer.API.Shared.Middlewares
             services.AddScoped<ILeagueQueryService, LeagueQueryService>();
             services.AddScoped<ITeamQueryService, TeamQueryService>();
 
-            
-
             services.AddSingleton<Func<DateTimeOffset>>(() => DateTimeOffset.Now);
             services.AddSingleton<IMatchLineupsGenerator>(new MatchLineupsSvgGenerator(
-                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"_Shared\App_Data\SvgFiles"),
+                Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"_Shared/App_Data/SvgFiles"),
                 (path) => SvgDocument.Open(path)
                 ));
         }
