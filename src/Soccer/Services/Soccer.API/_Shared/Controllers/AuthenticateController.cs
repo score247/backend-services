@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Soccer.API.Shared.Configurations;
 using Soccer.Core._Shared.Helpers;
+using Soccer.Core.Shared.Models;
 
 namespace Soccer.API._Shared.Controllers
 {
@@ -79,12 +80,5 @@ namespace Soccer.API._Shared.Controllers
 
             return token;
         }
-    }
-
-    public class AuthenticateInfo
-    {
-        public string UserId { get; set; }
-
-        public string EncryptedInfo { get; set; }
     }
 }

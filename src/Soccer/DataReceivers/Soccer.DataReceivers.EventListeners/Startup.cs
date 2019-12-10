@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using Fanex.Caching;
 using Fanex.Logging;
 using Fanex.Logging.Sentry;
@@ -15,10 +16,12 @@ using Refit;
 using Score247.Shared;
 using Sentry;
 using Soccer.Cache.Leagues;
+using Soccer.Core._Shared.Helpers;
 using Soccer.Core.Shared.Configurations;
 using Soccer.DataProviders._Shared.Enumerations;
 using Soccer.DataProviders.Internal._Share.Configurations;
 using Soccer.DataProviders.Internal.Leagues.Services;
+using Soccer.DataProviders.Internal.Share.Helpers;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.Matches.Services;
 using Soccer.DataProviders.SportRadar.Leagues.Services;
@@ -59,7 +62,19 @@ namespace Soccer.DataReceivers.EventListeners
             services.AddSingleton<ICacheManager, CacheManager>();
             services.AddSingleton<ICacheService, CacheService>();
             services.AddSingleton<ILeagueCache, LeagueCache>();
-            services.AddSingleton(RestService.For<IInternalLeagueApi>(internalDataProviderSettings.ServiceUrl));
+            services.AddSingleton<ILeagueCache, LeagueCache>();
+            var cryptoHelper = new CryptographyHelper();
+            services.AddSingleton<ICryptographyHelper>(cryptoHelper);
+            var authenticateApi = RestService.For<IAuthenticateApi>(internalDataProviderSettings.ServiceUrl);
+            services.AddSingleton(authenticateApi);
+            var leagueApi = RestService.For<IInternalLeagueApi>(
+                new HttpClient(
+                    new AuthenticatedHttpClientHandler(authenticateApi.Authenticate, cryptoHelper, appSettings.EncryptKey))
+                {
+                    BaseAddress = new Uri(internalDataProviderSettings.ServiceUrl.TrimEnd('/'))
+                }
+                );
+            services.AddSingleton(leagueApi);
             services.AddSingleton(RestService.For<ISportRadarLeagueApi>(sportRadarDataProviderSettings.ServiceUrl));
             services.AddSingleton<SportRadarLeagueService>();
             services.AddSingleton<SportRadarLeagueService>();

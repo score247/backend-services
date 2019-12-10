@@ -6,6 +6,7 @@
 
     public interface IAppSettings
     {
+        string EncryptKey { get; }
     }
 
     public class AppSettings : IAppSettings
@@ -15,7 +16,11 @@
         public AppSettings(IConfiguration configuration)
         {
             this.configuration = configuration;
+
+            EncryptKey = GetValue<string>(nameof(EncryptKey));
         }
+
+        public string EncryptKey { get; }
 
         public T GetValue<T>(string key)
         {

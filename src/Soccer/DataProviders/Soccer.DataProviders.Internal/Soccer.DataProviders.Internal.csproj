@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Infrastructure\Soccer.Cache\Soccer.Cache.csproj" />
+    <ProjectReference Include="..\..\Soccer.Core\Soccer.Core.csproj" />
     <ProjectReference Include="..\Soccer.DataProviders\Soccer.DataProviders.csproj" />
   </ItemGroup>
 
