@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Fanex.Logging;
 using Hangfire;
 using Score247.Shared.Enumerations;
 using Soccer.Core.Shared.Enumerations;
@@ -26,17 +27,20 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         private readonly IFetchMatchLineupsTask fetchMatchLineupsTask;
         private readonly IFetchTimelineTask fetchTimelineTask;
         private readonly ILeagueService internalLeagueService;
+        private readonly ILogger logger;
 
         public FetchLiveMatchesTimelineTask(
             IMatchService matchService,
             IFetchMatchLineupsTask fetchMatchLineupsTask,
             IFetchTimelineTask fetchTimelineTask,
-            Func<DataProviderType, ILeagueService> leagueServiceFactory)
+            Func<DataProviderType, ILeagueService> leagueServiceFactory,
+            ILogger logger)
         {
             this.matchService = matchService;
             this.fetchMatchLineupsTask = fetchMatchLineupsTask;
             this.fetchTimelineTask = fetchTimelineTask;
             internalLeagueService = leagueServiceFactory(DataProviderType.Internal);
+            this.logger = logger;
         }
 
         public async Task FetchLiveMatchesTimeline()
@@ -45,6 +49,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
             if (majorLeagues == null || !majorLeagues.Any())
             {
+                await logger.ErrorAsync("FetchLiveMatchesTimeline - Major leagues not found");
                 return;
             }
 

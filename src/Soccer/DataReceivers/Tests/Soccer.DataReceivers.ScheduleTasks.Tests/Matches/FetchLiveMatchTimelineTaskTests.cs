@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FakeItEasy;
+using Fanex.Logging;
 using NSubstitute;
 using Score247.Shared.Tests;
 using Soccer.Core.Leagues.Models;
@@ -22,6 +23,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         private readonly IFetchTimelineTask fetchTimelineTask;
         private readonly ILeagueService internalLeagueService;
         private readonly Func<DataProviderType, ILeagueService> leagueServiceFactory;
+        private readonly ILogger logger;
 
         private readonly FetchLiveMatchesTimelineTask fetchLiveMatchesTimelineTask;
 
@@ -31,11 +33,12 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             fetchMatchLineupsTask = Substitute.For<IFetchMatchLineupsTask>();
             fetchTimelineTask = Substitute.For<IFetchTimelineTask>();
             internalLeagueService = Substitute.For<ILeagueService>();
+            logger = Substitute.For<ILogger>();
 
             leagueServiceFactory = Substitute.For<Func<DataProviderType, ILeagueService>>();
             leagueServiceFactory(DataProviderType.Internal).Returns(internalLeagueService);
 
-            fetchLiveMatchesTimelineTask = new FetchLiveMatchesTimelineTask(matchService, fetchMatchLineupsTask, fetchTimelineTask, leagueServiceFactory);
+            fetchLiveMatchesTimelineTask = new FetchLiveMatchesTimelineTask(matchService, fetchMatchLineupsTask, fetchTimelineTask, leagueServiceFactory, logger);
         }
 
         [Fact]
@@ -44,6 +47,16 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             await fetchLiveMatchesTimelineTask.FetchLiveMatchesTimeline();
 
             await matchService.DidNotReceive().GetLiveMatches(Arg.Any<Language>());
+        }
+
+        [Fact]
+        public async Task FetchLiveMatchesTimeline_EmptyMajorLeagues_LogError()
+        {
+            await fetchLiveMatchesTimelineTask.FetchLiveMatchesTimeline();
+
+            await matchService.DidNotReceive().GetLiveMatches(Arg.Any<Language>());
+
+            await logger.ErrorAsync(Arg.Any<string>());
         }
 
         [Fact]
