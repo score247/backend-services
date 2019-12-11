@@ -26,8 +26,8 @@
 
             var command = message.IsUpdateOnlyRedCard
                 ? (INonQueryCommand)new UpdateLiveMatchTeamRedCardCommand(
-                    message.MatchId, message.IsHome, message.TeamStatistic.RedCards, message.TeamStatistic.YellowRedCards)
-                : new UpdateLiveMatchTeamStatisticCommand(message.MatchId, message.IsHome, message.TeamStatistic);
+                    message.MatchId, message.IsHome, message.TeamStatistic.RedCards, message.TeamStatistic.YellowRedCards, message.EventDate)
+                : new UpdateLiveMatchTeamStatisticCommand(message.MatchId, message.IsHome, message.TeamStatistic, message.EventDate);
 
             await dynamicRepository.ExecuteAsync(command);
         }
