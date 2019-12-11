@@ -13,12 +13,12 @@ namespace Soccer.Database._Shared.Extensions
                 return settingKey;
             }
 
-            if (dateTime.Date <= currentDate.AddDays(-DateSpan).Date)
+            if (dateTime.ToUniversalTime().Date < currentDate.ToUniversalTime().AddDays(-DateSpan).Date)
             {
                 return $"{settingKey}_Former";
             }
 
-            if (dateTime.Date >= currentDate.AddDays(DateSpan).Date)
+            if (dateTime.ToUniversalTime().Date > currentDate.ToUniversalTime().AddDays(DateSpan).Date)
             {
                 return $"{settingKey}_Ahead";
             }

@@ -1,5 +1,5 @@
 ﻿using System;
-using FakeItEasy;
+using AutoFixture;
 using Soccer.Database._Shared.Extensions;
 using Xunit;
 
@@ -7,20 +7,32 @@ namespace Soccer.Database.Tests._Shared.Extensions
 {
     public class SettingKeyExtensionTest
     {
-        [Fact]
-        public void GetCorrespondingKey_GetFormer() 
-        {
-            var sp = A.Dummy<string>();
+        private readonly Fixture fixture;
 
-            var settingKey = sp.GetCorrespondingKey(DateTime.Now.AddDays(-3), DateTimeOffset.Now);
+        public SettingKeyExtensionTest() 
+        {
+            fixture = new Fixture();
+        }
+
+        [Theory]
+        [InlineData(5)]
+        [InlineData(6)]
+        [InlineData(7)]
+        public void GetCorrespondingKey_FormerAtBound_GetFormer(int date)
+        {
+            var sp = fixture.Create<string>();
+            var currentDate = new DateTimeOffset(new DateTime(2019, 12, 11, 7, 0 , 0), TimeSpan.FromHours(7));
+            var eventDate = new DateTimeOffset(new DateTime(2019, 12, date, 7, 0, 0), TimeSpan.FromHours(7));
+
+            var settingKey = sp.GetCorrespondingKey(eventDate, currentDate);
 
             Assert.Equal($"{sp}_Former", settingKey);
         }
-
+        
         [Fact]
         public void GetCorrespondingKey_DefaultOfDateTime_GetCurrent()
         {
-            var sp = A.Dummy<string>();
+            var sp = fixture.Create<string>();
 
             var settingKey = sp.GetCorrespondingKey(default, DateTimeOffset.Now);
 
@@ -28,26 +40,35 @@ namespace Soccer.Database.Tests._Shared.Extensions
         }
 
         [Theory]
-        [InlineData(-2)]
-        [InlineData(-1)]
-        [InlineData(0)]
-        [InlineData(1)]
-        [InlineData(2)]
-        public void GetCorrespondingKey_GetCurrent(int dateSpan)
+        [InlineData(8)]
+        [InlineData(9)]
+        [InlineData(10)]
+        [InlineData(11)]
+        [InlineData(12)]
+        [InlineData(13)]
+        [InlineData(14)]
+        public void GetCorrespondingKey_InCurrentRange_GetCurrent(int date)
         {
-            var sp = A.Dummy<string>();
+            var sp = fixture.Create<string>();
+            var currentDate = new DateTimeOffset(new DateTime(2019, 12, 11, 7, 0, 0), TimeSpan.FromHours(7));
+            var eventDate = new DateTimeOffset(new DateTime(2019, 12, date, 7, 0, 0), TimeSpan.FromHours(7));
 
-            var settingKey = sp.GetCorrespondingKey(DateTimeOffset.Now.AddDays(dateSpan), DateTimeOffset.Now);
+            var settingKey = sp.GetCorrespondingKey(eventDate, currentDate);
 
             Assert.Equal(sp, settingKey);
         }
 
-        [Fact]
-        public void GetCorrespondingKey_GetAhead()
+        [Theory]
+        [InlineData(15)]
+        [InlineData(16)]
+        [InlineData(17)]
+        public void GetCorrespondingKey_GetAhead(int date)
         {
-            var sp = A.Dummy<string>();
+            var sp = fixture.Create<string>();
+            var currentDate = new DateTimeOffset(new DateTime(2019, 12, 11, 7, 0, 0), TimeSpan.FromHours(7));
+            var eventDate = new DateTimeOffset(new DateTime(2019, 12, date, 7, 0, 0), TimeSpan.FromHours(7));
 
-            var settingKey = sp.GetCorrespondingKey(DateTimeOffset.Now.AddDays(3), DateTimeOffset.Now);
+            var settingKey = sp.GetCorrespondingKey(eventDate, currentDate);
 
             Assert.Equal($"{sp}_Ahead", settingKey);
         }
