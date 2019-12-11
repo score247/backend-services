@@ -42,7 +42,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
 
             var leagueServiceFactory = Substitute.For<Func<DataProviderType, ILeagueService>>();
             leagueServiceFactory(DataProviderType.Internal).Returns(internalLeagueService);
-            appSettings.ScheduleTasksSettings.Returns(A.Dummy<ScheduleTasksSettings>().With(setting => setting.FetchMatchesByDateDelayedHours, 1));
+            appSettings.ScheduleTasksSettings.Returns(A.Dummy<ScheduleTasksSettings>()
+                .With(setting => setting.FetchMatchesByDateDelayedHours, 1)
+                .With(setting => setting.QueueBatchSize, 3));
+
             majorLeagues = new List<League>
             {
                 StubLeague("major:1"),
@@ -119,16 +122,15 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         }
 
         [Fact]
-        public async Task FetchPreMatchesForDate_MatchInMajor_PublishMessageAndEnqueueTask()
+        public async Task FetchPreMatchesForDate_MatchNotInMajorPublishMessageAndEnqueueTask()
         {
             var fetchDate = DateTime.Now;
-            var match = A.Dummy<Match>().With(match => match.League, StubLeague("major:1"));
-            matchService
-                .GetPreMatches(Arg.Any<DateTime>(), Language.en_US)
-                .Returns(new List<Match>
-                {
-                    match
-                }); 
+            matchService.GetPreMatches(Arg.Is<DateTime>(date => date == fetchDate), Language.en_US).Returns(new List<Match>
+            {
+                A.Dummy<Match>()
+                    .With(match => match.League, StubLeague("major:1"))
+                    .With(match => match.MatchResult, StubMatchResult(MatchStatus.NotStarted))
+            });
 
             await fetchPreMatchesTask.FetchPreMatchesForDate(fetchDate, Language.en_US, majorLeagues);
 
@@ -143,5 +145,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
 
         private League StubLeague(string id)
             => A.Dummy<League>().With(league => league.Id, id);
+
+        private MatchResult StubMatchResult(MatchStatus eventStatus)
+            => A.Dummy<MatchResult>().With(result => result.EventStatus, eventStatus);
     }
 }
