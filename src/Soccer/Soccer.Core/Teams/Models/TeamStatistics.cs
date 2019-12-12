@@ -49,7 +49,7 @@
             CornerKicks = cornerKicks;
             Fouls = fouls;
             ShotsSaved = shotsSaved;
-            OffSides = offSides;
+            Offsides = offSides;
             YellowCards = yellowCards;
             Injuries = injuries;
             RedCards = redCards;
@@ -77,7 +77,7 @@
 
         public int ShotsSaved { get; }
 
-        public int OffSides { get; }
+        public int Offsides { get; }
 
         public int YellowCards { get; }
 
