@@ -28,9 +28,11 @@ namespace Soccer.Core.Leagues.Extensions
 
         public static string MapLeagueGroupName(this League league, LeagueRound leagueRound, Language language)
         {
+            var defaultLeagueName = league?.Name ?? string.Empty;
+
             if (league == null || leagueRound == null)
             {
-                return string.Empty;
+                return defaultLeagueName;
             }
 
             foreach (var builder in leagueNameBuilders)
@@ -43,7 +45,7 @@ namespace Soccer.Core.Leagues.Extensions
                 }
             }
 
-            return string.Empty;
+            return defaultLeagueName;
         }
 
         // Please refer to wiki to see rule list wiki/Scores_-_Show_League_name_by_rule#LeagueNameRule
