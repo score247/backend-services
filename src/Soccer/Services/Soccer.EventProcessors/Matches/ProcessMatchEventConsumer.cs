@@ -36,9 +36,11 @@
 
         private async Task UpdateLiveMatchResult(MatchEvent matchEvent)
         {
-            //TODO reduce calls of update match results
-            await dynamicRepository.ExecuteAsync(new UpdateLiveMatchResultCommand(matchEvent.MatchId, matchEvent.MatchResult, matchEvent.EventDate));
-            await dynamicRepository.ExecuteAsync(new UpdateLiveMatchLastTimelineCommand(matchEvent.MatchId, matchEvent.Timeline, matchEvent.EventDate));
+            if (matchEvent.IsLatest)
+            {
+                await dynamicRepository.ExecuteAsync(new UpdateLiveMatchResultCommand(matchEvent.MatchId, matchEvent.MatchResult, matchEvent.EventDate));
+                await dynamicRepository.ExecuteAsync(new UpdateLiveMatchLastTimelineCommand(matchEvent.MatchId, matchEvent.Timeline, matchEvent.EventDate));
+            }
         }
 
         private async Task InsertTimeline(MatchEvent matchEvent)
