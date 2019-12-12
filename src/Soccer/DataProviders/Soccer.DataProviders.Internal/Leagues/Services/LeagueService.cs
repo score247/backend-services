@@ -63,7 +63,7 @@ namespace Soccer.DataProviders.Internal.Leagues.Services
             }
         }
 
-        public Task<IEnumerable<LeagueTable>> GetLeagueStandings(string leagueId, Language language, string regionName)
+        public Task<IEnumerable<LeagueTable>> GetLeagueStandings(string leagueId, Language language, string regionName, bool getLiveDataFirst = true)
         {
             throw new NotImplementedException();
         }

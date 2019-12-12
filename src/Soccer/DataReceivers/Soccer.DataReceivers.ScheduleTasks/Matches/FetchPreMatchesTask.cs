@@ -112,7 +112,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                 jobClient.Enqueue<IFetchLeagueStandingsTask>(task => task.FetchLeagueStandings(
                     leagueWithMatches.Key.Id,
                     leagueWithMatches.Key.Region,
-                    language));
+                    language,
+                    false));
             }
         }
     }

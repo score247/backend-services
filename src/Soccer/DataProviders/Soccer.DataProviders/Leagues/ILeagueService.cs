@@ -10,7 +10,7 @@ namespace Soccer.DataProviders.Leagues
     {
         Task<IEnumerable<League>> GetLeagues(Language language);
 
-        Task<IEnumerable<LeagueTable>> GetLeagueStandings(string leagueId, Language language, string regionName);
+        Task<IEnumerable<LeagueTable>> GetLeagueStandings(string leagueId, Language language, string regionName, bool getLiveDataFirst = true);
 
         Task<IEnumerable<LeagueTable>> GetLeagueLiveStandings(string leagueId, Language language, string regionName);
     }

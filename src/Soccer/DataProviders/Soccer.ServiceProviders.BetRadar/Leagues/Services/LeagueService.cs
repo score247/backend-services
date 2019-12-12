@@ -21,16 +21,16 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
     public interface ISportRadarLeagueApi
     {
         [Get("/soccer-{accessLevel}{version}/{region}/{language}/tournaments.json?api_key={apiKey}")]
-        Task<Dtos.TournamentResult> GetRegionLeagues(string accessLevel, string version, string region, string language, string apiKey);
+        Task<TournamentResult> GetRegionLeagues(string accessLevel, string version, string region, string language, string apiKey);
 
         [Get("/soccer-{accessLevel}{version}/{region}/{language}/tournaments/{leagueId}/schedule.json?api_key={apiKey}")]
-        Task<Dtos.TournamentSchedule> GetLeagueSchedule(string accessLevel, string version, string region, string language, string leagueId, string apiKey);
+        Task<TournamentSchedule> GetLeagueSchedule(string accessLevel, string version, string region, string language, string leagueId, string apiKey);
 
         [Get("/soccer-{accessLevel}{version}/{region}/{language}/tournaments/{tournamentId}/standings.json?api_key={apiKey}")]
-        Task<Dtos.TournamentStandingDto> GetTournamentStandings(string accessLevel, string version, string region, string language, string tournamentId, string apiKey);
+        Task<TournamentStandingDto> GetTournamentStandings(string accessLevel, string version, string region, string language, string tournamentId, string apiKey);
 
         [Get("/soccer-{accessLevel}{version}/{region}/{language}/tournaments/{tournamentId}/live_standings.json?api_key={apiKey}")]
-        Task<Dtos.TournamentStandingDto> GetTournamentLiveStandings(string accessLevel, string version, string region, string language, string tournamentId, string apiKey);
+        Task<TournamentStandingDto> GetTournamentLiveStandings(string accessLevel, string version, string region, string language, string tournamentId, string apiKey);
     }
 
     public class SportRadarLeagueService : ILeagueService, ILeagueScheduleService
@@ -101,13 +101,16 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             return Enumerable.Empty<Match>();
         }
 
-        public async Task<IEnumerable<LeagueTable>> GetLeagueStandings(string leagueId, Language language, string regionName)
+        public async Task<IEnumerable<LeagueTable>> GetLeagueStandings(string leagueId, Language language, string regionName, bool getLiveDataFirst = true)
         {
-            var liveLeagueStanding = await GetLeagueStandings(leagueId, language, regionName, leagueApi.GetTournamentLiveStandings);
-
-            if (liveLeagueStanding.Any())
+            if (getLiveDataFirst)
             {
-                return liveLeagueStanding;
+                var liveLeagueStanding = await GetLeagueStandings(leagueId, language, regionName, leagueApi.GetTournamentLiveStandings);
+
+                if (liveLeagueStanding.Any())
+                {
+                    return liveLeagueStanding;
+                }
             }
 
             return await GetLeagueStandings(leagueId, language, regionName, leagueApi.GetTournamentStandings);

@@ -16,7 +16,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
     {
         [AutomaticRetry(Attempts = 1)]
         [Queue("medium")]
-        Task FetchLeagueStandings(string leagueId, string region, Language language);
+        Task FetchLeagueStandings(string leagueId, string region, Language language, bool getLiveDataFirst);
 
         [AutomaticRetry(Attempts = 1)]
         [Queue("medium")]
@@ -28,17 +28,22 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 
     public class FetchLeagueStandingsTask : IFetchLeagueStandingsTask
     {
+        private readonly TimeSpan ReUpdateLeagueStandingTimeSpan = new TimeSpan(0, 10, 0);
         private readonly IBus messageBus;
         private readonly Func<DataProviderType, ILeagueService> leagueServiceFactory;
         private readonly ILeagueService sportradarLeagueService;
+        private readonly IBackgroundJobClient jobClient;
 
         public FetchLeagueStandingsTask(
             IBus messageBus,
-            Func<DataProviderType, ILeagueService> leagueServiceFactory)
+            Func<DataProviderType, ILeagueService> leagueServiceFactory,
+            IBackgroundJobClient jobClient)
         {
             this.messageBus = messageBus;
             this.leagueServiceFactory = leagueServiceFactory;
             sportradarLeagueService = leagueServiceFactory(DataProviderType.SportRadar);
+
+            this.jobClient = jobClient;
         }
 
         public void FetchClosedMatchesStanding(IEnumerable<Match> closedMatches, Language language)
@@ -55,13 +60,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 
             foreach (var league in leagues)
             {
-                BackgroundJob.Enqueue<IFetchLeagueStandingsTask>(task => task.FetchLeagueStandings(league.Id, league.Region, language));
+                BackgroundJob.Enqueue<IFetchLeagueStandingsTask>(task => task.FetchLeagueStandings(league.Id, league.Region, language, true));
+                jobClient.Schedule<IFetchLeagueStandingsTask>(task => task.FetchLeagueStandings(league.Id, league.Region, language, false), ReUpdateLeagueStandingTimeSpan);
             }
         }
 
-        public async Task FetchLeagueStandings(string leagueId, string region, Language language)
+        public async Task FetchLeagueStandings(string leagueId, string region, Language language, bool getLiveDataFirst)
         {
-            var leagueTables = await sportradarLeagueService.GetLeagueStandings(leagueId, language, region);
+            var leagueTables = await sportradarLeagueService.GetLeagueStandings(leagueId, language, region, getLiveDataFirst);
 
             foreach (var leagueTable in leagueTables)
             {
@@ -78,7 +84,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             {
                 foreach (var league in leagues)
                 {
-                    await FetchLeagueStandings(league.Id, league.Region, Language.en_US);
+                    await FetchLeagueStandings(league.Id, league.Region, Language.en_US, true);
                 }
             }
         }
