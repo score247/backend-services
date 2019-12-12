@@ -3,7 +3,7 @@ DROP EVENT IF EXISTS Event_ShiftMatchData_environment;
 CREATE EVENT Event_ShiftMatchData_environment
     ON SCHEDULE
       EVERY 6 HOUR
-      STARTS CURRENT_TIMESTAMP
+      STARTS '2019-12-13 00:01:00'
     DO  
     BEGIN 
 		Call score247db.EventSchedulerLog_Insert('Event_ShiftMatchData_environment', 'start');
