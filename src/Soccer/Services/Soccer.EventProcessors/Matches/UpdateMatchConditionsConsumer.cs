@@ -1,11 +1,11 @@
-﻿namespace Soccer.EventProcessors.Matches
-{
-    using System.Threading.Tasks;
-    using Fanex.Data.Repository;
-    using MassTransit;
-    using Soccer.Core.Matches.QueueMessages;
-    using Soccer.Database.Matches.Commands;
+﻿using System.Threading.Tasks;
+using Fanex.Data.Repository;
+using MassTransit;
+using Soccer.Core.Matches.QueueMessages;
+using Soccer.Database.Matches.Commands;
 
+namespace Soccer.EventProcessors.Matches
+{
     public class UpdateMatchConditionsConsumer : IConsumer<IMatchUpdatedConditionsMessage>
     {
         private readonly IDynamicRepository dynamicRepository;
@@ -15,18 +15,21 @@
             this.dynamicRepository = dynamicRepository;
         }
 
-        public Task Consume(ConsumeContext<IMatchUpdatedConditionsMessage> context)
+        public async Task Consume(ConsumeContext<IMatchUpdatedConditionsMessage> context)
         {
-            var message = context.Message;
+            if (context.Message == null || context.Message.Language == null)
+            {
+                return;
+            }
 
             var command = new UpdateMatchRefereeAndAttendanceCommand(
-                message.MatchId, 
-                message.Referee, 
-                message.Attendance, 
-                message.Language.DisplayName, 
-                message.EventDate);
+                context.Message.MatchId,
+                context.Message.Referee,
+                context.Message.Attendance,
+                context.Message.Language.DisplayName,
+                context.Message.EventDate);
 
-            return dynamicRepository.ExecuteAsync(command);
+            await dynamicRepository.ExecuteAsync(command);
         }
     }
 }

@@ -33,6 +33,12 @@ namespace Soccer.EventProcessors.Matches
         public async Task Consume(ConsumeContext<IPreMatchesFetchedMessage> context)
         {
             var message = context.Message;
+
+            if (message == null || !message.Matches.Any())
+            {
+                return;
+            }
+
             var majorLeagues = await leagueService.GetMajorLeagues();
 
             var updatedMatches = message.Matches
