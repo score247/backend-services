@@ -18,8 +18,8 @@
             Language = language;
         }
 
-        public IEnumerable<Match> Matches { get; }
+        public IEnumerable<Match> Matches { get; private set; }
 
-        public string Language { get; }
+        public string Language { get; private set; }
     }
 }

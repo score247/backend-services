@@ -25,6 +25,13 @@ namespace Soccer.EventProcessors.Matches
         public async Task Consume(ConsumeContext<IPostMatchFetchedMessage> context)
         {
             var message = context.Message;
+
+            if (message == null || !message.Matches.Any())
+            {
+                return;
+            }
+
+
             var majorLeagues = await leagueService.GetMajorLeagues();
             var updatedMatches = message.Matches
                 .Select(match =>
@@ -32,11 +39,16 @@ namespace Soccer.EventProcessors.Matches
                     match.League.UpdateMajorLeagueInfo(majorLeagues);
 
                     return match;
-                });
+                }).GroupBy(match => match.EventDate.Date);
 
-            var command = new InsertOrUpdatePostMatchesCommand(updatedMatches, message.Language);
 
-            await dynamicRepository.ExecuteAsync(command);
+            foreach (var matchGroup in updatedMatches)
+            {
+                var matches = matchGroup.ToList();
+                var command = new InsertOrUpdatePostMatchesCommand(matches, message.Language, matchGroup.Key);
+
+                await dynamicRepository.ExecuteAsync(command);
+            }
         }
     }
 }

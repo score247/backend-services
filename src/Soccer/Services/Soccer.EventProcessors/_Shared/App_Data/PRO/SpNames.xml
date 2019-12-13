@@ -1,8 +1,11 @@
 ﻿<Functions>
   <Function Name="Match">
-    <Setting Key="Match_InsertOrUpdatePostMatches" SpName="Match_InsertOrUpdatePostMatches" DbName="DefaultConnection" />
     <Setting Key="Match_RemoveTimelines" SpName="Match_RemoveTimelines" DbName="DefaultConnection" />
     <Setting Key="Match_GetByDateRange" SpName="Match_GetByDateRange" DbName="DefaultConnection" />
+
+    <Setting Key="Match_InsertOrUpdatePostMatches" SpName="Match_InsertOrUpdatePostMatches" DbName="DefaultConnection" />
+    <Setting Key="Match_InsertOrUpdatePostMatches_Former" SpName="Match_InsertOrUpdatePostMatches" DbName="FormerDbConnection" />
+    <Setting Key="Match_InsertOrUpdatePostMatches_Ahead" SpName="Match_InsertOrUpdatePostMatches" DbName="AheadDbConnection" />
 
     <Setting Key="Match_InsertMatches" SpName="Match_InsertMatches" DbName="DefaultConnection" />
     <Setting Key="Match_InsertMatches_Former" SpName="Match_InsertMatches" DbName="FormerDbConnection" />
