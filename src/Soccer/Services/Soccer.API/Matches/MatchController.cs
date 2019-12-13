@@ -49,6 +49,11 @@ namespace Soccer.API.Matches
           => await mediator.Send(new LiveMatchesRequest(language));
 
         [HttpGet]
+        [Route("live/count")]
+        public async Task<int> GetLiveCount(string language = Language.English)
+          => await mediator.Send(new LiveMatchCountRequest());
+
+        [HttpGet]
         [Route("{id}/coverage")]
         public async Task<MatchCoverage> GetMatchCoverage(string id, string language = Language.English, DateTimeOffset eventDate = default)
            => await mediator.Send(new MatchCoverageByIdRequest(id, language, eventDate));
