@@ -63,7 +63,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         }
 
         [Fact]
-        public async Task Consume_MatchEventNotLatest_UpdateLiveMatchResultAndTimeline()
+        public async Task Consume_LatestMatchEvent_UpdateLiveMatchResultAndTimeline()
         {
             var matchEvent = A.Dummy<MatchEvent>().With(matchEvent => matchEvent.IsLatest, true);
             var matchEventMessage = A.Dummy<MatchEventProcessedMessage>().With(message => message.MatchEvent, matchEvent);
