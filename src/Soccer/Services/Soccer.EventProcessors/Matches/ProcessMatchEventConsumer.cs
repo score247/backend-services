@@ -1,14 +1,14 @@
-﻿namespace Soccer.EventProcessors.Matches
-{
-    using System.Collections.Generic;
-    using System.Threading.Tasks;
-    using Fanex.Data.Repository;
-    using MassTransit;
-    using Soccer.Core.Matches.Models;
-    using Soccer.Core.Matches.QueueMessages;
-    using Soccer.Core.Shared.Enumerations;
-    using Soccer.Database.Matches.Commands;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Fanex.Data.Repository;
+using MassTransit;
+using Soccer.Core.Matches.Models;
+using Soccer.Core.Matches.QueueMessages;
+using Soccer.Core.Shared.Enumerations;
+using Soccer.Database.Matches.Commands;
 
+namespace Soccer.EventProcessors.Matches
+{
     public class ProcessMatchEventConsumer : IConsumer<IMatchEventProcessedMessage>
     {
         private readonly IDynamicRepository dynamicRepository;

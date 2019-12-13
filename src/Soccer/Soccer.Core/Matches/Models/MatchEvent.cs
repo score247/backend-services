@@ -25,7 +25,7 @@ namespace Soccer.Core.Matches.Models
 
         public string MatchId { get; }
 
-        public bool IsLatest { get; }
+        public bool IsLatest { get; private set; }
 
         public MatchResult MatchResult { get; }
 

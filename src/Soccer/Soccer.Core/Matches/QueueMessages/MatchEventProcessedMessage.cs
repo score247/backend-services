@@ -14,6 +14,6 @@
             MatchEvent = matchEvent;
         }
 
-        public MatchEvent MatchEvent { get; }
+        public MatchEvent MatchEvent { get; private set; }
     }
 }
