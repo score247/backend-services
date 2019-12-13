@@ -82,10 +82,15 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
 
         public static LeagueGroupNote MapGroupLog(TeamLogDto teamLogDto)
         {
+            if (teamLogDto == null)
+            {
+                return null;
+            }
+
             var groupNote = new LeagueGroupNote(
                 teamLogDto.id,
                 teamLogDto.name,
-                teamLogDto.comments.Select(comment => comment.text)
+                teamLogDto.comments?.Select(comment => comment.text)
                 );
 
             return groupNote;
