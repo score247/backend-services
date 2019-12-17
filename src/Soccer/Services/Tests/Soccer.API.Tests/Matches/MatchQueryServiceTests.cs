@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoFixture;
 using FakeItEasy;
 using Fanex.Caching;
 using Fanex.Data.Repository;
@@ -22,17 +23,27 @@ namespace Soccer.API.Tests.Matches
     [Trait("Soccer.API", "Match")]
     public class MatchQueryServiceTests
     {
+        private const string FormatDate = "yyyyMMdd-hhmmss";
+
         private readonly MatchQueryService matchQueryService;
         private readonly IDynamicRepository dynamicRepository;
         private readonly ICacheManager cacheManager;
         private readonly Func<DateTimeOffset> currentTimeFunc;
+        private readonly Fixture fixture;
 
         public MatchQueryServiceTests()
         {
+            fixture = new Fixture();
+
             dynamicRepository = Substitute.For<IDynamicRepository>();
-            var appSettings = Substitute.For<IAppSettings>();
             cacheManager = Substitute.For<ICacheManager>();
             currentTimeFunc = Substitute.For<Func<DateTimeOffset>>();
+            currentTimeFunc().Returns(DateTimeOffset.Now);
+
+            var appSettings = Substitute.For<IAppSettings>();
+            appSettings.MatchShortCacheTimeDuration.Returns(1);
+            appSettings.MatchLongCacheTimeDuration.Returns(2);
+
             matchQueryService = new MatchQueryService(dynamicRepository, cacheManager, appSettings, currentTimeFunc);
         }
 
@@ -49,6 +60,30 @@ namespace Soccer.API.Tests.Matches
                 Arg.Any<CacheItemOptions>());
         }
 
+        [Fact]
+        public async Task GetByDateRange_Current_GetOrSetAsyncFromCache()
+        {
+            var from = DateTimeOffset.Now;
+            var to = DateTimeOffset.Now.AddDays(1);
+
+            await matchQueryService.GetByDateRange(from, to, Language.en_US);
+
+            await cacheManager.Received(1).GetOrSetAsync(
+                $"MatchQuery_MatchListCacheKey_{from.ToString(FormatDate)}_{to.ToString(FormatDate)}",
+                Arg.Any<Func<Task<IEnumerable<Match>>>>(),
+                Arg.Any<CacheItemOptions>());
+        }
+
+        [Fact]
+        public async Task GetByDateRange_Former_FetchAsyncFromRepository()
+        {
+            var from = DateTimeOffset.Now.AddDays(-4);
+            var to = DateTimeOffset.Now.AddDays(-3);
+
+            await matchQueryService.GetByDateRange(from, to, Language.en_US);
+
+            await dynamicRepository.Received(1).FetchAsync<Match>(Arg.Any<GetMatchesByDateRangeCriteria>());
+        }
         #region Match Statistic
 
         [Fact]

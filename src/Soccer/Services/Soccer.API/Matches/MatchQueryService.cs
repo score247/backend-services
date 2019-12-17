@@ -80,17 +80,20 @@ namespace Soccer.API.Matches
 
             foreach (var dateRange in dateRanges)
             {
-                var matches = await dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(dateRange.From, dateRange.To, language));
-
-                if (dateRange.IsCached)
-                {
-                    await SetAsync(MatchListCacheKey, from, to, matches);
-                }
-
+                var matches = dateRange.IsCached 
+                    ? await GetOrSetAsync(
+                    MatchListCacheKey,
+                    dateRange.From,
+                    dateRange.To,
+                    () => dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(dateRange.From, dateRange.To, language)))
+                    : await dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(dateRange.From, dateRange.To, language));
+             
                 matchList.AddRange(matches.Select(m => new MatchSummary(m)).ToList());
             }
 
-            return matchList;
+            return matchList
+                .OrderBy(match => match.LeagueOrder)
+                .ThenBy(match => match.EventDate);
         }
 
         public async Task<MatchInfo> GetMatchInfo(string id, Language language, DateTimeOffset eventDate)
@@ -280,13 +283,13 @@ namespace Soccer.API.Matches
         private static string BuildMatchInfoCacheKey(string matchId)
             => $"{MatchInfoCacheKey}_{matchId}";
 
-        private Task SetAsync<T>(string key, DateTimeOffset from, DateTimeOffset to, T value)
+        private Task<T> GetOrSetAsync<T>(string key, DateTimeOffset from, DateTimeOffset to, Func<Task<T>> factory)
         {
             var cacheItemOptions = BuildCacheOptions(from);
             var cacheKey = BuildCacheKey(key, from, to);
 
-            return cacheManager.SetAsync(
-                        cacheKey, value, cacheItemOptions);
+            return cacheManager
+                .GetOrSetAsync(cacheKey, factory, cacheItemOptions);
         }
 
         private CacheItemOptions BuildCacheOptions(DateTimeOffset date)
