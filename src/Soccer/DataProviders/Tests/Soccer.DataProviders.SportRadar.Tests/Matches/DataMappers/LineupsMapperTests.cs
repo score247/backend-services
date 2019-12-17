@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Soccer.DataProviders.SportRadar.Matches.DataMappers;
 using Soccer.DataProviders.SportRadar.Matches.Dtos;
 using Xunit;
 
-namespace Soccer.DateProviders.SportRadar.Matches.DataMappers
+namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 {
-    [Trait("Soccer.DateProviders.SportRadar", "MatchLineups")]
+    [Trait("Soccer.DataProviders.SportRadar", "MatchLineups")]
     public class LineupsMapperTests
     {
         [Fact]

@@ -5,7 +5,7 @@ using Soccer.DataProviders.SportRadar.Leagues.DataMappers;
 using Soccer.DataProviders.SportRadar.Leagues.Dtos;
 using Xunit;
 
-namespace Soccer.DateProviders.SportRadar.Leagues
+namespace Soccer.DataProviders.SportRadar.Leagues
 {
     public class LeagueTableMapperTests
     {

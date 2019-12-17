@@ -4,9 +4,9 @@ using Soccer.DataProviders.SportRadar.Leagues.DataMappers;
 using Soccer.DataProviders.SportRadar.Leagues.Dtos;
 using Xunit;
 
-namespace Soccer.DateProviders.SportRadar.Matches.DataMappers
+namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 {
-    [Trait("Soccer.DateProviders.SportRadar", "LeagueMapper")]
+    [Trait("Soccer.DataProviders.SportRadar", "LeagueMapper")]
     public class LeagueNameMapperTests
     {
         [Theory]

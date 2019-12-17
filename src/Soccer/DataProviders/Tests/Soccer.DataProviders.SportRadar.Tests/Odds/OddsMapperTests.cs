@@ -1,4 +1,4 @@
-﻿namespace Soccer.DateProviders.SportRadar.Odds
+﻿namespace Soccer.DataProviders.SportRadar.Odds
 {
     using System.Collections.Generic;
     using System.Linq;
@@ -7,7 +7,7 @@
     using Soccer.DataProviders.SportRadar.Odds.Dtos;
     using Xunit;
 
-    [Trait("Soccer.DateProviders.SportRadar", "Odds")]
+    [Trait("Soccer.DataProviders.SportRadar", "Odds")]
     public class OddsMapperTests
     {
         [Fact]

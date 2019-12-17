@@ -1,7 +1,7 @@
 ﻿using Soccer.DataProviders.SportRadar._Shared;
 using Xunit;
 
-namespace Soccer.DateProviders.SportRadar.Shared
+namespace Soccer.DataProviders.SportRadar.Shared
 {
     public class PlayerNameConverterTests
     {
