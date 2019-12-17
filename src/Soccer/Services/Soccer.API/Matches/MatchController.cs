@@ -27,8 +27,8 @@ namespace Soccer.API.Matches
         /// <param name="language"></param>
         [HttpGet]
         public async Task<IEnumerable<MatchSummary>> Get(
-                DateTime fd,
-                DateTime td,
+                DateTimeOffset fd,
+                DateTimeOffset td,
                 string language = Language.English)
             => await mediator.Send(new MatchesByDateRequest(fd, td, language));
 

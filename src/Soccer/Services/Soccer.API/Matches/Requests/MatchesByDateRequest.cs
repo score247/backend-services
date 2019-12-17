@@ -9,16 +9,16 @@
 
     public class MatchesByDateRequest : IRequest<IEnumerable<MatchSummary>>
     {
-        public MatchesByDateRequest(DateTime from, DateTime to, string language)
+        public MatchesByDateRequest(DateTimeOffset from, DateTimeOffset to, string language)
         {
             From = from;
             To = to;
             Language = Enumeration.FromDisplayName<Language>(language);
         }
 
-        public DateTime From { get; }
+        public DateTimeOffset From { get; }
 
-        public DateTime To { get; }
+        public DateTimeOffset To { get; }
 
         public Language Language { get; }
     }

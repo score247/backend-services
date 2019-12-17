@@ -11,6 +11,7 @@ namespace Soccer.API.Matches
     using Models;
     using Score247.Shared;
     using Shared.Configurations;
+    using Soccer.API.Matches.Helpers;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.Models;
@@ -19,7 +20,7 @@ namespace Soccer.API.Matches
 
     public interface IMatchQueryService
     {
-        Task<IEnumerable<MatchSummary>> GetByDateRange(DateTime from, DateTime to, Language language);
+        Task<IEnumerable<MatchSummary>> GetByDateRange(DateTimeOffset from, DateTimeOffset to, Language language);
 
         Task<MatchInfo> GetMatchInfo(string id, Language language, DateTimeOffset eventDate);
 
@@ -72,20 +73,24 @@ namespace Soccer.API.Matches
         public async Task<int> GetLiveMatchCount(Language language)
             => (await GetLive(language)).Count();
 
-        public async Task<IEnumerable<MatchSummary>> GetByDateRange(DateTime from, DateTime to, Language language)
-        {
-            var cachedMatches = await GetOrSetAsync(
-                    MatchListCacheKey,
-                    from,
-                    to,
-                    async () =>
-                    {
-                        var matches = await dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(from, to, language));
+        public async Task<IEnumerable<MatchSummary>> GetByDateRange(DateTimeOffset from, DateTimeOffset to, Language language)
+        {           
+            var dateRanges = DateRangeHelper.GenerateDateRanges(from, to);
+            var matchList = new List<MatchSummary>();
 
-                        return matches.Select(m => new MatchSummary(m));
-                    });
+            foreach (var dateRange in dateRanges)
+            {
+                var matches = await dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(dateRange.From, dateRange.To, language));
 
-            return cachedMatches;
+                if (dateRange.IsCached)
+                {
+                    await SetAsync(MatchListCacheKey, from, to, matches);
+                }
+
+                matchList.AddRange(matches.Select(m => new MatchSummary(m)).ToList());
+            }
+
+            return matchList;
         }
 
         public async Task<MatchInfo> GetMatchInfo(string id, Language language, DateTimeOffset eventDate)
@@ -275,29 +280,29 @@ namespace Soccer.API.Matches
         private static string BuildMatchInfoCacheKey(string matchId)
             => $"{MatchInfoCacheKey}_{matchId}";
 
-        private Task<T> GetOrSetAsync<T>(string key, DateTime from, DateTime to, Func<Task<T>> factory)
+        private Task SetAsync<T>(string key, DateTimeOffset from, DateTimeOffset to, T value)
         {
             var cacheItemOptions = BuildCacheOptions(from);
             var cacheKey = BuildCacheKey(key, from, to);
 
-            return cacheManager
-                .GetOrSetAsync(cacheKey, factory, cacheItemOptions);
+            return cacheManager.SetAsync(
+                        cacheKey, value, cacheItemOptions);
         }
 
-        private CacheItemOptions BuildCacheOptions(DateTime date)
+        private CacheItemOptions BuildCacheOptions(DateTimeOffset date)
         {
             var cacheDuration = ShouldCacheWithShortDuration(date)
                 ? appSettings.MatchShortCacheTimeDuration
                 : appSettings.MatchLongCacheTimeDuration;
 
-            return new CacheItemOptions().SetAbsoluteExpiration(DateTime.Now.AddSeconds(cacheDuration));
+            return new CacheItemOptions().SetAbsoluteExpiration(DateTimeOffset.Now.AddSeconds(cacheDuration));
         }
 
-        private bool ShouldCacheWithShortDuration(DateTime date)
+        private bool ShouldCacheWithShortDuration(DateTimeOffset date)
             => date.ToUniversalTime().Date == dateTimeNowFunc().UtcDateTime.Date
                || date.ToUniversalTime().Date == dateTimeNowFunc().UtcDateTime.Date.AddDays(-1);
 
-        private static string BuildCacheKey(string key, DateTime from, DateTime to)
+        private static string BuildCacheKey(string key, DateTimeOffset from, DateTimeOffset to)
             => $"{key}_{from.ToString(FormatDate)}_{to.ToString(FormatDate)}";
     }
 }

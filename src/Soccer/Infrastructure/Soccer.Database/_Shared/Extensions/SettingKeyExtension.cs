@@ -1,11 +1,10 @@
 ﻿using System;
+using Score247.Shared.Extensions;
 
 namespace Soccer.Database._Shared.Extensions
 {
     public static class SettingKeyExtension
     {
-        private const int DateSpan = 3;
-
         public static string GetCorrespondingKey(this string settingKey, DateTimeOffset dateTime, DateTimeOffset currentDate)
         {
             if (dateTime == default)
@@ -13,12 +12,12 @@ namespace Soccer.Database._Shared.Extensions
                 return settingKey;
             }
 
-            if (dateTime.ToUniversalTime().Date < currentDate.ToUniversalTime().AddDays(-DateSpan).Date)
+            if (dateTime.IsFormer(currentDate))
             {
                 return $"{settingKey}_Former";
             }
 
-            if (dateTime.ToUniversalTime().Date > currentDate.ToUniversalTime().AddDays(DateSpan).Date)
+            if (dateTime.IsAhead(currentDate))
             {
                 return $"{settingKey}_Ahead";
             }
