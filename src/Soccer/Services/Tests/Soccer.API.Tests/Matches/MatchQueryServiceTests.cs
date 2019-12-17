@@ -12,6 +12,7 @@ using Score247.Shared.Tests;
 using Soccer.API.Matches;
 using Soccer.API.Matches.Models;
 using Soccer.API.Shared.Configurations;
+using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.Models;
@@ -84,6 +85,34 @@ namespace Soccer.API.Tests.Matches
 
             await dynamicRepository.Received(1).FetchAsync<Match>(Arg.Any<GetMatchesByDateRangeCriteria>());
         }
+
+        [Fact]
+        public async Task GetByDateRange_Always_SortByLeagueOrde()
+        {
+            var from = DateTimeOffset.Now.AddDays(-4);
+            var to = DateTimeOffset.Now.AddDays(-2);
+
+            dynamicRepository.FetchAsync<Match>(Arg.Any<GetMatchesByDateRangeCriteria>()).Returns(new List<Match>
+            { 
+                fixture.Create<Match>().With(match => match.League, fixture.Create<League>().With(league => league.Order, 1)),
+                fixture.Create<Match>().With(match => match.League, fixture.Create<League>().With(league => league.Order, 3))
+            });
+
+            cacheManager
+                .GetOrSetAsync(
+                    $"MatchQuery_MatchListCacheKey_{from.ToString(FormatDate)}_{to.ToString(FormatDate)}",
+                    Arg.Any<Func<Task<IEnumerable<Match>>>>(),
+                    Arg.Any<CacheItemOptions>())
+                .Returns(new List<Match> {
+                    fixture.Create<Match>().With(match => match.League, fixture.Create<League>().With(league => league.Order, 2))
+                });
+
+            var matches = await matchQueryService.GetByDateRange(from, to, Language.en_US);
+
+            Assert.Equal(1, matches.First().LeagueOrder);
+            Assert.Equal(3, matches.Last().LeagueOrder);
+        }
+
         #region Match Statistic
 
         [Fact]
