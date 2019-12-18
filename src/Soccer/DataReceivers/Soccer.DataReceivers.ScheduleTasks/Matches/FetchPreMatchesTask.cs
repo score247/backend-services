@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Hangfire;
 using MassTransit;
 using Score247.Shared.Enumerations;
+using Soccer.Core.Leagues.Extensions;
 using Soccer.Core.Leagues.Models;
+using Soccer.Core.Leagues.QueueMessages;
 using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
@@ -79,14 +81,28 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
             var matches = (await matchService.GetPreMatches(date, language))
                 .Where(match =>
-                    !match.MatchResult.EventStatus.IsLive() && 
-                    !match.MatchResult.EventStatus.IsClosed() && 
+                    !match.MatchResult.EventStatus.IsLive() &&
+                    !match.MatchResult.EventStatus.IsClosed() &&
                     majorLeagues?.Any(league => league.Id == match.League.Id) == true)
                 .ToList();
 
             await PublishPreMatchFetchedMessage(language, batchSize, matches);
+            await PublishLeagueGroupFetchedMessage(language, matches);
 
             FetchPreMatchLeagueStanding(language, matches);
+        }
+
+        private async Task PublishLeagueGroupFetchedMessage(Language language, List<Match> matches)
+        {
+            var matchGroupByStage = matches
+                            .Where(match => match.LeagueRound?.HasGroupStage() == true)
+                            .GroupBy(match => (match.League.Id, match.LeagueGroupName));
+
+            foreach (var groupStage in matchGroupByStage)
+            {
+                await messageBus.Publish<ILeagueGroupFetchedMessage>(
+                    new LeagueGroupFetchedMessage(groupStage.Key.Id, groupStage.Key.LeagueGroupName, language));
+            }
         }
 
         private async Task PublishPreMatchFetchedMessage(Language language, int batchSize, ICollection<Match> matches)

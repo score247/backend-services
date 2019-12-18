@@ -15,7 +15,7 @@ namespace Soccer.Core.Leagues.Models
             Group = group;
         }
 
-        public LeagueRoundType Type { get; }
+        public LeagueRoundType Type { get; private set; }
 
         public string Name { get; }
 
@@ -23,6 +23,6 @@ namespace Soccer.Core.Leagues.Models
 
         public string Phase { get; }
 
-        public string Group { get; }
+        public string Group { get; private set; }
     }
 }

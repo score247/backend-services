@@ -82,10 +82,10 @@ namespace Soccer.API.Matches
             {
                 var matches = dateRange.IsCached 
                     ? await GetOrSetAsync(
-                    MatchListCacheKey,
-                    dateRange.From,
-                    dateRange.To,
-                    () => dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(dateRange.From, dateRange.To, language)))
+                        MatchListCacheKey,
+                        dateRange.From,
+                        dateRange.To,
+                        () => dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(dateRange.From, dateRange.To, language)))
                     : await dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(dateRange.From, dateRange.To, language));
              
                 matchList.AddRange(matches.Select(m => new MatchSummary(m)).ToList());
