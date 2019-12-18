@@ -2,31 +2,9 @@ DROP procedure IF EXISTS `Match_GetByDateRange`;
 
 CREATE DEFINER=`user`@`%` PROCEDURE `Match_GetByDateRange`(IN sportId INT, IN fromDate DATETIME, IN toDate DATETIME, IN language TEXT)
 BEGIN
-	CREATE TEMPORARY TABLE IF NOT EXISTS temp_match AS
-    (SELECT NonLiveMatch.`Value`, NonLiveMatch.EventDate, NonLiveMatch.LeagueId, NonLiveMatch.Id, NonLiveMatch.ModifiedTime 
-		FROM `Match` as NonLiveMatch 
-		INNER JOIN `League` as League ON NonLiveMatch.LeagueId = League.Id
-		WHERE NonLiveMatch.Id NOT IN
-			(
-			SELECT  Id
-			FROM    LiveMatch as LM
-			)
-		   AND NonLiveMatch.SportId = sportId
-			AND NonLiveMatch.EventDate >=  fromDate
-			AND NonLiveMatch.EventDate <=  toDate
-			AND League.IsActive =  '1'
-			AND NonLiveMatch.`Language` = language)
-		UNION ALL 
-		(SELECT Value, EventDate, LeagueId, Id, ModifiedTime FROM `LiveMatch` as LM
-		 WHERE LM.SportId = sportId
-			AND  LM.EventDate >=  fromDate
-			AND LM.EventDate <=  toDate
-			AND LM.`Language` = language);
-    
-    SELECT JSON_REPLACE(`Match`.Value,  '$.ModifiedTime', `Match`.ModifiedTime) as `Value`, `Match`.EventDate AS EventDate, `Match`.LeagueId AS LeagueId, `Match`.Id AS Id
-    FROM temp_match AS `Match`
-	INNER JOIN `League` as League ON `Match`.LeagueId = League.Id
-	ORDER BY League.Order, `Match`.EventDate, `Match`.LeagueId, `Match`.Id;
-
-	DROP TEMPORARY TABLE temp_match;
+	SELECT JSON_REPLACE(M.Value,  '$.ModifiedTime', M.ModifiedTime) as `Value` FROM `Match` as M 	
+		 WHERE M.SportId = sportId
+			AND  M.EventDate >=  fromDate
+			AND M.EventDate <=  toDate
+			AND M.`Language` = language;
 END
