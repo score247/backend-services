@@ -184,3 +184,16 @@ CREATE TABLE `Timeline` (
   `Type` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`Id`,`MatchId`,`Language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `LeagueGroupStage`;
+CREATE TABLE `LeagueGroupStage` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `LeagueId` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `GroupStageName` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Language` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `CreatedTime` timestamp NOT NULL,
+  `ModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`Id`),
+  UNIQUE KEY `Id_UNIQUE` (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=128 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
