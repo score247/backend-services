@@ -2,7 +2,7 @@
   <Function Name="Matches">
     <Setting Key="Match_GetByDateRange" SpName="Match_GetByDateRange" DbName="DefaultConnection" />
     <Setting Key="Match_GetByDateRange_Former" SpName="Match_GetByDateRange" DbName="FormerDbConnection" />
-    <Setting Key="Match_GetByDateRange_Ahead" SpName="Match_GetByDateRange" DbName="FormerDbConnection" />
+    <Setting Key="Match_GetByDateRange_Ahead" SpName="Match_GetByDateRange" DbName="AheadDbConnection" />
     
     <Setting Key="Match_GetById" SpName="Match_GetById" DbName="DefaultConnection" />
     <Setting Key="Match_GetById_Former" SpName="Match_GetById" DbName="FormerDbConnection" />
