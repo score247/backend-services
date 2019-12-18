@@ -78,6 +78,7 @@
     <Setting Key="League_GetStandings" SpName="League_GetStandings" DbName="DefaultConnection" />
     <Setting Key="League_UpdateFetchedLeagueSeason" SpName="League_UpdateFetchedLeagueSeason" DbName="DefaultConnection" />
     <Setting Key="League_UpdateCurrentSeason" SpName="League_UpdateCurrentSeason" DbName="DefaultConnection" />
+    <Setting Key="League_InsertGroupStage" SpName="League_InsertGroupStage" DbName="DefaultConnection" />
   </Function>
   <Function Name="Team">
     <Setting Key="Team_InsertOrUpdateHeadToHead" SpName="Team_InsertOrUpdateHeadToHead" DbName="DefaultConnection" />
