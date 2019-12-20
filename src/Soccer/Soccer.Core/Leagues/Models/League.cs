@@ -2,6 +2,8 @@
 using MessagePack;
 using Newtonsoft.Json;
 using Score247.Shared.Base;
+using Soccer.Core.Leagues.Extensions;
+using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.Core.Leagues.Models
 {
@@ -96,6 +98,11 @@ namespace Soccer.Core.Leagues.Models
             IsInternational = isInternational;
             Order = order;
             Region = region;
+        }
+
+        public void UpdateLeagueName(string leagueName)
+        {
+            Name = leagueName;
         }
     }
 }

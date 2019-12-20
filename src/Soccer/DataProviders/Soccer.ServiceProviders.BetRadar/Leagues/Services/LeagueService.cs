@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Fanex.Logging;
 using Refit;
 using Score247.Shared.Enumerations;
+using Soccer.Core.Leagues.Extensions;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
@@ -59,6 +60,11 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
                     var regionLeaguesDto = await leagueApi.GetRegionLeagues(soccerSettings.AccessLevel, soccerSettings.Version, region.Name, sportRadarLanguage, region.Key);
 
                     var regionLeagues = regionLeaguesDto.tournaments.Select(league => LeagueMapper.MapLeague(league, region.Name)).ToList();
+
+                    foreach (var league in regionLeagues)
+                    {
+                        league.UpdateLeagueName(league.MapLeagueGroupName(null, language));
+                    }
 
                     leagues.AddRange(regionLeagues);
                 }
