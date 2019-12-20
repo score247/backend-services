@@ -23,7 +23,7 @@
                     competitor.country_code,
                     string.Empty,
                     string.Compare(competitor.qualifier, Home, true, CultureInfo.InvariantCulture) == 0,
-                    null,
+                    new TeamStatistic(),
                     competitor.abbreviation)
                 );
             }
