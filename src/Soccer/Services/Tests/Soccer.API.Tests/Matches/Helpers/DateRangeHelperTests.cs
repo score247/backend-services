@@ -104,14 +104,23 @@ namespace Soccer.API.Tests.Matches.Helpers
         [Fact]
         public void GenerateDateRanges_InCurrentAndAheadRange_CorrectFromToAndCached()
         {
-            var from = new DateTimeOffset(DateTime.UtcNow.AddDays(2), TimeSpan.Zero);
-            var to = new DateTimeOffset(DateTime.UtcNow.AddDays(4), TimeSpan.Zero);
+            var currentDate = DateTime.Now;
+            var from = new DateTimeOffset(StubBeginingOfDay(currentDate, 4), TimeSpan.FromHours(7));
+            var to = new DateTimeOffset(StubEndOfDay(currentDate, 4), TimeSpan.FromHours(7));
 
             var dateRanges = DateRangeHelper.GenerateDateRanges(from, to);
 
             Assert.Equal(2, dateRanges.Count);
+            
             Assert.Equal(1, dateRanges.Count(dt => dt.IsCached));
+            
+            var current = dateRanges.First(dt => dt.IsCached);
+            Assert.Equal(current.From, from);
+
             Assert.Equal(1, dateRanges.Count(dt => !dt.IsCached));
+
+            var ahead = dateRanges.First(dt => !dt.IsCached);
+            Assert.Equal(ahead.To, to);
         }
 
         [Fact]
@@ -126,5 +135,11 @@ namespace Soccer.API.Tests.Matches.Helpers
             Assert.Equal(1, dateRanges.Count(dt => dt.IsCached));
             Assert.Equal(2, dateRanges.Count(dt => !dt.IsCached));
         }
+
+        private static DateTime StubBeginingOfDay(DateTime current, int DateSpan)
+            => new DateTime(current.Year, current.Month, current.Day, 0, 0, 0).AddDays(DateSpan);
+
+        private static DateTime StubEndOfDay(DateTime current, int DateSpan)
+            => new DateTime(current.Year, current.Month, current.Day, 23, 59, 59).AddDays(DateSpan);
     }
 }

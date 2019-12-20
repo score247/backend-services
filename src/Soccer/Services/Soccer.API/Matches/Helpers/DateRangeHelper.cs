@@ -7,10 +7,11 @@ namespace Soccer.API.Matches.Helpers
 {
     public static class DateRangeHelper
     {
+        private const int DateSpan = 3;
+
         public static IList<DateRange> GenerateDateRanges(DateTimeOffset from, DateTimeOffset to)
         {
             var currentDate = DateTimeOffset.UtcNow;
-            var DateSpan = 3;
 
             var currentFrom = from;
             var currentTo = to;
@@ -32,9 +33,11 @@ namespace Soccer.API.Matches.Helpers
 
                 if (to.IsAhead(currentDate))
                 {
-                    currentTo = from.IsAhead(currentDate) ? from : currentDate.AddDays(DateSpan);
+                    currentTo = EndOfCurrentRange();
 
-                    dateRanges.Add(new DateRange(currentTo, to));
+                    var aheadFrom = from.IsAhead(currentDate) ? from : BeginningOfAheadRange();
+
+                    dateRanges.Add(new DateRange(aheadFrom, to));
                 }
 
                 if (currentTo > currentFrom)
@@ -45,5 +48,11 @@ namespace Soccer.API.Matches.Helpers
 
             return dateRanges;
         }
+
+        private static DateTimeOffset BeginningOfAheadRange()
+            => new DateTimeOffset(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0).AddDays(DateSpan + 1), TimeSpan.Zero);
+
+        private static DateTimeOffset EndOfCurrentRange()
+            => BeginningOfAheadRange().AddTicks(-1);
     }
 }
