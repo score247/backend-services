@@ -16,11 +16,16 @@ namespace Soccer.Cache.Leagues
         Task SetMajorLeagues(IEnumerable<League> majorLeagues, string language = Language.English);
 
         Task ClearMajorLeaguesCache();
+
+        Task<IEnumerable<League>> GetCountryLeagues(string countryCode, string language = Language.English);
+
+        Task SetCountryLeagues(IEnumerable<League> countryLeagues, string countryCode, string language = Language.English);
     }
 
     public class LeagueCache : ILeagueCache
     {
         public const string MajorLeaguesCacheKey = "Major_Leagues";
+        public const string CountryLeaguesCachePrefixKey = "Country_Leagues_";
         private readonly ICacheManager cacheManager;
 
         public LeagueCache(ICacheManager cacheManager)
@@ -45,6 +50,19 @@ namespace Soccer.Cache.Leagues
             }
         }
 
-        private static string GetMajorLeaguesCacheKey(string language) => MajorLeaguesCacheKey + "_" + language;
+        public Task SetCountryLeagues(IEnumerable<League> countryLeagues, string countryCode, string language = Language.English)
+              => cacheManager.SetAsync(
+                    GetCountryLeaguesCacheKey(countryCode, language),
+                    countryLeagues,
+                new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
+
+        public Task<IEnumerable<League>> GetCountryLeagues(string countryCode, string language = "en-US")
+         => cacheManager.GetAsync<IEnumerable<League>>(GetCountryLeaguesCacheKey(countryCode, language));
+
+        private static string GetMajorLeaguesCacheKey(string language)
+            => MajorLeaguesCacheKey + "_" + language;
+
+        private static string GetCountryLeaguesCacheKey(string countryCode, string language)
+            => CountryLeaguesCachePrefixKey + countryCode + "_" + language;
     }
 }

@@ -41,5 +41,11 @@ namespace Soccer.API.Leagues
         [Route("{id}/season/{seasonId}/table/{groupName}")]
         public async Task<LeagueTable> GetLeagueTable(string id, string seasonId, string groupName, string language = Language.English)
             => await mediator.Send(new LeagueTableRequest(id, seasonId, groupName, language));
+
+        [HttpGet, AllowAnonymous]
+        [HttpGet]
+        [Route("countryLeagues")]
+        public async Task<IEnumerable<League>> GetCountryLeagues(string countryCode, string language = Language.English)
+            => await mediator.Send(new CountryLeaguesRequest(countryCode, language));
     }
 }

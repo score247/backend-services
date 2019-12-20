@@ -21,6 +21,8 @@ namespace Soccer.API.Leagues
         Task<IEnumerable<MatchSummary>> GetMatches(string id, string leagueGroupName, Language language);
 
         Task<LeagueTable> GetLeagueTable(string id, string seasonId, string groupName, Language language);
+
+        Task<IEnumerable<League>> GetCountryLeagues(string countryCode, Language language);
     }
 
     public class LeagueQueryService : ILeagueQueryService
@@ -37,6 +39,23 @@ namespace Soccer.API.Leagues
             this.appSetting = appSetting;
             this.dynamicRepository = dynamicRepository;
             this.leagueCache = leagueCache;
+        }
+
+        public async Task<IEnumerable<League>> GetCountryLeagues(string countryCode, Language language)
+        {
+            var cachedMajorLeagues = (await leagueCache.GetCountryLeagues(countryCode, language.DisplayName))?.ToList();
+
+            if (cachedMajorLeagues?.Any() == false)
+            {
+                return cachedMajorLeagues;
+            }
+
+            var countryLeagues = (await dynamicRepository
+                .FetchAsync<League>(new GetCountryLeaguesCriteria(countryCode, language)))
+                .ToList();
+            await leagueCache.SetCountryLeagues(countryLeagues, countryCode, language.DisplayName);
+
+            return countryLeagues;
         }
 
         public Task<IEnumerable<LeagueSeasonProcessedInfo>> GetLeagueSeasonFecth()
