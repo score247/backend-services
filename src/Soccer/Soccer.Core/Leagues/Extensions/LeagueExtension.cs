@@ -30,9 +30,14 @@ namespace Soccer.Core.Leagues.Extensions
         {
             var defaultLeagueName = league?.Name ?? string.Empty;
 
-            if (league == null || leagueRound == null)
+            if (league == null)
             {
                 return defaultLeagueName;
+            }
+
+            if (leagueRound == null)
+            {
+                return LeagueNameRule0Builder(league, language);
             }
 
             foreach (var builder in leagueNameBuilders)
@@ -192,6 +197,13 @@ namespace Soccer.Core.Leagues.Extensions
             }
 
             return leagueName;
+        }
+
+        private static string LeagueNameRule0Builder(
+            League league,
+            Language language)
+        {
+            return league.Name.Replace(commaString, string.Empty);
         }
 
 #pragma warning restore S1172 // Unused method parameters should be removed
