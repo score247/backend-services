@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Fanex.Data.Repository;
 using MassTransit;
+using Soccer.Core.Leagues.Models;
 using Soccer.Core.Leagues.QueueMessages;
 using Soccer.Database.Leagues.Commands;
 
@@ -19,7 +20,14 @@ namespace Soccer.EventProcessors.Leagues
         {
             var message = context.Message;
 
-            var command = new InsertOrUpdateLeagueGroupCommand(message.LeagueId, message.LeagueGroupName, message.GroupName, message.Language);
+            var leagueGroupState = new LeagueGroupState(
+                message.LeagueId,
+                message.LeagueSeasonId,
+                message.LeagueGroupName,
+                message.LeagueRound,
+                message.Language.DisplayName);
+
+            var command = new InsertOrUpdateLeagueGroupCommand(leagueGroupState);
 
             return dynamicRepository.ExecuteAsync(command);
         }

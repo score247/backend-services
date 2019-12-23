@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using MessagePack;
+using Newtonsoft.Json;
 using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.Core.Leagues.Models
 {
+    [MessagePackObject(keyAsPropertyName: true)]
     public class LeagueRound
     {
         [JsonConstructor]

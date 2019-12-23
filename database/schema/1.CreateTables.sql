@@ -188,13 +188,13 @@ CREATE TABLE `Timeline` (
 
 DROP TABLE IF EXISTS `LeagueGroupStage`;
 CREATE TABLE `LeagueGroupStage` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
   `LeagueId` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `LeagueSeasonId` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
   `GroupStageName` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Value` json NOT NULL,
   `Language` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
   `CreatedTime` timestamp NOT NULL,
   `ModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`Id`),
-  UNIQUE KEY `Id_UNIQUE` (`Id`)
+  PRIMARY KEY (`LeagueId`,`LeagueSeasonId`,`GroupStageName`)
 ) ENGINE=InnoDB AUTO_INCREMENT=128 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

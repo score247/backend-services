@@ -8,20 +8,23 @@ namespace Soccer.Core.Leagues.Models
     {
         [SerializationConstructor, JsonConstructor]
         public LeagueGroupState(
-            int id,
             string leagueId,
+            string leagueSeasonId,
             string groupStageName,
+            LeagueRound leagueRound,
             string language)
         {
-            Id = id;
             LeagueId = leagueId;
+            LeagueSeasonId = leagueSeasonId;
             GroupStageName = groupStageName;
+            LeagueRound = leagueRound;
             Language = language;
         }
 
-        public int Id { get; }
         public string LeagueId { get; }
+        public string LeagueSeasonId { get; }
         public string GroupStageName { get; }
+        public LeagueRound LeagueRound { get; }
         public string Language { get; }
     }
 }

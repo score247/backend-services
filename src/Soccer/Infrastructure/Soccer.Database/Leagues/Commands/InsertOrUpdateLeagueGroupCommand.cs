@@ -1,22 +1,25 @@
-﻿using Soccer.Core.Shared.Enumerations;
+﻿using Soccer.Core.Leagues.Models;
 
 namespace Soccer.Database.Leagues.Commands
 {
     public class InsertOrUpdateLeagueGroupCommand : BaseCommand
     {
-        public InsertOrUpdateLeagueGroupCommand(string leagueId, string leagueGroupName, string groupName, Language language)
+        public InsertOrUpdateLeagueGroupCommand(LeagueGroupState leagueGroupState)
         {
-            LeagueId = leagueId;
-            LeagueGroupName = leagueGroupName;
-            GroupName = groupName;
-            Language = language.DisplayName;
+            LeagueId = leagueGroupState.LeagueId;
+            LeagueSeasonId = leagueGroupState.LeagueSeasonId;
+            GroupStageName = leagueGroupState.GroupStageName;
+            GroupStageValue = ToJsonString(leagueGroupState);
+            Language = leagueGroupState.Language;
         }
 
         public string LeagueId { get; }
 
-        public string LeagueGroupName { get; }
+        public string LeagueSeasonId { get; }
 
-        public string GroupName { get; }
+        public string GroupStageName { get; }
+
+        public string GroupStageValue { get; }
 
         public string Language { get; }
 
@@ -24,7 +27,6 @@ namespace Soccer.Database.Leagues.Commands
 
         public override bool IsValid()
             => !string.IsNullOrWhiteSpace(LeagueId)
-            && !string.IsNullOrWhiteSpace(GroupName)
-            && !string.IsNullOrWhiteSpace(LeagueGroupName);
+            && !string.IsNullOrWhiteSpace(GroupStageName);
     }
 }
