@@ -12,7 +12,9 @@ namespace Soccer.Database.Leagues.Criteria
         }
 
         public string CountryCode { get; }
-        public bool IsInternational { get => string.IsNullOrWhiteSpace(CountryCode); }
+
+        public bool IsInternational => string.IsNullOrWhiteSpace(CountryCode);
+
         public string LanguageCode { get; }
 
         public override string GetSettingKey()

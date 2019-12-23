@@ -11,7 +11,8 @@ BEGIN
         L.`CountryCode`, 
         L.`IsInternational`, 
         L.`Region`,
-        L.`CurrentSeasonId` 
+        L.`CurrentSeasonId`,
+		NULL as 'SeasonDates'
         FROM `League` as L
         WHERE L.IsActive = '1' 
 			AND ((isInternational = true AND L.IsInternational = true)
