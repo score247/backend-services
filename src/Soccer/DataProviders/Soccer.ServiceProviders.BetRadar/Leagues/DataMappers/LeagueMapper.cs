@@ -23,8 +23,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
             {
                 leagueSeasonDates = new LeagueSeasonDates(
                     tournament.current_season.start_date,
-                    tournament.current_season.end_date,
-                    tournament.current_season.year);
+                    tournament.current_season.end_date);
             }
 
             return new League(
