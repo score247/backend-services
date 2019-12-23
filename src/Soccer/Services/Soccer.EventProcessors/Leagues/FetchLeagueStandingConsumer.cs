@@ -1,10 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Fanex.Data.Repository;
 using MassTransit;
-using Newtonsoft.Json;
 using Soccer.Core.Leagues.QueueMessages;
 using Soccer.Database.Leagues.Commands;
-using Soccer.EventProcessors.Leagues.Services;
 
 namespace Soccer.EventProcessors.Leagues
 {

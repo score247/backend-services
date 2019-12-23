@@ -13,7 +13,8 @@ namespace Soccer.API.Leagues
         IRequestHandler<UnprocessedLeagueSeasonRequest, IEnumerable<LeagueSeasonProcessedInfo>>,
         IRequestHandler<MatchesByLeagueRequest, IEnumerable<MatchSummary>>,
         IRequestHandler<LeagueTableRequest, LeagueTable>,
-        IRequestHandler<CountryLeaguesRequest, IEnumerable<League>>
+        IRequestHandler<CountryLeaguesRequest, IEnumerable<League>>,
+        IRequestHandler<LeagueGroupsRequest, IEnumerable<LeagueGroupState>>
     {
         private readonly ILeagueQueryService leagueQueryService;
 
@@ -36,5 +37,8 @@ namespace Soccer.API.Leagues
 
         public Task<IEnumerable<League>> Handle(CountryLeaguesRequest request, CancellationToken cancellationToken)
             => leagueQueryService.GetCountryLeagues(request.CountryCode, request.Language);
+
+        public Task<IEnumerable<LeagueGroupState>> Handle(LeagueGroupsRequest request, CancellationToken cancellationToken)
+            => leagueQueryService.GetLeagueGroups(request.LeagueId, request.Language);
     }
 }

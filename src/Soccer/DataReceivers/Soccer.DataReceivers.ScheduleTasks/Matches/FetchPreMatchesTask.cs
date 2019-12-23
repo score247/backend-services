@@ -96,12 +96,12 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         {
             var matchGroupByStage = matches
                             .Where(match => match.LeagueRound?.HasGroupStage() == true)
-                            .GroupBy(match => (match.League.Id, match.LeagueGroupName));
+                            .GroupBy(match => (match.League.Id, match.LeagueGroupName, match.LeagueRound.Group));
 
             foreach (var groupStage in matchGroupByStage)
             {
                 await messageBus.Publish<ILeagueGroupFetchedMessage>(
-                    new LeagueGroupFetchedMessage(groupStage.Key.Id, groupStage.Key.LeagueGroupName, language));
+                    new LeagueGroupFetchedMessage(groupStage.Key.Id, groupStage.Key.LeagueGroupName, groupStage.Key.Group, language));
             }
         }
 

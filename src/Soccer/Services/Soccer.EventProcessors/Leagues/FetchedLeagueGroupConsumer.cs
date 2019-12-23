@@ -18,8 +18,8 @@ namespace Soccer.EventProcessors.Leagues
         public Task Consume(ConsumeContext<ILeagueGroupFetchedMessage> context)
         {
             var message = context.Message;
-          
-            var command = new InsertOrUpdateLeagueGroupCommand(message.LeagueId, message.LeagueGroupName, message.Language);
+
+            var command = new InsertOrUpdateLeagueGroupCommand(message.LeagueId, message.LeagueGroupName, message.GroupName, message.Language);
 
             return dynamicRepository.ExecuteAsync(command);
         }
