@@ -2,8 +2,6 @@
 using MessagePack;
 using Newtonsoft.Json;
 using Score247.Shared.Base;
-using Soccer.Core.Leagues.Extensions;
-using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.Core.Leagues.Models
 {
@@ -25,15 +23,20 @@ namespace Soccer.Core.Leagues.Models
             string countryCode,
             sbyte isInternational,
             string region,
-            string currentSeasonId) : base(id, name)
+            string currentSeasonId,
+            LeagueSeasonDates seasonDates)
+                : this(
+                    id,
+                    name,
+                    order,
+                    categoryId,
+                    countryName,
+                    countryCode,
+                    Convert.ToBoolean(isInternational),
+                    region,
+                    currentSeasonId,
+                    seasonDates)
         {
-            Order = order;
-            CategoryId = categoryId;
-            CountryName = countryName;
-            CountryCode = countryCode;
-            IsInternational = Convert.ToBoolean(isInternational);
-            Region = region;
-            SeasonId = currentSeasonId;
         }
 
         public League(League league, string leagueName)
@@ -46,7 +49,8 @@ namespace Soccer.Core.Leagues.Models
                   league.CountryCode,
                   league.IsInternational,
                   league.Region,
-                  league.SeasonId)
+                  league.SeasonId,
+                  league.SeasonDates)
         {
         }
 
@@ -61,7 +65,8 @@ namespace Soccer.Core.Leagues.Models
             string countryCode,
             bool isInternational,
             string region,
-            string seasonId) : base(id, name)
+            string seasonId,
+            LeagueSeasonDates seasonDates) : base(id, name)
         {
             Order = order;
             CategoryId = categoryId;
@@ -70,6 +75,7 @@ namespace Soccer.Core.Leagues.Models
             IsInternational = isInternational;
             Region = region;
             SeasonId = seasonId;
+            SeasonDates = seasonDates;
         }
 
 #pragma warning restore S107 // Methods should not have too many parameters
@@ -89,6 +95,8 @@ namespace Soccer.Core.Leagues.Models
         public string Region { get; private set; }
 
         public string SeasonId { get; private set; }
+
+        public LeagueSeasonDates SeasonDates { get; private set; }
 
 #pragma warning restore S109 // Magic numbers should not be used
 

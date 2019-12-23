@@ -77,6 +77,7 @@ CREATE TABLE `LeagueSeason` (
   `LeagueId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `SeasonId` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `Region` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `SeasonDates` JSON DEFAULT NULL,
   `Fetched` tinyint(4) DEFAULT '0',
   `FetchedDate` timestamp NULL DEFAULT NULL,
   `CreatedTime` timestamp NULL DEFAULT NULL,

@@ -17,6 +17,16 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
 
             var isInternationalLeague = string.IsNullOrWhiteSpace(tournament.category?.country_code);
 
+            LeagueSeasonDates leagueSeasonDates = null;
+
+            if (tournament.current_season != null)
+            {
+                leagueSeasonDates = new LeagueSeasonDates(
+                    tournament.current_season.start_date,
+                    tournament.current_season.end_date,
+                    tournament.current_season.year);
+            }
+
             return new League(
                 tournament.id,
                 tournament.name,
@@ -26,7 +36,8 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
                 tournament.category?.country_code ?? string.Empty,
                 isInternationalLeague,
                 region,
-                tournament.current_season?.id ?? string.Empty);
+                tournament.current_season?.id ?? string.Empty,
+                leagueSeasonDates);
         }
 
         public static LeagueRound MapLeagueRound(TournamentRoundDto tournamentRound)

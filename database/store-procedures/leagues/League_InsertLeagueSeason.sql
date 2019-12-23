@@ -6,10 +6,11 @@ BEGIN
     DECLARE e INT DEFAULT JSON_LENGTH(leagues);
 
     WHILE i < e DO
-			INSERT IGNORE INTO `LeagueSeason`
+			INSERT INTO `LeagueSeason`
 			(`LeagueId`,
 			`SeasonId`,
             `Region`,
+            `SeasonDates`,
 			`Fetched`,
 			`FetchedDate`,
 			`CreatedTime`,
@@ -18,10 +19,14 @@ BEGIN
 					JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].Id'))),
 					JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].SeasonId'))),
                     JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].Region'))),
+                    JSON_EXTRACT(leagues, CONCAT('$[', i, '].SeasonDates')), 
 					0,
 					NULL,
 					NOW(),
-					NOW());
+					NOW())
+                    
+				ON DUPLICATE KEY UPDATE
+                SeasonDates = JSON_EXTRACT(leagues, CONCAT('$[', i, '].SeasonDates'));
 			
 			-- Increment the loop variable                                                                                                                                                        
 			SET i = i + 1;
