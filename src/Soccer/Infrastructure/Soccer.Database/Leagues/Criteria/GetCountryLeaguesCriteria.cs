@@ -1,10 +1,13 @@
-﻿using Fanex.Data.Repository;
+﻿using System;
+using Fanex.Data.Repository;
 using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.Database.Leagues.Criteria
 {
     public class GetCountryLeaguesCriteria : CriteriaBase
     {
+        private const string InternationalCode = "INTL";
+
         public GetCountryLeaguesCriteria(string countryName, Language language)
         {
             CountryCode = countryName;
@@ -13,7 +16,8 @@ namespace Soccer.Database.Leagues.Criteria
 
         public string CountryCode { get; }
 
-        public bool IsInternational => string.IsNullOrWhiteSpace(CountryCode);
+        public bool IsInternational =>
+            CountryCode.Equals(InternationalCode, StringComparison.InvariantCultureIgnoreCase);
 
         public string LanguageCode { get; }
 
