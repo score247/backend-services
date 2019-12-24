@@ -17,6 +17,8 @@ namespace Soccer.Cache.Leagues
 
         Task ClearMajorLeaguesCache();
 
+        Task ClearCountryLeaguesCache();
+
         Task<IEnumerable<League>> GetCountryLeagues(string countryCode, string language = Language.English);
 
         Task SetCountryLeagues(IEnumerable<League> countryLeagues, string countryCode, string language = Language.English);
@@ -25,7 +27,7 @@ namespace Soccer.Cache.Leagues
     public class LeagueCache : ILeagueCache
     {
         public const string MajorLeaguesCacheKey = "Major_Leagues";
-        public const string CountryLeaguesCachePrefixKey = "Country_Leagues_";
+        public const string CountryLeaguesCachePrefixKey = "Country_Leagues";
         private readonly ICacheManager cacheManager;
 
         public LeagueCache(ICacheManager cacheManager)
@@ -50,19 +52,47 @@ namespace Soccer.Cache.Leagues
             }
         }
 
-        public Task SetCountryLeagues(IEnumerable<League> countryLeagues, string countryCode, string language = Language.English)
-              => cacheManager.SetAsync(
-                    GetCountryLeaguesCacheKey(countryCode, language),
-                    countryLeagues,
-                new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
+        public async Task ClearCountryLeaguesCache()
+        {
+            foreach (var language in Enumeration.GetAll<Language>())
+            {
+                await cacheManager.RemoveAsync(GetCountryLeaguesCacheKey(language.DisplayName));
+            }
+        }
 
-        public Task<IEnumerable<League>> GetCountryLeagues(string countryCode, string language = "en-US")
-         => cacheManager.GetAsync<IEnumerable<League>>(GetCountryLeaguesCacheKey(countryCode, language));
+        public async Task SetCountryLeagues(IEnumerable<League> countryLeagues, string countryCode, string language = Language.English)
+        {
+            var countryLeaguesCaches = await cacheManager.GetAsync<IDictionary<string, IEnumerable<League>>>(GetCountryLeaguesCacheKey(language));
+            if (countryLeaguesCaches == null)
+            {
+                countryLeaguesCaches = new Dictionary<string, IEnumerable<League>>();
+            }
+            if (countryLeaguesCaches.ContainsKey(countryCode))
+            {
+                countryLeaguesCaches[countryCode] = countryLeagues;
+            }
+            else
+            {
+                countryLeaguesCaches.Add(countryCode, countryLeagues);
+            }
+
+            await cacheManager.SetAsync(
+                    GetCountryLeaguesCacheKey(language),
+                    countryLeaguesCaches,
+                    new CacheItemOptions().SetAbsoluteExpiration(TimeSpan.FromDays(1)));
+        }
+
+        public async Task<IEnumerable<League>> GetCountryLeagues(string countryCode, string language = "en-US")
+        {
+            var countryLeaguesCaches = await cacheManager.GetAsync<IDictionary<string, IEnumerable<League>>>(GetCountryLeaguesCacheKey(language));
+
+            return countryLeaguesCaches?[countryCode];
+        }
 
         private static string GetMajorLeaguesCacheKey(string language)
             => MajorLeaguesCacheKey + "_" + language;
 
-        private static string GetCountryLeaguesCacheKey(string countryCode, string language)
-            => CountryLeaguesCachePrefixKey + countryCode + "_" + language;
+        private static string GetCountryLeaguesCacheKey(string language)
+            => CountryLeaguesCachePrefixKey + "_" + language;
     }
 }

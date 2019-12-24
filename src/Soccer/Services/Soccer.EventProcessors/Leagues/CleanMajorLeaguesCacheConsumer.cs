@@ -14,7 +14,10 @@ namespace Soccer.EventProcessors.Leagues
             this.leagueCache = leagueCache;
         }
 
-        public Task Consume(ConsumeContext<IMajorLeaguesCacheCleanedMessage> context)
-            => leagueCache.ClearMajorLeaguesCache();
+        public async Task Consume(ConsumeContext<IMajorLeaguesCacheCleanedMessage> context)
+        {
+            await leagueCache.ClearMajorLeaguesCache();
+            await leagueCache.ClearCountryLeaguesCache();
+        }
     }
 }

@@ -47,7 +47,7 @@ namespace Soccer.API.Leagues
         {
             var cachedMajorLeagues = (await leagueCache.GetCountryLeagues(countryCode, language.DisplayName))?.ToList();
 
-            if (cachedMajorLeagues?.Any() == false)
+            if (cachedMajorLeagues?.Any() == true)
             {
                 return cachedMajorLeagues;
             }
@@ -79,7 +79,7 @@ namespace Soccer.API.Leagues
         {
             var cachedMajorLeagues = (await leagueCache.GetMajorLeagues())?.ToList();
 
-            if (cachedMajorLeagues?.Any() == false)
+            if (cachedMajorLeagues?.Any() == true)
             {
                 return cachedMajorLeagues;
             }
