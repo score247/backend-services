@@ -75,7 +75,7 @@ namespace Soccer.API.Matches
 
         [HttpGet]
         [Route("ids/{ids}")]
-        public async Task<IEnumerable<MatchSummary>> Get(string ids, string language = Language.English)
+        public async Task<IEnumerable<MatchSummary>> GetByIds(string ids, string language = Language.English)
             => await mediator.Send(new MatchesByIdsRequest(ids.Split(','), language));
     }
 }
