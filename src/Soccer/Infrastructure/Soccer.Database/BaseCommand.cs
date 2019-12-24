@@ -1,7 +1,7 @@
 ﻿using System;
 using Fanex.Data;
 using Fanex.Data.Repository;
-using Newtonsoft.Json;
+using Soccer.Database._Shared;
 
 namespace Soccer.Database
 {
@@ -15,16 +15,6 @@ namespace Soccer.Database
         [SpParam(Ignored = true)]
         protected DateTimeOffset EventDate { get; }
 
-        protected string ToJsonString(object obj)
-          => obj == null
-          ? "null"
-          : JsonConvert.SerializeObject(
-              obj,
-              new JsonSerializerSettings
-              {
-                  DateTimeZoneHandling = DateTimeZoneHandling.Utc
-              });
-
-        
+        protected static string ToJsonString(object obj) => JsonStringConverter.ToJsonString(obj);
     }
 }

@@ -17,7 +17,8 @@
         IRequestHandler<MatchCoverageByIdRequest, MatchCoverage>,
         IRequestHandler<MatchCommentaryByIdRequest, IEnumerable<MatchCommentary>>,
         IRequestHandler<MatchStatisticRequest, MatchStatistic>,
-        IRequestHandler<MatchLineupsRequest, MatchPitchViewLineups>
+        IRequestHandler<MatchLineupsRequest, MatchPitchViewLineups>,
+        IRequestHandler<MatchesByIdsRequest, IEnumerable<MatchSummary>>
     {
         private readonly IMatchQueryService matchQueryService;
         private readonly IMatchLineupsGenerator matchLineupsGenerator;
@@ -64,5 +65,8 @@
                 matchLineups.Away,
                 lineupsSvg);
         }
+
+        public async Task<IEnumerable<MatchSummary>> Handle(MatchesByIdsRequest request, CancellationToken cancellationToken)
+            => await matchQueryService.GetByIds(request.Ids, request.Language);
     }
 }

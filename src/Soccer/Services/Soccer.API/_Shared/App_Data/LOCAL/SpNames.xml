@@ -25,6 +25,10 @@
     <Setting Key="Match_GetByLeagueId" SpName="Match_GetByLeagueId" DbName="DefaultConnection" />
     <Setting Key="Match_GetByLeagueId_Former" SpName="Match_GetByLeagueId" DbName="FormerDbConnection" />
     <Setting Key="Match_GetByLeagueId_Ahead" SpName="Match_GetByLeagueId" DbName="AheadDbConnection" />
+
+    <Setting Key="Match_GetByIds" SpName="Match_GetByIds" DbName="DefaultConnection" />
+    <Setting Key="Match_GetByIds_Former" SpName="Match_GetByIds" DbName="FormerDbConnection" />
+    <Setting Key="Match_GetByIds_Ahead" SpName="Match_GetByIds" DbName="AheadDbConnection" />
   </Function>
   <Function Name="Odds">
     <Setting Key="Odds_GetOdds" SpName="Odds_GetOdds" DbName="DefaultConnection" />

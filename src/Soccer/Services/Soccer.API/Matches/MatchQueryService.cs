@@ -35,6 +35,8 @@ namespace Soccer.API.Matches
         Task<MatchStatistic> GetMatchStatistic(string id, DateTimeOffset eventDate);
 
         Task<MatchLineups> GetMatchLineups(string id, Language language, DateTimeOffset eventDate);
+
+        Task<IEnumerable<MatchSummary>> GetByIds(string[] ids, Language language);
     }
 
     public class MatchQueryService : IMatchQueryService
@@ -307,5 +309,30 @@ namespace Soccer.API.Matches
 
         private static string BuildCacheKey(string key, DateTimeOffset from, DateTimeOffset to)
             => $"{key}_{from.ToString(FormatDate)}_{to.ToString(FormatDate)}";
+
+        public async Task<IEnumerable<MatchSummary>> GetByIds(string[] ids, Language language)
+        {
+            var matches = new List<MatchSummary>();
+
+            var aheadMatches = dynamicRepository
+                .FetchAsync<Match>(new GetMatchesByIdsCriteria(
+                    ids,
+                    language,
+                    DateTimeOffset.Now.AddDays(appSettings.DatabaseQueryDateSpan)));
+
+            var currentMatches = dynamicRepository
+                .FetchAsync<Match>(new GetMatchesByIdsCriteria(
+                    ids,
+                    language));
+
+            var results = await Task.WhenAll(currentMatches, aheadMatches);
+
+            foreach (var result in results)
+            {
+                matches.AddRange(result.Select(m => new MatchSummary(m)));
+            }
+
+            return matches;
+        }
     }
 }
