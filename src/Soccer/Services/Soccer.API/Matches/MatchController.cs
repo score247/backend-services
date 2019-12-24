@@ -73,9 +73,9 @@ namespace Soccer.API.Matches
         public async Task<MatchPitchViewLineups> GetMatchLineups(string id, string language = Language.English, DateTimeOffset eventDate = default)
            => await mediator.Send(new MatchLineupsRequest(id, language, eventDate));
 
-        [HttpGet]
-        [Route("ids/{ids}")]
-        public async Task<IEnumerable<MatchSummary>> GetByIds(string ids, string language = Language.English)
-            => await mediator.Send(new MatchesByIdsRequest(ids.Split(','), language));
+        [HttpPost]
+        [Route("ids/")]
+        public async Task<IEnumerable<MatchSummary>> GetByIds([FromBody]string[] ids, string language = Language.English)
+            => await mediator.Send(new MatchesByIdsRequest(ids, language));
     }
 }
