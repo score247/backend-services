@@ -1,6 +1,6 @@
 DROP procedure IF EXISTS `Match_GetByIds`;
 
-CREATE DEFINER=`user`@`%` PROCEDURE `Match_GetByIds`(IN Ids TINYTEXT, IN language VARCHAR(10))
+CREATE DEFINER=`user`@`%` PROCEDURE `Match_GetByIds`(IN Ids TEXT, IN language VARCHAR(10))
 BEGIN
 	DECLARE i INT DEFAULT 0;    
 	DECLARE count INT DEFAULT JSON_LENGTH(Ids);
