@@ -177,5 +177,10 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
 
             return Enumerable.Empty<LeagueTable>();
         }
+
+        public Task ClearLeagueCache()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

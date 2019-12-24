@@ -25,6 +25,11 @@ namespace Soccer.API.Leagues
             => await mediator.Send(new MajorLeaguesRequest(language));
 
         [HttpGet, AllowAnonymous]
+        [Route("major/cleancache")]
+        public async Task<bool> CleanMajorLeaguesCache()
+            => await mediator.Send(new CleanMajorLeaguesRequest());
+
+        [HttpGet, AllowAnonymous]
         [Route("season/unprocessed")]
         public async Task<IEnumerable<LeagueSeasonProcessedInfo>> GetUnprocessedSeasons(string language = Language.English)
             => await mediator.Send(new UnprocessedLeagueSeasonRequest());

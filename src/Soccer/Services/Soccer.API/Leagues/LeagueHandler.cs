@@ -10,6 +10,7 @@ namespace Soccer.API.Leagues
 {
     public class LeagueHandler :
         IRequestHandler<MajorLeaguesRequest, IEnumerable<League>>,
+        IRequestHandler<CleanMajorLeaguesRequest, bool>,
         IRequestHandler<UnprocessedLeagueSeasonRequest, IEnumerable<LeagueSeasonProcessedInfo>>,
         IRequestHandler<MatchesByLeagueRequest, IEnumerable<MatchSummary>>,
         IRequestHandler<LeagueTableRequest, LeagueTable>,
@@ -25,6 +26,9 @@ namespace Soccer.API.Leagues
 
         public Task<IEnumerable<League>> Handle(MajorLeaguesRequest request, CancellationToken cancellationToken)
             => leagueQueryService.GetMajorLeagues(request.Language);
+
+        public Task<bool> Handle(CleanMajorLeaguesRequest request, CancellationToken cancellationToken)
+            => leagueQueryService.CleanMajorLeaguesRequest();
 
         public Task<IEnumerable<LeagueSeasonProcessedInfo>> Handle(UnprocessedLeagueSeasonRequest request, CancellationToken cancellationToken)
             => leagueQueryService.GetLeagueSeasonFetch();

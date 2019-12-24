@@ -16,6 +16,9 @@ namespace Soccer.DataProviders.Internal.Leagues.Services
         [Get("/soccer/{language}/leagues/major")]
         Task<IEnumerable<League>> GetMajorLeagues(string language);
 
+        [Get("/soccer/{language}/leagues/major/cleancache")]
+        Task<bool> CleanMajorLeaguesCache(string language);
+
         [Get("/soccer/{language}/leagues/season/unprocessed")]
         Task<IEnumerable<LeagueSeasonProcessedInfo>> GetUnprocessedLeagueSeason(string language);
     }
@@ -31,6 +34,13 @@ namespace Soccer.DataProviders.Internal.Leagues.Services
             this.leagueApi = leagueApi;
             this.leagueCache = leagueCache;
             this.logger = logger;
+        }
+
+        public async Task ClearLeagueCache()
+        {
+            await leagueCache.ClearMajorLeaguesCache();
+            await leagueCache.ClearCountryLeaguesCache();
+            await leagueApi.CleanMajorLeaguesCache(Language.English);
         }
 
         public Task<IEnumerable<LeagueTable>> GetLeagueLiveStandings(string leagueId, Language language, string regionName)
