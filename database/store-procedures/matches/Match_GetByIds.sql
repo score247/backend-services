@@ -15,7 +15,8 @@ BEGIN
 		SET i = i + 1;
      END WHILE;
      
-     SELECT M.`Value` FROM `Match` AS M INNER JOIN ids_tbl AS temp ON M.Id = temp.Id;
+     SELECT JSON_REPLACE(M.Value,  '$.ModifiedTime', M.ModifiedTime) AS Value 
+     FROM `Match` AS M INNER JOIN ids_tbl AS temp ON M.Id = temp.Id;
      
      DROP TEMPORARY TABLE ids_tbl;
 END
