@@ -39,6 +39,6 @@ namespace Soccer.API.Leagues
             => leagueQueryService.GetCountryLeagues(request.CountryCode, request.Language);
 
         public Task<IEnumerable<LeagueGroupState>> Handle(LeagueGroupsRequest request, CancellationToken cancellationToken)
-            => leagueQueryService.GetLeagueGroups(request.LeagueId, request.Language);
+            => leagueQueryService.GetLeagueGroups(request.LeagueId, request.SeasonId, request.Language);
     }
 }

@@ -8,13 +8,17 @@ namespace Soccer.API.Leagues.Requests
 {
     public class LeagueGroupsRequest : IRequest<IEnumerable<LeagueGroupState>>
     {
-        public LeagueGroupsRequest(string leagueId, string language)
+        public LeagueGroupsRequest(string leagueId, string seasonId, string language)
         {
             LeagueId = leagueId;
+            SeasonId = seasonId;
             Language = Enumeration.FromDisplayName<Language>(language);
         }
 
         public string LeagueId { get; }
+
+        public string SeasonId { get; }
+
         public Language Language { get; }
     }
 }
