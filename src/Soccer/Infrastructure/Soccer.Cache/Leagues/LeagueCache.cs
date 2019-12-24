@@ -86,7 +86,12 @@ namespace Soccer.Cache.Leagues
         {
             var countryLeaguesCaches = await cacheManager.GetAsync<IDictionary<string, IEnumerable<League>>>(GetCountryLeaguesCacheKey(language));
 
-            return countryLeaguesCaches?[countryCode];
+            if (countryLeaguesCaches?.ContainsKey(countryCode) == true)
+            {
+                return countryLeaguesCaches?[countryCode];
+            }
+
+            return null;
         }
 
         private static string GetMajorLeaguesCacheKey(string language)
