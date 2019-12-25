@@ -14,7 +14,7 @@ BEGIN
         L.`CurrentSeasonId`,
         LS.`SeasonDates`
         FROM `League` as L
-			JOIN `LeagueSeason` as LS
+			LEFT JOIN `LeagueSeason` as LS
 			ON LS.`SeasonId` = L.`CurrentSeasonId`
         WHERE L.`IsActive` = '1' AND L.`Language` = languageCode;
 END
