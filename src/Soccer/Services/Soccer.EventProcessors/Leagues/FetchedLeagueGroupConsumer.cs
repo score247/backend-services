@@ -24,10 +24,9 @@ namespace Soccer.EventProcessors.Leagues
                 message.LeagueId,
                 message.LeagueSeasonId,
                 message.LeagueGroupName,
-                message.LeagueRound,
-                message.Language.DisplayName);
+                message.LeagueRound);
 
-            var command = new InsertOrUpdateLeagueGroupCommand(leagueGroupState);
+            var command = new InsertOrUpdateLeagueGroupCommand(leagueGroupState, message.Language);
 
             return dynamicRepository.ExecuteAsync(command);
         }

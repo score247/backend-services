@@ -1,16 +1,17 @@
 ﻿using Soccer.Core.Leagues.Models;
+using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.Database.Leagues.Commands
 {
     public class InsertOrUpdateLeagueGroupCommand : BaseCommand
     {
-        public InsertOrUpdateLeagueGroupCommand(LeagueGroupState leagueGroupState)
+        public InsertOrUpdateLeagueGroupCommand(LeagueGroupState leagueGroupState, Language language)
         {
             LeagueId = leagueGroupState.LeagueId;
             LeagueSeasonId = leagueGroupState.LeagueSeasonId;
             GroupStageName = leagueGroupState.GroupStageName;
             GroupStageValue = ToJsonString(leagueGroupState);
-            Language = leagueGroupState.Language;
+            Language = language.DisplayName;
         }
 
         public string LeagueId { get; }

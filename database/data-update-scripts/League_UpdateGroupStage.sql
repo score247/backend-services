@@ -12,7 +12,6 @@ SELECT
     M.LeagueSeasonId,
     CONCAT('{',
 		   CONCAT('"GroupStageName":',M.Value -> '$.LeagueGroupName',''),
-		   CONCAT(',"Language":"',M.Language,'"'),
 		   CONCAT(',"LeagueRound":',M.Value -> "$.LeagueRound",''),
 		   CONCAT(',"LeagueSeasonId":"',M.LeagueSeasonId,'"'),
 		   CONCAT(',"LeagueId":"',M.LeagueId,'"')
@@ -26,7 +25,6 @@ OR JSON_UNQUOTE(JSON_EXTRACT(M.Value, "$.LeagueRound.Group")) <> 'null'
 ON DUPLICATE KEY UPDATE
 	`Value` = CONCAT('{',
 		   CONCAT('"GroupStageName":',M.Value -> '$.LeagueGroupName',''),
-		   CONCAT(',"Language":"',M.Language,'"'),
 		   CONCAT(',"LeagueRound":',M.Value -> "$.LeagueRound",''),
 		   CONCAT(',"LeagueSeasonId":"',M.LeagueSeasonId,'"'),
 		   CONCAT(',"LeagueId":"',M.LeagueId,'"')
