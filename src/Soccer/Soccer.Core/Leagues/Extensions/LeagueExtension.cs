@@ -67,10 +67,12 @@ namespace Soccer.Core.Leagues.Extensions
            LeagueRound leagueRound,
            Language language)
         {
-            if (leagueRound.Type == LeagueRoundType.CupRound
+            if (leagueRound.Type == LeagueRoundType.CupRound 
                 && !string.IsNullOrWhiteSpace(leagueRound?.Name))
             {
-                return $"{BuildLeagueWithCountryName(league)}{termsplit} {leagueRound.Name?.Replace(underscore, space)}";
+                var formatPhase = FormatPhaseNotPlayOffs(leagueRound);
+
+                return $"{BuildLeagueWithCountryName(league)}{termsplit} {formatPhase}{leagueRound.Name?.Replace(underscore, space)}";
             }
 
             if (leagueRound.Type == LeagueRoundType.QualifierRound
@@ -81,6 +83,11 @@ namespace Soccer.Core.Leagues.Extensions
 
             return LeagueNameRule1GroupBuilder(league, leagueRound, language);
         }
+
+        private static string FormatPhaseNotPlayOffs(LeagueRound leagueRound)
+        => !string.IsNullOrWhiteSpace(leagueRound.Phase) && IsPlayOffs(leagueRound.Phase)
+                ? string.Empty
+                : $"{leagueRound.Phase.Replace(underscore, space)}{ termsplit} ";
 
         private static string LeagueNameRule1GroupBuilder(
             League league,
@@ -185,19 +192,9 @@ namespace Soccer.Core.Leagues.Extensions
         private static string CombinePlayoffsInfomration(
             LeagueRound leagueRound,
             string leagueName)
-        {
-            if (leagueRound?.Phase != null)
-            {
-                var isPlayOffs = leagueRound.Phase.Equals(playoffs, StringComparison.InvariantCultureIgnoreCase);
-
-                if (isPlayOffs)
-                {
-                    return $"{leagueName}{termsplit} {playoffs}";
-                }
-            }
-
-            return leagueName;
-        }
+            => (leagueRound?.Phase != null && IsPlayOffs(leagueRound.Phase))
+                ? $"{leagueName}{termsplit} {playoffs}"
+                : leagueName;
 
         private static string LeagueNameRule0Builder(
             League league,
@@ -205,6 +202,8 @@ namespace Soccer.Core.Leagues.Extensions
         {
             return league.Name.Replace(commaString, string.Empty);
         }
+
+        private static bool IsPlayOffs(string phase) => phase.Equals(playoffs, StringComparison.InvariantCultureIgnoreCase);
 
 #pragma warning restore S1172 // Unused method parameters should be removed
     }
