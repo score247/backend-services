@@ -22,6 +22,7 @@ BEGIN
 		ON DUPLICATE KEY UPDATE
             Value = JSON_REPLACE(Value,  
 							'$.EventDate', JSON_EXTRACT(matches, CONCAT('$[', i, '].EventDate')), 
+							'$.LeagueGroupName', JSON_EXTRACT(matches, CONCAT('$[', i, '].LeagueGroupName')), 
 							'$.MatchResult.EventStatus', JSON_EXTRACT(matches, CONCAT('$[', i, '].MatchResult.EventStatus'))),
             EventDate = STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].EventDate'))),'%Y-%m-%dT%H:%i:%s+00:00'),
             ModifiedTime = now();
