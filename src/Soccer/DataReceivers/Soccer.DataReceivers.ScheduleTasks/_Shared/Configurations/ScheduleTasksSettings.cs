@@ -20,11 +20,12 @@
             string cleanMajorLeaguesCacheCron = "0 0 1 1 *",
             int fetchMatchesByDateDelayedHours = 2,
             string fetchLeaguesSeasonCron = "0 2 * * 2",
-            string fetchLeagueMatchesCron = "30 2 * * 2",
+            string fetchLeagueMatchesAndTimelinesCron = "30 2 * * 2",
             int fetchTimelineDelayedMinutes = 10,
             int fetchLineupsDelayedMinutes = 30,
             int fetchTeamResultsDelayedMinutes = 40,
-            string fetchLeagueStandingCron = "0 0 1 1 *")
+            string fetchLeagueStandingCron = "0 0 1 1 *",
+            string fetchLeagueMatchesCron = "0 0 31 2 0")
         {
             QueueBatchSize = queueBatchSize;
             FetchMatchResultDateSpan = fetchMatchResultDateSpan;
@@ -41,11 +42,12 @@
             CleanMajorLeaguesCacheCron = cleanMajorLeaguesCacheCron;
             FetchMatchesByDateDelayedHours = fetchMatchesByDateDelayedHours;
             FetchLeaguesSeasonCron = fetchLeaguesSeasonCron;
-            FetchLeagueMatchesCron = fetchLeagueMatchesCron;
+            FetchLeagueMatchesAndTimelinesCron = fetchLeagueMatchesAndTimelinesCron;
             FetchTimelineDelayedMinutes = fetchTimelineDelayedMinutes;
             FetchLineupsDelayedMinutes = fetchLineupsDelayedMinutes;
             FetchTeamResultsDelayedMinutes = fetchTeamResultsDelayedMinutes;
             FetchLeagueStandingCron = fetchLeagueStandingCron;
+            FetchLeagueMatchesCron = fetchLeagueMatchesCron;
         }
 
 #pragma warning restore S107 // Methods should not have too many parameters
@@ -79,6 +81,8 @@
         public int FetchMatchesByDateDelayedHours { get; set; }
 
         public string FetchLeaguesSeasonCron { get; set; }
+
+        public string FetchLeagueMatchesAndTimelinesCron { get; set; }
 
         public string FetchLeagueMatchesCron { get; set; }
 

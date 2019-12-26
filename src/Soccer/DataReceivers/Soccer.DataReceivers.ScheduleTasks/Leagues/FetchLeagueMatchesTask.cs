@@ -21,11 +21,15 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
     {
         [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
-        Task FetchLeagueMatches();
+        Task FetchLeagueMatchesAndTimelines();
 
         [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
-        Task FetchMatchesForLeague(IList<LeagueSeasonProcessedInfo> leagueSeasons);
+        Task FetchMatchesForLeague(IList<LeagueSeasonProcessedInfo> leagueSeasons, bool isScheduleTimelines = true);
+
+        [AutomaticRetry(Attempts = 1)]
+        [Queue("low")]
+        Task FetchLeagueMatches();
     }
     public class FetchLeagueMatchesTask : IFetchLeagueMatchesTask
     {
@@ -56,7 +60,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             TeamResultsDelayTimespan = TimeSpan.FromMinutes(appSettings.ScheduleTasksSettings.FetchTeamResultsDelayedMinutes);
         }
 
-        public async Task FetchLeagueMatches()
+        public async Task FetchLeagueMatchesAndTimelines()
         {
             var unprocessedLeagueSeason = await leagueSeasonService.GetUnprocessedLeagueSeason();
 
@@ -69,11 +73,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             {
                 var batchOfLeague = unprocessedLeagueSeason.Skip(i * BactchOfLeagueSize).Take(BactchOfLeagueSize).ToList();
 
-                jobClient.Enqueue<IFetchLeagueMatchesTask>(t => t.FetchMatchesForLeague(batchOfLeague));
+                jobClient.Enqueue<IFetchLeagueMatchesTask>(t => t.FetchMatchesForLeague(batchOfLeague, true));
             }
         }
 
-        public async Task FetchMatchesForLeague(IList<LeagueSeasonProcessedInfo> leagueSeasons)
+        public async Task FetchMatchesForLeague(IList<LeagueSeasonProcessedInfo> leagueSeasons, bool isScheduleTimelines = true)
         {
             foreach (var season in leagueSeasons)
             {
@@ -82,8 +86,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
                     var matches = await leagueScheduleService.GetLeagueMatches(season.Region, season.LeagueId, language);
                     await PublishPreMatchesMessage(language, matches);
 
-                    ScheduleTimelineAndLineUpsTasks(matches.Where(match => match.MatchResult.EventStatus.IsClosed()), language);
-                    ScheduleTeamResultsTasks(language, matches);
+                    if (isScheduleTimelines)
+                    {
+                        ScheduleTimelineAndLineUpsTasks(matches.Where(match => match.MatchResult.EventStatus.IsClosed()), language);
+                        ScheduleTeamResultsTasks(language, matches);
+                    }
                 }
             }
 
@@ -128,6 +135,23 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             if (teams?.Any() == true)
             {
                 jobClient.Schedule<IFetchHeadToHeadsTask>(task => task.FetchTeamResults(teams, language), TeamResultsDelayTimespan);
+            }
+        }
+
+        public async Task FetchLeagueMatches()
+        {
+            var unprocessedLeagueSeason = await leagueSeasonService.GetUnprocessedLeagueSeason();
+
+            if (unprocessedLeagueSeason?.Any() == false)
+            {
+                return;
+            }
+
+            for (var i = 0; i * BactchOfLeagueSize < unprocessedLeagueSeason.Count(); i++)
+            {
+                var batchOfLeague = unprocessedLeagueSeason.Skip(i * BactchOfLeagueSize).Take(BactchOfLeagueSize).ToList();
+
+                jobClient.Enqueue<IFetchLeagueMatchesTask>(t => t.FetchMatchesForLeague(batchOfLeague, false));
             }
         }
     }

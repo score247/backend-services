@@ -131,12 +131,12 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
                 taskSettings.FetchLeaguesSeasonCron);
             }
 
-            if (!string.IsNullOrWhiteSpace(taskSettings.FetchLeagueMatchesCron))
+            if (!string.IsNullOrWhiteSpace(taskSettings.FetchLeagueMatchesAndTimelinesCron))
             {
                 RecurringJob.AddOrUpdate<IFetchLeagueMatchesTask>(
-                nameof(IFetchLeagueMatchesTask.FetchLeagueMatches),
-                job => job.FetchLeagueMatches(),
-                taskSettings.FetchLeaguesSeasonCron);
+                nameof(IFetchLeagueMatchesTask.FetchLeagueMatchesAndTimelines),
+                job => job.FetchLeagueMatchesAndTimelines(),
+                taskSettings.FetchLeagueMatchesAndTimelinesCron);
             }
 
             if (!string.IsNullOrWhiteSpace(taskSettings.FetchLeagueStandingCron))
@@ -147,10 +147,10 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
                 taskSettings.FetchLeagueStandingCron);
             }
 
-            //TODO Remove this task after completely fetching old data
-            RecurringJob.AddOrUpdate<IFetchLeagueHeadToHeadTask>(
-            nameof(IFetchLeagueHeadToHeadTask.FetchHeadToHeadOfAllLeague),
-            job => job.FetchHeadToHeadOfAllLeague(),
+            if (!string.IsNullOrWhiteSpace(taskSettings.FetchLeagueMatchesCron))
+            {
+                RecurringJob.AddOrUpdate<IFetchLeagueMatchesTask>(
+                nameof(IFetchLeagueMatchesTask.FetchLeagueMatches),
             Cron.Yearly);
 
             RecurringJob.AddOrUpdate<IFetchNewsTask>(
