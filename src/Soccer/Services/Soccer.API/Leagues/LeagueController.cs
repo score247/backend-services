@@ -35,15 +35,16 @@ namespace Soccer.API.Leagues
             => await mediator.Send(new UnprocessedLeagueSeasonRequest());
 
         [HttpGet]
-        [Route("{id}/matches/{leagueGroupName}")]
+        [Route("{id}/seasons/{seasonId}/matches/{leagueGroupName}")]
         public async Task<IEnumerable<MatchSummary>> GetMatches(
               string id,
+              string seasonId,
               string leagueGroupName,
               string language = Language.English)
-          => await mediator.Send(new MatchesByLeagueRequest(id, leagueGroupName, language));
+          => await mediator.Send(new MatchesByLeagueRequest(id, seasonId, leagueGroupName, language));
 
         [HttpGet]
-        [Route("{id}/season/{seasonId}/table/{groupName}")]
+        [Route("{id}/seasons/{seasonId}/table/{groupName}")]
         public async Task<LeagueTable> GetLeagueTable(string id, string seasonId, string groupName, string language = Language.English)
             => await mediator.Send(new LeagueTableRequest(id, seasonId, groupName, language));
 
@@ -55,7 +56,7 @@ namespace Soccer.API.Leagues
 
         [HttpGet, AllowAnonymous]
         [HttpGet]
-        [Route("{leagueId}/{seasonId}/groups")]
+        [Route("{leagueId}/seasons/{seasonId}/groups")]
         public async Task<IEnumerable<LeagueGroupState>> GetLeagueGroups(string leagueId, string seasonId, string language = Language.English)
             => await mediator.Send(new LeagueGroupsRequest(leagueId, seasonId, language));
     }

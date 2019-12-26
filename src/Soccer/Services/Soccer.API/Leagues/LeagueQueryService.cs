@@ -20,7 +20,7 @@ namespace Soccer.API.Leagues
 
         Task<IEnumerable<LeagueSeasonProcessedInfo>> GetLeagueSeasonFetch();
 
-        Task<IEnumerable<MatchSummary>> GetMatches(string id, string leagueGroupName, Language language);
+        Task<IEnumerable<MatchSummary>> GetMatches(string id, string seasonId, string leagueGroupName, Language language);
 
         Task<LeagueTable> GetLeagueTable(string id, string seasonId, string groupName, Language language);
 
@@ -70,15 +70,21 @@ namespace Soccer.API.Leagues
             return countryLeagues;
         }
 
-        public Task<IEnumerable<LeagueGroupState>> GetLeagueGroups(string leagueId, string seasonId, Language language)
-            => dynamicRepository.FetchAsync<LeagueGroupState>(new GetLeagueGroupsCriteria(leagueId, seasonId, language));
+        public async Task<IEnumerable<LeagueGroupState>> GetLeagueGroups(string leagueId, string seasonId, Language language)
+        {
+            var season = await GetCurrentSeasonIfNull(leagueId, seasonId, language);
+
+            return await dynamicRepository.FetchAsync<LeagueGroupState>(new GetLeagueGroupsCriteria(leagueId, season, language));
+        }        
 
         public Task<IEnumerable<LeagueSeasonProcessedInfo>> GetLeagueSeasonFetch()
             => dynamicRepository.FetchAsync<LeagueSeasonProcessedInfo>(new GetUnprocessedLeagueSeasonCriteria());
 
         public async Task<LeagueTable> GetLeagueTable(string id, string seasonId, string groupName, Language language)
         {
-            var leagueTable = await dynamicRepository.GetAsync<LeagueTable>(new GetLeagueTableCriteria(id, seasonId, language));
+            var season = await GetCurrentSeasonIfNull(id, seasonId, language);
+
+            var leagueTable = await dynamicRepository.GetAsync<LeagueTable>(new GetLeagueTableCriteria(id, season, language));
 
             leagueTable?.FilterAndCalculateGroupTableOutcome(groupName);
 
@@ -102,9 +108,10 @@ namespace Soccer.API.Leagues
             return majorLeagues;
         }
 
-        public async Task<IEnumerable<MatchSummary>> GetMatches(string id, string leagueGroupName, Language language)
+        public async Task<IEnumerable<MatchSummary>> GetMatches(string id, string seasonId, string leagueGroupName, Language language)
         {
             var matches = new List<MatchSummary>();
+            var season = await GetCurrentSeasonIfNull(id, seasonId, language);
 
             var formerMatches = dynamicRepository
                 .FetchAsync<Match>(new GetMatchesByLeagueCriteria(
@@ -124,11 +131,10 @@ namespace Soccer.API.Leagues
                     language));
 
             var results = await Task.WhenAll(currentMatches, aheadMatches, formerMatches);
-            var league = (await GetMajorLeagues(language)).FirstOrDefault(league => league.Id == id);
 
             foreach (var result in results)
             {
-                matches.AddRange(result.Select(m => new MatchSummary(m)).Where(m => m.LeagueSeasonId == league?.SeasonId));
+                matches.AddRange(result.Select(m => new MatchSummary(m)).Where(m => m.LeagueSeasonId == season));
             }
 
             if (!string.IsNullOrWhiteSpace(leagueGroupName))
@@ -138,5 +144,11 @@ namespace Soccer.API.Leagues
 
             return matches;
         }
+
+        private async Task<string> GetCurrentSeasonIfNull(string leagueId, string seasonId, Language language)
+           => string.IsNullOrWhiteSpace(seasonId)
+                        ? (await GetMajorLeagues(language)).FirstOrDefault(league => league.Id == leagueId).SeasonId
+                        : seasonId;
+
     }
 }
