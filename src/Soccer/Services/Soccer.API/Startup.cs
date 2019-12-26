@@ -47,6 +47,7 @@ namespace Soccer.API
                 }
                 services.AddMemoryCache();
                 services.AddAuthentication(appSettings);
+                services.AddCors(appSettings);
                 services
                     .AddMvc()
                     .AddNewtonsoftJson()
@@ -85,6 +86,7 @@ namespace Soccer.API
                 {
                     app.ConfigureSwagger(Configuration);
                 }
+                app.AddCors();
                 app.UseRouting();
 
                 app.ConfigureAuthentication();

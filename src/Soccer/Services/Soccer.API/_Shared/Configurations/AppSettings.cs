@@ -1,7 +1,9 @@
 ﻿namespace Soccer.API.Shared.Configurations
 {
     using System;
+    using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Linq;
     using Microsoft.Extensions.Configuration;
 
     public interface IAppSettings
@@ -31,6 +33,8 @@
         string EncryptKey { get; }
 
         bool EnabledSwagger { get; }
+
+        IEnumerable<string> AllowedCorsUrls { get; }
     }
 
     public class AppSettings : IAppSettings
@@ -54,6 +58,7 @@
             EnabledAuthentication = GetValue<bool>(nameof(EnabledAuthentication));
             EncryptKey = GetValue<string>(nameof(EncryptKey));
             EnabledSwagger = GetValue<bool>(nameof(EnabledSwagger));
+            AllowedCorsUrls = configuration.GetSection(nameof(AllowedCorsUrls)).Get<string[]>()?.AsEnumerable() ?? Enumerable.Empty<string>();
 
             if (NumberOfTopMatches <= 0)
             {
@@ -86,6 +91,8 @@
         public string EncryptKey { get; }
 
         public bool EnabledSwagger { get; }
+
+        public IEnumerable<string> AllowedCorsUrls { get; }
 
         public T GetValue<T>(string key)
         {
