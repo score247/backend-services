@@ -45,7 +45,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             leagueServiceFactory(DataProviderType.Internal).Returns(internalLeagueService);
             appSettings.ScheduleTasksSettings.Returns(A.Dummy<ScheduleTasksSettings>()
                 .With(setting => setting.FetchMatchesByDateDelayedHours, 1)
-                .With(setting => setting.QueueBatchSize, 3));
+                .With(setting => setting.QueueBatchSize, 3)
+                .With(setting => setting.FetchMatchScheduleDateSpan, 3));
 
             majorLeagues = new List<League>
             {
@@ -59,7 +60,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         [Fact]
         public async Task FetchPreMatches_EmptyMajorLeague_NotScheduleAnyFetchJob()
         {
-            await fetchPreMatchesTask.FetchPreMatches(3);
+            await fetchPreMatchesTask.FetchPreMatches();
 
             jobClient
                 .DidNotReceive()
@@ -71,7 +72,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         {
             internalLeagueService.GetLeagues(Language.en_US).Returns(majorLeagues);
 
-            await fetchPreMatchesTask.FetchPreMatches(3);
+            await fetchPreMatchesTask.FetchPreMatches();
 
             jobClient
                 .Received(3)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
@@ -9,6 +10,7 @@ using Soccer.Core.Shared.Enumerations;
 using Soccer.DataProviders._Shared.Enumerations;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.Matches.Services;
+using Soccer.DataReceivers.ScheduleTasks._Shared.HealthCheck;
 using Soccer.DataReceivers.ScheduleTasks.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Teams;
 
@@ -31,19 +33,22 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         private readonly IMatchService matchService;
         private readonly IBus messageBus;
         private readonly ILeagueService internalLeagueService;
+        private readonly IHealthCheckService healthCheckService;
 
         public FetchLiveMatchesTask(
             IBus messageBus,
             IMatchService matchService,
-            Func<DataProviderType, ILeagueService> leagueServiceFactory)
+            Func<DataProviderType, ILeagueService> leagueServiceFactory,
+            IHealthCheckService healthCheckService)
         {
             this.messageBus = messageBus;
             this.matchService = matchService;
             internalLeagueService = leagueServiceFactory(DataProviderType.Internal);
+            this.healthCheckService = healthCheckService;
         }
 
         public async Task FetchLiveMatches()
-        {
+        {            
             var majorLeagues = await internalLeagueService.GetLeagues(Language.en_US);
 
             foreach (var language in Enumeration.GetAll<Language>())
@@ -68,6 +73,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
                 BackgroundJob.Enqueue<IFetchLeagueStandingsTask>(
                     task => task.FetchClosedMatchesStanding(closedMatches, language));
+
+                healthCheckService.HeartBeat(nameof(FetchLiveMatches));
             }
         }
     }

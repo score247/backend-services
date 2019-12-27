@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using Fanex.Caching;
 using Microsoft.Extensions.Configuration;
@@ -23,6 +24,7 @@ using Soccer.DataProviders.SportRadar.Odds;
 using Soccer.DataProviders.SportRadar.Shared.Configurations;
 using Soccer.DataProviders.SportRadar.Teams.Services;
 using Soccer.DataProviders.Teams.Services;
+using Soccer.DataReceivers.ScheduleTasks._Shared.HealthCheck;
 using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
 
 namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
@@ -92,7 +94,9 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             services.AddSingleton(RestService.For<IHeadToHeadApi>(sportRadarDataProviderSettings.ServiceUrl));
             services.AddSingleton<IHeadToHeadService, HeadToHeadService>();
 
+            services.AddSingleton<IHealthCheckService, HealthCheckService>();
             services.AddSingleton<INewsService, NewsService>();
+
         }
     }
 }
