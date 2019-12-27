@@ -263,6 +263,11 @@ namespace Soccer.Core.Matches.Models
         public string LeagueRoundGroup { get; private set; }
 
         public string LeagueGroupName { get; private set; }
+
+        /// <summary>
+        /// For testing javscript messagepack deserialization
+        /// </summary>
+        public DateTime EventDateServerTime => EventDate.DateTime;
     }
 
 #pragma warning restore S109 // Magic numbers should not be used
