@@ -78,6 +78,7 @@ namespace Soccer.API
         {
             try
             {
+                app.AddCors();
                 app.UseStaticFiles();
                 app.ConfigureExceptionHandler();
                 app.UseHealthCheck();
@@ -86,7 +87,6 @@ namespace Soccer.API
                 {
                     app.ConfigureSwagger(Configuration);
                 }
-                app.AddCors();
                 app.UseRouting();
 
                 app.ConfigureAuthentication();
