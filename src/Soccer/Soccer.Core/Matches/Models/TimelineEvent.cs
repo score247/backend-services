@@ -147,5 +147,10 @@
         {
             MatchTime = matchTime;
         }
+
+        public void UpdateStoppageTime(byte stoppageTime)
+        {
+            StoppageTime = $"{stoppageTime}";
+        }
     }
 }

@@ -11,6 +11,7 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
     public class BreakStartEventConsumer : IConsumer<IBreakStartEventMessage>
     {
         private const byte DefaultBreakStartTime = 45;
+        private const byte DefaultStoppageTime = 99; // force to be latest
 
         private static readonly ReadOnlyDictionary<PeriodType, byte> BreakTimes
           = new ReadOnlyDictionary<PeriodType, byte>(
@@ -37,9 +38,10 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
             {
                 var matchTime = BreakTimes.ContainsKey(matchEvent.Timeline.PeriodType)
                     ? BreakTimes[matchEvent.Timeline.PeriodType]
-                    : DefaultBreakStartTime;
+                    : DefaultBreakStartTime;                
 
                 matchEvent.Timeline.UpdateMatchTime(matchTime);
+                matchEvent.Timeline.UpdateStoppageTime(DefaultStoppageTime);
 
                 await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
             }
