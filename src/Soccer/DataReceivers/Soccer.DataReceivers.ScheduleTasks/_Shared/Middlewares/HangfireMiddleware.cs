@@ -87,8 +87,10 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
         {
             if (!string.IsNullOrWhiteSpace(cronExpression))
             {
+                var info = (MethodCallExpression)methodCall.Body;
+
                 RecurringJob.AddOrUpdate( 
-                    nameof(methodCall), 
+                    info.Method.Name, 
             Cron.Yearly);
 
             RecurringJob.AddOrUpdate<IFetchNewsTask>(
