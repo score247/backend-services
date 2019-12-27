@@ -15,10 +15,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
     public interface IFetchLeaguesTask
     {
         [Queue("low")]
-        void FetchLeagues();
-
-        [Queue("low")]
-        Task FetchLeaguesForLanguage(Language language);
+        Task FetchLeagues();
     }
 
     public class FetchLeaguesTask : IFetchLeaguesTask
@@ -34,26 +31,21 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             this.leagueServiceFactory = leagueServiceFactory;
         }
 
-        public void FetchLeagues()
+        public async Task FetchLeagues()
         {
             foreach (var language in Enumeration.GetAll<Language>())
             {
-                BackgroundJob.Enqueue<IFetchLeaguesTask>(t => t.FetchLeaguesForLanguage(language));
-            }
-        }
+                var leagueService = leagueServiceFactory(DataProviderType.SportRadar);
 
-        public async Task FetchLeaguesForLanguage(Language language)
-        {
-            var leagueService = leagueServiceFactory(DataProviderType.SportRadar);
+                var batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
+                var soccerLeagues = (await leagueService.GetLeagues(language)).ToList();
 
-            var batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
-            var soccerLeagues = (await leagueService.GetLeagues(language)).ToList();
+                for (var i = 0; i * batchSize < soccerLeagues.Count; i++)
+                {
+                    var leaguesBatch = soccerLeagues.Skip(i * batchSize).Take(batchSize);
 
-            for (var i = 0; i * batchSize < soccerLeagues.Count; i++)
-            {
-                var leaguesBatch = soccerLeagues.Skip(i * batchSize).Take(batchSize);
-
-                await messageBus.Publish<ILeaguesFetchedMessage>(new LeaguesFetchedMessage(leaguesBatch, language.DisplayName));
+                    await messageBus.Publish<ILeaguesFetchedMessage>(new LeaguesFetchedMessage(leaguesBatch, language.DisplayName));
+                }
             }
         }
     }

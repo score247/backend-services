@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Hangfire;
 using Hangfire.Dashboard;
 using Hangfire.MySql.Core;
@@ -67,90 +70,25 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
                 Queues = configuration.GetSection("HangfireQueues").Get<string[]>()
             });
 
-            if (!string.IsNullOrWhiteSpace(taskSettings.FetchPreMatchesCron))
-            {
-                RecurringJob.AddOrUpdate<IFetchPreMatchesTask>(
-                    nameof(IFetchPreMatchesTask.FetchPreMatches),
-                    job => job.FetchPreMatches(taskSettings.FetchMatchScheduleDateSpan),
-                    taskSettings.FetchPreMatchesCron);
-            }
+            RegisterTask<IFetchPreMatchesTask>(taskSettings.FetchPreMatchesCron, job => job.FetchPreMatches());
+            RegisterTask<IFetchPostMatchesTask>(taskSettings.FetchPostMatchesCron, job => job.FetchPostMatches());
+            RegisterTask<IFetchLiveMatchesTask>(taskSettings.FetchLiveMatchesCron, job => job.FetchLiveMatches());
+            RegisterTask<IFetchLiveMatchesTimelineTask>(taskSettings.FetchLiveMatchesTimelineCron, job => job.FetchLiveMatchesTimeline());
+            RegisterTask<IFetchLeaguesTask>(taskSettings.FetchLeaguesCron, job => job.FetchLeagues());
+            RegisterTask<IFetchMatchLineupsTask>(taskSettings.FetchMatchLineupsCron, job => job.FetchMatchLineups());
+            RegisterTask<ICleanMajorLeaguesCacheTask>(taskSettings.CleanMajorLeaguesCacheCron, job => job.CleanMajorLeaguesCache());
+            RegisterTask<IFetchLeaguesSeasonTask>(taskSettings.FetchLeaguesSeasonCron, job => job.FetchLeaguesSeason());
+            RegisterTask<IFetchLeagueMatchesTask>(taskSettings.FetchLeagueMatchesAndTimelinesCron, job => job.FetchLeagueMatchesAndTimelines());
+            RegisterTask<IFetchLeagueStandingsTask>(taskSettings.FetchLeagueStandingCron, job => job.FetchLeagueStandings());
+            RegisterTask<IFetchLeagueMatchesTask>(taskSettings.FetchLeagueMatchesCron, job => job.FetchLeagueMatches());
+        }
 
-            if (!string.IsNullOrWhiteSpace(taskSettings.FetchPostMatchesCron))
+        private static void RegisterTask<T>(string cronExpression, Expression<Func<T, Task>> methodCall)
+        {
+            if (!string.IsNullOrWhiteSpace(cronExpression))
             {
-                RecurringJob.AddOrUpdate<IFetchPostMatchesTask>(
-                    nameof(IFetchPostMatchesTask.FetchPostMatches),
-                    job => job.FetchPostMatches(taskSettings.FetchMatchScheduleDateSpan),
-                    taskSettings.FetchPostMatchesCron);
-            }
-
-            if (!string.IsNullOrWhiteSpace(taskSettings.FetchLiveMatchesCron))
-            {
-                RecurringJob.AddOrUpdate<IFetchLiveMatchesTask>(
-                    nameof(IFetchLiveMatchesTask.FetchLiveMatches),
-                    job => job.FetchLiveMatches(),
-                    taskSettings.FetchLiveMatchesCron);
-            }
-
-            if (!string.IsNullOrWhiteSpace(taskSettings.FetchLiveMatchesTimelineCron))
-            {
-                RecurringJob.AddOrUpdate<IFetchLiveMatchesTimelineTask>(
-                    nameof(IFetchLiveMatchesTimelineTask.FetchLiveMatchesTimeline),
-                    job => job.FetchLiveMatchesTimeline(),
-                    taskSettings.FetchLiveMatchesTimelineCron);
-            }
-
-            if (!string.IsNullOrWhiteSpace(taskSettings.FetchLeaguesCron))
-            {
-                RecurringJob.AddOrUpdate<IFetchLeaguesTask>(
-                nameof(IFetchLeaguesTask.FetchLeagues),
-                job => job.FetchLeagues(),
-                taskSettings.FetchLeaguesCron);
-            }
-
-            if (!string.IsNullOrWhiteSpace(taskSettings.FetchMatchLineupsCron))
-            {
-                RecurringJob.AddOrUpdate<IFetchMatchLineupsTask>(
-                nameof(IFetchMatchLineupsTask.FetchMatchLineups),
-                job => job.FetchMatchLineups(),
-                taskSettings.FetchMatchLineupsCron);
-            }
-
-            if (!string.IsNullOrWhiteSpace(taskSettings.CleanMajorLeaguesCacheCron))
-            {
-                RecurringJob.AddOrUpdate<ICleanMajorLeaguesCacheTask>(
-                nameof(ICleanMajorLeaguesCacheTask.CleanMajorLeaguesCache),
-                job => job.CleanMajorLeaguesCache(),
-                taskSettings.CleanMajorLeaguesCacheCron);
-            }
-
-            if (!string.IsNullOrWhiteSpace(taskSettings.FetchLeaguesSeasonCron))
-            {
-                RecurringJob.AddOrUpdate<IFetchLeaguesSeasonTask>(
-                nameof(IFetchLeaguesSeasonTask.FetchLeaguesSeason),
-                job => job.FetchLeaguesSeason(),
-                taskSettings.FetchLeaguesSeasonCron);
-            }
-
-            if (!string.IsNullOrWhiteSpace(taskSettings.FetchLeagueMatchesAndTimelinesCron))
-            {
-                RecurringJob.AddOrUpdate<IFetchLeagueMatchesTask>(
-                nameof(IFetchLeagueMatchesTask.FetchLeagueMatchesAndTimelines),
-                job => job.FetchLeagueMatchesAndTimelines(),
-                taskSettings.FetchLeagueMatchesAndTimelinesCron);
-            }
-
-            if (!string.IsNullOrWhiteSpace(taskSettings.FetchLeagueStandingCron))
-            {
-                RecurringJob.AddOrUpdate<IFetchLeagueStandingsTask>(
-                nameof(IFetchLeagueStandingsTask.FetchLeagueStandings),
-                job => job.FetchLeagueStandings(),
-                taskSettings.FetchLeagueStandingCron);
-            }
-
-            if (!string.IsNullOrWhiteSpace(taskSettings.FetchLeagueMatchesCron))
-            {
-                RecurringJob.AddOrUpdate<IFetchLeagueMatchesTask>(
-                nameof(IFetchLeagueMatchesTask.FetchLeagueMatches),
+                RecurringJob.AddOrUpdate( 
+                    nameof(methodCall), 
             Cron.Yearly);
 
             RecurringJob.AddOrUpdate<IFetchNewsTask>(

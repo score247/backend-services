@@ -23,7 +23,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
     {
         [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
-        Task FetchPreMatches(int dateSpan);
+        Task FetchPreMatches();
 
         [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
@@ -52,7 +52,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             this.jobClient = jobClient;
         }
 
-        public async Task FetchPreMatches(int dateSpan)
+        public async Task FetchPreMatches()
         {
             var majorLeagues = (await internalLeagueService.GetLeagues(Language.en_US))?.ToList();
 
@@ -63,7 +63,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
             foreach (var language in Enumeration.GetAll<Language>())
             {
-                for (var dayAdd = 0; dayAdd < dateSpan; dayAdd++)
+                for (var dayAdd = 0; dayAdd < appSettings.ScheduleTasksSettings.FetchMatchScheduleDateSpan; dayAdd++)
                 {
                     var fetchDate = DateTime.UtcNow.AddDays(dayAdd);
                     var delayedHour = appSettings.ScheduleTasksSettings.FetchMatchesByDateDelayedHours + dayAdd - 1;

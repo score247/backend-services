@@ -19,7 +19,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
     {
         [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
-        Task FetchPostMatches(int dateSpan);
+        Task FetchPostMatches();
 
         [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
@@ -45,13 +45,13 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             internalLeagueService = leagueServiceFactory(DataProviderType.Internal);
         }
 
-        public async Task FetchPostMatches(int dateSpan)
+        public async Task FetchPostMatches()
         {
             var majorLeagues = await internalLeagueService.GetLeagues(Language.en_US);
 
             foreach (var language in Enumeration.GetAll<Language>())
             {
-                for (var dayAdd = 0; dayAdd <= dateSpan; dayAdd++)
+                for (var dayAdd = 0; dayAdd <= appSettings.ScheduleTasksSettings.FetchMatchResultDateSpan; dayAdd++)
                 {
                     var fetchDate = DateTime.UtcNow.AddDays(-dayAdd);
 
