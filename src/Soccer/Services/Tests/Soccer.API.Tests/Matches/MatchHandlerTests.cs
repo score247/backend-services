@@ -92,17 +92,6 @@ namespace Soccer.API.Tests.Matches
         }
 
         [Fact]
-        public async Task HandleMatchCoverageByIdRequest_Execute_GetMatchCoverage()
-        {
-            var matchId = "MatchID";
-            var request = new MatchCoverageByIdRequest(matchId, Language.English);
-
-            await matchHandler.Handle(request, new CancellationToken());
-
-            await matchQueryService.Received(1).GetMatchCoverage(matchId, request.Language, default(DateTimeOffset));
-        }
-
-        [Fact]
         public async Task HandleMatchCommentaryByIdRequest_Execute_GetMatchCommentary()
         {
             var matchId = "MatchID";
@@ -113,9 +102,7 @@ namespace Soccer.API.Tests.Matches
             await matchQueryService.Received(1).GetMatchCommentary(matchId, request.Language, default(DateTimeOffset));
         }
 
-
         [Fact]
-
         public async Task HandleMatchStatisticRequest_Execute_GetMatchStatistic()
 
         {

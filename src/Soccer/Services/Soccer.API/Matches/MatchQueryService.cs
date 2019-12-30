@@ -29,8 +29,6 @@ namespace Soccer.API.Matches
 
         Task<int> GetLiveMatchCount(Language language);
 
-        Task<MatchCoverage> GetMatchCoverage(string id, Language language, DateTimeOffset eventDate);
-
         Task<IEnumerable<MatchCommentary>> GetMatchCommentary(string id, Language language, DateTimeOffset eventDate);
 
         Task<MatchStatistic> GetMatchStatistic(string id, DateTimeOffset eventDate);
