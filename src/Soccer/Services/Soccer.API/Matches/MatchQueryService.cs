@@ -263,15 +263,14 @@ namespace Soccer.API.Matches
 
         private async Task<MatchInfo> GetAndCacheMatchInfo(string id, Language language, DateTimeOffset eventDate)
         {
-            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language, eventDate));
+            var (match, timelineEvents) = await Score247.Shared.Extensions.TaskExtensions.WhenAll(
+                dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language, eventDate)),
+                dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id, eventDate)));
 
             if (match == null)
             {
-                // TODO: Should fix here
                 return null;
             }
-
-            var timelineEvents = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id, eventDate));
 
             var mainEvents = timelineEvents
                 .Where(timeline => timeline.Type.IsMainEvent())
