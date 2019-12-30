@@ -106,6 +106,8 @@ namespace Soccer.Core.Matches.Models
             AssignMatchResult(match);
             AssignTeamInformation(match);
             AssignLatestTimeline(match);
+
+            Coverage = match.Coverage;
         }
 
         private void AssignLeague(Match match)
@@ -263,6 +265,8 @@ namespace Soccer.Core.Matches.Models
         public string LeagueRoundGroup { get; private set; }
 
         public string LeagueGroupName { get; private set; }
+
+        public Coverage Coverage { get; private set; }
 
         /// <summary>
         /// For testing javscript messagepack deserialization
