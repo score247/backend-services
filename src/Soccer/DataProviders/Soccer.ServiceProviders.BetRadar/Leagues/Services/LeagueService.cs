@@ -63,13 +63,9 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
                     var regionLeaguesDto = await leagueApi.GetRegionLeagues(soccerSettings.AccessLevel, soccerSettings.Version, region.Name, sportRadarLanguage, region.Key);
 
                     var regionLeagues = regionLeaguesDto.tournaments.Select(league => LeagueMapper.MapLeague(league, region.Name)).ToList();
+                    var leaguesWithDetails = await GetLeaguesDetails(regionLeagues, region, language);
 
-                    for (int i = 0; i < regionLeagues.Count; i++)
-                    {
-                        var tournamentDetail = await leagueApi.GetLeagueDetail(soccerSettings.AccessLevel, soccerSettings.Version, region.Name, sportRadarLanguage, regionLeagues[i].Id, region.Key);
-                        var league = LeagueMapper.MapLeague(tournamentDetail, region.Name, language);
-                        leagues.Add(league);
-                    }
+                    leagues.AddRange(leaguesWithDetails);
                 }
 
                 return leagues;
@@ -184,6 +180,40 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
         public Task ClearLeagueCache()
         {
             throw new NotImplementedException();
+        }
+
+        private async Task<IEnumerable<League>> GetLeaguesDetails(IList<League> leagues, Region region, Language language)
+        {
+            var latestLeagues = new List<League>();
+            for (int i = 0; i < leagues.Count; i++)
+            {
+                var league = await GetLeagueDetails(leagues[i].Id, region, language);
+                if (league != null)
+                {
+                    latestLeagues.Add(league);
+                }
+            }
+
+            return latestLeagues;
+        }
+
+        private async Task<League> GetLeagueDetails(string leagueId, Region region, Language language)
+        {
+            var sportRadarLanguage = language.ToSportRadarFormat();
+            try
+            {
+                var tournamentDetail = await leagueApi
+                                .GetLeagueDetail(soccerSettings.AccessLevel, soccerSettings.Version, region.Name, sportRadarLanguage, leagueId, region.Key);
+                var league = LeagueMapper.MapLeague(tournamentDetail, region.Name, language);
+
+                return league;
+            }
+            catch (ApiException ex)
+            {
+                await logger.WarnAsync($"Tournament not found: {leagueId} + {ex.Content}");
+
+                return null;
+            }
         }
     }
 }
