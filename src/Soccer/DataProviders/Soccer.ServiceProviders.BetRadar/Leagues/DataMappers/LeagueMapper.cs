@@ -36,7 +36,8 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
                 isInternationalLeague,
                 region,
                 tournament.current_season?.id ?? string.Empty,
-                leagueSeasonDates);
+                leagueSeasonDates,
+                false);
         }
 
         public static LeagueRound MapLeagueRound(TournamentRoundDto tournamentRound)
