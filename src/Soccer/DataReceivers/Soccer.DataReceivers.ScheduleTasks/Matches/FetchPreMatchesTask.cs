@@ -54,9 +54,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
         public async Task FetchPreMatches(int dateSpan)
         {
-            var majorLeagues = await internalLeagueService.GetLeagues(Language.en_US);
+            var majorLeagues = (await internalLeagueService.GetLeagues(Language.en_US))?.ToList();
 
-            if (majorLeagues == null || !majorLeagues.Any())
+            if (majorLeagues?.Any() != true)
             {
                 return;
             }
@@ -95,7 +95,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         private async Task PublishLeagueGroupFetchedMessage(Language language, List<Match> matches)
         {
             var matchGroupByStage = matches
-                            .GroupBy(match => (match.League.Id, HasGroup: match.LeagueRound?.HasGroupStage() == true, match.LeagueGroupName, match.LeagueSeason, match.LeagueRound));
+                            .GroupBy(match =>
+                                (match.League.Id, HasGroup: match.LeagueRound?.HasGroupStage() == true, match.LeagueGroupName, match.LeagueSeason, match.LeagueRound));
 
             foreach (var groupStage in matchGroupByStage)
             {
