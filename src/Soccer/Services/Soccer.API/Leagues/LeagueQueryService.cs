@@ -137,17 +137,14 @@ namespace Soccer.API.Leagues
                 matches.AddRange(result.Select(m => new MatchSummary(m)).Where(m => m.LeagueSeasonId == season));
             }
 
-            if (!string.IsNullOrWhiteSpace(leagueGroupName))
-            {
-                return matches.Where(match => match.LeagueGroupName.Equals(leagueGroupName, StringComparison.InvariantCultureIgnoreCase));
-            }
-
-            return matches;
+            return !string.IsNullOrWhiteSpace(leagueGroupName)
+                ? matches.Where(match => match.LeagueGroupName.Equals(leagueGroupName, StringComparison.InvariantCultureIgnoreCase))
+                : matches;
         }
 
         private async Task<string> GetCurrentSeasonIfNull(string leagueId, string seasonId, Language language)
            => string.IsNullOrWhiteSpace(seasonId)
-                        ? (await GetMajorLeagues(language)).FirstOrDefault(league => league.Id == leagueId).SeasonId
+                        ? (await GetMajorLeagues(language)).FirstOrDefault(league => league.Id == leagueId)?.SeasonId
                         : seasonId;
     }
 }
