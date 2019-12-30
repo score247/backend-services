@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Soccer.DataReceivers.ScheduleTasks.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Matches;
+using Soccer.DataReceivers.ScheduleTasks.News;
 using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
 using Soccer.DataReceivers.ScheduleTasks.Teams;
 
@@ -38,6 +39,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             services.AddScoped<IFetchLeagueMatchesTask, FetchLeagueMatchesTask>();
             services.AddScoped<IFetchLeagueStandingsTask, FetchLeagueStandingsTask>();
             services.AddScoped<IFetchLeagueHeadToHeadTask, FetchLeagueHeadToHeadTask>();
+            services.AddScoped<IFetchNewsTask, FetchNewsTask>();
         }
 
 #pragma warning disable S138 // Functions should not have too many lines of code
@@ -149,6 +151,11 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             RecurringJob.AddOrUpdate<IFetchLeagueHeadToHeadTask>(
             nameof(IFetchLeagueHeadToHeadTask.FetchHeadToHeadOfAllLeague),
             job => job.FetchHeadToHeadOfAllLeague(),
+            Cron.Yearly);
+
+            RecurringJob.AddOrUpdate<IFetchNewsTask>(
+            nameof(IFetchNewsTask.FetchNewsFeed),
+            job => job.FetchNewsFeed(),
             Cron.Yearly);
         }
     }

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Net.Http;
+using System.Xml;
+using System.Xml.Serialization;
 using Fanex.Caching;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,11 +10,15 @@ using Score247.Shared;
 using Soccer.Cache.Leagues;
 using Soccer.Core._Shared.Helpers;
 using Soccer.DataProviders._Shared.Enumerations;
+using Soccer.DataProviders.EyeFootball._Shared.Configurations;
+using Soccer.DataProviders.EyeFootball.News.Dtos;
+using Soccer.DataProviders.EyeFootball.News.Services;
 using Soccer.DataProviders.Internal._Share.Configurations;
 using Soccer.DataProviders.Internal.Leagues.Services;
 using Soccer.DataProviders.Internal.Share.Helpers;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.Matches.Services;
+using Soccer.DataProviders.News.Services;
 using Soccer.DataProviders.Odds;
 using Soccer.DataProviders.SportRadar.Leagues.Services;
 using Soccer.DataProviders.SportRadar.Matches.Services;
@@ -37,6 +43,9 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
 
             var internalDataProviderSettings = new InternalProviderSettings();
             configuration.GetSection("DataProviders:Internal").Bind(internalDataProviderSettings);
+
+            var eyeFootballDataProviderSettings = new EyeFootballSettings();
+            configuration.GetSection("DataProviders:EyeFootball").Bind(eyeFootballDataProviderSettings);
 
             services.AddSingleton<ISportRadarSettings>(sportRadarDataProviderSettings);
 
@@ -84,6 +93,23 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
 
             services.AddSingleton(RestService.For<IHeadToHeadApi>(sportRadarDataProviderSettings.ServiceUrl));
             services.AddSingleton<IHeadToHeadService, HeadToHeadService>();
+
+            services.AddSingleton(RestService.For<INewsApi>(eyeFootballDataProviderSettings.ServiceUrl, new RefitSettings
+            {  
+                ContentSerializer = new XmlContentSerializer(
+                    new XmlContentSerializerSettings
+                    {
+                        XmlReaderWriterSettings = new XmlReaderWriterSettings
+                        {
+                            ReaderSettings = new XmlReaderSettings
+                            {
+                                IgnoreWhitespace = true
+                            }
+                        }
+                    })
+            }));
+
+            services.AddSingleton<INewsService, NewsService>();
         }
     }
 }
