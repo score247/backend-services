@@ -24,7 +24,8 @@ namespace Soccer.Core.Leagues.Models
             sbyte isInternational,
             string region,
             string currentSeasonId,
-            LeagueSeasonDates seasonDates)
+            LeagueSeasonDates seasonDates,
+            SByte hasGroups = 0)
                 : this(
                     id,
                     name,
@@ -35,7 +36,8 @@ namespace Soccer.Core.Leagues.Models
                     Convert.ToBoolean(isInternational),
                     region,
                     currentSeasonId,
-                    seasonDates)
+                    seasonDates,
+                    hasGroups)
         {
         }
 
@@ -66,7 +68,8 @@ namespace Soccer.Core.Leagues.Models
             bool isInternational,
             string region,
             string seasonId,
-            LeagueSeasonDates seasonDates) : base(id, name)
+            LeagueSeasonDates seasonDates,
+            SByte hasGroups = 0) : base(id, name)
         {
             Order = order;
             CategoryId = categoryId;
@@ -76,6 +79,7 @@ namespace Soccer.Core.Leagues.Models
             Region = region;
             SeasonId = seasonId;
             SeasonDates = seasonDates;
+            HasGroups = Convert.ToBoolean(hasGroups);
         }
 
 #pragma warning restore S107 // Methods should not have too many parameters
@@ -97,6 +101,8 @@ namespace Soccer.Core.Leagues.Models
         public string SeasonId { get; private set; }
 
         public LeagueSeasonDates SeasonDates { get; private set; }
+
+        public bool HasGroups { get; }
 
 #pragma warning restore S109 // Magic numbers should not be used
 
