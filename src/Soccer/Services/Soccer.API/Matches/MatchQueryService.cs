@@ -12,6 +12,7 @@ namespace Soccer.API.Matches
     using Score247.Shared;
     using Shared.Configurations;
     using Soccer.API.Matches.Helpers;
+    using Soccer.Core.Matches.Extensions;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
     using Soccer.Core.Teams.Models;
@@ -121,7 +122,11 @@ namespace Soccer.API.Matches
                 async () => await dynamicRepository.FetchAsync<TimelineEvent>(new GetCommentaryCriteria(id, language, eventDate)),
                 GetCacheOptions());
 
-            return timelineEvents.Select(t => new MatchCommentary(t));
+            return timelineEvents.Select(t => new MatchCommentary(t))
+                .OrderByDescending(t => t.MatchTime)
+                .ThenByDescending(t => t.StoppageTime)
+                .ThenByDescending(t => t.Time)
+                .ToList(); ;
         }
 
         private CacheItemOptions GetCacheOptions(int cachedMinutes = MatchDataCacheInMinutes)
@@ -278,11 +283,18 @@ namespace Soccer.API.Matches
             }
 
             var timelineEvents = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id, eventDate));
-            var matchInfo = new MatchInfo(new MatchSummary(match), timelineEvents, match.Venue, match.Referee, match.Attendance);
+
+            var mainEvents = timelineEvents
+                .Where(timeline => timeline.Type.IsMainEvent())
+                .OrderByDescending(t => t.MatchTime)
+                .ThenByDescending(t => t.StoppageTime)
+                .ThenByDescending(t => t.Time)
+                .ToList();
+
+            var matchInfo = new MatchInfo(new MatchSummary(match), mainEvents, match.Venue, match.Referee, match.Attendance);
+
             await cacheManager.SetAsync(
                 BuildMatchInfoCacheKey(id), matchInfo, BuildCacheOptions(match.EventDate.DateTime));
-
-            //TODO filter by highlight events
 
             return matchInfo;
         }

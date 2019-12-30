@@ -1,6 +1,7 @@
 ﻿namespace Soccer.Core.Matches.Extensions
 {
     using System.Collections.Generic;
+    using System.Linq;
     using Soccer.Core.Matches.Models;
     using Soccer.Core.Shared.Enumerations;
 
@@ -22,6 +23,18 @@
                 EventType.PenaltyMissed.Value,
                 EventType.Substitution.Value
            };
+
+        private static readonly EventType[] MainEventTypes = {
+            EventType.ScoreChange,
+            EventType.PenaltyMissed,
+            EventType.YellowCard,
+            EventType.RedCard,
+            EventType.YellowRedCard,
+            EventType.PenaltyShootout,
+            EventType.BreakStart,
+            EventType.MatchEnded,
+            EventType.Substitution
+        };
 
         public static List<byte> ReprocessScoreEventTypes { get; }
            = new List<byte>
@@ -49,5 +62,8 @@
 
         public static bool ShouldReprocessScore(this TimelineEvent timeline)
             => ReprocessScoreEventTypes.Contains(timeline.Type.Value);
+
+        public static bool IsMainEvent(this EventType eventType)
+            => MainEventTypes.Contains(eventType);
     }
 }
