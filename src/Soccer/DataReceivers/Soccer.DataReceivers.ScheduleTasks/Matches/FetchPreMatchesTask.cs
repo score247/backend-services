@@ -94,7 +94,6 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
         private async Task PublishLeagueGroupFetchedMessage(Language language, List<Match> matches)
         {
-            var t = matches.Where(m => m.LeagueRound?.HasGroupStage() != true).ToList();
             var matchGroupByStage = matches
                             .GroupBy(match => (match.League.Id, HasGroup: match.LeagueRound?.HasGroupStage() == true, match.LeagueGroupName, match.LeagueSeason, match.LeagueRound));
 
