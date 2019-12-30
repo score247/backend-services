@@ -12,7 +12,8 @@ BEGIN
         L.`IsInternational`, 
         L.`Region`,
         L.`CurrentSeasonId`,
-		NULL as 'SeasonDates'
+		NULL as 'SeasonDates',
+		IF(L.`HasGroups` = 1, true, false)  AS 'HasGroups'
         FROM `League` as L
         WHERE L.IsActive = '1' 
 			AND ((isInternational = true AND L.IsInternational = true)
