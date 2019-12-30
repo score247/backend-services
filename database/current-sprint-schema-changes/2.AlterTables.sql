@@ -1,2 +1,2 @@
-ALTER TABLE `League` 
-ADD COLUMN `SeasonDates` JSON NULL AFTER `Region`;
+ALTER TABLE `League`
+ADD COLUMN `HasGroups` TINYINT NOT NULL DEFAULT '0' AFTER `SeasonDates`;
