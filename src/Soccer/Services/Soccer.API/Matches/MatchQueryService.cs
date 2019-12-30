@@ -106,15 +106,6 @@ namespace Soccer.API.Matches
             return cacheMatch ?? await GetAndCacheMatchInfo(id, language, eventDate);
         }
 
-        public async Task<MatchCoverage> GetMatchCoverage(string id, Language language, DateTimeOffset eventDate)
-        {
-            var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language, eventDate));
-
-            return match == null
-                ? new MatchCoverage(id, default)
-                : new MatchCoverage(match.Id, match.Coverage);
-        }
-
         public async Task<IEnumerable<MatchCommentary>> GetMatchCommentary(string id, Language language, DateTimeOffset eventDate)
         {
             var timelineEvents = await cacheManager.GetOrSetAsync(
