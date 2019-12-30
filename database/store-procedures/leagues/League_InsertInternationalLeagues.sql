@@ -1,7 +1,7 @@
 DROP procedure IF EXISTS `League_InsertInternationalLeagues`;
 
 CREATE PROCEDURE `League_InsertInternationalLeagues`(IN sportId INT, IN leagues MEDIUMTEXT, IN language TEXT)
-
+BEGIN
 	DECLARE i INT DEFAULT 0;                                                                                                                                                    
     DECLARE e INT DEFAULT JSON_LENGTH(leagues);
     
