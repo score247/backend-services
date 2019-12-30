@@ -24,8 +24,7 @@ namespace Soccer.EventProcessors.Leagues
                 message.LeagueId,
                 message.LeagueSeasonId,
                 message.LeagueGroupName,
-                message.LeagueRound,
-                message.HasGroup);
+                message.LeagueRound);
 
             var command = new InsertOrUpdateLeagueGroupCommand(leagueGroupState, message.Language);
 

@@ -32,8 +32,8 @@ namespace Soccer.DataProviders.SportRadar.Leagues
             {
                 id = "sr:season:888",
                 name = "Valid Season",
-                end_date = "2020-10-30T00:00:00+00:00",
-                start_date = "2019-01-01T00:00:00+00:00",
+                end_date = DateTime.Parse("2020-10-30T00:00:00+00:00"),
+                start_date = DateTime.Parse("2019-01-01T00:00:00+00:00"),
                 tournament_id = "sr:tournament:999",
                 year = "19-20"
             };

@@ -11,7 +11,6 @@ namespace Soccer.Database.Leagues.Commands
             LeagueSeasonId = leagueGroupState.LeagueSeasonId;
             GroupStageName = leagueGroupState.GroupStageName;
             GroupStageValue = ToJsonString(leagueGroupState);
-            HasGroups = leagueGroupState.HasGroups;
             Language = language.DisplayName;
         }
 
@@ -24,8 +23,6 @@ namespace Soccer.Database.Leagues.Commands
         public string GroupStageValue { get; }
 
         public string Language { get; }
-
-        public bool HasGroups { get; }
 
         public override string GetSettingKey() => "League_InsertGroupStage";
 

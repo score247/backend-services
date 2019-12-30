@@ -96,7 +96,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         {
             var matchGroupByStage = matches
                             .GroupBy(match =>
-                                (match.League.Id, HasGroup: match.LeagueRound?.HasGroupStage() == true, match.LeagueGroupName, match.LeagueSeason, match.LeagueRound));
+                                (match.League.Id, match.LeagueGroupName, match.LeagueSeason, match.LeagueRound));
 
             foreach (var groupStage in matchGroupByStage)
             {
@@ -106,7 +106,6 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                         groupStage.Key.LeagueSeason.Id,
                         groupStage.Key.LeagueGroupName,
                         groupStage.Key.LeagueRound,
-                        groupStage.Key.HasGroup,
                         language));
             }
         }
