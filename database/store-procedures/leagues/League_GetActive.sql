@@ -12,9 +12,12 @@ BEGIN
         L.`IsInternational`, 
         L.`Region`,
         L.`CurrentSeasonId`,
-        LS.`SeasonDates`
+        LS.`SeasonDates`,
+        IF(LG.`HasGroups` = 1, true, false) AS 'HasGroups' 
         FROM `League` as L
 			LEFT JOIN `LeagueSeason` as LS
 			ON LS.`SeasonId` = L.`CurrentSeasonId`
+            LEFT JOIN `LeagueGroupStage` as LG
+            ON LG.`LeagueId` = L.`Id` AND LG.`LeagueSeasonId` = L.`CurrentSeasonId`
         WHERE L.`IsActive` = '1' AND L.`Language` = languageCode;
 END
