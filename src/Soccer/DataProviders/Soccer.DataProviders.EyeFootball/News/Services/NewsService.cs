@@ -56,27 +56,4 @@ namespace Soccer.DataProviders.EyeFootball.News.Services
             return new List<NewsFeed>();
         }
     }
-
-    public class RssFeedContentSerializer : IContentSerializer
-    {
-        public async Task<IList<SyndicationItem>> DeserializeAsync(HttpContent content)
-        {
-            var stream = await content.ReadAsStreamAsync();
-
-            using (var xmlr = XmlReader.Create(stream))
-            {
-                return SyndicationFeed.Load(xmlr)
-                                           .GetRss20Formatter()
-                                           .Feed
-                                           .Items
-                                           .ToList();
-            }
-
-        }
-
-        public Task<HttpContent> SerializeAsync<T>(T item)
-        {
-            throw new System.NotImplementedException();
-        }
-    }
 }
