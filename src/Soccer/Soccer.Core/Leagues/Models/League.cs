@@ -25,7 +25,7 @@ namespace Soccer.Core.Leagues.Models
             string region,
             string currentSeasonId,
             LeagueSeasonDates seasonDates,
-            SByte hasGroups = 0)
+            sbyte hasGroups = 0)
                 : this(
                     id,
                     name,
@@ -69,7 +69,7 @@ namespace Soccer.Core.Leagues.Models
             string region,
             string seasonId,
             LeagueSeasonDates seasonDates,
-            SByte hasGroups = 0) : base(id, name)
+            sbyte hasGroups = 0) : base(id, name)
         {
             Order = order;
             CategoryId = categoryId;
