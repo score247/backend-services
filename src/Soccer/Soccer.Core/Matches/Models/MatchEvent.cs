@@ -6,10 +6,10 @@ namespace Soccer.Core.Matches.Models
     public class MatchEvent
     {
         public MatchEvent(
-            string leagueId, 
-            string matchId, 
-            MatchResult matchResult, 
-            TimelineEvent timeline, 
+            string leagueId,
+            string matchId,
+            MatchResult matchResult,
+            TimelineEvent timeline,
             bool isLatest = true,
             DateTimeOffset eventDate = default)
         {

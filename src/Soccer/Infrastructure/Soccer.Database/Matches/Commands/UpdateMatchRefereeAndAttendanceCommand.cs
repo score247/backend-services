@@ -7,9 +7,9 @@
     public class UpdateMatchRefereeAndAttendanceCommand : BaseCommand
     {
         public UpdateMatchRefereeAndAttendanceCommand(
-            string matchId, 
-            string referee, 
-            int attendance, 
+            string matchId,
+            string referee,
+            int attendance,
             string language,
             DateTimeOffset eventDate) : base(eventDate)
         {

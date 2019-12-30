@@ -11,7 +11,7 @@ namespace Soccer.EventProcessors.Leagues
     {
         private readonly IDynamicRepository dynamicRepository;
 
-        public FetchedLeagueMatchesConsumer(IDynamicRepository dynamicRepository) 
+        public FetchedLeagueMatchesConsumer(IDynamicRepository dynamicRepository)
         {
             this.dynamicRepository = dynamicRepository;
         }

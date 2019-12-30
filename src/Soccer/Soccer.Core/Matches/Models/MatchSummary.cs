@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
-using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Leagues.Extensions;
+using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.Core.Matches.Models
 {

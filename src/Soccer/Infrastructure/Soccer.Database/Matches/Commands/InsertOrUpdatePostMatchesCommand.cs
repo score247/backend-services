@@ -8,7 +8,7 @@
 
     public class InsertOrUpdatePostMatchesCommand : BaseCommand
     {
-        public InsertOrUpdatePostMatchesCommand (
+        public InsertOrUpdatePostMatchesCommand(
             IEnumerable<Match> matches,
             string language,
             DateTimeOffset eventDate = default) : base(eventDate)

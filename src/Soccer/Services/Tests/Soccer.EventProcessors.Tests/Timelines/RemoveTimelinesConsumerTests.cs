@@ -87,14 +87,14 @@ namespace Soccer.EventProcessors.Tests.Timelines
             await dynamicRepository.DidNotReceive().FetchAsync<TimelineEvent>(Arg.Any<GetTimelineEventsCriteria>());
         }
 
-        
+
         [Fact]
         public async Task Consume_CurrentTimelinesEmpty_ShouldNotExecuteCommand()
         {
             // Arrange           
             var message = A.Dummy<MatchTimelinesConfirmedMessage>()
                 .With(msg => msg.MatchId, fixture.Create<string>())
-                .With(msg => msg.Timelines, A.CollectionOfDummy<TimelineEvent>(5));            
+                .With(msg => msg.Timelines, A.CollectionOfDummy<TimelineEvent>(5));
 
             context.Message.Returns(message);
 
@@ -133,7 +133,7 @@ namespace Soccer.EventProcessors.Tests.Timelines
         public async Task Consume_NotHaveRemovedTimelines_ShouldNotExecuteCommand()
         {
             // Arrange           
-            var timelines = new List<TimelineEvent> 
+            var timelines = new List<TimelineEvent>
             {
                 StubTimeline("1", DateTimeOffset.Now)
             };
@@ -243,7 +243,7 @@ namespace Soccer.EventProcessors.Tests.Timelines
                 .Received(1)
                 .ExecuteAsync(Arg.Is<RemoveTimelineCommand>(command =>
                     command.MatchId == message.MatchId &&
-                    command.TimelineIds.Contains("sr:timeline:2") 
+                    command.TimelineIds.Contains("sr:timeline:2")
                 ));
 
             await messageBus

@@ -13,7 +13,7 @@ namespace Soccer.Database.Matches.Criteria
             Language language,
             DateTimeOffset eventDate = default) : base(eventDate)
         {
-            Ids = JsonStringConverter.ToJsonString(ids.Select(x => new { MatchId = x}));
+            Ids = JsonStringConverter.ToJsonString(ids.Select(x => new { MatchId = x }));
             Language = language.DisplayName;
         }
 

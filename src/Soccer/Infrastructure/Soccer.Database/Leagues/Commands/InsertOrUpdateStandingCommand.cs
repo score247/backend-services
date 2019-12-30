@@ -1,5 +1,4 @@
-﻿using Fanex.Data.Repository;
-using Soccer.Core.Leagues.Models;
+﻿using Soccer.Core.Leagues.Models;
 
 namespace Soccer.Database.Leagues.Commands
 {

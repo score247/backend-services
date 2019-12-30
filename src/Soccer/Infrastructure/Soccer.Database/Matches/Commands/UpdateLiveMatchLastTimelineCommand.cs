@@ -8,7 +8,7 @@
     public class UpdateLiveMatchLastTimelineCommand : BaseCommand
     {
         public UpdateLiveMatchLastTimelineCommand(
-            string matchId, 
+            string matchId,
             TimelineEvent timeline,
             DateTimeOffset eventDate = default)
             : base(eventDate)

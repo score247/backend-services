@@ -25,7 +25,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
 
         private readonly IFetchLeaguesSeasonTask fetchLeaguesSeason;
 
-        public FetchLeagueSeasonTaskTests() 
+        public FetchLeagueSeasonTaskTests()
         {
             appSettings = Substitute.For<IAppSettings>();
             messageBus = Substitute.For<IBus>();

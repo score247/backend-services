@@ -93,7 +93,7 @@ namespace Soccer.API.Tests.Matches
             var to = DateTimeOffset.Now.AddDays(-2);
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetMatchesByDateRangeCriteria>()).Returns(new List<Match>
-            { 
+            {
                 fixture.Create<Match>().With(match => match.League, fixture.Create<League>().With(league => league.Order, 1)),
                 fixture.Create<Match>().With(match => match.League, fixture.Create<League>().With(league => league.Order, 3))
             });

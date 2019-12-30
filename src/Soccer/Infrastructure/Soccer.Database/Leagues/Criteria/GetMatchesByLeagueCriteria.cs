@@ -9,7 +9,7 @@ namespace Soccer.Database.Leagues.Criteria
     {
         private const string SpName = "Match_GetByLeagueId";
         public GetMatchesByLeagueCriteria(
-            string leagueId, 
+            string leagueId,
             Language language,
             DateTimeOffset eventDate = default) : base(eventDate)
         {
@@ -20,7 +20,7 @@ namespace Soccer.Database.Leagues.Criteria
 
         public int SportId { get; }
 
-        public string  LeagueId { get; }
+        public string LeagueId { get; }
 
         public string Language { get; }
 

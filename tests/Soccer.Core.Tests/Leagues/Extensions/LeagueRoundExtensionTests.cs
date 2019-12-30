@@ -11,7 +11,7 @@ namespace Soccer.Core.Tests.Leagues.Extensions
     {
         private readonly Fixture fixture;
 
-        public LeagueRoundExtensionTests() 
+        public LeagueRoundExtensionTests()
         {
             fixture = new Fixture();
         }
@@ -20,7 +20,7 @@ namespace Soccer.Core.Tests.Leagues.Extensions
         [InlineData(null)]
         [InlineData("")]
         [InlineData("  ")]
-        public void HasGroupStage_RoundTypeIsGroupAndGroupIsNull_ReturnFalse(string group) 
+        public void HasGroupStage_RoundTypeIsGroupAndGroupIsNull_ReturnFalse(string group)
         {
             var leagueRound = fixture.Create<LeagueRound>()
                 .With(round => round.Type, LeagueRoundType.GroupRound)

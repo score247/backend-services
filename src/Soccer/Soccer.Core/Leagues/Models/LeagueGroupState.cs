@@ -1,5 +1,4 @@
-﻿using System;
-using MessagePack;
+﻿using MessagePack;
 using Newtonsoft.Json;
 
 namespace Soccer.Core.Leagues.Models

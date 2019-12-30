@@ -101,8 +101,8 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
                 )));
 
             dynamicRepository.FetchAsync<TimelineEvent>(Arg.Is<GetTimelineEventsCriteria>(c => c.MatchId == matchId))
-              .Returns(new List<TimelineEvent> 
-              { 
+              .Returns(new List<TimelineEvent>
+              {
                     StubRedCard()
               });
 

@@ -1,6 +1,6 @@
 ﻿namespace Soccer.Core.Timelines.QueueMessages
 {
-    public interface IMatchTimelinesRemovedMessage 
+    public interface IMatchTimelinesRemovedMessage
     {
         string MatchId { get; }
 
@@ -9,7 +9,7 @@
 
     public class MatchTimelinesRemovedMessage : IMatchTimelinesRemovedMessage
     {
-        public MatchTimelinesRemovedMessage(string matchId, string[] timelineIds) 
+        public MatchTimelinesRemovedMessage(string matchId, string[] timelineIds)
         {
             MatchId = matchId;
             TimelineIds = timelineIds;

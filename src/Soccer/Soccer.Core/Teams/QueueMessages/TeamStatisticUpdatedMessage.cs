@@ -19,8 +19,8 @@
     public class TeamStatisticUpdatedMessage : ITeamStatisticUpdatedMessage
     {
         public TeamStatisticUpdatedMessage(
-            string matchId, bool isHome, 
-            TeamStatistic teamStatistic, 
+            string matchId, bool isHome,
+            TeamStatistic teamStatistic,
             bool isUpdateOnlyRedCard = false,
             DateTimeOffset eventDate = default)
         {

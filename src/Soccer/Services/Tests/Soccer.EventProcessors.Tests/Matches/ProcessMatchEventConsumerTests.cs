@@ -19,7 +19,7 @@ namespace Soccer.EventProcessors.Tests.Matches
 
         private readonly ProcessMatchEventConsumer consumer;
 
-        public ProcessMatchEventConsumerTests() 
+        public ProcessMatchEventConsumerTests()
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
             context = Substitute.For<ConsumeContext<IMatchEventProcessedMessage>>();
@@ -28,7 +28,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         }
 
         [Fact]
-        public async Task Consume_MessageIsNull_NotExecuteAnyCommand() 
+        public async Task Consume_MessageIsNull_NotExecuteAnyCommand()
         {
             await consumer.Consume(context);
 
@@ -57,7 +57,7 @@ namespace Soccer.EventProcessors.Tests.Matches
 
             await consumer.Consume(context);
 
-            await dynamicRepository.Received(1).ExecuteAsync(Arg.Is<InsertTimelineCommand>(timeline => timeline.MatchId == matchEventMessage.MatchEvent.MatchId ));
+            await dynamicRepository.Received(1).ExecuteAsync(Arg.Is<InsertTimelineCommand>(timeline => timeline.MatchId == matchEventMessage.MatchEvent.MatchId));
             await dynamicRepository.DidNotReceive().ExecuteAsync(Arg.Any<UpdateLiveMatchResultCommand>());
             await dynamicRepository.DidNotReceive().ExecuteAsync(Arg.Any<UpdateLiveMatchLastTimelineCommand>());
         }

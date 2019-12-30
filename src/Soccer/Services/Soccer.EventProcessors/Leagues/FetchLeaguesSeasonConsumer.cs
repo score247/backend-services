@@ -30,9 +30,9 @@ namespace Soccer.EventProcessors.Leagues
         }
 
         private Task InsertLeagueSeasons(ILeaguesSeasonFetchedMessage message)
-        => dynamicRepository.ExecuteAsync(new InsertLeagueSeasonCommand(message.Leagues));
+            => dynamicRepository.ExecuteAsync(new InsertLeagueSeasonCommand(message.Leagues));
 
         private Task UpdateLeagueCurrentSeason(ILeaguesSeasonFetchedMessage message)
-        => dynamicRepository.ExecuteAsync(new UpdateLeagueCurrentSeasonCommand(message.Leagues));
+            => dynamicRepository.ExecuteAsync(new UpdateLeagueCurrentSeasonCommand(message.Leagues));
     }
 }

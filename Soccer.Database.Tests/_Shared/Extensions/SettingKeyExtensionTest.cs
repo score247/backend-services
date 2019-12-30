@@ -9,7 +9,7 @@ namespace Soccer.Database.Tests._Shared.Extensions
     {
         private readonly Fixture fixture;
 
-        public SettingKeyExtensionTest() 
+        public SettingKeyExtensionTest()
         {
             fixture = new Fixture();
         }
@@ -21,14 +21,14 @@ namespace Soccer.Database.Tests._Shared.Extensions
         public void GetCorrespondingKey_FormerAtBound_GetFormer(int date)
         {
             var sp = fixture.Create<string>();
-            var currentDate = new DateTimeOffset(new DateTime(2019, 12, 11, 7, 0 , 0), TimeSpan.FromHours(7));
+            var currentDate = new DateTimeOffset(new DateTime(2019, 12, 11, 7, 0, 0), TimeSpan.FromHours(7));
             var eventDate = new DateTimeOffset(new DateTime(2019, 12, date, 7, 0, 0), TimeSpan.FromHours(7));
 
             var settingKey = sp.GetCorrespondingKey(eventDate, currentDate);
 
             Assert.Equal($"{sp}_Former", settingKey);
         }
-        
+
         [Fact]
         public void GetCorrespondingKey_DefaultOfDateTime_GetCurrent()
         {

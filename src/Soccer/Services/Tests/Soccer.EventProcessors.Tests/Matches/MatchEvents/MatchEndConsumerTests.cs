@@ -49,7 +49,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
                 ));
 
             await matchEndConsumer.Consume(context);
-   
+
             await messageBus.Received(1).Publish<IMatchEventProcessedMessage>(
                 Arg.Is<MatchEventProcessedMessage>(evt => evt.MatchEvent.Timeline.MatchTime == 91));
         }

@@ -3,7 +3,6 @@ using System.Reflection;
 using Fanex.Logging;
 using MediatR;
 using MessagePack.Resolvers;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

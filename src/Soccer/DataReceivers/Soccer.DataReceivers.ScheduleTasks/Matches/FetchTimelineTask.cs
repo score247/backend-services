@@ -36,7 +36,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
     public class FetchTimelineTask : IFetchTimelineTask
     {
-        private static TimeSpan insertStatisticDelayTime = new TimeSpan(0, 0, 60);
+        private static readonly TimeSpan insertStatisticDelayTime = new TimeSpan(0, 0, 60);
         private readonly ITimelineService timelineService;
         private readonly IBackgroundJobClient jobClient;
         private readonly IBus messageBus;
@@ -89,9 +89,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             if (!string.IsNullOrWhiteSpace(match.Referee) || match.Attendance > 0)
             {
                 await messageBus.Publish<IMatchUpdatedConditionsMessage>(new MatchUpdatedConditionsMessage(
-                    matchId, 
-                    match.Referee, 
-                    match.Attendance, 
+                    matchId,
+                    match.Referee,
+                    match.Attendance,
                     language,
                     match.EventDate));
             }
@@ -120,7 +120,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             if (match.TimeLines != null && match.TimeLines.Any())
             {
                 await messageBus.Publish<IMatchTimelinesFetchedMessage>(new MatchTimelinesFetchedMessage(
-                    match, 
+                    match,
                     language));
             }
         }

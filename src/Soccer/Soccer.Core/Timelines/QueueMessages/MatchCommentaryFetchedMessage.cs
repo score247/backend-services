@@ -20,10 +20,10 @@ namespace Soccer.Core.Timelines.QueueMessages
     public class MatchCommentaryFetchedMessage : IMatchCommentaryFetchedMessage
     {
         public MatchCommentaryFetchedMessage(
-            string leagueId, 
-            string matchId, 
-            TimelineCommentary commentary, 
-            Language language, 
+            string leagueId,
+            string matchId,
+            TimelineCommentary commentary,
+            Language language,
             DateTimeOffset eventDate = default)
         {
             LeagueId = leagueId;

@@ -75,7 +75,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             internalLeagueService.GetLeagues(Arg.Any<Language>()).Returns(new List<League>
             {
                 A.Dummy<League>().With(league => league.Id, "major:league")
-            });         
+            });
 
             matchService.GetLiveMatches(Arg.Any<Language>()).Returns(new List<Match>
             {

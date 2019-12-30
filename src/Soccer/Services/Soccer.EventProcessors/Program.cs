@@ -1,11 +1,8 @@
 ﻿namespace Soccer.EventProcessors
 {
-    using System.Diagnostics;
     using System.IO;
-    using System.Linq;
     using Microsoft.AspNetCore;
     using Microsoft.AspNetCore.Hosting;
-    using Microsoft.AspNetCore.Hosting.WindowsServices;
     using Microsoft.Extensions.Configuration;
 
     public static class Program

@@ -25,7 +25,7 @@ namespace Soccer.DataProviders.Internal.Share.Helpers
         private readonly string encryptKey;
 
         public AuthenticatedHttpClientHandler(
-            Func<AuthenticateInfo, Task<string>> getToken, 
+            Func<AuthenticateInfo, Task<string>> getToken,
             ICryptographyHelper cryptographyHelper,
             string encryptKey)
         {
@@ -43,10 +43,10 @@ namespace Soccer.DataProviders.Internal.Share.Helpers
             if (string.IsNullOrWhiteSpace(token))
             {
 #pragma warning disable S2696 // Instance members should not write to "static" fields
-                token = await getToken(new AuthenticateInfo 
-                { 
-                    UserId = AuthenticateName, 
-                    EncryptedInfo = cryptographyHelper.Encrypt(AuthenticateName, encryptKey) 
+                token = await getToken(new AuthenticateInfo
+                {
+                    UserId = AuthenticateName,
+                    EncryptedInfo = cryptographyHelper.Encrypt(AuthenticateName, encryptKey)
                 }).ConfigureAwait(false);
 #pragma warning restore S2696 // Instance members should not write to "static" fields
             }

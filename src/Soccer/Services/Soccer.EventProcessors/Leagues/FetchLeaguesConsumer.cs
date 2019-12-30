@@ -27,21 +27,21 @@ namespace Soccer.EventProcessors.Leagues
                 return;
             }
 
-            await InsertOrUpdateLeagues(message.Leagues, message.Language);
+            await InsertOrUpdateLeagues(message.Leagues?.ToList(), message.Language);
         }
 
-        private async Task InsertOrUpdateLeagues(IEnumerable<League> leagues, string language)
+        private async Task InsertOrUpdateLeagues(IList<League> leagues, string language)
         {
-            var internationalLeagues = leagues.Where(league => league.IsInternational);
+            var internationalLeagues = leagues.Where(league => league.IsInternational).ToList();
 
-            if (internationalLeagues?.Any() == true)
+            if (internationalLeagues.Count > 0)
             {
                 await InsertOrUpdateInternationalLeagues(internationalLeagues, language);
             }
 
-            var countryLeagues = leagues.Where(league => !league.IsInternational);
+            var countryLeagues = leagues.Where(league => !league.IsInternational).ToList();
 
-            if (countryLeagues?.Any() == true)
+            if (countryLeagues.Count > 0)
             {
                 await InsertOrUpdateCountryLeagues(countryLeagues, language);
             }

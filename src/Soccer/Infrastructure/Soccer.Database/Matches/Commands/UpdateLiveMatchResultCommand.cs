@@ -8,7 +8,7 @@
     public class UpdateLiveMatchResultCommand : BaseCommand
     {
         public UpdateLiveMatchResultCommand(
-            string matchId, 
+            string matchId,
             MatchResult matchResult,
             DateTimeOffset eventDate = default)
             : base(eventDate)

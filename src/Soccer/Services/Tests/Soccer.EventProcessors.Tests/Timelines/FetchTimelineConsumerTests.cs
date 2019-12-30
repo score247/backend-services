@@ -379,14 +379,14 @@ namespace Soccer.EventProcessors.Tests.Timeline
         }
 
         [Fact]
-        public async Task Consume_Timelines_PublishAllTimelinesAsConfirmed() 
+        public async Task Consume_Timelines_PublishAllTimelinesAsConfirmed()
         {
             var match = A.Dummy<Match>()
                .With(m => m.League, new League("league:1", ""))
                .With(m => m.MatchResult,
                    A.Dummy<MatchResult>()
                        .With(r => r.HomeScore, 1)
-                       .With(r => r.AwayScore, 1))                        
+                       .With(r => r.AwayScore, 1))
                .With(m => m.TimeLines, new List<TimelineEvent>
                {
                     A.Dummy<TimelineEvent>()

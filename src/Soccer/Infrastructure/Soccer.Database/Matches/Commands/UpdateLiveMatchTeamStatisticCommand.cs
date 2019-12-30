@@ -8,8 +8,8 @@
     public class UpdateLiveMatchTeamStatisticCommand : BaseCommand
     {
         public UpdateLiveMatchTeamStatisticCommand(
-            string matchId, 
-            bool isHome, 
+            string matchId,
+            bool isHome,
             TeamStatistic statistic,
             DateTimeOffset eventDate = default)
             : base(eventDate)

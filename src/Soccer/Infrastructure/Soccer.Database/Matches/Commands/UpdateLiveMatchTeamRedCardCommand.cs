@@ -7,9 +7,9 @@
     public class UpdateLiveMatchTeamRedCardCommand : BaseCommand
     {
         public UpdateLiveMatchTeamRedCardCommand(
-            string matchId, 
-            bool isHome, 
-            int redCards, 
+            string matchId,
+            bool isHome,
+            int redCards,
             int yellowRedCards,
             DateTimeOffset eventDate = default)
             : base(eventDate)

@@ -7,13 +7,13 @@ namespace Soccer.Database.Tests.Leagues.Criteria
     {
         private readonly GetUnprocessedLeagueSeasonCriteria criteria;
 
-        public GetUnprocessedLeagueSeasonCriteriaTests() 
+        public GetUnprocessedLeagueSeasonCriteriaTests()
         {
             criteria = new GetUnprocessedLeagueSeasonCriteria();
         }
 
         [Fact]
-        public void GetSettingKey_Always_ReturnCorrectSpName() 
+        public void GetSettingKey_Always_ReturnCorrectSpName()
         {
             Assert.Equal("League_GetUnprocessedLeagueSeason", criteria.GetSettingKey());
         }

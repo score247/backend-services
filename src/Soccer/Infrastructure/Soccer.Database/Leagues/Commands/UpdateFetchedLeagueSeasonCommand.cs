@@ -5,7 +5,7 @@ namespace Soccer.Database.Leagues.Commands
 {
     public class UpdateFetchedLeagueSeasonCommand : BaseCommand
     {
-        public UpdateFetchedLeagueSeasonCommand(IEnumerable<LeagueSeasonProcessedInfo> leagueSeasons) 
+        public UpdateFetchedLeagueSeasonCommand(IEnumerable<LeagueSeasonProcessedInfo> leagueSeasons)
         {
             LeagueSeasons = ToJsonString(leagueSeasons);
         }

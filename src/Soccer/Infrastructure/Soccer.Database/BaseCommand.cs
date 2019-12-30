@@ -7,7 +7,7 @@ namespace Soccer.Database
 {
     public abstract class BaseCommand : NonQueryCommand
     {
-        protected BaseCommand(DateTimeOffset eventDate = default) 
+        protected BaseCommand(DateTimeOffset eventDate = default)
         {
             EventDate = eventDate == default ? DateTimeOffset.Now : eventDate;
         }

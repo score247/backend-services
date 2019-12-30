@@ -19,7 +19,7 @@ namespace Soccer.Core.Timelines.QueueMessages
     public class MatchTimelinesConfirmedMessage : IMatchTimelinesConfirmedMessage
     {
         public MatchTimelinesConfirmedMessage(
-            string matchId, 
+            string matchId,
             DateTimeOffset eventDate,
             MatchStatus eventStatus,
             IList<TimelineEvent> timelines)

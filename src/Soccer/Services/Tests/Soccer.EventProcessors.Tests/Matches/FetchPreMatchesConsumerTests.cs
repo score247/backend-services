@@ -25,7 +25,7 @@ namespace Soccer.EventProcessors.Tests.Matches
 
         private readonly FetchPreMatchesConsumer consumer;
 
-        public FetchPreMatchesConsumerTests() 
+        public FetchPreMatchesConsumerTests()
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
             leagueService = Substitute.For<ILeagueService>();
@@ -36,7 +36,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         }
 
         [Fact]
-        public async Task Consume_MatchesEmpty_NotGetMajorLeagues() 
+        public async Task Consume_MatchesEmpty_NotGetMajorLeagues()
         {
             await consumer.Consume(context);
 

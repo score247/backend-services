@@ -1,7 +1,7 @@
-﻿using Score247.Shared.Enumerations;
+﻿using System;
+using Score247.Shared.Enumerations;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Database._Shared.Extensions;
-using System;
 
 namespace Soccer.Database.Matches.Criteria
 {

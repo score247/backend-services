@@ -75,7 +75,7 @@ namespace Soccer.API.Leagues
             var season = await GetCurrentSeasonIfNull(leagueId, seasonId, language);
 
             return await dynamicRepository.FetchAsync<LeagueGroupState>(new GetLeagueGroupsCriteria(leagueId, season, language));
-        }        
+        }
 
         public Task<IEnumerable<LeagueSeasonProcessedInfo>> GetLeagueSeasonFetch()
             => dynamicRepository.FetchAsync<LeagueSeasonProcessedInfo>(new GetUnprocessedLeagueSeasonCriteria());
@@ -149,6 +149,5 @@ namespace Soccer.API.Leagues
            => string.IsNullOrWhiteSpace(seasonId)
                         ? (await GetMajorLeagues(language)).FirstOrDefault(league => league.Id == leagueId).SeasonId
                         : seasonId;
-
     }
 }

@@ -155,7 +155,7 @@
 
         private async Task HandleEvent(
             KeyValuePair<string, StreamReader> regionStream,
-            Action<MatchEvent> handler, string matchEventPayload, 
+            Action<MatchEvent> handler, string matchEventPayload,
             MatchEvent matchEvent)
         {
             handler.Invoke(matchEvent.AddScoreToSpecialTimeline(matchEvent.MatchResult));

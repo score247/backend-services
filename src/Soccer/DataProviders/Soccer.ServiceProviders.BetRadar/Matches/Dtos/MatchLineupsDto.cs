@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Soccer.DataProviders.SportRadar.Shared.Extensions;
 
 namespace Soccer.DataProviders.SportRadar.Matches.Dtos

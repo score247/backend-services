@@ -23,7 +23,7 @@ namespace Soccer.EventProcessors.Tests.Matches
 
         private readonly FetchPostMatchesConsumer consumer;
 
-        public FetchPostMatchesConsumerTests() 
+        public FetchPostMatchesConsumerTests()
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
             leagueService = Substitute.For<ILeagueService>();

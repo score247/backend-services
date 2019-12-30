@@ -8,7 +8,7 @@ namespace Soccer.API.Tests.Matches.Helpers
     public class DateRangeHelperTests
     {
         [Fact]
-        public void GenerateDateRanges_InFormerRange_CorrectFromToAndNotCached() 
+        public void GenerateDateRanges_InFormerRange_CorrectFromToAndNotCached()
         {
             var from = new DateTimeOffset(DateTime.UtcNow.AddDays(-5), TimeSpan.Zero);
             var to = new DateTimeOffset(DateTime.UtcNow.AddDays(-4), TimeSpan.Zero);
@@ -111,9 +111,9 @@ namespace Soccer.API.Tests.Matches.Helpers
             var dateRanges = DateRangeHelper.GenerateDateRanges(from, to);
 
             Assert.Equal(2, dateRanges.Count);
-            
+
             Assert.Equal(1, dateRanges.Count(dt => dt.IsCached));
-            
+
             var current = dateRanges.First(dt => dt.IsCached);
             Assert.Equal(current.From, from);
 

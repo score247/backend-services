@@ -60,7 +60,7 @@ namespace Soccer.EventProcessors.Matches
             }
         }
 
-        private async Task PublishHeadToHeadMessages(IList<Match> matches, string language) 
+        private async Task PublishHeadToHeadMessages(IList<Match> matches, string language)
         {
             foreach (var match in matches)
             {

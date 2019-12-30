@@ -60,11 +60,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             timelineService
                 .GetTimelines(match.Id, Arg.Any<string>(), Arg.Any<Language>())
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(
-                    A.Dummy<Match>().With(match => match.Id, "match:id"), 
-                    Enumerable.Empty<TimelineCommentary>())); 
+                    A.Dummy<Match>().With(match => match.Id, "match:id"),
+                    Enumerable.Empty<TimelineCommentary>()));
 
             await fetchPreMatchesTimelineTask.FetchPreMatchTimeline(new List<Match> { match });
-            
+
             await messageBus.Received(1).Publish<IMatchUpdatedCoverageInfo>(Arg.Any<MatchUpdatedCoverageInfo>());
         }
     }
