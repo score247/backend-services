@@ -13,7 +13,7 @@ BEGIN
         L.`Region`,
         L.`CurrentSeasonId`,
         LS.`SeasonDates`,
-        IF(LG.`HasGroups` = 1, true, false) AS 'HasGroups' 
+		IF(L.`HasGroups` = 1, true, false)  AS 'HasGroups' 
         FROM `League` as L
 			LEFT JOIN `LeagueSeason` as LS
 			ON LS.`SeasonId` = L.`CurrentSeasonId`

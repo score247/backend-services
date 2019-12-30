@@ -119,5 +119,10 @@ namespace Soccer.Core.Leagues.Models
         {
             Name = leagueName;
         }
+
+        public void UpdateLeagueGroup(bool hasGroups)
+        {
+            HasGroups = hasGroups;
+        }
     }
 }

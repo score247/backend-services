@@ -8,6 +8,10 @@
 
         public string name { get; set; }
 
+        public string country { get; set; }
+
+        public string country_code { get; set; }
+
         public string abbreviation { get; set; }
 
         public string qualifier { get; set; }

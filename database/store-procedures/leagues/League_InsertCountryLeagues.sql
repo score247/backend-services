@@ -6,7 +6,7 @@ BEGIN
     DECLARE e INT DEFAULT JSON_LENGTH(leagues);
 
     WHILE i < e DO
-		INSERT INTO `League`(`Id`,`Name`, `Region`,`CategoryId`, `Country`, `CountryCode`,`IsInternational`, `Language` )
+		INSERT INTO `League`(`Id`,`Name`, `Region`,`CategoryId`, `Country`, `CountryCode`,`IsInternational`, `HasGroups`,`Language` )
 			VALUES (
 				JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].Id'))),
 				JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].Name'))),
@@ -15,13 +15,15 @@ BEGIN
 				JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].CountryName'))),
 				JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].CountryCode'))),
 				'0',
+				IF(JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].HasGroups'))) = 'true', '1', '0'),
 				language)
 			ON DUPLICATE KEY UPDATE
 				`Name` = JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].Name'))),
 				`Region` = JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].Region'))),
 				`CategoryId` = JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].CategoryId'))),
 				`CountryCode` = JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].CountryCode'))),
-				`Country` = JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].CountryName')));
+				`Country` = JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].CountryName'))),
+				`HasGroups` = IF(JSON_UNQUOTE(JSON_EXTRACT(leagues, CONCAT('$[', i, '].HasGroups'))) = 'true', '1', '0');
         
         -- Increment the loop variable                                                                                                                                                        
         SET i = i + 1;

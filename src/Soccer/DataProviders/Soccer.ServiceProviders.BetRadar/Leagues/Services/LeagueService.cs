@@ -24,6 +24,9 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
         [Get("/soccer-{accessLevel}{version}/{region}/{language}/tournaments.json?api_key={apiKey}")]
         Task<TournamentResult> GetRegionLeagues(string accessLevel, string version, string region, string language, string apiKey);
 
+        [Get("/soccer-{accessLevel}{version}/{region}/{language}/tournaments/{leagueId}/info.json?api_key={apiKey}")]
+        Task<TournamentDetailDto> GetLeagueDetail(string accessLevel, string version, string region, string language, string leagueId, string apiKey);
+
         [Get("/soccer-{accessLevel}{version}/{region}/{language}/tournaments/{leagueId}/schedule.json?api_key={apiKey}")]
         Task<TournamentSchedule> GetLeagueSchedule(string accessLevel, string version, string region, string language, string leagueId, string apiKey);
 
@@ -61,12 +64,12 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
 
                     var regionLeagues = regionLeaguesDto.tournaments.Select(league => LeagueMapper.MapLeague(league, region.Name)).ToList();
 
-                    foreach (var league in regionLeagues)
+                    for (int i = 0; i < regionLeagues.Count; i++)
                     {
-                        league.UpdateLeagueName(league.MapLeagueGroupName(null, language));
+                        var tournamentDetail = await leagueApi.GetLeagueDetail(soccerSettings.AccessLevel, soccerSettings.Version, region.Name, sportRadarLanguage, regionLeagues[i].Id, region.Key);
+                        var league = LeagueMapper.MapLeague(tournamentDetail, region.Name, language);
+                        leagues.Add(league);
                     }
-
-                    leagues.AddRange(regionLeagues);
                 }
 
                 return leagues;

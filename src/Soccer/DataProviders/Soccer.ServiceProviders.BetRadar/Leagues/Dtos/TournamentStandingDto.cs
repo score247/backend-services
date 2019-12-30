@@ -11,6 +11,7 @@
         public string schema { get; set; }
 
         public TournamentDto tournament { get; set; }
+
         public SeasonDto season { get; set; }
 
         public IEnumerable<StandingDto> standings { get; set; }

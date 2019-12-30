@@ -65,6 +65,7 @@ CREATE TABLE `League` (
   `IsMajor` tinyint(4) DEFAULT '0',
   `IsInternational` tinyint(4) DEFAULT '0',
   `CurrentSeasonId` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `HasGroup` tinyint(4) DEFAULT '0',
   PRIMARY KEY (`Id`,`Language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using Score247.Shared.Enumerations;
+using Soccer.Core.Leagues.Extensions;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.DataProviders.SportRadar.Leagues.Dtos;
@@ -8,6 +10,15 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
 {
     public static class LeagueMapper
     {
+        public static League MapLeague(TournamentDetailDto tournamentDetail, string region, Language language)
+        {
+            var league = LeagueMapper.MapLeague(tournamentDetail.tournament, region);
+            league.UpdateLeagueGroup(tournamentDetail.groups?.Count() > 1);
+            league.UpdateLeagueName(league.MapLeagueGroupName(null, language));
+
+            return league;
+        }
+
         public static League MapLeague(TournamentDto tournament, string region)
         {
             if (tournament == null)
