@@ -94,9 +94,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
         private async Task PublishLeagueGroupFetchedMessage(Language language, List<Match> matches)
         {
+            var t = matches.Where(m => m.LeagueRound?.HasGroupStage() != true).ToList();
             var matchGroupByStage = matches
-                            .Where(match => match.LeagueRound?.HasGroupStage() == true)
-                            .GroupBy(match => (match.League.Id, match.LeagueGroupName, match.LeagueSeason, match.LeagueRound));
+                            .GroupBy(match => (match.League.Id, HasGroup: match.LeagueRound?.HasGroupStage() == true, match.LeagueGroupName, match.LeagueSeason, match.LeagueRound));
 
             foreach (var groupStage in matchGroupByStage)
             {
@@ -106,6 +106,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                         groupStage.Key.LeagueSeason.Id,
                         groupStage.Key.LeagueGroupName,
                         groupStage.Key.LeagueRound,
+                        groupStage.Key.HasGroup,
                         language));
             }
         }
