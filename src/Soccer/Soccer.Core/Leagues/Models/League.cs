@@ -25,7 +25,7 @@ namespace Soccer.Core.Leagues.Models
             string region,
             string currentSeasonId,
             LeagueSeasonDates seasonDates,
-            Int64 hasGroups = 0)
+            long hasGroups = 0)
                 : this(
                     id,
                     name,
