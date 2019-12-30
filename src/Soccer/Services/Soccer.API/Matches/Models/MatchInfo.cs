@@ -1,7 +1,6 @@
 ﻿namespace Soccer.API.Matches.Models
 {
     using System.Collections.Generic;
-    using System.Linq;
     using MessagePack;
     using Soccer.Core.Matches.Models;
 
@@ -16,7 +15,7 @@
             int attendance)
         {
             Match = match;
-            TimelineEvents = timelineEvents.OrderBy(t => t.MatchTime).ThenBy(t => t.Time).ToList();
+            TimelineEvents = timelineEvents;
             Attendance = attendance;
             Venue = venue;
             Referee = referee;

@@ -115,7 +115,7 @@ namespace Soccer.API.Matches
                 .OrderByDescending(t => t.MatchTime)
                 .ThenByDescending(t => t.StoppageTime)
                 .ThenByDescending(t => t.Time)
-                .ToList(); ;
+                .ToList();
         }
 
         private CacheItemOptions GetCacheOptions(int cachedMinutes = MatchDataCacheInMinutes)
@@ -142,7 +142,7 @@ namespace Soccer.API.Matches
                 return new MatchLineups();
             }
 
-            var timelineEvents = (await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id, eventDate))).ToList();
+            var timelineEvents = (await GetMatchInfo(id, language, eventDate)).TimelineEvents.ToList();
 
             CombineTimelineEventsIntoLineups(matchLineups.Home, timelineEvents);
             CombineTimelineEventsIntoLineups(matchLineups.Away, timelineEvents);
