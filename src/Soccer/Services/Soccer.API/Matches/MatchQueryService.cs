@@ -76,20 +76,20 @@ namespace Soccer.API.Matches
             => (await GetLive(language)).Count();
 
         public async Task<IEnumerable<MatchSummary>> GetByDateRange(DateTimeOffset from, DateTimeOffset to, Language language)
-        {           
+        {
             var dateRanges = DateRangeHelper.GenerateDateRanges(from, to);
             var matchList = new List<MatchSummary>();
 
             foreach (var dateRange in dateRanges)
             {
-                var matches = dateRange.IsCached 
+                var matches = dateRange.IsCached
                     ? await GetOrSetAsync(
                         MatchListCacheKey,
                         dateRange.From,
                         dateRange.To,
                         () => dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(dateRange.From, dateRange.To, language)))
                     : await dynamicRepository.FetchAsync<Match>(new GetMatchesByDateRangeCriteria(dateRange.From, dateRange.To, language));
-             
+
                 matchList.AddRange(matches.Select(m => new MatchSummary(m)).ToList());
             }
 
@@ -109,8 +109,8 @@ namespace Soccer.API.Matches
         {
             var match = await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(id, language, eventDate));
 
-            return match == null 
-                ? new MatchCoverage(id, default) 
+            return match == null
+                ? new MatchCoverage(id, default)
                 : new MatchCoverage(match.Id, match.Coverage);
         }
 
@@ -148,10 +148,10 @@ namespace Soccer.API.Matches
                 return new MatchLineups();
             }
 
-            var timelines = (await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id, eventDate))).ToList();
+            var timelineEvents = (await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(id, eventDate))).ToList();
 
-            CombineTimelineEventsIntoLineups(matchLineups.Home, timelines);
-            CombineTimelineEventsIntoLineups(matchLineups.Away, timelines);
+            CombineTimelineEventsIntoLineups(matchLineups.Home, timelineEvents);
+            CombineTimelineEventsIntoLineups(matchLineups.Away, timelineEvents);
 
             return matchLineups;
         }
@@ -195,24 +195,26 @@ namespace Soccer.API.Matches
                         timelinePlayerIn);
         }
 
-        private static Dictionary<EventType, int> BuildPlayerEventStatistic(List<TimelineEvent> timelines, Player player, Func<Player, TimelineEvent, EventType, bool> isPlayerHasTimelineEvent)
+        private static Dictionary<EventType, int> BuildPlayerEventStatistic(IList<TimelineEvent> timelineEvents, Player player, Func<Player, TimelineEvent, EventType, bool> isPlayerHasTimelineEvent)
         {
             var playerStatistic = new Dictionary<EventType, int>();
 
             foreach (var lineupsEvent in TeamLineups.LineupsEvents)
             {
-                var events = timelines.Where(tl => isPlayerHasTimelineEvent(player, tl, lineupsEvent));
+                var events = timelineEvents.Where(tl => isPlayerHasTimelineEvent(player, tl, lineupsEvent)).ToList();
 
-                if (events.Any())
+                if (events.Count == 0)
                 {
-                    if (lineupsEvent == EventType.ScoreChange)
-                    {
-                        AddGoalEvents(playerStatistic, events);
-                    }
-                    else
-                    {
-                        playerStatistic.Add(lineupsEvent, events.Count());
-                    }
+                    continue;
+                }
+
+                if (lineupsEvent == EventType.ScoreChange)
+                {
+                    AddGoalEvents(playerStatistic, events);
+                }
+                else
+                {
+                    playerStatistic.Add(lineupsEvent, events.Count);
                 }
             }
 
@@ -227,24 +229,27 @@ namespace Soccer.API.Matches
            => tl.Type == lineupsEvent
                && (tl.Player?.Id == player.Id || tl.PlayerIn?.Id == player.Id || tl.GoalScorer?.Id == player.Id);
 
-        private static void AddGoalEvents(Dictionary<EventType, int> playerStatistic, IEnumerable<TimelineEvent> timelineEvents)
+        private static void AddGoalEvents(IDictionary<EventType, int> playerStatistic, IList<TimelineEvent> timelineEvents)
         {
-            var normalGoals = timelineEvents.Where(timelineEvent => timelineEvent.GoalScorer?.GetEventTypeFromGoalMethod() == EventType.ScoreChange);
-            if (normalGoals.Any())
+            var normalGoals = timelineEvents.Where(timelineEvent => timelineEvent.GoalScorer?.GetEventTypeFromGoalMethod() == EventType.ScoreChange).ToList();
+
+            if (normalGoals.Count > 0)
             {
-                playerStatistic.Add(EventType.ScoreChange, normalGoals.Count());
+                playerStatistic.Add(EventType.ScoreChange, normalGoals.Count);
             }
 
-            var ownGoals = timelineEvents.Where(timelineEvent => timelineEvent.GoalScorer?.GetEventTypeFromGoalMethod() == EventType.ScoreChangeByOwnGoal);
-            if (ownGoals.Any())
+            var ownGoals = timelineEvents.Where(timelineEvent => timelineEvent.GoalScorer?.GetEventTypeFromGoalMethod() == EventType.ScoreChangeByOwnGoal).ToList();
+
+            if (ownGoals.Count > 0)
             {
-                playerStatistic.Add(EventType.ScoreChangeByOwnGoal, ownGoals.Count());
+                playerStatistic.Add(EventType.ScoreChangeByOwnGoal, ownGoals.Count);
             }
 
-            var penaltyGoals = timelineEvents.Where(timelineEvent => timelineEvent.GoalScorer?.GetEventTypeFromGoalMethod() == EventType.ScoreChangeByPenalty);
-            if (penaltyGoals.Any())
+            var penaltyGoals = timelineEvents.Where(timelineEvent => timelineEvent.GoalScorer?.GetEventTypeFromGoalMethod() == EventType.ScoreChangeByPenalty).ToList();
+
+            if (penaltyGoals.Count > 0)
             {
-                playerStatistic.Add(EventType.ScoreChangeByPenalty, penaltyGoals.Count());
+                playerStatistic.Add(EventType.ScoreChangeByPenalty, penaltyGoals.Count);
             }
         }
 
