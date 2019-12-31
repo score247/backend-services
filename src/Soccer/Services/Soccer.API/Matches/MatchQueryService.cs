@@ -270,11 +270,16 @@ namespace Soccer.API.Matches
                 return null;
             }
 
-            var mainEvents = match.TimeLines
-                .OrderByDescending(t => t.MatchTime)
-                .ThenByDescending(t => t.StoppageTime)
-                .ThenByDescending(t => t.Time)
-                .ToList();
+            var mainEvents = new List<TimelineEvent>();
+
+            if (match.TimeLines != null && match.TimeLines.Any())
+            {
+                mainEvents = match.TimeLines
+                    .OrderByDescending(t => t.MatchTime)
+                    .ThenByDescending(t => t.StoppageTime)
+                    .ThenByDescending(t => t.Time)
+                    .ToList();
+            }
 
             var matchInfo = new MatchInfo(new MatchSummary(match), mainEvents, match.Venue, match.Referee, match.Attendance);
 
