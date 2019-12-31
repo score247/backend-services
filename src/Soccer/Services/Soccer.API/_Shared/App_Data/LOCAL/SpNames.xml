@@ -12,6 +12,10 @@
     <Setting Key="Match_GetTimelineEvents_Former" SpName="Match_GetTimelineEvents" DbName="FormerDbConnection" />
     <Setting Key="Match_GetTimelineEvents_Ahead" SpName="Match_GetTimelineEvents" DbName="AheadDbConnection" />
 
+    <Setting Key="Match_GetMainTimelineEvents" SpName="Match_GetMainTimelineEvents" DbName="DefaultConnection" />
+    <Setting Key="Match_GetMainTimelineEvents_Former" SpName="Match_GetMainTimelineEvents" DbName="FormerDbConnection" />
+    <Setting Key="Match_GetMainTimelineEvents_Ahead" SpName="Match_GetMainTimelineEvents" DbName="AheadDbConnection" />
+
     <Setting Key="LiveMatch_GetBySportId" SpName="LiveMatch_GetBySportId" DbName="DefaultConnection" />
 
     <Setting Key="Match_GetCommentaries" SpName="Match_GetCommentaries" DbName="DefaultConnection" />
