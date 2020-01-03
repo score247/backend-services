@@ -50,7 +50,8 @@ namespace Soccer.Core.Matches.Models
             LeagueRoundType leagueRoundType,
             string leagueRoundName,
             int leagueRoundNumber,
-            string leagueRoundGroup)
+            string leagueRoundGroup,
+            string leagueAbbreviation)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             Id = id;
@@ -89,6 +90,7 @@ namespace Soccer.Core.Matches.Models
             LeagueRoundName = leagueRoundName;
             LeagueRoundNumber = leagueRoundNumber;
             LeagueRoundGroup = leagueRoundGroup;
+            LeagueAbbreviation = leagueAbbreviation;
         }
 
         public MatchSummary()
@@ -128,6 +130,7 @@ namespace Soccer.Core.Matches.Models
                 LeagueGroupName = string.IsNullOrWhiteSpace(match.LeagueGroupName)
                     ? match.League.MapLeagueGroupName(match.LeagueRound, Language.en_US)
                     : match.LeagueGroupName;
+                LeagueAbbreviation = match.League.Abbreviation;
             }
         }
 
@@ -267,6 +270,8 @@ namespace Soccer.Core.Matches.Models
         public string LeagueGroupName { get; private set; }
 
         public Coverage Coverage { get; private set; }
+
+        public string LeagueAbbreviation { get; private set; }
 
         /// <summary>
         /// For testing javscript messagepack deserialization
