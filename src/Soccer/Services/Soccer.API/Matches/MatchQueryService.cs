@@ -1,24 +1,26 @@
-﻿[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Soccer.API.Tests")]
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Fanex.Caching;
+using Fanex.Data.Repository;
+using Score247.Shared;
+using Soccer.API.Matches.Helpers;
+using Soccer.API.Matches.Models;
+using Soccer.API.Shared.Configurations;
+using Soccer.Core.Matches.Models;
+
+using Soccer.Core.Matches.Models;
+
+using Soccer.Core.Shared.Enumerations;
+using Soccer.Core.Teams.Models;
+using Soccer.Database.Matches.Criteria;
+using Soccer.Database.Timelines.Criteria;
+
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("Soccer.API.Tests")]
 
 namespace Soccer.API.Matches
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Fanex.Caching;
-    using Fanex.Data.Repository;
-    using Models;
-    using Score247.Shared;
-    using Shared.Configurations;
-    using Soccer.API.Matches.Helpers;
-    using Soccer.Core.Matches.Extensions;
-    using Soccer.Core.Matches.Models;
-    using Soccer.Core.Shared.Enumerations;
-    using Soccer.Core.Teams.Models;
-    using Soccer.Database.Matches.Criteria;
-    using Soccer.Database.Timelines.Criteria;
-
     public interface IMatchQueryService
     {
         Task<IEnumerable<MatchSummary>> GetByDateRange(DateTimeOffset from, DateTimeOffset to, Language language);
@@ -111,11 +113,7 @@ namespace Soccer.API.Matches
                 async () => await dynamicRepository.FetchAsync<TimelineEvent>(new GetCommentaryCriteria(id, language, eventDate)),
                 GetCacheOptions());
 
-            return timelineEvents.Select(t => new MatchCommentary(t))
-                .OrderByDescending(t => t.MatchTime)
-                .ThenByDescending(t => t.StoppageTime)
-                .ThenByDescending(t => t.Time)
-                .ToList();
+            return timelineEvents.Select(t => new MatchCommentary(t));
         }
 
         private CacheItemOptions GetCacheOptions(int cachedMinutes = MatchDataCacheInMinutes)
@@ -270,18 +268,7 @@ namespace Soccer.API.Matches
                 return null;
             }
 
-            var mainEvents = new List<TimelineEvent>();
-
-            if (match.TimeLines != null && match.TimeLines.Any())
-            {
-                mainEvents = match.TimeLines
-                    .OrderByDescending(t => t.MatchTime)
-                    .ThenByDescending(t => t.StoppageTime)
-                    .ThenByDescending(t => t.Time)
-                    .ToList();
-            }
-
-            var matchInfo = new MatchInfo(new MatchSummary(match), mainEvents, match.Venue, match.Referee, match.Attendance);
+            var matchInfo = new MatchInfo(new MatchSummary(match), match.TimeLines, match.Venue, match.Referee, match.Attendance);
 
             await cacheManager.SetAsync(
                 BuildMatchInfoCacheKey(id), matchInfo, BuildCacheOptions(match.EventDate.DateTime));
