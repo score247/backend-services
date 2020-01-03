@@ -25,7 +25,8 @@ namespace Soccer.Core.Leagues.Models
             string region,
             string currentSeasonId,
             LeagueSeasonDates seasonDates,
-            long hasGroups = 0)
+            long hasGroups = 0,
+            string abbreviation = "")
                 : this(
                     id,
                     name,
@@ -37,7 +38,8 @@ namespace Soccer.Core.Leagues.Models
                     region,
                     currentSeasonId,
                     seasonDates,
-                    Convert.ToBoolean(hasGroups))
+                    Convert.ToBoolean(hasGroups),
+                    abbreviation)
         {
         }
 
@@ -53,7 +55,8 @@ namespace Soccer.Core.Leagues.Models
                   league.Region,
                   league.SeasonId,
                   league.SeasonDates,
-                  league.HasGroups)
+                  league.HasGroups,
+                  league.Abbreviation)
         {
         }
 
@@ -70,7 +73,8 @@ namespace Soccer.Core.Leagues.Models
             string region,
             string seasonId,
             LeagueSeasonDates seasonDates,
-            bool hasGroups) : base(id, name)
+            bool hasGroups,
+            string abbreviation) : base(id, name)
         {
             Order = order;
             CategoryId = categoryId;
@@ -81,6 +85,7 @@ namespace Soccer.Core.Leagues.Models
             SeasonId = seasonId;
             SeasonDates = seasonDates;
             HasGroups = hasGroups;
+            Abbreviation = abbreviation;
         }
 
 #pragma warning restore S107 // Methods should not have too many parameters
@@ -104,6 +109,8 @@ namespace Soccer.Core.Leagues.Models
         public LeagueSeasonDates SeasonDates { get; private set; }
 
         public bool HasGroups { get; private set; }
+
+        public string Abbreviation { get; private set; }
 
 #pragma warning restore S109 // Magic numbers should not be used
 

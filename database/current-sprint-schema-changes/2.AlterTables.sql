@@ -1,2 +1,5 @@
 ALTER TABLE `League`
 ADD COLUMN `HasGroups` TINYINT NOT NULL DEFAULT '0' AFTER `SeasonDates`;
+
+ALTER TABLE `League` 
+ADD COLUMN `Abbreviation` VARCHAR(30) NULL DEFAULT '' AFTER `Country`;
