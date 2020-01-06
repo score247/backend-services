@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Hangfire;
 using HtmlAgilityPack;
@@ -37,8 +39,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.News
 
             foreach (var news in newsFeed)
             {
+                var httpClient = new HttpClient();
+                var htmlContent = await httpClient.GetStringAsync(news.Source);
+
                 var html = new HtmlDocument();
-                html.LoadHtml(news.Content);
+                html.LoadHtml(htmlContent);
+
+                var spans = html.DocumentNode.Descendants("span")
+                    .Where(node => node.GetAttributeValue("itemprop", "").Equals("articleBody"));
             }
         }
     }
