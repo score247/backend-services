@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Hangfire;
+using HtmlAgilityPack;
 using MassTransit;
 using Soccer.DataProviders.News.Services;
 using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
@@ -33,6 +34,12 @@ namespace Soccer.DataReceivers.ScheduleTasks.News
         public async Task FetchNewsFeed()
         {
             var newsFeed = await newsService.GetNewsFeed();
+
+            foreach (var news in newsFeed)
+            {
+                var html = new HtmlDocument();
+                html.LoadHtml(news.Content);
+            }
         }
     }
 }
