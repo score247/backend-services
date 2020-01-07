@@ -11,7 +11,7 @@ using Soccer.Core.Shared.Configurations;
 using Soccer.EventPublishers.Matches;
 using Soccer.EventPublishers.Teams;
 
-namespace Soccer.EventPublishers._Shared.Middlewares
+namespace Soccer.EventPublishers.Shared.Middlewares
 {
     public static class RabbitMqMiddleware
     {

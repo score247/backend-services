@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sentry;
 
-namespace Soccer.EventPublishers._Shared.Middlewares
+namespace Soccer.EventPublishers.Shared.Middlewares
 {
     public static class ErrorHandlingMiddleware
     {

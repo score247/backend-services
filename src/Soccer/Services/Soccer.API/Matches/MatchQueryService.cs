@@ -9,9 +9,6 @@ using Soccer.API.Matches.Helpers;
 using Soccer.API.Matches.Models;
 using Soccer.API.Shared.Configurations;
 using Soccer.Core.Matches.Models;
-
-using Soccer.Core.Matches.Models;
-
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.Models;
 using Soccer.Database.Matches.Criteria;

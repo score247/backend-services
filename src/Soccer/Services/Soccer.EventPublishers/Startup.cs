@@ -6,7 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
-using Soccer.EventPublishers._Shared.Middlewares;
+using Soccer.EventPublishers.Shared.Configurations;
+using Soccer.EventPublishers.Shared.Middlewares;
 using Soccer.EventPublishers.Hubs;
 
 namespace Soccer.EventPublishers
@@ -28,6 +29,9 @@ namespace Soccer.EventPublishers
                 ContractResolver = new PrivateSetterContractResolver()
             };
 
+            var appSettings = new AppSettings(Configuration);
+            services.AddSingleton<IAppSettings>(appSettings);
+            services.AddCors(appSettings);
             services.AddSignalR();
             services.AddLogging(Configuration);
             services.AddRabbitMq(Configuration);
@@ -45,6 +49,7 @@ namespace Soccer.EventPublishers
 
         public void Configure(IApplicationBuilder app, IHostApplicationLifetime applicationLifetime)
         {
+            app.AddCors();
             app.UseStaticFiles();
             app.ConfigureExceptionHandler();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
