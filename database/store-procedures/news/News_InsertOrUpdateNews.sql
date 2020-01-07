@@ -1,4 +1,4 @@
-DROP procedure IF EXISTS `LiveMatch_UpdateCurrentPeriodStartTime`;
+DROP procedure IF EXISTS `News_InsertOrUpdateNews`;
 
 CREATE DEFINER=`user`@`%` PROCEDURE `News_InsertOrUpdateNews`(IN sportId INT, IN news TEXT, IN language VARCHAR(10))
 BEGIN

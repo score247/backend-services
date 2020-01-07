@@ -48,4 +48,7 @@
     <Setting Key="Team_GetHeadToHeads" SpName="Team_GetHeadToHeads" DbName="DefaultConnection" />
     <Setting Key="Team_GetTeamResults" SpName="Team_GetTeamResults" DbName="DefaultConnection" />
   </Function>
+  <Function Name="News">
+    <Setting Key="News_GetNews" SpName="News_GetNews" DbName="DefaultConnection" />
+  </Function>  
 </Functions>
