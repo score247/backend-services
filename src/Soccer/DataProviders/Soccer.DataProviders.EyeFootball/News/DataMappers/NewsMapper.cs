@@ -9,10 +9,10 @@ namespace Soccer.DataProviders.EyeFootball.News.DataMappers
     {
         public static NewsFeed MapNewsFeed(SyndicationItem syncdicationItem)
         => new NewsFeed(
-                syncdicationItem.Title.Text,
-                null,
-                null,
+                syncdicationItem.Id,
+                syncdicationItem.Title.Text,             
                 syncdicationItem.Links.FirstOrDefault()?.Uri.ToString(),
-                DateTimeOffset.UtcNow);
+                syncdicationItem.Summary.Text,
+                syncdicationItem.PublishDate);
     }
 }

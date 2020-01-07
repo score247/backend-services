@@ -4,25 +4,23 @@ namespace Soccer.Core.News.Models
 {
     public class NewsFeed
     {
-        public NewsFeed(string title, string imageSource, string author, string source, DateTimeOffset publishedAt)
+        public NewsFeed(string guid, string title, string source, string summary, DateTimeOffset publishedDate)
         {
+            Guid = guid;
             Title = title;
-            ImageSource = imageSource;
-            Author = author;
             Source = source;
-            PublishedAt = publishedAt;
-        }     
+            Summary = summary;
+            PublishedDate = publishedDate;
+        }
+
+        public string Guid { get; }
 
         public string Title { get; }
 
-        public string Content { get; }
-
-        public string ImageSource { get; }
-
-        public string Author { get; }
-
         public string Source { get; }
 
-        public DateTimeOffset PublishedAt { get; }
+        public string Summary { get; }
+
+        public DateTimeOffset PublishedDate { get; }
     }
 }

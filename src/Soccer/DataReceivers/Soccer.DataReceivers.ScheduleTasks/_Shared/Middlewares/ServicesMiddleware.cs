@@ -45,6 +45,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             configuration.GetSection("DataProviders:EyeFootball").Bind(eyeFootballDataProviderSettings);
 
             services.AddSingleton<ISportRadarSettings>(sportRadarDataProviderSettings);
+            services.AddSingleton<IEyeFootballSettings>(eyeFootballDataProviderSettings);
 
             services.AddSingleton(RestService.For<IMatchApi>(sportRadarDataProviderSettings.ServiceUrl));
             services.AddSingleton<IMatchService, MatchService>();

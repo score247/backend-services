@@ -6,6 +6,6 @@ namespace Soccer.DataProviders.News.Services
 {
     public interface INewsService
     {
-        Task<List<NewsFeed>> GetNewsFeed();
+        Task<List<NewsItem>> GetNewsFeed(string feedUri);
     }
 }

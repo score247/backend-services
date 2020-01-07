@@ -1,12 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Hangfire;
-using HtmlAgilityPack;
 using MassTransit;
+using Soccer.Core.News.QueueMessages;
+using Soccer.Core.Shared.Enumerations;
+using Soccer.DataProviders.EyeFootball._Shared.Configurations;
 using Soccer.DataProviders.News.Services;
-using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
 
 namespace Soccer.DataReceivers.ScheduleTasks.News
 {
@@ -19,35 +17,27 @@ namespace Soccer.DataReceivers.ScheduleTasks.News
 
     public class FetchNewsTask : IFetchNewsTask
     {
-        private readonly IAppSettings appSettings;
+        private const string NEWS_FEED_XML_PATH = "football_news.xml";
+
+        private readonly IEyeFootballSettings settings;
         private readonly IBus messageBus;
         private readonly INewsService newsService;
 
         public FetchNewsTask(
-            IAppSettings appSettings, 
+            IEyeFootballSettings settings, 
             IBus messageBus,
             INewsService newsService)
         {
-            this.appSettings = appSettings;
+            this.settings = settings;
             this.messageBus = messageBus;
             this.newsService = newsService;
         }
 
         public async Task FetchNewsFeed()
         {
-            var newsFeed = await newsService.GetNewsFeed();
+            var newsFeeds = await newsService.GetNewsFeed($"{settings.ServiceUrl}/{NEWS_FEED_XML_PATH}");
 
-            foreach (var news in newsFeed)
-            {
-                var httpClient = new HttpClient();
-                var htmlContent = await httpClient.GetStringAsync(news.Source);
-
-                var html = new HtmlDocument();
-                html.LoadHtml(htmlContent);
-
-                var spans = html.DocumentNode.Descendants("span")
-                    .Where(node => node.GetAttributeValue("itemprop", "").Equals("articleBody"));
-            }
+            await messageBus.Publish<INewsFetchedMessage>(new NewsFetchedMessage(newsFeeds, Language.en_US));
         }
     }
 }
