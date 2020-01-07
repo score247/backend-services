@@ -13,6 +13,7 @@
     using Soccer.EventProcessors.Leagues;
     using Soccer.EventProcessors.Matches;
     using Soccer.EventProcessors.Matches.MatchEvents;
+    using Soccer.EventProcessors.News;
     using Soccer.EventProcessors.Teams;
     using Soccer.EventProcessors.Timeline;
 
@@ -56,6 +57,7 @@
                 serviceCollectionConfigurator.AddConsumer<FetchedLeagueMatchesConsumer>();
                 serviceCollectionConfigurator.AddConsumer<RemoveTimelinesConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchedLeagueGroupConsumer>();
+                serviceCollectionConfigurator.AddConsumer<FetchNewsConsumer>();
             });
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -212,6 +214,14 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<RemoveTimelinesConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_News", e =>
+                {
+                    e.PrefetchCount = PrefetchCount;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<FetchNewsConsumer>(provider);
                 });
             }));
 
