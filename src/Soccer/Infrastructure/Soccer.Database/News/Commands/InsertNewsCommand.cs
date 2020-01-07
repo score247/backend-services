@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Score247.Shared.Enumerations;
 using Soccer.Core.News.Models;
 using Soccer.Core.Shared.Enumerations;

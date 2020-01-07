@@ -26,7 +26,7 @@ namespace Soccer.DataProviders.EyeFootball.News.Services
                 var content = NewsHtmlParser.ParseNewsContent(htmlContent);
                 string imageLink = NewsHtmlParser.ParseNewsImageSource(news);
 
-                var newsItem = new NewsItem(news.Title, content, imageLink, news.PublishedDate);
+                var newsItem = new NewsItem(news.Title, content, imageLink, news.Guid, news.PublishedDate);
 
                 newsList.Add(newsItem);
             }
