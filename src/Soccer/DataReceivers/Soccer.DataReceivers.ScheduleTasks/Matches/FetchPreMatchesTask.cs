@@ -98,6 +98,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                             .GroupBy(match =>
                                 (match.League.Id, match.LeagueGroupName, match.LeagueSeason, match.LeagueRound));
 
+            if (matchGroupByStage == null)
+            {
+                return;
+            }
+
             foreach (var groupStage in matchGroupByStage)
             {
                 await messageBus.Publish<ILeagueGroupFetchedMessage>(
