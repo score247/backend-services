@@ -19,7 +19,7 @@ namespace Soccer.EventProcessors.News
 
         public async Task Consume(ConsumeContext<INewsFetchedMessage> context)
         {
-            if (context?.Message?.NewsList == null || context.Message.NewsList.Any())
+            if (context?.Message?.NewsList == null || !context.Message.NewsList.Any())
             {
                 return;
             }
