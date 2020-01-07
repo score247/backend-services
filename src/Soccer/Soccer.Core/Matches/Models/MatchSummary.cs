@@ -51,7 +51,9 @@ namespace Soccer.Core.Matches.Models
             string leagueRoundName,
             int leagueRoundNumber,
             string leagueRoundGroup,
-            string leagueAbbreviation)
+            string leagueAbbreviation,
+            byte homeYellowCards,
+            byte awayYellowCards)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             Id = id;
@@ -91,6 +93,8 @@ namespace Soccer.Core.Matches.Models
             LeagueRoundNumber = leagueRoundNumber;
             LeagueRoundGroup = leagueRoundGroup;
             LeagueAbbreviation = leagueAbbreviation;
+            HomeYellowCards = homeYellowCards;
+            AwayYellowCards = awayYellowCards;
         }
 
         public MatchSummary()
@@ -179,6 +183,8 @@ namespace Soccer.Core.Matches.Models
                     {
                         HomeRedCards = (byte)homeTeam.Statistic.RedCards;
                         HomeYellowRedCards = (byte)homeTeam.Statistic.YellowRedCards;
+                        HomeYellowCards = (byte)homeTeam.Statistic.YellowCards;
+
                     }
                 }
 
@@ -191,6 +197,7 @@ namespace Soccer.Core.Matches.Models
                     {
                         AwayRedCards = (byte)awayTeam.Statistic.RedCards;
                         AwayYellowRedCards = (byte)awayTeam.Statistic.YellowRedCards;
+                        AwayYellowCards = (byte)awayTeam.Statistic.YellowCards;
                     }
                 }
             }
@@ -272,6 +279,10 @@ namespace Soccer.Core.Matches.Models
         public Coverage Coverage { get; private set; }
 
         public string LeagueAbbreviation { get; private set; }
+
+        public byte HomeYellowCards { get; private set; }
+
+        public byte AwayYellowCards { get; private set; }
 
         /// <summary>
         /// For testing javscript messagepack deserialization
