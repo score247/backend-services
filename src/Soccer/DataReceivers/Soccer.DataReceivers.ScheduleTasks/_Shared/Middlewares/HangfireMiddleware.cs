@@ -81,6 +81,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             RegisterTask<IFetchLeagueMatchesTask>(taskSettings.FetchLeagueMatchesAndTimelinesCron, job => job.FetchLeagueMatchesAndTimelines());
             RegisterTask<IFetchLeagueStandingsTask>(taskSettings.FetchLeagueStandingCron, job => job.FetchLeagueStandings());
             RegisterTask<IFetchLeagueMatchesTask>(taskSettings.FetchLeagueMatchesCron, job => job.FetchLeagueMatches());
+            RegisterTask<IFetchNewsTask>(taskSettings.FetchPreMatchesCron, job => job.FetchNewsFeed());
         }
 
         private static void RegisterTask<T>(string cronExpression, Expression<Func<T, Task>> methodCall)
@@ -89,14 +90,12 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             {
                 var info = (MethodCallExpression)methodCall.Body;
 
-                RecurringJob.AddOrUpdate( 
-                    info.Method.Name, 
-            Cron.Yearly);
+                RecurringJob.AddOrUpdate(
+                            info.Method.Name,
+                            methodCall,
+                            cronExpression);
 
-            RecurringJob.AddOrUpdate<IFetchNewsTask>(
-            nameof(IFetchNewsTask.FetchNewsFeed),
-            job => job.FetchNewsFeed(),
-            Cron.Yearly);
+            }
         }
     }
 }

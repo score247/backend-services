@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using Fanex.Caching;
 using Microsoft.Extensions.Configuration;
@@ -96,7 +95,6 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
 
             services.AddSingleton<IHealthCheckService, HealthCheckService>();
             services.AddSingleton<INewsService, NewsService>();
-
         }
     }
 }
