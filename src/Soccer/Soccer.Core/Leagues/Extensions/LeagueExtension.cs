@@ -79,7 +79,7 @@ namespace Soccer.Core.Leagues.Extensions
         }
 
         private static string FormatPhaseNotPlayOffs(LeagueRound leagueRound)
-        => !string.IsNullOrWhiteSpace(leagueRound.Phase) && IsPlayOffs(leagueRound.Phase)
+        => string.IsNullOrWhiteSpace(leagueRound.Phase) || IsPlayOffs(leagueRound.Phase)
                 ? string.Empty
                 : $"{leagueRound.Phase.Replace(underscore, space)}{ termsplit} ";
 
