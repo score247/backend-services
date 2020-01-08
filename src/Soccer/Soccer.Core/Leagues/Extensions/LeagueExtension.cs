@@ -68,17 +68,11 @@ namespace Soccer.Core.Leagues.Extensions
            Language language)
         {
             if (leagueRound.Type == LeagueRoundType.CupRound 
-                && !string.IsNullOrWhiteSpace(leagueRound?.Name))
+                || leagueRound.Type == LeagueRoundType.QualifierRound)
             {
                 var formatPhase = FormatPhaseNotPlayOffs(leagueRound);
 
                 return $"{BuildLeagueWithCountryName(league)}{termsplit} {formatPhase}{leagueRound.Name?.Replace(underscore, space)}";
-            }
-
-            if (leagueRound.Type == LeagueRoundType.QualifierRound
-                && !string.IsNullOrWhiteSpace(leagueRound?.Phase))
-            {
-                return $"{BuildLeagueWithCountryName(league)}{termsplit} {leagueRound.Phase?.Replace(underscore, space)}";
             }
 
             return LeagueNameRule1GroupBuilder(league, leagueRound, language);

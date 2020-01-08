@@ -108,8 +108,8 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
         }
 
         [Theory]
-        [InlineData("categoryName", "countryCode", "tournament", "phase_1", "categoryName tournament:: phase 1")]
-        [InlineData("categoryName", "", "tournament", "phase_2", "tournament:: phase 2")]
+        [InlineData("categoryName", "countryCode", "tournament", "phase_1", "categoryName tournament:: phase 1:: tournament round name")]
+        [InlineData("categoryName", "", "tournament", "phase_2", "tournament:: phase 2:: tournament round name")]
         public void MapLeagueName_Rule1_TypeIsQualification_ReturnLeagueGroupName(
            string categoryName, string countryCode, string tournamentName, string phase, string expectedLeagueName)
         {
