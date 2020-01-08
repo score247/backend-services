@@ -1,0 +1,27 @@
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Fanex.Data.Repository;
+using Soccer.Core.News.Models;
+using Soccer.Core.Shared.Enumerations;
+using Soccer.Database.News.Criteria;
+
+namespace Soccer.API.News
+{
+    public interface INewsQueryService
+    {
+        Task<IEnumerable<NewsItem>> GetNews(Language language);
+    }
+
+    public class NewsQueryService : INewsQueryService
+    {
+        private readonly IDynamicRepository dynamicRepository;
+
+        public NewsQueryService(IDynamicRepository dynamicRepository)
+        {
+            this.dynamicRepository = dynamicRepository;
+        }
+
+        public Task<IEnumerable<NewsItem>> GetNews(Language language)
+        => dynamicRepository.FetchAsync<NewsItem>(new GetNewsCriteria(language.DisplayName));
+    }
+}

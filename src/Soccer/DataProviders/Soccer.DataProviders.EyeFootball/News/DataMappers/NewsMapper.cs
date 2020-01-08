@@ -13,6 +13,6 @@ namespace Soccer.DataProviders.EyeFootball.News.DataMappers
                 syncdicationItem.Title.Text,             
                 syncdicationItem.Links.FirstOrDefault()?.Uri.ToString(),
                 syncdicationItem.Summary.Text,
-                syncdicationItem.PublishDate);
+                syncdicationItem.PublishDate.UtcDateTime);
     }
 }

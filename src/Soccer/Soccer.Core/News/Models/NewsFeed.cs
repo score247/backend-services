@@ -4,7 +4,7 @@ namespace Soccer.Core.News.Models
 {
     public class NewsFeed
     {
-        public NewsFeed(string guid, string title, string source, string summary, DateTimeOffset publishedDate)
+        public NewsFeed(string guid, string title, string source, string summary, DateTime publishedDate)
         {
             Guid = guid;
             Title = title;
@@ -21,6 +21,6 @@ namespace Soccer.Core.News.Models
 
         public string Summary { get; }
 
-        public DateTimeOffset PublishedDate { get; }
+        public DateTime PublishedDate { get; }
     }
 }

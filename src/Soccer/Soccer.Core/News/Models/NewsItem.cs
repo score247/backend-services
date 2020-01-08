@@ -1,10 +1,14 @@
 ﻿using System;
+using MessagePack;
+using Newtonsoft.Json;
 
 namespace Soccer.Core.News.Models
 {
+    [MessagePackObject(keyAsPropertyName: true)]
     public class NewsItem
     {
-        public NewsItem(string title, string content, string imageSource, string link, DateTimeOffset publishedDate)
+        [SerializationConstructor, JsonConstructor]
+        public NewsItem(string title, string content, string imageSource, string link, DateTime publishedDate)
         {
             Title = title;
             Content = content;
@@ -21,6 +25,6 @@ namespace Soccer.Core.News.Models
 
         public string Link { get; }
 
-        public DateTimeOffset PublishedDate { get; }
+        public DateTime PublishedDate { get; }
     }
 }

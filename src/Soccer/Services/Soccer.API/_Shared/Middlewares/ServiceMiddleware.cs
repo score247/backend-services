@@ -7,6 +7,7 @@ using Score247.Shared;
 using Soccer.API.Leagues;
 using Soccer.API.Matches;
 using Soccer.API.Matches.Helpers;
+using Soccer.API.News;
 using Soccer.API.Odds;
 using Soccer.API.Teams;
 using Soccer.Cache.Leagues;
@@ -36,6 +37,8 @@ namespace Soccer.API.Shared.Middlewares
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"_Shared/App_Data/SvgFiles"),
                 (path) => SvgDocument.Open(path)
                 ));
+
+            services.AddScoped<INewsQueryService, NewsQueryService>();
         }
     }
 }
