@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel.Syndication;
 using System.Threading.Tasks;
@@ -25,9 +24,10 @@ namespace Soccer.DataProviders.EyeFootball.News.Services
                 var htmlContent = await news.Source.GetStringAsync();
 
                 var content = NewsHtmlParser.ParseNewsContent(htmlContent);
-                string imageLink = NewsHtmlParser.ParseNewsImageSource(news);
+                var imageLink = NewsHtmlParser.ParseNewsImageSource(news);
+                var author = NewsHtmlParser.ParseAuthor(htmlContent);
 
-                var newsItem = new NewsItem(news.Title, content, imageLink, news.Guid, news.PublishedDate.UtcDateTime);
+                var newsItem = new NewsItem(news.Title, content, imageLink, news.Guid, author, news.PublishedDate);
 
                 newsList.Add(newsItem);
             }

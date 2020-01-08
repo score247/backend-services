@@ -8,12 +8,13 @@ namespace Soccer.Core.News.Models
     public class NewsItem
     {
         [SerializationConstructor, JsonConstructor]
-        public NewsItem(string title, string content, string imageSource, string link, DateTime publishedDate)
+        public NewsItem(string title, string content, string imageSource, string link, string author, DateTime publishedDate)
         {
             Title = title;
             Content = content;
             ImageSource = imageSource;
             Link = link;
+            Author = author;
             PublishedDate = publishedDate;
         }
 
@@ -24,6 +25,8 @@ namespace Soccer.Core.News.Models
         public string ImageSource { get; }
 
         public string Link { get; }
+
+        public string Author { get; }
 
         public DateTime PublishedDate { get; }
     }

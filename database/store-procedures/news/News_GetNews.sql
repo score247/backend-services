@@ -7,6 +7,7 @@ BEGIN
 		`Content`,
 		`ImageSource`,
 		`Link`,
+        `Author`,
         `PublishedDate`
 	FROM `News` AS N
 	WHERE N.SportId = sportID

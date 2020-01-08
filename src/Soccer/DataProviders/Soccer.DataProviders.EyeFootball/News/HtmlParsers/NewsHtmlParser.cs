@@ -31,6 +31,20 @@ namespace Soccer.DataProviders.EyeFootball.News.HtmlParsers
                 : RemoveComments(content);
         }
 
+        public static string ParseAuthor(string htmlContent)
+        {
+            var html = new HtmlDocument();
+            html.LoadHtml(htmlContent);
+
+            var content = html.DocumentNode.Descendants("a")
+                .FirstOrDefault(node => node.GetAttributeValue("rel", "").Equals("author"))
+                ?.InnerText;
+
+            return string.IsNullOrWhiteSpace(content)
+                ? string.Empty
+                : RemoveComments(content);
+        }
+
 
         public static string RemoveComments(string content) 
         => Regex.Replace(content, "<!--.*?-->", string.Empty, RegexOptions.Singleline);
