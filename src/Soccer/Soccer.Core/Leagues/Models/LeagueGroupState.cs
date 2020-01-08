@@ -11,12 +11,14 @@ namespace Soccer.Core.Leagues.Models
             string leagueId,
             string leagueSeasonId,
             string groupStageName,
-            LeagueRound leagueRound)
+            LeagueRound leagueRound,
+            bool hasStanding)
         {
             LeagueId = leagueId;
             LeagueSeasonId = leagueSeasonId;
             GroupStageName = groupStageName;
             LeagueRound = leagueRound;
+            HasStanding = hasStanding;
         }
 
         public string LeagueId { get; }
@@ -26,5 +28,7 @@ namespace Soccer.Core.Leagues.Models
         public string GroupStageName { get; }
 
         public LeagueRound LeagueRound { get; }
+
+        public bool HasStanding { get; }
     }
 }

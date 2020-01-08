@@ -14,48 +14,48 @@
     <Setting Key="Match_InsertTimeline" SpName="Match_InsertTimeline" DbName="DefaultConnection" />
     <Setting Key="Match_InsertTimeline_Former" SpName="Match_InsertTimeline" DbName="FormerDbConnection" />
     <Setting Key="Match_InsertTimeline_Ahead" SpName="Match_InsertTimeline" DbName="AheadDbConnection" />
-    
+
     <Setting Key="Match_GetTimelineEvents" SpName="Match_GetTimelineEvents" DbName="DefaultConnection" />
     <Setting Key="Match_GetTimelineEvents_Former" SpName="Match_GetTimelineEvents" DbName="FormerDbConnection" />
     <Setting Key="Match_GetTimelineEvents_Ahead" SpName="Match_GetTimelineEvents" DbName="AheadDbConnection" />
-    
+
     <Setting Key="Match_UpdateRefereeAndAttendance" SpName="Match_UpdateRefereeAndAttendance" DbName="DefaultConnection" />
     <Setting Key="Match_UpdateRefereeAndAttendance_Former" SpName="Match_UpdateRefereeAndAttendance" DbName="FormerDbConnection" />
     <Setting Key="Match_UpdateRefereeAndAttendance_Ahead" SpName="Match_UpdateRefereeAndAttendance" DbName="AheadDbConnection" />
-    
+
     <Setting Key="Match_GetById" SpName="Match_GetById" DbName="DefaultConnection" />
     <Setting Key="Match_GetById_Former" SpName="Match_GetById" DbName="FormerDbConnection" />
     <Setting Key="Match_GetById_Ahead" SpName="Match_GetById" DbName="AheadDbConnection" />
-    
+
     <Setting Key="Match_UpdateCoverage" SpName="Match_UpdateCoverage" DbName="DefaultConnection" />
     <Setting Key="Match_UpdateCoverage_Former" SpName="Match_UpdateCoverage" DbName="FormerDbConnection" />
     <Setting Key="Match_UpdateCoverage_Ahead" SpName="Match_UpdateCoverage" DbName="AheadDbConnection" />
-    
+
     <Setting Key="Match_InsertCommentary" SpName="Match_InsertCommentary" DbName="DefaultConnection" />
     <Setting Key="Match_InsertCommentary_Former" SpName="Match_InsertCommentary" DbName="FormerDbConnection" />
     <Setting Key="Match_InsertCommentary_Ahead" SpName="Match_InsertCommentary" DbName="AheadDbConnection" />
-    
+
     <Setting Key="Match_InsertOrUpdateLineups" SpName="Match_InsertOrUpdateLineups" DbName="DefaultConnection" />
     <Setting Key="Match_InsertOrUpdateLineups_Former" SpName="Match_InsertOrUpdateLineups" DbName="FormerDbConnection" />
     <Setting Key="Match_InsertOrUpdateLineups_Ahead" SpName="Match_InsertOrUpdateLineups" DbName="AheadDbConnection" />
   </Function>
-  <Function Name="LiveMatch">    
+  <Function Name="LiveMatch">
     <Setting Key="LiveMatch_UpdateCurrentPeriodStartTime" SpName="LiveMatch_UpdateCurrentPeriodStartTime" DbName="DefaultConnection" />
     <Setting Key="LiveMatch_GetBySportId" SpName="LiveMatch_GetBySportId" DbName="DefaultConnection" />
     <Setting Key="LiveMatch_InsertOrRemove" SpName="LiveMatch_InsertOrRemove" DbName="DefaultConnection" />
-    
+
     <Setting Key="LiveMatch_UpdateMatchResult" SpName="LiveMatch_UpdateMatchResult" DbName="DefaultConnection" />
     <Setting Key="LiveMatch_UpdateMatchResult_Former" SpName="LiveMatch_UpdateMatchResult" DbName="FormerDbConnection" />
     <Setting Key="LiveMatch_UpdateMatchResult_Ahead" SpName="LiveMatch_UpdateMatchResult" DbName="AheadDbConnection" />
-    
+
     <Setting Key="LiveMatch_UpdateLastTimeline" SpName="LiveMatch_UpdateLastTimeline" DbName="DefaultConnection" />
     <Setting Key="LiveMatch_UpdateLastTimeline_Former" SpName="LiveMatch_UpdateLastTimeline" DbName="FormerDbConnection" />
     <Setting Key="LiveMatch_UpdateLastTimeline_Ahead" SpName="LiveMatch_UpdateLastTimeline" DbName="AheadDbConnection" />
-    
+
     <Setting Key="LiveMatch_UpdateTeamStatistic" SpName="LiveMatch_UpdateTeamStatistic" DbName="DefaultConnection" />
     <Setting Key="LiveMatch_UpdateTeamStatistic_Former" SpName="LiveMatch_UpdateTeamStatistic" DbName="FormerDbConnection" />
     <Setting Key="LiveMatch_UpdateTeamStatistic_Ahead" SpName="LiveMatch_UpdateTeamStatistic" DbName="AheadDbConnection" />
-    
+
     <Setting Key="LiveMatch_UpdateTeamRedCards" SpName="LiveMatch_UpdateTeamRedCards" DbName="DefaultConnection" />
     <Setting Key="LiveMatch_UpdateTeamRedCards_Former" SpName="LiveMatch_UpdateTeamRedCards" DbName="FormerDbConnection" />
     <Setting Key="LiveMatch_UpdateTeamRedCards_Ahead" SpName="LiveMatch_UpdateTeamRedCards" DbName="AheadDbConnection" />
@@ -64,7 +64,7 @@
     <Setting Key="Odds_InsertOdds" SpName="Odds_InsertOdds" DbName="DefaultConnection" />
     <Setting Key="Odds_InsertOdds_Former" SpName="Odds_InsertOdds" DbName="FormerDbConnection" />
     <Setting Key="Odds_InsertOdds_Ahead" SpName="Odds_InsertOdds" DbName="AheadDbConnection" />
-    
+
     <Setting Key="Odds_GetOdds" SpName="Odds_GetOdds" DbName="DefaultConnection" />
     <Setting Key="Odds_GetOdds_Former" SpName="Odds_GetOdds" DbName="FormerDbConnection" />
     <Setting Key="Odds_GetOdds_Ahead" SpName="Odds_GetOdds" DbName="AheadDbConnection" />
@@ -79,6 +79,7 @@
     <Setting Key="League_UpdateFetchedLeagueSeason" SpName="League_UpdateFetchedLeagueSeason" DbName="DefaultConnection" />
     <Setting Key="League_UpdateCurrentSeason" SpName="League_UpdateCurrentSeason" DbName="DefaultConnection" />
     <Setting Key="League_InsertGroupStage" SpName="League_InsertGroupStage" DbName="DefaultConnection" />
+    <Setting Key="League_UpdateGroupHasStanding" SpName="League_UpdateGroupHasStanding" DbName="DefaultConnection" />
   </Function>
   <Function Name="Team">
     <Setting Key="Team_InsertOrUpdateHeadToHead" SpName="Team_InsertOrUpdateHeadToHead" DbName="DefaultConnection" />

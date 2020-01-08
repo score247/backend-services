@@ -10,6 +10,7 @@ namespace Soccer.Database.Leagues.Commands
             LeagueId = leagueGroupState.LeagueId;
             LeagueSeasonId = leagueGroupState.LeagueSeasonId;
             GroupStageName = leagueGroupState.GroupStageName;
+            HasStanding = leagueGroupState.HasStanding;
             GroupStageValue = ToJsonString(leagueGroupState);
             Language = language.DisplayName;
         }
@@ -21,6 +22,8 @@ namespace Soccer.Database.Leagues.Commands
         public string GroupStageName { get; }
 
         public string GroupStageValue { get; }
+
+        public bool HasStanding { get; }
 
         public string Language { get; }
 

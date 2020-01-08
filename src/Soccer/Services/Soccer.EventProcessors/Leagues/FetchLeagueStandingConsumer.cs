@@ -15,7 +15,7 @@ namespace Soccer.EventProcessors.Leagues
             this.dynamicRepository = dynamicRepository;
         }
 
-        public Task Consume(ConsumeContext<ILeagueStandingFetchedMessage> context)
+        public async Task Consume(ConsumeContext<ILeagueStandingFetchedMessage> context)
         {
             var message = context.Message;
 
@@ -26,7 +26,15 @@ namespace Soccer.EventProcessors.Leagues
                 message.LeagueStanding,
                 message.Language);
 
-            return dynamicRepository.ExecuteAsync(command);
+            await dynamicRepository.ExecuteAsync(command);
+
+            var updateHasGroupCommand = new UpdateLeagueGroupHasStandingCommand(
+                message.LeagueStanding.League.Id,
+                message.LeagueStanding.LeagueSeason.Id,
+                message.LeagueStanding,
+                message.Language);
+
+            await dynamicRepository.ExecuteAsync(updateHasGroupCommand);
         }
     }
 }
