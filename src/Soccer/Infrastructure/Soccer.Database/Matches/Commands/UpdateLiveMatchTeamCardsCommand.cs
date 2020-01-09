@@ -4,13 +4,14 @@
     using Score247.Shared.Enumerations;
     using Soccer.Database._Shared.Extensions;
 
-    public class UpdateLiveMatchTeamRedCardCommand : BaseCommand
+    public class UpdateLiveMatchTeamCardsCommand : BaseCommand
     {
-        public UpdateLiveMatchTeamRedCardCommand(
+        public UpdateLiveMatchTeamCardsCommand(
             string matchId,
             bool isHome,
             int redCards,
             int yellowRedCards,
+            int yellowCards,
             DateTimeOffset eventDate = default)
             : base(eventDate)
         {
@@ -19,6 +20,7 @@
             TeamIndex = isHome ? 0 : 1;
             RedCards = redCards;
             YellowRedCards = yellowRedCards;
+            YellowCards = yellowCards;
         }
 
         public byte SportId { get; }
@@ -31,8 +33,10 @@
 
         public int YellowRedCards { get; }
 
+        public int YellowCards { get; }
+
         public override string GetSettingKey()
-            => "LiveMatch_UpdateTeamRedCards".GetCorrespondingKey(EventDate, DateTimeOffset.Now);
+            => "LiveMatch_UpdateTeamCards".GetCorrespondingKey(EventDate, DateTimeOffset.Now);
 
         public override bool IsValid()
             => !string.IsNullOrWhiteSpace(MatchId);

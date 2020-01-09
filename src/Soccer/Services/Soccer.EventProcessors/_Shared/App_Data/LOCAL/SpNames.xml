@@ -56,9 +56,9 @@
     <Setting Key="LiveMatch_UpdateTeamStatistic_Former" SpName="LiveMatch_UpdateTeamStatistic" DbName="FormerDbConnection" />
     <Setting Key="LiveMatch_UpdateTeamStatistic_Ahead" SpName="LiveMatch_UpdateTeamStatistic" DbName="AheadDbConnection" />
 
-    <Setting Key="LiveMatch_UpdateTeamRedCards" SpName="LiveMatch_UpdateTeamRedCards" DbName="DefaultConnection" />
-    <Setting Key="LiveMatch_UpdateTeamRedCards_Former" SpName="LiveMatch_UpdateTeamRedCards" DbName="FormerDbConnection" />
-    <Setting Key="LiveMatch_UpdateTeamRedCards_Ahead" SpName="LiveMatch_UpdateTeamRedCards" DbName="AheadDbConnection" />
+    <Setting Key="LiveMatch_UpdateTeamCards" SpName="LiveMatch_UpdateTeamCards" DbName="DefaultConnection" />
+    <Setting Key="LiveMatch_UpdateTeamCards_Former" SpName="LiveMatch_UpdateTeamCards" DbName="FormerDbConnection" />
+    <Setting Key="LiveMatch_UpdateTeamCards_Ahead" SpName="LiveMatch_UpdateTeamCards" DbName="AheadDbConnection" />
   </Function>
   <Function Name="Odds">
     <Setting Key="Odds_InsertOdds" SpName="Odds_InsertOdds" DbName="DefaultConnection" />

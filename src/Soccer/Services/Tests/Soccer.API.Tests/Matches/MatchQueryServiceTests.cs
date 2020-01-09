@@ -158,8 +158,8 @@ namespace Soccer.API.Tests.Matches
             var returnedMatch = A.Dummy<Match>()
                         .With(t => t.Teams, new List<Team>
                         {
-                            A.Dummy<Team>().With(t => t.IsHome, true).With(t => t.Statistic, new TeamStatistic(1, 1)),
-                            A.Dummy<Team>().With(t => t.IsHome, false).With(t => t.Statistic, new TeamStatistic(2, 2))
+                            A.Dummy<Team>().With(t => t.IsHome, true).With(t => t.Statistic, new TeamStatistic(1, 1, 1)),
+                            A.Dummy<Team>().With(t => t.IsHome, false).With(t => t.Statistic, new TeamStatistic(2, 2, 1))
                         });
             StubMatchStatistic(matchId, returnedMatch);
 

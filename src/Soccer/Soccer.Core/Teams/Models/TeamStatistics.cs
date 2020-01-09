@@ -12,10 +12,12 @@
 
         public TeamStatistic(
             int redCards,
-            int yellowRedCards)
+            int yellowRedCards,
+            int yellowCards)
         {
             RedCards = redCards;
             YellowRedCards = yellowRedCards;
+            YellowCards = yellowCards;
         }
 
 #pragma warning disable S107 // Methods should not have too many parameters

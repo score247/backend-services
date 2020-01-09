@@ -13,18 +13,18 @@
     using Soccer.Core.Teams.QueueMessages;
     using Soccer.Database.Matches.Criteria;
 
-    public class RedCardEventConsumer : IConsumer<IRedCardEventMessage>
+    public class CardEventConsumer : IConsumer<ICardEventMessage>
     {
         private readonly IBus messageBus;
         private readonly IDynamicRepository dynamicRepository;
 
-        public RedCardEventConsumer(IBus messageBus, IDynamicRepository dynamicRepository)
+        public CardEventConsumer(IBus messageBus, IDynamicRepository dynamicRepository)
         {
             this.messageBus = messageBus;
             this.dynamicRepository = dynamicRepository;
         }
 
-        public async Task Consume(ConsumeContext<IRedCardEventMessage> context)
+        public async Task Consume(ConsumeContext<ICardEventMessage> context)
         {
             var matchEvent = context?.Message?.MatchEvent;
 
@@ -33,24 +33,25 @@
                 return;
             }
 
-            var processedRedCards = await GetProcessedRedCards(matchEvent.MatchId, matchEvent.Timeline.Team);
+            var processedRedCards = await GetProcessedCards(matchEvent.MatchId, matchEvent.Timeline.Team);
 
             var teamStats = new TeamStatistic(
                 GetNumberOfCardEvents(matchEvent.Timeline, processedRedCards, EventType.RedCard),
-                GetNumberOfCardEvents(matchEvent.Timeline, processedRedCards, EventType.YellowRedCard));
+                GetNumberOfCardEvents(matchEvent.Timeline, processedRedCards, EventType.YellowRedCard),
+                GetNumberOfCardEvents(matchEvent.Timeline, processedRedCards, EventType.YellowCard));
 
             await messageBus.Publish<ITeamStatisticUpdatedMessage>(new TeamStatisticUpdatedMessage(matchEvent.MatchId, matchEvent.Timeline.IsHome, teamStats, true));
             await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
         }
 
-        private async Task<IList<TimelineEvent>> GetProcessedRedCards(string matchId, string teamId)
+        private async Task<IList<TimelineEvent>> GetProcessedCards(string matchId, string teamId)
         {
             var timelineEvents = (await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(matchId))).ToList();
 
             return timelineEvents == null
                 ? new List<TimelineEvent>()
                 : timelineEvents
-                    .Where(t => t.Team == teamId && (t.Type.IsRedCard() || t.Type.IsYellowRedCard()))
+                    .Where(t => t.Team == teamId && (t.Type.IsRedCard() || t.Type.IsYellowRedCard() || t.Type.IsYellowCard()))
                     .ToList();
         }
 

@@ -220,11 +220,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                     A.Dummy<Team>()
                         .With(t => t.Name, "AC Milan")
                         .With(t => t.IsHome, true)
-                        .With(t => t.Statistic, new TeamStatistic(0, 2)),
+                        .With(t => t.Statistic, new TeamStatistic(0, 2, 1)),
                     A.Dummy<Team>()
                         .With(t => t.Name, "Juventus")
                         .With(t => t.IsHome, false)
-                        .With(t => t.Statistic, new TeamStatistic(0, 0)),
+                        .With(t => t.Statistic, new TeamStatistic(0, 0, 1)),
                 })
                 .With(m => m.TimeLines, null);
 
@@ -249,11 +249,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                     A.Dummy<Team>()
                         .With(t => t.Name, "AC Milan")
                         .With(t => t.IsHome, true)
-                        .With(t => t.Statistic, new TeamStatistic(0, 2)),
+                        .With(t => t.Statistic, new TeamStatistic(0, 2, 1)),
                     A.Dummy<Team>()
                         .With(t => t.Name, "Juventus")
                         .With(t => t.IsHome, false)
-                        .With(t => t.Statistic, new TeamStatistic(0, 0)),
+                        .With(t => t.Statistic, new TeamStatistic(0, 0, 1)),
                 })
                 .With(m => m.TimeLines, new List<TimelineEvent>());
 
@@ -278,11 +278,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                     A.Dummy<Team>()
                         .With(t => t.Name, "AC Milan")
                         .With(t => t.IsHome, true)
-                        .With(t => t.Statistic, new TeamStatistic(0, 2)),
+                        .With(t => t.Statistic, new TeamStatistic(0, 2, 1)),
                     A.Dummy<Team>()
                         .With(t => t.Name, "Juventus")
                         .With(t => t.IsHome, false)
-                        .With(t => t.Statistic, new TeamStatistic(0, 0)),
+                        .With(t => t.Statistic, new TeamStatistic(0, 0, 1)),
                 })
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
@@ -310,11 +310,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                     A.Dummy<Team>()
                         .With(t => t.Name, "AC Milan")
                         .With(t => t.IsHome, true)
-                        .With(t => t.Statistic, new TeamStatistic(0, 2)),
+                        .With(t => t.Statistic, new TeamStatistic(0, 2, 1)),
                     A.Dummy<Team>()
                         .With(t => t.Name, "Juventus")
                         .With(t => t.IsHome, false)
-                        .With(t => t.Statistic, new TeamStatistic(0, 0)),
+                        .With(t => t.Statistic, new TeamStatistic(0, 0, 1)),
                 });
             timelineService.GetTimelines("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
@@ -337,11 +337,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                     A.Dummy<Team>()
                         .With(t => t.Name, "AC Milan")
                         .With(t => t.IsHome, true)
-                        .With(t => t.Statistic, new TeamStatistic(0, 2)),
+                        .With(t => t.Statistic, new TeamStatistic(0, 2, 1)),
                     A.Dummy<Team>()
                         .With(t => t.Name, "Juventus")
                         .With(t => t.IsHome, false)
-                        .With(t => t.Statistic, new TeamStatistic(0, 0)),
+                        .With(t => t.Statistic, new TeamStatistic(0, 0, 1)),
                 })
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
@@ -370,11 +370,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                     A.Dummy<Team>()
                         .With(t => t.Name, "AC Milan")
                         .With(t => t.IsHome, true)
-                        .With(t => t.Statistic, new TeamStatistic(0, 2)),
+                        .With(t => t.Statistic, new TeamStatistic(0, 2, 1)),
                     A.Dummy<Team>()
                         .With(t => t.Name, "Juventus")
                         .With(t => t.IsHome, false)
-                        .With(t => t.Statistic, new TeamStatistic(0, 0)),
+                        .With(t => t.Statistic, new TeamStatistic(0, 0, 1)),
                 })
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {

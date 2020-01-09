@@ -21,8 +21,8 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
     public class RedCardEventConsumerTests
     {
         private readonly IBus messageBus;
-        private readonly ConsumeContext<IRedCardEventMessage> context;
-        private readonly RedCardEventConsumer consumer;
+        private readonly ConsumeContext<ICardEventMessage> context;
+        private readonly CardEventConsumer consumer;
         private readonly IDynamicRepository dynamicRepository;
         private readonly Fixture fixture;
 
@@ -30,10 +30,10 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
         {
             fixture = new Fixture();
             messageBus = Substitute.For<IBus>();
-            context = Substitute.For<ConsumeContext<IRedCardEventMessage>>();
+            context = Substitute.For<ConsumeContext<ICardEventMessage>>();
 
             dynamicRepository = Substitute.For<IDynamicRepository>();
-            consumer = new RedCardEventConsumer(messageBus, dynamicRepository);
+            consumer = new CardEventConsumer(messageBus, dynamicRepository);
         }
 
 #pragma warning disable S2699 // Tests should include assertions
@@ -50,7 +50,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
         public async Task Consume_RedCard_ExistInDatabase_ShouldPublishCorrectStatistic()
         {
             const string matchId = "sr:match";
-            context.Message.Returns(new RedCardEventMessage(new MatchEvent(
+            context.Message.Returns(new CardEventMessage(new MatchEvent(
                 "sr:league",
                 matchId,
                 A.Dummy<MatchResult>(),
@@ -73,7 +73,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
         public async Task Consume_RedCard_NotExistInDatabase_ShouldPublishCorrectStatistic()
         {
             const string matchId = "sr:match";
-            context.Message.Returns(new RedCardEventMessage(new MatchEvent(
+            context.Message.Returns(new CardEventMessage(new MatchEvent(
                 "sr:league",
                 matchId,
                 A.Dummy<MatchResult>(),
@@ -93,7 +93,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
         public async Task Consume_YellowRedCard_NotExistInDatabase_ShouldPublishCorrectStatistic()
         {
             const string matchId = "sr:match";
-            context.Message.Returns(new RedCardEventMessage(new MatchEvent(
+            context.Message.Returns(new CardEventMessage(new MatchEvent(
                 "sr:league",
                 matchId,
                 A.Dummy<MatchResult>(),
@@ -118,7 +118,7 @@ namespace Soccer.EventProcessors.Tests.Matches.MatchEvents
         public async Task Consume_YellowRedCard_ExistInDatabase_ShouldPublishCorrectStatistic()
         {
             const string matchId = "sr:match";
-            context.Message.Returns(new RedCardEventMessage(new MatchEvent(
+            context.Message.Returns(new CardEventMessage(new MatchEvent(
                 "sr:league",
                 matchId,
                 A.Dummy<MatchResult>(),

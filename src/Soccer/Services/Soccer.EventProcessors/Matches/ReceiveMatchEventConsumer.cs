@@ -69,10 +69,12 @@ namespace Soccer.EventProcessors.Matches
                 return;
             }
 
-            if (matchEvent.Timeline.Type.IsRedCard() || matchEvent.Timeline.Type.IsYellowRedCard())
+            if (matchEvent.Timeline.Type.IsRedCard() 
+                || matchEvent.Timeline.Type.IsYellowRedCard()
+                || matchEvent.Timeline.Type.IsYellowCard())
             {
                 await InsertOrUpdateProcessedEvent(matchEvent);
-                await messageBus.Publish<IRedCardEventMessage>(new RedCardEventMessage(matchEvent));
+                await messageBus.Publish<ICardEventMessage>(new CardEventMessage(matchEvent));
                 return;
             }
 

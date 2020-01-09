@@ -173,7 +173,7 @@ namespace Soccer.EventProcessors.Tests.Matches
 
             await consumer.Consume(context);
 
-            await messageBus.Received(1).Publish<IRedCardEventMessage>(Arg.Any<RedCardEventMessage>());
+            await messageBus.Received(1).Publish<ICardEventMessage>(Arg.Any<CardEventMessage>());
             await messageBus.DidNotReceive().Publish<IMatchEventProcessedMessage>(Arg.Any<MatchEventProcessedMessage>());
         }
 
@@ -198,7 +198,7 @@ namespace Soccer.EventProcessors.Tests.Matches
 
             await consumer.Consume(context);
 
-            await messageBus.Received(1).Publish<IRedCardEventMessage>(Arg.Is<RedCardEventMessage>(m => m.MatchEvent.Timeline.Player.Name == "player"));
+            await messageBus.Received(1).Publish<ICardEventMessage>(Arg.Is<CardEventMessage>(m => m.MatchEvent.Timeline.Player.Name == "player"));
             await messageBus.DidNotReceive().Publish<IMatchEventProcessedMessage>(Arg.Any<MatchEventProcessedMessage>());
         }
 
@@ -215,7 +215,7 @@ namespace Soccer.EventProcessors.Tests.Matches
 
             await consumer.Consume(context);
 
-            await messageBus.Received(1).Publish<IRedCardEventMessage>(Arg.Any<RedCardEventMessage>());
+            await messageBus.Received(1).Publish<ICardEventMessage>(Arg.Any<CardEventMessage>());
             await messageBus.DidNotReceive().Publish<IMatchEventProcessedMessage>(Arg.Any<MatchEventProcessedMessage>());
         }
 
