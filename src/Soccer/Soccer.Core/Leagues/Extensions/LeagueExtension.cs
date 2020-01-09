@@ -45,8 +45,8 @@ namespace Soccer.Core.Leagues.Extensions
                 var leagueName = builder(league, leagueRound, language);
 
                 if (!string.IsNullOrWhiteSpace(leagueName))
-                {
-                    return CombinePlayoffsInfomration(leagueRound, leagueName);
+                {                  
+                    return CombinePhaseAndRoundName(league, leagueRound, leagueName);
                 }
             }
 
@@ -66,17 +66,8 @@ namespace Soccer.Core.Leagues.Extensions
            League league,
            LeagueRound leagueRound,
            Language language)
-        {
-            if (leagueRound.Type == LeagueRoundType.CupRound 
-                || leagueRound.Type == LeagueRoundType.QualifierRound)
-            {
-                var formatPhase = FormatPhaseNotPlayOffs(leagueRound);
-
-                return $"{BuildLeagueWithCountryName(league)}{termsplit} {formatPhase}{leagueRound.Name?.Replace(underscore, space)}";
-            }
-
-            return LeagueNameRule1GroupBuilder(league, leagueRound, language);
-        }
+        => LeagueNameRule1GroupBuilder(league, leagueRound, language);
+        
 
         private static string FormatPhaseNotPlayOffs(LeagueRound leagueRound)
         => string.IsNullOrWhiteSpace(leagueRound.Phase) || IsPlayOffs(leagueRound.Phase)
@@ -183,12 +174,18 @@ namespace Soccer.Core.Leagues.Extensions
             return string.Empty;
         }
 
-        private static string CombinePlayoffsInfomration(
-            LeagueRound leagueRound,
-            string leagueName)
-            => (leagueRound?.Phase != null && IsPlayOffs(leagueRound.Phase))
-                ? $"{leagueName}{termsplit} {playoffs}"
-                : leagueName;
+        private static string CombinePhaseAndRoundName(League league, LeagueRound leagueRound, string leagueName) 
+        {
+            if (leagueRound.Type == LeagueRoundType.CupRound
+                    || leagueRound.Type == LeagueRoundType.QualifierRound)
+            {
+                var formatPhase = FormatPhaseNotPlayOffs(leagueRound);
+
+                return $"{leagueName}{termsplit} {formatPhase}{leagueRound.Name?.Replace(underscore, space)}";
+            }
+
+            return leagueName;
+        }
 
         private static string LeagueNameRule0Builder(
             League league,

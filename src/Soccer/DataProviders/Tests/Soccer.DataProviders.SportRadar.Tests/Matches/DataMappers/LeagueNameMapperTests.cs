@@ -30,7 +30,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
         [Theory]
         [InlineData("categoryName", "countryCode", "tournamentName", "roundName", "categoryName tournamentName:: phase:: roundName")]
         [InlineData("categoryName", "countryCode", "tournamentName", "round_Name", "categoryName tournamentName:: phase:: round Name")]
-        [InlineData("categoryName", "", "tournamentName", "1B", "tournamentName:: phase:: 1B")]
+        [InlineData("categoryName", "", "tournamentName", "1B", "tournamentName:: phase:: 1B")]        
         public void MapLeagueName_Rule1_TypeIsCup_ReturnLeagueGroupName(
            string categoryName, string countryCode, string tournamentName, string name, string expectedLeagueName)
         {
@@ -57,15 +57,15 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
             => MapLeagueName_Rule1_TypeIsGroup_ReturnLeagueGroupName(categoryName, countryCode, tournamentName, group, expectedLeagueName);
 
         [Theory]
-        [InlineData("categoryName", "countryCode", "tournament", "A", "", "playoffs", "categoryName tournament:: Group A:: Playoffs")]
-        [InlineData("categoryName", "", "tournament", "A", "roundname", "playoffs", "tournament:: Group A:: Playoffs")]
-        [InlineData("categoryName", "countryCode", "tournament", "", "roundname", "playoffs", "categoryName tournament:: roundname:: Playoffs")]
-        [InlineData("categoryName", "", "tournament", "", "roundname", "playoffs", "tournament:: roundname:: Playoffs")]
-
-        [InlineData("categoryName", "countryCode", "tournament, subname1, subname2", "A", "", "playoffs", "categoryName tournament:: subname2:: subname1:: Playoffs")]
-        [InlineData("categoryName", "", "tournament, subname1, subname2", "A", "roundname", "playoffs", "tournament:: subname2:: subname1:: Playoffs")]
-        [InlineData("categoryName", "countryCode", "tournament, subname", "A", "", "playoffs", "categoryName tournament:: subname:: Playoffs")]
-        [InlineData("categoryName", "", "tournament, subname", "A", "roundname", "playoffs", "tournament:: subname:: Playoffs")]
+        [InlineData("categoryName", "countryCode", "tournament", "A", "", "playoffs", "categoryName tournament:: Group A")]
+        [InlineData("categoryName", "", "tournament", "A", "roundname", "playoffs", "tournament:: Group A")]
+        [InlineData("categoryName", "countryCode", "tournament", "", "roundname", "playoffs", "categoryName tournament:: roundname")]
+        [InlineData("categoryName", "", "tournament", "", "roundname", "playoffs", "tournament:: roundname")]
+        [InlineData("categoryName", "countryCode", "tournament, subname1, subname2", "A", "", "playoffs", "categoryName tournament:: subname2:: subname1")]
+        [InlineData("categoryName", "", "tournament, subname1, subname2", "A", "roundname", "playoffs", "tournament:: subname2:: subname1")]
+        [InlineData("categoryName", "countryCode", "tournament, subname", "A", "", "playoffs", "categoryName tournament:: subname")]
+        [InlineData("categoryName", "", "tournament, subname", "A", "roundname", "playoffs", "tournament:: subname")]
+        [InlineData("categoryName", "countryCode", "tournament, subname1, subname2", "", "quaterfinal", "knockout_stage", "categoryName tournament:: subname2:: subname1:: knockout stage:: quaterfinal")]
         public void MapLeagueName_Rule4_ReturnLeagueGroupName(
            string categoryName, string countryCode, string tournamentName, string group, string roundName, string phase, string expectedLeagueName)
         {
