@@ -181,7 +181,7 @@ namespace Soccer.Core.Leagues.Extensions
                     : ExtractGroupName(league, groupName);
 
             // Should multiple languages here
-            convertedGroupName = string.IsNullOrWhiteSpace(convertedGroupName) || league.Name.ToLowerInvariant().Contains($"{space}{groupName.ToLowerInvariant()}")
+            convertedGroupName = string.IsNullOrWhiteSpace(convertedGroupName) || (league.Name.IndexOf($"{space}{groupName}", StringComparison.OrdinalIgnoreCase) >= 0)
                 ? string.Empty
                 : $"{termsplit} Group {convertedGroupName}";
 
