@@ -35,17 +35,12 @@ namespace Soccer.Core.Leagues.Extensions
                 return defaultLeagueName;
             }
 
-            if (leagueRound == null)
-            {
-                return LeagueNameRule0Builder(league, language);
-            }
-
             foreach (var builder in leagueNameBuilders)
             {
                 var leagueName = builder(league, leagueRound, language);
 
                 if (!string.IsNullOrWhiteSpace(leagueName))
-                {                  
+                {
                     return CombinePhaseAndRoundName(league, leagueRound, leagueName);
                 }
             }
@@ -66,40 +61,14 @@ namespace Soccer.Core.Leagues.Extensions
            League league,
            LeagueRound leagueRound,
            Language language)
-        => LeagueNameRule1GroupBuilder(league, leagueRound, language);
-        
-
-        private static string FormatPhaseNotPlayOffs(LeagueRound leagueRound)
-        => string.IsNullOrWhiteSpace(leagueRound.Phase) || IsPlayOffs(leagueRound.Phase)
-                ? string.Empty
-                : $"{leagueRound.Phase.Replace(underscore, space)}{ termsplit} ";
+        => LeagueNameRule1GroupBuilder(league, language);
 
         private static string LeagueNameRule1GroupBuilder(
             League league,
-            LeagueRound leagueRound,
 #pragma warning disable S1172 // Unused method parameters should be removed
             Language language)
         {
-            var groupName = leagueRound?.Group;
-            var convertedGroupName = string.Empty;
-
-            if (leagueRound?.Type == LeagueRoundType.GroupRound)
-            {
-                if (!string.IsNullOrWhiteSpace(groupName))
-                {
-                    convertedGroupName =
-                        groupName.Length == 1
-                            ? groupName.ToUpperInvariant()
-                            : ExtractGroupName(league, groupName);
-                }
-
-                // Should multiple languages here
-                convertedGroupName = string.IsNullOrWhiteSpace(convertedGroupName)
-                    ? string.Empty
-                    : $"{termsplit} Group {convertedGroupName}";
-            }
-
-            return BuildLeagueWithCountryName(league) + convertedGroupName;
+            return BuildLeagueWithCountryName(league);
         }
 
         private static string ExtractGroupName(League league, string groupName)
@@ -110,6 +79,7 @@ namespace Soccer.Core.Leagues.Extensions
         private static string BuildLeagueWithCountryName(League league, string leagueName = null)
         {
             var countryName = league.CountryName;
+
             if (league.IsInternational)
             {
                 if (leagueName == null)
@@ -148,7 +118,7 @@ namespace Soccer.Core.Leagues.Extensions
 
             if (numOfComma == 1)
             {
-                return BuildLeagueWithCountryName(league).Replace(commaString, termsplit);
+                return BuildLeagueWithCountryName(league).Replace(commaString, string.Empty);
             }
 
             return string.Empty;
@@ -168,13 +138,13 @@ namespace Soccer.Core.Leagues.Extensions
 
                 return BuildLeagueWithCountryName(
                     league,
-                    string.Join(termsplit, words[0], words[second], words[1]));
+                    string.Join(string.Empty, words[0], words[second], words[1]));
             }
 
             return string.Empty;
         }
 
-        private static string CombinePhaseAndRoundName(League league, LeagueRound leagueRound, string leagueName) 
+        private static string CombinePhaseAndRoundName(League league, LeagueRound leagueRound, string leagueName)
         {
             if (leagueRound.Type == LeagueRoundType.CupRound
                     || leagueRound.Type == LeagueRoundType.QualifierRound)
@@ -184,14 +154,39 @@ namespace Soccer.Core.Leagues.Extensions
                 return $"{leagueName}{termsplit} {formatPhase}{leagueRound.Name?.Replace(underscore, space)}";
             }
 
+            if (leagueRound.Type == LeagueRoundType.GroupRound)
+            {
+                var convertedGroupName = FormatGroupName(league, leagueRound?.Group);
+
+                return $"{leagueName}{convertedGroupName}";
+            }
+
             return leagueName;
         }
 
-        private static string LeagueNameRule0Builder(
-            League league,
-            Language language)
+        private static string FormatPhaseNotPlayOffs(LeagueRound leagueRound)
+       => string.IsNullOrWhiteSpace(leagueRound.Phase) || IsPlayOffs(leagueRound.Phase)
+               ? string.Empty
+               : $"{leagueRound.Phase.Replace(underscore, space)}{ termsplit} ";
+
+        private static string FormatGroupName(League league, string groupName)
         {
-            return league.Name.Replace(commaString, string.Empty);
+            var convertedGroupName = string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(groupName))
+            {
+                convertedGroupName =
+                    groupName.Length == 1
+                        ? groupName.ToUpperInvariant()
+                        : ExtractGroupName(league, groupName);
+            }
+
+            // Should multiple languages here
+            convertedGroupName = string.IsNullOrWhiteSpace(convertedGroupName)
+                ? string.Empty
+                : $"{termsplit} Group {convertedGroupName}";
+
+            return convertedGroupName;
         }
 
         private static bool IsPlayOffs(string phase) => phase.Equals(playoffs, StringComparison.InvariantCultureIgnoreCase);
