@@ -39,6 +39,9 @@
     <Content Update="appsettings - Copy.local-dev2.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="appsettings.local-test1.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="appsettings.pro.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -16,12 +16,16 @@
   <ItemGroup>
     <None Remove="appsettings.local-dev1.json" />
     <None Remove="appsettings.local-dev2.json" />
+    <None Remove="appsettings.local-test1.json" />
     <None Remove="appsettings.pro.json" />
     <None Remove="_Shared\App_Data\PRO\SpNames.xml" />
     <None Remove="_Shared\App_Data\LOCAL\SpNames.xml" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="appsettings.local-test1.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="_Shared\App_Data\PRO\SpNames.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <Generator>MSBuild:Compile</Generator>
