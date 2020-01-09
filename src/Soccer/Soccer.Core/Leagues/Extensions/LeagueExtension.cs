@@ -171,18 +171,17 @@ namespace Soccer.Core.Leagues.Extensions
 
         private static string FormatGroupName(League league, string groupName)
         {
-            var convertedGroupName = string.Empty;
-
-            if (!string.IsNullOrWhiteSpace(groupName))
+            if (string.IsNullOrWhiteSpace(groupName))
             {
-                convertedGroupName =
-                    groupName.Length == 1
-                        ? groupName.ToUpperInvariant()
-                        : ExtractGroupName(league, groupName);
+                return string.Empty;
             }
 
+            var convertedGroupName = groupName.Length == 1
+                    ? groupName.ToUpperInvariant()
+                    : ExtractGroupName(league, groupName);
+
             // Should multiple languages here
-            convertedGroupName = string.IsNullOrWhiteSpace(convertedGroupName)
+            convertedGroupName = string.IsNullOrWhiteSpace(convertedGroupName) || league.Name.ToLowerInvariant().Contains($"{space}{groupName.ToLowerInvariant()}")
                 ? string.Empty
                 : $"{termsplit} Group {convertedGroupName}";
 

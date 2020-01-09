@@ -44,6 +44,8 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 
         [Theory]
         [InlineData("categoryName", "countryCode", "tournament, subname", "B", "categoryName tournament subname:: Group B")]
+        [InlineData("categoryName", "countryCode", "tournament, subname", "subname", "categoryName tournament subname")]
+        [InlineData("categoryName", "countryCode", "tournament, subname", "Subname", "categoryName tournament subname")]
         [InlineData("categoryName", "", "tournament, subname", "tournament, subname", "tournament subname")]
         public void MapLeagueName_Rule2_ReturnLeagueGroupName(
             string categoryName, string countryCode, string tournamentName, string group, string expectedLeagueName)
@@ -51,6 +53,8 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
 
         [Theory]
         [InlineData("categoryName", "countryCode", "tournament, subname1, subname2", "B", "categoryName tournament subname2 subname1:: Group B")]
+        [InlineData("categoryName", "countryCode", "tournament, subname1, subname2", "subname1", "categoryName tournament subname2 subname1")]
+        [InlineData("categoryName", "countryCode", "tournament, subname1, subname2", "subname2", "categoryName tournament subname2 subname1")]
         [InlineData("categoryName", "", "tournament, subname1, subname2", "", "tournament subname2 subname1")]
         public void MapLeagueName_Rule3_ReturnLeagueGroupName(
             string categoryName, string countryCode, string tournamentName, string group, string expectedLeagueName)
