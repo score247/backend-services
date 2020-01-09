@@ -78,35 +78,34 @@ namespace Soccer.Core.Leagues.Extensions
 
         private static string BuildLeagueWithCountryName(League league, string leagueName = null)
         {
-            var countryName = league.CountryName;
+            var countryName = league.IsInternational
+                ? string.Empty
+                : BuildCountryName(league);
 
-            if (league.IsInternational)
+            leagueName = string.IsNullOrWhiteSpace(leagueName) 
+                ? league.Name 
+                : leagueName;
+
+            return $"{countryName}{leagueName}".TrimStart();
+        }
+
+        public static string BuildCountryName(League league)
+        {
+            if (string.IsNullOrWhiteSpace(league.CountryName))
             {
-                if (leagueName == null)
-                {
-                    return league.Name;
-                }
-                else
-                {
-                    countryName = string.Empty;
-                }
+                return string.Empty;
             }
 
-            if (!string.IsNullOrWhiteSpace(league.CountryName))
-            {
-                var countryNameHasTwoNames = league.CountryName.Any(ch => ch == commaChar);
+            var countryNameHasTwoNames = league.CountryName.Any(ch => ch == commaChar);
 
-                if (countryNameHasTwoNames)
-                {
+            if (countryNameHasTwoNames)
+            {
 #pragma warning disable S1226 // Method parameters, caught exceptions and foreach variables' initial values should not be ignored
-                    countryName = league.CountryName.Substring(0, league.CountryName.IndexOf(commaChar));
+                return $"{league.CountryName.Substring(0, league.CountryName.IndexOf(commaChar))}{space}";
 #pragma warning restore S1226 // Method parameters, caught exceptions and foreach variables' initial values should not be ignored
-                }
             }
 
-            leagueName = string.IsNullOrWhiteSpace(leagueName) ? league.Name : leagueName;
-
-            return $"{countryName} {leagueName}".TrimStart();
+            return $"{league.CountryName}{space}";
         }
 
         private static string LeagueNameRule2Builder(
