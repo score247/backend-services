@@ -35,63 +35,57 @@ namespace Soccer.Core.Leagues.Extensions
                 return defaultLeagueName;
             }
 
+            var leagueGroupName = CombinePhaseAndRoundName(league, leagueRound);
+
+            return string.IsNullOrWhiteSpace(league.CountryName)
+                ? $"{leagueGroupName}".TrimStart()
+                : $"{league.CountryName} {leagueGroupName}".TrimStart();
+        }
+
+        private static string MapLeagueName(League league) 
+        {
+            var defaultLeagueName = league?.Name ?? string.Empty;
+
+            if (league == null)
+            {
+                return defaultLeagueName;
+            }
+
             foreach (var builder in leagueNameBuilders)
             {
-                var leagueName = builder(league, leagueRound, language);
+                var leagueName = builder(league);
 
                 if (!string.IsNullOrWhiteSpace(leagueName))
                 {
-                    return CombinePhaseAndRoundName(league, leagueRound, leagueName);
+                    return leagueName;
                 }
             }
 
             return defaultLeagueName;
         }
 
-        // Please refer to wiki to see rule list wiki/Scores_-_Show_League_name_by_rule#LeagueNameRule
-        private static readonly List<Func<League, LeagueRound, Language, string>> leagueNameBuilders =
-            new List<Func<League, LeagueRound, Language, string>>
+        public static League MapCountryAndLeagueName(this League league)
+        {
+            league.UpdateCountryAndLeagueName(MapLeagueName(league), BuildCountryName(league));
+
+            return league;
+        }
+     
+        private static readonly List<Func<League, string>> leagueNameBuilders =
+            new List<Func<League, string>>
             {
                 LeagueNameRule3Builder,
-                LeagueNameRule2Builder,
-                LeagueNameRule1Builder
+                LeagueNameRule2Builder
             };
-
-        private static string LeagueNameRule1Builder(
-           League league,
-           LeagueRound leagueRound,
-           Language language)
-        => LeagueNameRule1GroupBuilder(league, language);
-
-        private static string LeagueNameRule1GroupBuilder(
-            League league,
-#pragma warning disable S1172 // Unused method parameters should be removed
-            Language language)
-        {
-            return BuildLeagueWithCountryName(league);
-        }
 
         private static string ExtractGroupName(League league, string groupName)
             => groupName.Equals(league.Name, StringComparison.InvariantCultureIgnoreCase)
                 ? string.Empty
                 : groupName[groupName.Length - 1].ToString().ToUpperInvariant();
 
-        private static string BuildLeagueWithCountryName(League league, string leagueName = null)
+        private static string BuildCountryName(League league)
         {
-            var countryName = league.IsInternational
-                ? string.Empty
-                : BuildCountryName(league);
-
-            leagueName = string.IsNullOrWhiteSpace(leagueName) 
-                ? league.Name 
-                : leagueName;
-
-            return $"{countryName}{leagueName}".TrimStart();
-        }
-
-        public static string BuildCountryName(League league)
-        {
-            if (string.IsNullOrWhiteSpace(league.CountryName))
+            if (league.IsInternational || string.IsNullOrWhiteSpace(league.CountryName))
             {
                 return string.Empty;
             }
@@ -101,32 +95,28 @@ namespace Soccer.Core.Leagues.Extensions
             if (countryNameHasTwoNames)
             {
 #pragma warning disable S1226 // Method parameters, caught exceptions and foreach variables' initial values should not be ignored
-                return $"{league.CountryName.Substring(0, league.CountryName.IndexOf(commaChar))}{space}";
+                return $"{league.CountryName.Substring(0, league.CountryName.IndexOf(commaChar))}".Trim();
 #pragma warning restore S1226 // Method parameters, caught exceptions and foreach variables' initial values should not be ignored
             }
 
-            return $"{league.CountryName}{space}";
+            return $"{league.CountryName}";
         }
 
         private static string LeagueNameRule2Builder(
-            League league,
-            LeagueRound leagueRound,
-            Language language)
+            League league)
         {
             var numOfComma = league.Name.Count(nameChar => nameChar == commaChar);
 
             if (numOfComma == 1)
             {
-                return BuildLeagueWithCountryName(league).Replace(commaString, string.Empty);
+                return league.Name.Replace(commaString, string.Empty);
             }
 
             return string.Empty;
         }
 
         private static string LeagueNameRule3Builder(
-            League league,
-            LeagueRound leagueRound,
-            Language language)
+            League league)
         {
             var numOfComma = league.Name.Count(ch => ch == commaChar);
             const int twoCommas = 2;
@@ -135,32 +125,35 @@ namespace Soccer.Core.Leagues.Extensions
             {
                 var words = league.Name.Split(commaChar);
 
-                return BuildLeagueWithCountryName(
-                    league,
-                    string.Join(string.Empty, words[0], words[second], words[1]));
+                return string.Join(string.Empty, words[0], words[second], words[1]);
             }
 
             return string.Empty;
         }
 
-        private static string CombinePhaseAndRoundName(League league, LeagueRound leagueRound, string leagueName)
+        private static string CombinePhaseAndRoundName(League league, LeagueRound leagueRound)
         {
+            if (leagueRound == null)
+            {
+                return league.Name;
+            }
+
             if (leagueRound.Type == LeagueRoundType.CupRound
                     || leagueRound.Type == LeagueRoundType.QualifierRound)
             {
                 var formatPhase = FormatPhaseNotPlayOffs(leagueRound);
 
-                return $"{leagueName}{termsplit} {formatPhase}{leagueRound.Name?.Replace(underscore, space)}";
+                return $"{league.Name}{termsplit} {formatPhase}{leagueRound.Name?.Replace(underscore, space)}";
             }
 
             if (leagueRound.Type == LeagueRoundType.GroupRound)
             {
                 var convertedGroupName = FormatGroupName(league, leagueRound?.Group);
 
-                return $"{leagueName}{convertedGroupName}";
+                return $"{league.Name}{convertedGroupName}";
             }
 
-            return leagueName;
+            return league.Name;
         }
 
         private static string FormatPhaseNotPlayOffs(LeagueRound leagueRound)

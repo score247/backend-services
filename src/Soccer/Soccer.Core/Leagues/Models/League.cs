@@ -96,7 +96,7 @@ namespace Soccer.Core.Leagues.Models
 
         public string CategoryId { get; }
 
-        public string CountryName { get; }
+        public string CountryName { get; private set; }
 
         public string CountryCode { get; private set; }
 
@@ -127,14 +127,15 @@ namespace Soccer.Core.Leagues.Models
             Region = region;
         }
 
-        public void UpdateLeagueName(string leagueName)
-        {
-            Name = leagueName;
-        }
-
-        public void UpdateLeagueGroup(bool hasGroups)
+        public void UpdateHasGroups(bool hasGroups)
         {
             HasGroups = hasGroups;
+        }
+
+        public void UpdateCountryAndLeagueName(string name, string countryName)
+        {
+            Name = name;
+            CountryName = countryName;
         }
     }
 }

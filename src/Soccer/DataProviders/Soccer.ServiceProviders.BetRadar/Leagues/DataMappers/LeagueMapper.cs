@@ -12,9 +12,8 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
     {
         public static League MapLeague(TournamentDetailDto tournamentDetail, string region, Language language)
         {
-            var league = LeagueMapper.MapLeague(tournamentDetail.tournament, region);
-            league.UpdateLeagueGroup(tournamentDetail.groups?.Count() > 1);
-            league.UpdateLeagueName(league.MapLeagueGroupName(null, language));
+            var league = MapLeague(tournamentDetail.tournament, region);
+            league.UpdateHasGroups(tournamentDetail.groups?.Count() > 1);
 
             return league;
         }
@@ -37,19 +36,21 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
                     tournament.current_season.end_date);
             }
 
-            return new League(
+            var league = new League(
                 tournament.id,
-                tournament.name,
+                tournament.name, 
                 0,
                 tournament.category?.id,
-                tournament.category?.name,
+                tournament.category?.name, 
                 tournament.category?.country_code ?? string.Empty,
                 isInternationalLeague,
                 region,
                 tournament.current_season?.id ?? string.Empty,
                 leagueSeasonDates,
                 false,
-                string.Empty);
+                string.Empty).MapCountryAndLeagueName();
+          
+            return league;
         }
 
         public static LeagueRound MapLeagueRound(TournamentRoundDto tournamentRound)

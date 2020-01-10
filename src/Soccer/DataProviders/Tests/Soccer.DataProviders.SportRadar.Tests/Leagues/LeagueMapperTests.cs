@@ -1,4 +1,5 @@
 ﻿using System;
+using Soccer.Core.Shared.Enumerations;
 using Soccer.DataProviders.SportRadar.Leagues.DataMappers;
 using Soccer.DataProviders.SportRadar.Leagues.Dtos;
 using Xunit;
@@ -54,5 +55,48 @@ namespace Soccer.DataProviders.SportRadar.Leagues
             Assert.Equal(startDate, leagueSeason.StartDate);
             Assert.Equal(endDate, leagueSeason.EndDate);
         }
+
+        [Theory]
+        [InlineData("Hong Kong, China", "countryCode", "Hong Kong")]
+        [InlineData("Scotland, UK", "countryCode", "Scotland")]
+        public void MapLeague_CountryHasComma_ShouldFormat(string countryName, string countryCode, string expectedCountryName) 
+        {
+            var tournamentDetailDto = StubTournamentDetailDto(StubTournamentDto(countryName, countryCode, "Premier League"));
+
+            var league = LeagueMapper.MapLeague(tournamentDetailDto, "region", Language.en_US);
+
+            Assert.Equal(expectedCountryName, league.CountryName);
+        }
+
+        [Theory]
+        [InlineData("tournament, subname", "tournament subname")]
+        [InlineData("tournament, subname1, subname2", "tournament subname2 subname1")]
+        public void MapLeague_LeagueNameHasComma_ShouldFormat(string leagueName, string expectedLeagueName)
+        {
+            var tournamentDetailDto = StubTournamentDetailDto(StubTournamentDto("", "", leagueName));
+
+            var league = LeagueMapper.MapLeague(tournamentDetailDto, "region", Language.en_US);
+
+            Assert.Equal(expectedLeagueName, league.Name);
+        }
+
+        private TournamentDetailDto StubTournamentDetailDto(TournamentDto tournamentDto)
+            => new TournamentDetailDto 
+            { 
+                tournament = tournamentDto
+            };
+
+        private TournamentDto StubTournamentDto(string categoryName, string countryCode, string tournamentName)
+            => new TournamentDto
+            {
+                id = "TournamentDtoId",
+                name = tournamentName,
+                category = new Category
+                {
+                    id = "CategoryId",
+                    name = categoryName,
+                    country_code = countryCode
+                }
+            };
     }
 }
