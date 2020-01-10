@@ -18,7 +18,7 @@
             SqlMapper.AddTypeHandler(typeof(MatchLineups), new JsonTypeHandler());
             SqlMapper.AddTypeHandler(typeof(LeagueTable), new JsonTypeHandler());
             SqlMapper.AddTypeHandler(typeof(LeagueSeasonDates), new JsonTypeHandler());
-            SqlMapper.AddTypeHandler(typeof(LeagueGroupState), new JsonTypeHandler());
+            SqlMapper.AddTypeHandler(typeof(LeagueGroupStage), new JsonTypeHandler());
         }
     }
 }

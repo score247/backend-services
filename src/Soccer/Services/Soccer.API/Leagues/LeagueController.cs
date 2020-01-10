@@ -57,7 +57,7 @@ namespace Soccer.API.Leagues
         [HttpGet, AllowAnonymous]
         [HttpGet]
         [Route("{leagueId}/seasons/{seasonId}/groups")]
-        public async Task<IEnumerable<LeagueGroupState>> GetLeagueGroups(string leagueId, string seasonId, string language = Language.English)
+        public async Task<IEnumerable<LeagueGroupStage>> GetLeagueGroups(string leagueId, string seasonId, string language = Language.English)
             => await mediator.Send(new LeagueGroupsRequest(leagueId, seasonId, language));
     }
 }

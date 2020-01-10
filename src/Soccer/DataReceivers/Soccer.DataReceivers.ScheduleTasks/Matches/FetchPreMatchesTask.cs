@@ -5,9 +5,7 @@ using System.Threading.Tasks;
 using Hangfire;
 using MassTransit;
 using Score247.Shared.Enumerations;
-using Soccer.Core.Leagues.Extensions;
 using Soccer.Core.Leagues.Models;
-using Soccer.Core.Leagues.QueueMessages;
 using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
@@ -86,37 +84,12 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                     majorLeagues?.Any(league => league.Id == match.League.Id) == true)
                 .ToList();
 
-            await PublishPreMatchFetchedMessage(language, batchSize, matches, majorLeagues);
-            await PublishLeagueGroupFetchedMessage(language, matches);
+            await PublishPreMatchFetchedMessage(language, batchSize, matches);
 
             FetchPreMatchLeagueStanding(language, matches);
         }
 
-        private async Task PublishLeagueGroupFetchedMessage(Language language, List<Match> matches)
-        {
-            var matchGroupByStage = matches
-                            .GroupBy(match =>
-                                (match.League.Id, match.LeagueGroupName, match.GroupName, match.LeagueSeason, match.LeagueRound));
-
-            if (matchGroupByStage == null)
-            {
-                return;
-            }
-
-            foreach (var groupStage in matchGroupByStage)
-            {
-                await messageBus.Publish<ILeagueGroupFetchedMessage>(
-                    new LeagueGroupFetchedMessage(
-                        groupStage.Key.Id,
-                        groupStage.Key.LeagueSeason.Id,
-                        groupStage.Key.LeagueGroupName,
-                        groupStage.Key.GroupName,
-                        groupStage.Key.LeagueRound,
-                        language));
-            }
-        }
-
-        private async Task PublishPreMatchFetchedMessage(Language language, int batchSize, ICollection<Match> matches, IEnumerable<League> leagues)
+        private async Task PublishPreMatchFetchedMessage(Language language, int batchSize, ICollection<Match> matches)
         {
             for (var i = 0; i * batchSize < matches.Count; i++)
             {

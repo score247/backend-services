@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FakeItEasy;
 using Hangfire;
@@ -12,6 +13,7 @@ using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.Models;
+using Soccer.DataProviders._Shared.Enumerations;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Matches;
@@ -29,6 +31,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
         private readonly IBus messageBus;
         private readonly IAppSettings appSettings;
         private readonly IBackgroundJobClient jobClient;
+        private readonly Func<DataProviderType, ILeagueService> leagueServiceFactory;
 
         private readonly FetchLeagueMatchesTask fetchLeagueMatchesTask;
 
@@ -39,10 +42,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
             appSettings = Substitute.For<IAppSettings>();
             messageBus = Substitute.For<IBus>();
             jobClient = Substitute.For<IBackgroundJobClient>();
+            leagueServiceFactory = Substitute.For<Func<DataProviderType, ILeagueService>>();
 
             appSettings.ScheduleTasksSettings.Returns(A.Dummy<ScheduleTasksSettings>());
 
-            fetchLeagueMatchesTask = new FetchLeagueMatchesTask(messageBus, appSettings, leagueScheduleService, leagueSeasonService, jobClient);
+            fetchLeagueMatchesTask = new FetchLeagueMatchesTask(messageBus, appSettings, leagueScheduleService, leagueSeasonService, jobClient, leagueServiceFactory);
         }
 
         [Fact]
@@ -177,7 +181,6 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
                .Received(1)
                .Create(Arg.Is<Job>(job => job.Method.Name == nameof(IFetchMatchLineupsTask.FetchMatchLineupsForCLosedMatch)), Arg.Any<ScheduledState>());
         }
-
 
         [Fact]
         public async Task FetchMatchesForLeague_Always_ScheduleTeamResultsTasksForDistinctTeams()

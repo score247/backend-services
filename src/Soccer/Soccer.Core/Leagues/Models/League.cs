@@ -119,12 +119,13 @@ namespace Soccer.Core.Leagues.Models
 
 #pragma warning restore S109 // Magic numbers should not be used
 
-        public void UpdateLeague(string countryCode, bool isInternational, int order, string region)
+        public void UpdateLeague(string countryCode, bool isInternational, int order, string region, bool hasGroups)
         {
             CountryCode = countryCode;
             IsInternational = isInternational;
             Order = order;
             Region = region;
+            HasGroups = hasGroups;
         }
 
         public void UpdateHasGroups(bool hasGroups)

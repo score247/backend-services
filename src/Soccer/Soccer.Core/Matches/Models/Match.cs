@@ -30,6 +30,7 @@
             LeagueSeason leagueSeason,
             string leagueGroupName,
             string groupName) : base(id)
+            LeagueGroupStage leagueGroupStage) : base(id)
         {
             EventDate = eventDate;
             CurrentPeriodStartTime = currentPeriodStartTime;
@@ -47,6 +48,7 @@
             LeagueSeason = leagueSeason;
             LeagueGroupName = leagueGroupName;
             GroupName = groupName;
+            LeagueGroupStage = leagueGroupStage;
         }
 
 #pragma warning restore S107 // Methods should not have too many parameters
@@ -81,8 +83,12 @@
 
         public string LeagueGroupName { get; private set; }
 
+        public LeagueGroupStage LeagueGroupStage { get; private set; }
+
         public string GroupName { get; private set; }
 
         public void SetTimelines(IEnumerable<TimelineEvent> timelineEvents) => TimeLines = timelineEvents;
+
+        public void UpdateLeagueGroupStage(LeagueGroupStage leagueGroupStage) => LeagueGroupStage = leagueGroupStage;
     }
 }

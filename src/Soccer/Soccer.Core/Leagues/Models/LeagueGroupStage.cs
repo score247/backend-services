@@ -4,10 +4,10 @@ using Newtonsoft.Json;
 namespace Soccer.Core.Leagues.Models
 {
     [MessagePackObject(keyAsPropertyName: true)]
-    public class LeagueGroupState
+    public class LeagueGroupStage
     {
         [SerializationConstructor, JsonConstructor]
-        public LeagueGroupState(
+        public LeagueGroupStage(
             string leagueId,
             string leagueSeasonId,
             string groupStageName,
@@ -34,5 +34,23 @@ namespace Soccer.Core.Leagues.Models
         public LeagueRound LeagueRound { get; }
 
         public bool HasStanding { get; }
+
+        public override bool Equals(object obj)
+        {
+            var groupStage = obj as LeagueGroupStage;
+            if (groupStage == null)
+            {
+                return false;
+            }
+
+            return LeagueId == groupStage.LeagueId
+                && LeagueSeasonId == groupStage.LeagueSeasonId
+                && GroupStageName == groupStage.GroupStageName;
+        }
+
+        public override int GetHashCode()
+            => LeagueId.GetHashCode()
+                + LeagueSeasonId.GetHashCode()
+                + GroupStageName.GetHashCode();
     }
 }

@@ -20,15 +20,7 @@ namespace Soccer.EventProcessors.Leagues
         {
             var message = context.Message;
 
-            var leagueGroupState = new LeagueGroupState(
-                message.LeagueId,
-                message.LeagueSeasonId,
-                message.LeagueGroupName,
-                message.GroupName,
-                message.LeagueRound,
-                false);
-
-            var command = new InsertOrUpdateLeagueGroupCommand(leagueGroupState, message.Language);
+            var command = new InsertOrUpdateLeagueGroupCommand(message.LeagueGroupStage, message.Language);
 
             return dynamicRepository.ExecuteAsync(command);
         }

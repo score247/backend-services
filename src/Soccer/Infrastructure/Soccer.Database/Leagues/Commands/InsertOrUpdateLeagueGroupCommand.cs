@@ -5,7 +5,7 @@ namespace Soccer.Database.Leagues.Commands
 {
     public class InsertOrUpdateLeagueGroupCommand : BaseCommand
     {
-        public InsertOrUpdateLeagueGroupCommand(LeagueGroupState leagueGroupState, Language language)
+        public InsertOrUpdateLeagueGroupCommand(LeagueGroupStage leagueGroupState, Language language)
         {
             LeagueId = leagueGroupState.LeagueId;
             LeagueSeasonId = leagueGroupState.LeagueSeasonId;

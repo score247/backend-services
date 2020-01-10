@@ -22,7 +22,7 @@ namespace Soccer.Core.Leagues.Extensions
 
             if (majorLeague != null)
             {
-                league.UpdateLeague(majorLeague.CountryCode, majorLeague.IsInternational, majorLeague.Order, majorLeague.Region);
+                league.UpdateLeague(majorLeague.CountryCode, majorLeague.IsInternational, majorLeague.Order, majorLeague.Region, majorLeague.HasGroups);
             }
         }
 

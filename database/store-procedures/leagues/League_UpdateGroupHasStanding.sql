@@ -12,5 +12,5 @@ BEGIN
         `Value` = JSON_REPLACE(`Value`, '$.HasStanding', 'true')
     WHERE `LeagueId` = leagueId
 		AND `SeasonId` = `LeagueSeasonId`
-        AND SON_SEARCH(leagueGroups,'one', JSON_UNQUOTE(JSON_EXTRACT(`Value`, '$.LeagueRound.Group'))) is not null;
+        AND JSON_SEARCH(leagueGroups,'one', JSON_UNQUOTE(JSON_EXTRACT(`Value`, '$.LeagueRound.Group'))) is not null;
 END

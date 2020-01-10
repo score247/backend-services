@@ -10,6 +10,7 @@ using Soccer.Core.Leagues.QueueMessages;
 using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.DataProviders._Shared.Enumerations;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Matches;
 using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
@@ -31,6 +32,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
         [Queue("low")]
         Task FetchLeagueMatches();
     }
+
     public class FetchLeagueMatchesTask : IFetchLeagueMatchesTask
     {
         private const int BactchOfLeagueSize = 5;
@@ -43,19 +45,22 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
         private readonly ILeagueScheduleService leagueScheduleService;
         private readonly ILeagueSeasonService leagueSeasonService;
         private readonly IBackgroundJobClient jobClient;
+        private readonly ILeagueService internalLeagueService;
 
         public FetchLeagueMatchesTask(
             IBus messageBus,
             IAppSettings appSettings,
             ILeagueScheduleService leagueScheduleService,
             ILeagueSeasonService leagueSeasonService,
-            IBackgroundJobClient jobClient)
+            IBackgroundJobClient jobClient,
+            Func<DataProviderType, ILeagueService> leagueServiceFactory)
         {
             this.appSettings = appSettings;
             this.messageBus = messageBus;
             this.leagueScheduleService = leagueScheduleService;
             this.leagueSeasonService = leagueSeasonService;
             this.jobClient = jobClient;
+            internalLeagueService = leagueServiceFactory(DataProviderType.Internal);
 
             TeamResultsDelayTimespan = TimeSpan.FromMinutes(appSettings.ScheduleTasksSettings.FetchTeamResultsDelayedMinutes);
         }
@@ -84,6 +89,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
                 foreach (var language in Enumeration.GetAll<Language>())
                 {
                     var matches = await leagueScheduleService.GetLeagueMatches(season.Region, season.LeagueId, language);
+
                     await PublishPreMatchesMessage(language, matches);
 
                     if (isScheduleTimelines)
