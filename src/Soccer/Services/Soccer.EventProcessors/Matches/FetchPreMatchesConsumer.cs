@@ -79,6 +79,7 @@ namespace Soccer.EventProcessors.Matches
                 match.League.Id,
                 match.LeagueSeason.Id,
                 match.LeagueGroupName,
+                match.GroupName,
                 match.LeagueRound,
                 hasStanding);
         }

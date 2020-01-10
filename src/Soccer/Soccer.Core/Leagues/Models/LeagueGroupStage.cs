@@ -45,12 +45,14 @@ namespace Soccer.Core.Leagues.Models
 
             return LeagueId == groupStage.LeagueId
                 && LeagueSeasonId == groupStage.LeagueSeasonId
+                && GroupName == groupStage.GroupName
                 && GroupStageName == groupStage.GroupStageName;
         }
 
         public override int GetHashCode()
             => LeagueId.GetHashCode()
                 + LeagueSeasonId.GetHashCode()
+                + GroupName.GetHashCode()
                 + GroupStageName.GetHashCode();
     }
 }

@@ -84,22 +84,23 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                     majorLeagues?.Any(league => league.Id == match.League.Id) == true)
                 .ToList();
 
-            await PublishPreMatchFetchedMessage(language, batchSize, matches);
+            await PublishPreMatchFetchedMessage(language, batchSize, matches, majorLeagues);
 
             FetchPreMatchLeagueStanding(language, matches);
         }
 
-        private async Task PublishPreMatchFetchedMessage(Language language, int batchSize, ICollection<Match> matches)
+        private async Task PublishPreMatchFetchedMessage(Language language, int batchSize, ICollection<Match> matches, IEnumerable<League> leagues)
         {
             for (var i = 0; i * batchSize < matches.Count; i++)
             {
                 var batchOfMatches = matches
                     .Skip(i * batchSize)
                     .Take(batchSize)
-                    .Select(match => {
+                    .Select(match =>
+                    {
                         var league = leagues.FirstOrDefault(league => league.Id == match?.League?.Id);
 
-                        if(league != null)
+                        if (league != null)
                         {
                             match.League.SetAbbreviation(league.Abbreviation);
                         }

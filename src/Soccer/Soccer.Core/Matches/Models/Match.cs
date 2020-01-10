@@ -29,7 +29,7 @@
             Coverage coverage,
             LeagueSeason leagueSeason,
             string leagueGroupName,
-            string groupName) : base(id)
+            string groupName,
             LeagueGroupStage leagueGroupStage) : base(id)
         {
             EventDate = eventDate;

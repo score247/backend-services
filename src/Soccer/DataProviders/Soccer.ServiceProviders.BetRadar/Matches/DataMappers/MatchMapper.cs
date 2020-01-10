@@ -45,7 +45,8 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                     coverage,
                     LeagueMapper.MapLeagueSeason(sportEvent.season),
                     leagueGroupName,
-                    groupName);
+                    groupName,
+                    null);
         }
 
         public static MatchResult MapMatchResult(string status, SportEventStatusDto sportEventStatus = null)
