@@ -99,6 +99,8 @@ namespace Soccer.API
                     ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
                 });
                 SqlMappers.RegisterJsonTypeHandlers();
+
+                app.UsePathBase(Configuration["HostingVirtualPath"]);
             }
             catch (Exception ex)
             {
