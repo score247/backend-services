@@ -112,6 +112,11 @@ namespace Soccer.Core.Leagues.Models
 
         public string Abbreviation { get; private set; }
 
+        public void SetAbbreviation(string abbreviation)
+        {
+            Abbreviation = abbreviation;
+        }
+
 #pragma warning restore S109 // Magic numbers should not be used
 
         public void UpdateLeague(string countryCode, bool isInternational, int order, string region)

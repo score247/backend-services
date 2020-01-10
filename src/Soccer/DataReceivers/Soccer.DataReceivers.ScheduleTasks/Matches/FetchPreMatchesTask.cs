@@ -86,7 +86,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                     majorLeagues?.Any(league => league.Id == match.League.Id) == true)
                 .ToList();
 
-            await PublishPreMatchFetchedMessage(language, batchSize, matches);
+            await PublishPreMatchFetchedMessage(language, batchSize, matches, majorLeagues);
             await PublishLeagueGroupFetchedMessage(language, matches);
 
             FetchPreMatchLeagueStanding(language, matches);
@@ -115,11 +115,24 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             }
         }
 
-        private async Task PublishPreMatchFetchedMessage(Language language, int batchSize, ICollection<Match> matches)
+        private async Task PublishPreMatchFetchedMessage(Language language, int batchSize, ICollection<Match> matches, IEnumerable<League> leagues)
         {
             for (var i = 0; i * batchSize < matches.Count; i++)
             {
-                var batchOfMatches = matches.Skip(i * batchSize).Take(batchSize).ToList();
+                var batchOfMatches = matches
+                    .Skip(i * batchSize)
+                    .Take(batchSize)
+                    .Select(match => {
+                        var league = leagues.FirstOrDefault(league => league.Id == match?.League?.Id);
+
+                        if(league != null)
+                        {
+                            match.League.SetAbbreviation(league.Abbreviation);
+                        }
+
+                        return match;
+                    })
+                    .ToList();
 
                 await messageBus.Publish<IPreMatchesFetchedMessage>(
                     new PreMatchesFetchedMessage(batchOfMatches, language.DisplayName));
