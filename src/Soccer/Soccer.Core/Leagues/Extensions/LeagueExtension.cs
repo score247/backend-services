@@ -148,7 +148,7 @@ namespace Soccer.Core.Leagues.Extensions
 
             if (leagueRound.Type == LeagueRoundType.GroupRound)
             {
-                var convertedGroupName = FormatGroupName(league, leagueRound?.Group);
+                var convertedGroupName = FormatGroupName(league, leagueRound.Group);
 
                 return $"{league.Name}{convertedGroupName}";
             }
