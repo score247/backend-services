@@ -35,7 +35,7 @@ namespace Soccer.Core.Leagues.Extensions
                 return defaultLeagueName;
             }
 
-            var leagueGroupName = CombinePhaseAndRoundName(league, leagueRound);
+            var leagueGroupName = BuildLeagueGroupName(league, leagueRound);
 
             return string.IsNullOrWhiteSpace(league.CountryName)
                 ? $"{leagueGroupName}".TrimStart()
@@ -131,7 +131,7 @@ namespace Soccer.Core.Leagues.Extensions
             return string.Empty;
         }
 
-        private static string CombinePhaseAndRoundName(League league, LeagueRound leagueRound)
+        private static string BuildLeagueGroupName(League league, LeagueRound leagueRound)
         {
             var formatGroupName = BuildPhaseGroupAndRoundName(league, leagueRound);
           
