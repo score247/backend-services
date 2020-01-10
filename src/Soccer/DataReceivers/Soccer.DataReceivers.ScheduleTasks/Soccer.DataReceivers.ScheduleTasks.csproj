@@ -19,7 +19,6 @@
     <None Remove="appsettings.local-dev.json" />
     <None Remove="appsettings.local-dev1.json" />
     <None Remove="appsettings.local-dev2.json" />
-    <None Remove="appsettings.local-main-live.json" />
     <None Remove="appsettings.local-main.json" />
     <None Remove="appsettings.local-test.json" />
     <None Remove="appsettings.local-test1.json" />
@@ -48,9 +47,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="appsettings.local-dev2.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="appsettings.local-main-live.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="appsettings.local-main.json">
