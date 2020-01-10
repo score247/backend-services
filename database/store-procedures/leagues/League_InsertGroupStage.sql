@@ -31,7 +31,7 @@ BEGIN
 		now()
 		)
 	ON DUPLICATE KEY UPDATE
-		`HasStanding` = hasStanding,
-		`Value` = groupStageValue,		
+		`HasStanding` = IF(hasStanding = true,  hasStanding, `HasStanding`),
+		`Value` = IF(hasStanding = true,  groupStageValue, `Value`),
 		`ModifiedTime` = now();
 END
