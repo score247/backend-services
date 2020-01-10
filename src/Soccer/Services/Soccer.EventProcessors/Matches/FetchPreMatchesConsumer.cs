@@ -88,7 +88,7 @@ namespace Soccer.EventProcessors.Matches
         {
             foreach (var leagueGroupStage in leagueGroupStages)
             {
-                await messageBus.Publish<IHeadToHeadFetchedMessage>(
+                await messageBus.Publish<ILeagueGroupFetchedMessage>(
                               new LeagueGroupFetchedMessage(leagueGroupStage, Enumeration.FromDisplayName<Language>(language)));
             }
         }
