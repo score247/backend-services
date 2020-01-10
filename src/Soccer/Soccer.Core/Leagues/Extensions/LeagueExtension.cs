@@ -133,27 +133,34 @@ namespace Soccer.Core.Leagues.Extensions
 
         private static string CombinePhaseAndRoundName(League league, LeagueRound leagueRound)
         {
+            var formatGroupName = BuildPhaseGroupAndRoundName(league, leagueRound);
+          
+            return string.IsNullOrWhiteSpace(formatGroupName) 
+                ? league.Name 
+                : $"{league.Name}{termsplit} {formatGroupName}";
+        }
+
+        public static string BuildPhaseGroupAndRoundName(this League league, LeagueRound leagueRound) 
+        {
             if (leagueRound == null)
             {
-                return league.Name;
+                return string.Empty;
             }
 
             if (leagueRound.Type == LeagueRoundType.CupRound
-                    || leagueRound.Type == LeagueRoundType.QualifierRound)
+                        || leagueRound.Type == LeagueRoundType.QualifierRound)
             {
                 var formatPhase = FormatPhaseNotPlayOffs(leagueRound);
 
-                return $"{league.Name}{termsplit} {formatPhase}{leagueRound.Name?.Replace(underscore, space)}";
+                return $"{formatPhase}{leagueRound.Name?.Replace(underscore, space)}";
             }
 
             if (leagueRound.Type == LeagueRoundType.GroupRound)
             {
-                var convertedGroupName = FormatGroupName(league, leagueRound.Group);
-
-                return $"{league.Name}{convertedGroupName}";
+                return FormatGroupName(league, leagueRound.Group);
             }
 
-            return league.Name;
+            return string.Empty;
         }
 
         private static string FormatPhaseNotPlayOffs(LeagueRound leagueRound)
@@ -175,7 +182,7 @@ namespace Soccer.Core.Leagues.Extensions
             // Should multiple languages here
             convertedGroupName = string.IsNullOrWhiteSpace(convertedGroupName) || (league.Name.IndexOf($"{space}{groupName}", StringComparison.OrdinalIgnoreCase) >= 0)
                 ? string.Empty
-                : $"{termsplit} Group {convertedGroupName}";
+                : $"Group {convertedGroupName}";
 
             return convertedGroupName;
         }

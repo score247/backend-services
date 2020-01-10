@@ -28,7 +28,8 @@
             string region,
             Coverage coverage,
             LeagueSeason leagueSeason,
-            string leagueGroupName) : base(id)
+            string leagueGroupName,
+            string groupName) : base(id)
         {
             EventDate = eventDate;
             CurrentPeriodStartTime = currentPeriodStartTime;
@@ -45,6 +46,7 @@
             Coverage = coverage;
             LeagueSeason = leagueSeason;
             LeagueGroupName = leagueGroupName;
+            GroupName = groupName;
         }
 
 #pragma warning restore S107 // Methods should not have too many parameters
@@ -78,6 +80,8 @@
         public LeagueSeason LeagueSeason { get; private set; }
 
         public string LeagueGroupName { get; private set; }
+
+        public string GroupName { get; private set; }
 
         public void SetTimelines(IEnumerable<TimelineEvent> timelineEvents) => TimeLines = timelineEvents;
     }

@@ -37,18 +37,19 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
             }
 
             var league = new League(
-                tournament.id,
-                tournament.name, 
-                0,
-                tournament.category?.id,
-                tournament.category?.name, 
-                tournament.category?.country_code ?? string.Empty,
-                isInternationalLeague,
-                region,
-                tournament.current_season?.id ?? string.Empty,
-                leagueSeasonDates,
-                false,
-                string.Empty).MapCountryAndLeagueName();
+                    tournament.id,
+                    tournament.name, 
+                    0,
+                    tournament.category?.id,
+                    tournament.category?.name, 
+                    tournament.category?.country_code ?? string.Empty,
+                    isInternationalLeague,
+                    region,
+                    tournament.current_season?.id ?? string.Empty,
+                    leagueSeasonDates,
+                    false,
+                    string.Empty)
+                .MapCountryAndLeagueName();
           
             return league;
         }

@@ -26,6 +26,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
             var league = LeagueMapper.MapLeague(sportEvent.tournament, region);
             var leagueRound = LeagueMapper.MapLeagueRound(sportEvent.tournament_round);
             var leagueGroupName = league.MapLeagueGroupName(leagueRound, language);
+            var groupName = league.BuildPhaseGroupAndRoundName(leagueRound);
 
             return new Match(
                     sportEvent.id,
@@ -43,7 +44,8 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                     region,
                     coverage,
                     LeagueMapper.MapLeagueSeason(sportEvent.season),
-                    leagueGroupName);
+                    leagueGroupName,
+                    groupName);
         }
 
         public static MatchResult MapMatchResult(string status, SportEventStatusDto sportEventStatus = null)
