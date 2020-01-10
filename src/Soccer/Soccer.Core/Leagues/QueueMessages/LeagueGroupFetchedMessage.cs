@@ -11,6 +11,8 @@ namespace Soccer.Core.Leagues.QueueMessages
 
         string LeagueGroupName { get; }
 
+        string GroupName { get; }
+
         LeagueRound LeagueRound { get; }
 
         Language Language { get; }
@@ -18,11 +20,12 @@ namespace Soccer.Core.Leagues.QueueMessages
 
     public class LeagueGroupFetchedMessage : ILeagueGroupFetchedMessage
     {
-        public LeagueGroupFetchedMessage(string leagueId, string leagueSeasonId, string leagueGroupName, LeagueRound leagueRound, Language language)
+        public LeagueGroupFetchedMessage(string leagueId, string leagueSeasonId, string leagueGroupName, string groupName, LeagueRound leagueRound, Language language)
         {
             LeagueId = leagueId;
             LeagueSeasonId = leagueSeasonId;
             LeagueGroupName = leagueGroupName;
+            GroupName = groupName;
             LeagueRound = leagueRound;
             Language = language;
         }
@@ -32,6 +35,8 @@ namespace Soccer.Core.Leagues.QueueMessages
         public string LeagueSeasonId { get; }
 
         public string LeagueGroupName { get; }
+
+        public string GroupName { get; }
 
         public LeagueRound LeagueRound { get; }
 

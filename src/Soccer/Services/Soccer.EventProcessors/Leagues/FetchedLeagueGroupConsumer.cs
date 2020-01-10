@@ -24,6 +24,7 @@ namespace Soccer.EventProcessors.Leagues
                 message.LeagueId,
                 message.LeagueSeasonId,
                 message.LeagueGroupName,
+                message.GroupName,
                 message.LeagueRound,
                 false);
 
