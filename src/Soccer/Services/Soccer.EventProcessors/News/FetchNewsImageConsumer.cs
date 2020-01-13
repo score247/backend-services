@@ -18,7 +18,7 @@ namespace Soccer.EventProcessors.News
 
         public async Task Consume(ConsumeContext<INewsImageFetchedMessage> context)
         {
-            if (string.IsNullOrWhiteSpace(context?.Message?.ImageName) || string.IsNullOrWhiteSpace(context?.Message?.ImageContent))
+            if (string.IsNullOrWhiteSpace(context?.Message?.ImageName) || context?.Message?.ImageContent != null)
             {
                 return;
             }

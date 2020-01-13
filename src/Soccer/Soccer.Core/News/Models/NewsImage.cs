@@ -2,13 +2,14 @@
 {
     public class NewsImage
     {
-        public NewsImage(string name, string content)
+        public NewsImage(string name, byte[] content)
         {
             Name = name;
             Content = content;
         }
 
         public string Name { get; }
-        public string Content { get; }
+
+        public byte[] Content { get; }
     }
 }
