@@ -201,8 +201,7 @@ CREATE TABLE `LeagueGroupStage` (
 ) ENGINE=InnoDB AUTO_INCREMENT=128 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS `News`;
-CREATE TABLE `News` (
-  `Id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `News` (  
   `Title` varchar(500) COLLATE utf8mb4_unicode_ci NOT NULL,
   `SportId` int(11) NOT NULL,
   `Language` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -212,8 +211,7 @@ CREATE TABLE `News` (
   `PublishedDate` timestamp NOT NULL,
   `CreatedTime` timestamp NOT NULL,
   `ModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`Id`,`Link`),
-  UNIQUE KEY `Id_UNIQUE` (`Id`)
+  PRIMARY KEY (`Link`,`Language`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
