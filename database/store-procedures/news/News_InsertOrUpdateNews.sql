@@ -17,14 +17,14 @@ BEGIN
 			JSON_UNQUOTE(JSON_EXTRACT(news, CONCAT('$[', i, '].ImageSource'))),
 			JSON_UNQUOTE(JSON_EXTRACT(news, CONCAT('$[', i, '].Link'))),
             JSON_UNQUOTE(JSON_EXTRACT(news, CONCAT('$[', i, '].Author'))),
-            STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(news, CONCAT('$[', i, '].PublishedDate'))),'%Y-%m-%dT%H:%i:%s+00:00'),
+            STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(news, CONCAT('$[', i, '].PublishedDate'))),'%Y-%m-%dT%H:%i:%sZ'),
             now())
 		ON DUPLICATE KEY UPDATE
             Title = JSON_UNQUOTE(JSON_EXTRACT(news, CONCAT('$[', i, '].Title'))),
             Content = JSON_UNQUOTE(JSON_EXTRACT(news, CONCAT('$[', i, '].Content'))),
             ImageSource = JSON_UNQUOTE(JSON_EXTRACT(news, CONCAT('$[', i, '].ImageSource'))),
             Author = JSON_UNQUOTE(JSON_EXTRACT(news, CONCAT('$[', i, '].Author'))),
-            PublishedDate = STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(news, CONCAT('$[', i, '].PublishedDate'))),'%Y-%m-%dT%H:%i:%s+00:00');
+            PublishedDate = STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(news, CONCAT('$[', i, '].PublishedDate'))),'%Y-%m-%dT%H:%i:%sZ');
         -- Increment the loop variable                                                                                                                                                        
         SET i = i + 1;
     END WHILE;
