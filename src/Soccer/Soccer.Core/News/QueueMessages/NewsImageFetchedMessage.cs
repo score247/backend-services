@@ -4,12 +4,12 @@
     {
         string ImageName { get; }
 
-        byte[] ImageContent { get; }
+        string ImageContent { get; }
     }
 
     public class NewsImageFetchedMessage : INewsImageFetchedMessage
     {
-        public NewsImageFetchedMessage(string imageName, byte[] imageContent) 
+        public NewsImageFetchedMessage(string imageName, string imageContent) 
         {
             ImageName = imageName;
             ImageContent = imageContent;
@@ -17,6 +17,6 @@
 
         public string ImageName { get; }
 
-        public byte[] ImageContent { get; }
+        public string ImageContent { get; }
     }
 }
