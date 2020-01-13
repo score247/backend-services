@@ -215,6 +215,16 @@ CREATE TABLE `News` (
   PRIMARY KEY (`Language`,`Link`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `NewsImage`;
+CREATE TABLE `NewsImage` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `SportId` int(11) NOT NULL,
+  `Name` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Content` mediumblob NOT NULL,
+  `CreatedTime` timestamp NOT NULL,
+  `ModifiedTime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 

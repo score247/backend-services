@@ -1,6 +1,6 @@
 DROP procedure IF EXISTS `News_InsertOrUpdateImage`;
 
-CREATE DEFINER=`user`@`%` PROCEDURE `News_InsertOrUpdateImage`(IN sportId INT, IN ImageName VARCHAR(250), IN ImageContent BLOB)
+CREATE DEFINER=`user`@`%` PROCEDURE `News_InsertOrUpdateImage`(IN sportId INT, IN ImageName VARCHAR(250), IN ImageContent MEDIUMBLOB)
 BEGIN
 	INSERT INTO `NewsImage`
 		(`SportId`,
