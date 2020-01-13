@@ -84,7 +84,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
 
             await fetchLiveMatchesTimelineTask.FetchLiveMatchesTimeline();
 
-            await fetchTimelineTask.DidNotReceive().FetchTimelines(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Language>());
+            await fetchTimelineTask.DidNotReceive().FetchTimelineEvents(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Language>());
         }
 
         [Fact]
@@ -102,7 +102,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
 
             await fetchLiveMatchesTimelineTask.FetchLiveMatchesTimeline();
 
-            await fetchTimelineTask.Received(1).FetchTimelines(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Language>());
+            await fetchTimelineTask.Received(1).FetchTimelineEvents(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Language>());
         }
 
         [Fact]

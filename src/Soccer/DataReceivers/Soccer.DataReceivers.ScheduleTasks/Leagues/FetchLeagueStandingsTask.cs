@@ -20,7 +20,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 
         [AutomaticRetry(Attempts = 1)]
         [Queue("medium")]
-        void FetchClosedMatchesStanding(IEnumerable<Match> closedMatches, Language language);
+        void FetchClosedMatchesStanding(IList<Match> closedMatches, Language language);
 
         [Queue("medium")]
         Task FetchLeagueStandings();
@@ -31,7 +31,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
         private readonly TimeSpan ReUpdateLeagueStandingTimeSpan = new TimeSpan(0, 10, 0);
         private readonly IBus messageBus;
         private readonly Func<DataProviderType, ILeagueService> leagueServiceFactory;
-        private readonly ILeagueService sportradarLeagueService;
+        private readonly ILeagueService sportRadarLeagueService;
         private readonly IBackgroundJobClient jobClient;
 
         public FetchLeagueStandingsTask(
@@ -41,14 +41,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
         {
             this.messageBus = messageBus;
             this.leagueServiceFactory = leagueServiceFactory;
-            sportradarLeagueService = leagueServiceFactory(DataProviderType.SportRadar);
+            sportRadarLeagueService = leagueServiceFactory(DataProviderType.SportRadar);
 
             this.jobClient = jobClient;
         }
 
-        public void FetchClosedMatchesStanding(IEnumerable<Match> closedMatches, Language language)
+        public void FetchClosedMatchesStanding(IList<Match> closedMatches, Language language)
         {
-            if (!closedMatches.Any())
+            if (closedMatches.Count == 0)
             {
                 return;
             }
@@ -67,7 +67,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 
         public async Task FetchLeagueStandings(string leagueId, string region, Language language, bool getLiveDataFirst)
         {
-            var leagueTables = await sportradarLeagueService.GetLeagueStandings(leagueId, language, region, getLiveDataFirst);
+            var leagueTables = await sportRadarLeagueService.GetLeagueStandings(leagueId, language, region, getLiveDataFirst);
 
             foreach (var leagueTable in leagueTables)
             {
@@ -78,9 +78,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 
         public async Task FetchLeagueStandings()
         {
-            var leagues = await leagueServiceFactory(DataProviderType.Internal).GetLeagues(Language.en_US);
+            var leagues = (await leagueServiceFactory(DataProviderType.Internal).GetLeagues(Language.en_US))?.ToList();
 
-            if (leagues != null && leagues.Any())
+            if (leagues?.Any() == true)
             {
                 foreach (var league in leagues)
                 {

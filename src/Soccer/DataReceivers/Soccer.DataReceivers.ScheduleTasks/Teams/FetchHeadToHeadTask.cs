@@ -55,7 +55,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
         {
             foreach (var match in matches)
             {
-                (var homeTeamId, var awayTeamId) = GenerateTeamId(match);
+                var (homeTeamId, awayTeamId) = GenerateTeamId(match);
 
                 BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
                     t.FetchTeamResults(homeTeamId, language));
@@ -105,7 +105,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Teams
         {
             foreach (var match in matches)
             {
-                (var homeTeamId, var awayTeamId) = GenerateTeamId(match);
+                var (homeTeamId, awayTeamId) = GenerateTeamId(match);
 
                 BackgroundJob.Enqueue<IFetchHeadToHeadsTask>(t =>
                     t.FetchHeadToHeads(homeTeamId, awayTeamId, language));

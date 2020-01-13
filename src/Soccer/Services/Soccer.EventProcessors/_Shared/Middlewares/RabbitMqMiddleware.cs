@@ -55,7 +55,7 @@
                 serviceCollectionConfigurator.AddConsumer<FetchLeaguesSeasonConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchLeagueStandingConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchedLeagueMatchesConsumer>();
-                serviceCollectionConfigurator.AddConsumer<RemoveTimelinesConsumer>();
+                serviceCollectionConfigurator.AddConsumer<RemoveTimelineEventsConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchedLeagueGroupConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchNewsConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchNewsImageConsumer>();
@@ -214,7 +214,7 @@
                     e.PrefetchCount = PrefetchCount;
                     e.UseMessageRetry(RetryAndLogError(services));
 
-                    e.Consumer<RemoveTimelinesConsumer>(provider);
+                    e.Consumer<RemoveTimelineEventsConsumer>(provider);
                 });
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_News", e =>

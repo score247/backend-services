@@ -47,7 +47,7 @@ namespace Soccer.DataProviders.EyeFootball.News.Services
                                         .Feed
                                         .Items;
 
-                    return feedItems.Select(item => NewsMapper.MapNewsFeed(item)).ToList();
+                    return feedItems.Select(NewsMapper.MapNewsFeed).ToList();
                 }
             });
         }

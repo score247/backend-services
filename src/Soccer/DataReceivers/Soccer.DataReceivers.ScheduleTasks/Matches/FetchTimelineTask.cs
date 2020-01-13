@@ -19,15 +19,15 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
     {
         [AutomaticRetry(Attempts = 1)]
         [Queue("mediumlive")]
-        Task FetchTimelines(IEnumerable<Match> matches, Language language);
+        Task FetchTimelineEvents(IEnumerable<Match> matches, Language language);
 
         [AutomaticRetry(Attempts = 1)]
         [Queue("mediumlive")]
-        Task FetchTimelines(string matchId, string region, Language language);
+        Task FetchTimelineEvents(string matchId, string region, Language language);
 
         [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
-        Task FetchTimelinesForClosedMatch(IEnumerable<Match> matches, Language language);
+        Task FetchTimelineEventsForClosedMatch(IEnumerable<Match> matches, Language language);
 
         [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
@@ -51,20 +51,20 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             this.jobClient = jobClient;
         }
 
-        public Task FetchTimelinesForClosedMatch(IEnumerable<Match> matches, Language language)
-        => FetchTimelines(matches, language);
+        public Task FetchTimelineEventsForClosedMatch(IEnumerable<Match> matches, Language language)
+            => FetchTimelineEvents(matches, language);
 
-        public async Task FetchTimelines(IEnumerable<Match> matches, Language language)
+        public async Task FetchTimelineEvents(IEnumerable<Match> matches, Language language)
         {
             foreach (var match in matches)
             {
-                await FetchTimelines(match.Id, match.Region, language);
+                await FetchTimelineEvents(match.Id, match.Region, language);
             }
         }
 
-        public async Task FetchTimelines(string matchId, string region, Language language)
+        public async Task FetchTimelineEvents(string matchId, string region, Language language)
         {
-            var matchCommentaries = await timelineService.GetTimelines(matchId, region, language);
+            var matchCommentaries = await timelineService.GetTimelineEvents(matchId, region, language);
             var match = matchCommentaries?.Item1;
             var commentaries = matchCommentaries?.Item2;
 
@@ -73,9 +73,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                 return;
             }
 
-            await PubishMatchCondition(matchId, language, match);
+            await PublishMatchCondition(matchId, language, match);
 
-            await PublishMatchTimelines(language, match);
+            await PublishMatchTimelineEvents(language, match);
 
             await PublishMatchCommentaries(matchId, language, match, commentaries);
 
@@ -84,7 +84,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             PublishMatchStatistic(matchId, match);
         }
 
-        private async Task PubishMatchCondition(string matchId, Language language, Match match)
+        private async Task PublishMatchCondition(string matchId, Language language, Match match)
         {
             if (!string.IsNullOrWhiteSpace(match.Referee) || match.Attendance > 0)
             {
@@ -115,9 +115,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                                     false,
                                     eventDate));
 
-        private async Task PublishMatchTimelines(Language language, Match match)
+        private async Task PublishMatchTimelineEvents(Language language, Match match)
         {
-            if (match.TimeLines != null && match.TimeLines.Any())
+            if (match.TimeLines?.Any() == true)
             {
                 await messageBus.Publish<IMatchTimelinesFetchedMessage>(new MatchTimelinesFetchedMessage(
                     match,
@@ -130,7 +130,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             if (commentaries != null)
             {
                 foreach (var commentary in from commentary in commentaries
-                                           where commentary.Commentaries.Any()
+                                           where commentary.Commentaries.Count > 0
                                            select commentary)
                 {
                     await messageBus.Publish<IMatchCommentaryFetchedMessage>(

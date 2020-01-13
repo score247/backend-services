@@ -1,18 +1,18 @@
-﻿namespace Soccer.DataProviders.SportRadar.Matches.Services
-{
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Net;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Fanex.Logging;
-    using Soccer.Core.Matches.Models;
-    using Soccer.DataProviders.Matches.Services;
-    using Soccer.DataProviders.SportRadar.Matches.DataMappers;
-    using Soccer.DataProviders.SportRadar.Shared.Configurations;
-    using Soccer.DataProviders.SportRadar.Shared.Extensions;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using Fanex.Logging;
+using Soccer.Core.Matches.Models;
+using Soccer.DataProviders.Matches.Services;
+using Soccer.DataProviders.SportRadar.Matches.DataMappers;
+using Soccer.DataProviders.SportRadar.Shared.Configurations;
+using Soccer.DataProviders.SportRadar.Shared.Extensions;
 
+namespace Soccer.DataProviders.SportRadar.Matches.Services
+{
     public class MatchEventListenerService : IMatchEventListenerService
     {
         private const int MillisecondsTimeout = 10 * 1000;
@@ -53,7 +53,7 @@
                 retryCount++;
 #pragma warning restore S2696 // Instance members should not write to "static" fields
                 cancellationToken.Register(() => logger.Error($"Region {Name} task was cancelled at {DateTime.Now}"));
-                await Task.Delay(TimeDelayForStartingOtherEventListener);
+                await Task.Delay(TimeDelayForStartingOtherEventListener, cancellationToken);
                 await ListeningEventForRegion(region.Name, region.PushKey, handler, cancellationToken);
             }
             catch (AggregateException ex)

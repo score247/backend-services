@@ -32,14 +32,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
         public async Task FetchPreMatchTimeline(IList<Match> matches)
         {
-            if (matches == null || !matches.Any())
+            if (matches?.Any() != true)
             {
                 return;
             }
 
             foreach (var match in matches)
             {
-                var matchCommentaries = await timelineService.GetTimelines(match.Id, match.Region, Language.en_US);
+                var matchCommentaries = await timelineService.GetTimelineEvents(match.Id, match.Region, Language.en_US);
 
                 if (matchCommentaries?.Item1?.Teams == null || matchCommentaries.Item1?.Coverage == null)
                 {

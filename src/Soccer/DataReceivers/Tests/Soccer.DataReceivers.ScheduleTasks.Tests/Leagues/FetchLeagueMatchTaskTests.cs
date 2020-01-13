@@ -31,7 +31,6 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
         private readonly IBus messageBus;
         private readonly IAppSettings appSettings;
         private readonly IBackgroundJobClient jobClient;
-        private readonly Func<DataProviderType, ILeagueService> leagueServiceFactory;
 
         private readonly FetchLeagueMatchesTask fetchLeagueMatchesTask;
 
@@ -42,11 +41,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
             appSettings = Substitute.For<IAppSettings>();
             messageBus = Substitute.For<IBus>();
             jobClient = Substitute.For<IBackgroundJobClient>();
-            leagueServiceFactory = Substitute.For<Func<DataProviderType, ILeagueService>>();
 
             appSettings.ScheduleTasksSettings.Returns(A.Dummy<ScheduleTasksSettings>());
 
-            fetchLeagueMatchesTask = new FetchLeagueMatchesTask(messageBus, appSettings, leagueScheduleService, leagueSeasonService, jobClient, leagueServiceFactory);
+            fetchLeagueMatchesTask = new FetchLeagueMatchesTask(messageBus, appSettings, leagueScheduleService, leagueSeasonService, jobClient);
         }
 
         [Fact]
@@ -55,7 +53,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
             // Arrange
 
             // Act
-            await fetchLeagueMatchesTask.FetchLeagueMatchesAndTimelines();
+            await fetchLeagueMatchesTask.FetchLeagueMatchesAndTimelineEvents();
 
             // Assert
             leagueSeasonService.Received(1).GetUnprocessedLeagueSeason();
@@ -69,7 +67,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
             leagueSeasonService.GetUnprocessedLeagueSeason().Returns(unprocessedLeagues);
 
             // Act
-            await fetchLeagueMatchesTask.FetchLeagueMatchesAndTimelines();
+            await fetchLeagueMatchesTask.FetchLeagueMatchesAndTimelineEvents();
 
             // Assert
             jobClient.DidNotReceive().Enqueue<IFetchLeagueMatchesTask>(t => t.FetchMatchesForLeague(unprocessedLeagues, true));
@@ -83,7 +81,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
             leagueSeasonService.GetUnprocessedLeagueSeason().Returns(unprocessedLeagues);
 
             // Act
-            await fetchLeagueMatchesTask.FetchLeagueMatchesAndTimelines();
+            await fetchLeagueMatchesTask.FetchLeagueMatchesAndTimelineEvents();
 
             // Assert
             jobClient.Received(1).Create(Arg.Any<Job>(), Arg.Any<EnqueuedState>());
@@ -97,7 +95,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
             leagueSeasonService.GetUnprocessedLeagueSeason().Returns(unprocessedLeagues);
 
             // Act
-            await fetchLeagueMatchesTask.FetchLeagueMatchesAndTimelines();
+            await fetchLeagueMatchesTask.FetchLeagueMatchesAndTimelineEvents();
 
             // Assert
             jobClient.Received(2).Create(Arg.Any<Job>(), Arg.Any<EnqueuedState>());
@@ -175,11 +173,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
             // Assert
             jobClient
                 .Received(1)
-                .Create(Arg.Is<Job>(job => job.Method.Name == nameof(IFetchTimelineTask.FetchTimelinesForClosedMatch)), Arg.Any<ScheduledState>());
+                .Create(Arg.Is<Job>(job => job.Method.Name == nameof(IFetchTimelineTask.FetchTimelineEventsForClosedMatch)), Arg.Any<ScheduledState>());
 
             jobClient
                .Received(1)
-               .Create(Arg.Is<Job>(job => job.Method.Name == nameof(IFetchMatchLineupsTask.FetchMatchLineupsForCLosedMatch)), Arg.Any<ScheduledState>());
+               .Create(Arg.Is<Job>(job => job.Method.Name == nameof(IFetchMatchLineupsTask.FetchMatchLineupsForClosedMatch)), Arg.Any<ScheduledState>());
         }
 
         [Fact]

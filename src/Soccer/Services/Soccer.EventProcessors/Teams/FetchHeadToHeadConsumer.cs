@@ -31,7 +31,7 @@ namespace Soccer.EventProcessors.Teams
         {
             var message = context?.Message;
 
-            if (message?.Match != null && message?.Match.EventDate >= DateTime.Now.AddYears(-appSettings.HeadToHeadIntervalInYears))
+            if (message?.Match != null && message.Match.EventDate >= DateTime.Now.AddYears(-appSettings.HeadToHeadIntervalInYears))
             {
                 var majorLeagues = await leagueService.GetMajorLeagues();
                 message.Match.League.UpdateMajorLeagueInfo(majorLeagues);

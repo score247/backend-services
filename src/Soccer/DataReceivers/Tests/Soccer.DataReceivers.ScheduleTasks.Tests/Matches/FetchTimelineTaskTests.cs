@@ -45,7 +45,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             // Arrange
 
             // Act
-            await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
+            await fetchTimelineTask.FetchTimelineEvents("sr:match", "eu", Language.en_US);
 
             // Assert
             await messageBus.DidNotReceive().Publish<IMatchUpdatedConditionsMessage>(Arg.Any<MatchUpdatedConditionsMessage>());
@@ -60,11 +60,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 .With(m => m.Referee, "AAA")
                 .With(m => m.League, WorldCupLeague);
 
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+            timelineService.GetTimelineEvents("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
-            await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
+            await fetchTimelineTask.FetchTimelineEvents("sr:match", "eu", Language.en_US);
 
             // Assert
             await messageBus.Received(1).Publish<IMatchUpdatedConditionsMessage>(Arg.Is<MatchUpdatedConditionsMessage>(m => m.Referee == "AAA"));
@@ -77,11 +77,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
             var match = A.Dummy<Match>()
                 .With(m => m.Attendance, 10000)
                 .With(m => m.League, WorldCupLeague);
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+            timelineService.GetTimelineEvents("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
-            await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
+            await fetchTimelineTask.FetchTimelineEvents("sr:match", "eu", Language.en_US);
 
             // Assert
             await messageBus.Received(1).Publish<IMatchUpdatedConditionsMessage>(Arg.Is<MatchUpdatedConditionsMessage>(m => m.Attendance == 10000));
@@ -97,11 +97,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 .With(m => m.Referee, "AAA")
                 .With(m => m.League, WorldCupLeague);
 
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+            timelineService.GetTimelineEvents("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
-            await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
+            await fetchTimelineTask.FetchTimelineEvents("sr:match", "eu", Language.en_US);
 
             // Assert
             await messageBus.Received(1).Publish<IMatchUpdatedConditionsMessage>(Arg.Is<MatchUpdatedConditionsMessage>(
@@ -117,11 +117,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 .With(m => m.Referee, null)
                 .With(m => m.Attendance, 0)
                 .With(m => m.League, WorldCupLeague);
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+            timelineService.GetTimelineEvents("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
-            await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
+            await fetchTimelineTask.FetchTimelineEvents("sr:match", "eu", Language.en_US);
 
             // Assert
             await messageBus.DidNotReceive().Publish<IMatchUpdatedConditionsMessage>(Arg.Any<MatchUpdatedConditionsMessage>());
@@ -144,11 +144,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                         .With(t => t.IsHome, false)
                         .With(t => t.Statistic, null),
                 });
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+            timelineService.GetTimelineEvents("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
-            await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
+            await fetchTimelineTask.FetchTimelineEvents("sr:match", "eu", Language.en_US);
 
             // Assert
             await messageBus.DidNotReceive().Publish<ITeamStatisticUpdatedMessage>(Arg.Any<TeamStatisticUpdatedMessage>());
@@ -228,11 +228,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 })
                 .With(m => m.TimeLines, null);
 
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+            timelineService.GetTimelineEvents("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
-            await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
+            await fetchTimelineTask.FetchTimelineEvents("sr:match", "eu", Language.en_US);
 
             // Assert
             await messageBus.DidNotReceive().Publish<IMatchTimelinesFetchedMessage>(Arg.Any<MatchTimelinesFetchedMessage>());
@@ -257,11 +257,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 })
                 .With(m => m.TimeLines, new List<TimelineEvent>());
 
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+            timelineService.GetTimelineEvents("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
-            await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
+            await fetchTimelineTask.FetchTimelineEvents("sr:match", "eu", Language.en_US);
 
             // Assert
             await messageBus.DidNotReceive().Publish<IMatchTimelinesFetchedMessage>(Arg.Any<MatchTimelinesFetchedMessage>());
@@ -289,11 +289,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                     A.Dummy<TimelineEvent>().With(t => t.Type, EventType.MatchStarted)
                 });
 
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+            timelineService.GetTimelineEvents("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
-            await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
+            await fetchTimelineTask.FetchTimelineEvents("sr:match", "eu", Language.en_US);
 
             // Assert
             await messageBus.Received(1).Publish<IMatchTimelinesFetchedMessage>(Arg.Any<MatchTimelinesFetchedMessage>());
@@ -316,11 +316,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                         .With(t => t.IsHome, false)
                         .With(t => t.Statistic, new TeamStatistic(0, 0, 1)),
                 });
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+            timelineService.GetTimelineEvents("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
-            await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
+            await fetchTimelineTask.FetchTimelineEvents("sr:match", "eu", Language.en_US);
 
             // Assert
             await messageBus.DidNotReceive().Publish<IMatchCommentaryFetchedMessage>(Arg.Any<MatchCommentaryFetchedMessage>());
@@ -349,11 +349,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                         .With(t => t.Type, EventType.MatchStarted)
                         .With(t => t.Commentaries, new List<Commentary>())
                 });
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+            timelineService.GetTimelineEvents("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, Enumerable.Empty<TimelineCommentary>()));
 
             // Act
-            await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
+            await fetchTimelineTask.FetchTimelineEvents("sr:match", "eu", Language.en_US);
 
             // Assert
             await messageBus.DidNotReceive().Publish<IMatchCommentaryFetchedMessage>(Arg.Any<MatchCommentaryFetchedMessage>());
@@ -396,11 +396,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                         new Commentary("Carmelo Valencia with an assist there.")
                     })};
 
-            timelineService.GetTimelines("sr:match", "eu", Language.en_US)
+            timelineService.GetTimelineEvents("sr:match", "eu", Language.en_US)
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(match, commentaries));
 
             // Act
-            await fetchTimelineTask.FetchTimelines("sr:match", "eu", Language.en_US);
+            await fetchTimelineTask.FetchTimelineEvents("sr:match", "eu", Language.en_US);
 
             // Assert
             await messageBus.Received(2).Publish<IMatchCommentaryFetchedMessage>(Arg.Any<MatchCommentaryFetchedMessage>());

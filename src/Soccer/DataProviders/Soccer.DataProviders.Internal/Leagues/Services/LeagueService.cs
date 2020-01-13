@@ -59,7 +59,7 @@ namespace Soccer.DataProviders.Internal.Leagues.Services
                     return cachedMajorLeagues;
                 }
 
-                var majorLeagues = await leagueApi.GetMajorLeagues(language.DisplayName);
+                var majorLeagues = (await leagueApi.GetMajorLeagues(language.DisplayName)).ToList();
 
                 await leagueCache.SetMajorLeagues(majorLeagues);
 

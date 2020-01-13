@@ -29,12 +29,8 @@ namespace Soccer.DataProviders.Internal.Share.Helpers
             ICryptographyHelper cryptographyHelper,
             string encryptKey)
         {
-            if (getToken == null)
-            {
-                throw new ArgumentNullException(nameof(getToken));
-            }
             this.cryptographyHelper = cryptographyHelper;
-            this.getToken = getToken;
+            this.getToken = getToken ?? throw new ArgumentNullException(nameof(getToken));
             this.encryptKey = encryptKey;
         }
 

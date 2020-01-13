@@ -12,13 +12,13 @@ using Soccer.EventProcessors.Shared.Configurations;
 
 namespace Soccer.EventProcessors.Timeline
 {
-    public class RemoveTimelinesConsumer : IConsumer<IMatchTimelinesConfirmedMessage>
+    public class RemoveTimelineEventsConsumer : IConsumer<IMatchTimelinesConfirmedMessage>
     {
         private readonly IDynamicRepository dynamicRepository;
         private readonly IBus messageBus;
         private readonly IAppSettings appSettings;
 
-        public RemoveTimelinesConsumer(
+        public RemoveTimelineEventsConsumer(
             IDynamicRepository dynamicRepository,
             IBus messageBus,
             IAppSettings appSettings)
@@ -37,36 +37,36 @@ namespace Soccer.EventProcessors.Timeline
                 return;
             }
 
-            var currentTimelines = await GetCurrentTimelines(context.Message);
+            var currentTimelineEvents = (await GetCurrentTimelineEvents(context.Message))?.ToList();
 
-            if (currentTimelines?.Any() == false)
+            if (currentTimelineEvents?.Any() == false)
             {
                 return;
             }
 
-            var removedTimelines = currentTimelines.Except(context.Message.Timelines);
+            var removedTimelineEvents = (currentTimelineEvents.Except(context.Message.Timelines)).ToList();
 
-            if (removedTimelines.Any())
+            if (removedTimelineEvents.Any())
             {
                 await dynamicRepository.ExecuteAsync(new RemoveTimelineCommand(
                     context.Message.MatchId,
-                    removedTimelines.ToList()));
+                    removedTimelineEvents.ToList()));
 
                 await messageBus.Publish<IMatchTimelinesRemovedMessage>(new MatchTimelinesRemovedMessage(
                     context.Message.MatchId,
-                    removedTimelines.Select(timeline => timeline.Id).ToArray()));
+                    removedTimelineEvents.Select(timeline => timeline.Id).ToArray()));
             }
         }
 
-        private async Task<IEnumerable<TimelineEvent>> GetCurrentTimelines(IMatchTimelinesConfirmedMessage message)
+        private async Task<IEnumerable<TimelineEvent>> GetCurrentTimelineEvents(IMatchTimelinesConfirmedMessage message)
         {
-            var currentTimelines = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(
+            var currentTimelineEvents = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(
                     message.MatchId,
                     message.EventDate));
 
             return message.EventStatus.IsClosed()
-                ? currentTimelines
-                : currentTimelines?.Where(timeline => timeline.Time <= DateTimeOffset.Now.AddMinutes(-appSettings.CorrectTimelineSpanInMinutes));
+                ? currentTimelineEvents
+                : currentTimelineEvents?.Where(timeline => timeline.Time <= DateTimeOffset.Now.AddMinutes(-appSettings.CorrectTimelineSpanInMinutes));
         }
     }
 }

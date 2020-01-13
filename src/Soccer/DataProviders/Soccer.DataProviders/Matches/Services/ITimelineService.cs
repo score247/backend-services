@@ -9,6 +9,6 @@ namespace Soccer.DataProviders.Matches.Services
 {
     public interface ITimelineService
     {
-        Task<Tuple<Match, IEnumerable<TimelineCommentary>>> GetTimelines(string matchId, string region, Language language);
+        Task<Tuple<Match, IEnumerable<TimelineCommentary>>> GetTimelineEvents(string matchId, string region, Language language);
     }
 }

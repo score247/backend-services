@@ -24,8 +24,7 @@ namespace Soccer.API._Shared.Formatters
 
         public bool CanRead(InputFormatterContext context)
         {
-            StringValues values;
-            if (context.HttpContext.Request.Headers.TryGetValue(Accept, out values)
+            if (context.HttpContext.Request.Headers.TryGetValue(Accept, out var values)
                 && values.Count > 0
                 && (values[0].Contains(MessagePackAcceptType, StringComparison.InvariantCultureIgnoreCase)
                     || values[0].Contains(TextAcceptType, StringComparison.InvariantCultureIgnoreCase)))

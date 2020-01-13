@@ -48,30 +48,36 @@ namespace Soccer.EventProcessors.Matches
                 .Select(match =>
                 {
                     match.League.UpdateMajorLeagueInfo(majorLeagues);
-                    var leagueGroupStage = BuildLeageGroupStage(match);
+                    var leagueGroupStage = BuildLeagueGroupStage(match);
                     match.UpdateLeagueGroupStage(leagueGroupStage);
 
                     return match;
-                });
+                }).ToList();
 
             var leagueGroupStages = updatedMatches.Select(match => match.LeagueGroupStage).Distinct();
             await PublicInsertLeagueGroupStages(leagueGroupStages, message.Language);
 
-            var matchsByDate = updatedMatches.GroupBy(match => match.EventDate.Date);
-            foreach (var matchGroup in matchsByDate)
+            var matchesByDate = updatedMatches.GroupBy(match => match.EventDate.Date);
+
+            await Task.WhenAll(
+                PublishHeadToHeadMessages(updatedMatches, message.Language),
+                InsertMatchesToDatabase(matchesByDate, message));
+        }
+
+        private async Task InsertMatchesToDatabase(IEnumerable<IGrouping<DateTime, Match>> matchesByDate, IPreMatchesFetchedMessage message)
+        {
+            foreach (var matchGroup in matchesByDate)
             {
                 var matches = matchGroup.ToList();
                 var command = new InsertOrUpdateMatchesCommand(matches, message.Language, matchGroup.Key);
 
                 await dynamicRepository.ExecuteAsync(command);
-
-                await PublishHeadToHeadMessages(matches, message.Language);
             }
         }
 
-        private static LeagueGroupStage BuildLeageGroupStage(Match match)
+        private static LeagueGroupStage BuildLeagueGroupStage(Match match)
         {
-            bool hasStanding = !match.League.HasGroups
+            var hasStanding = !match.League.HasGroups
                 || ((match.LeagueRound.Type.DisplayName == LeagueRoundType.Group)
                         && (match.LeagueRound.Group != null));
 

@@ -10,7 +10,6 @@ namespace Soccer.DataProviders.SportRadar.Shared.Extensions
             var req = HttpWebRequest.Create(endpoint) as HttpWebRequest;
 
             req.AllowAutoRedirect = false;
-            WebResponse reply;
 
             try
             {
@@ -18,7 +17,7 @@ namespace Soccer.DataProviders.SportRadar.Shared.Extensions
             }
             catch (WebException e)
             {
-                reply = e.Response;
+                var reply = e.Response;
                 var redirectUrl = reply.Headers["Location"];
                 req = (HttpWebRequest)HttpWebRequest.Create(new Uri(redirectUrl));
                 req.KeepAlive = true;

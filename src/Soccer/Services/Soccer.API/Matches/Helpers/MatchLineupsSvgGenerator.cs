@@ -59,7 +59,7 @@ namespace Soccer.API.Matches.Helpers
         public string Generate(MatchLineups matchLineups)
         {
             if (string.IsNullOrWhiteSpace(matchLineups?.Home?.Formation)
-                || string.IsNullOrWhiteSpace(matchLineups?.Away?.Formation))
+                || string.IsNullOrWhiteSpace(matchLineups.Away?.Formation))
             {
                 return string.Empty;
             }

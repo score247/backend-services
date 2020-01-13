@@ -82,7 +82,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
         {
             try
             {
-                var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == regionName).Key;
+                var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == regionName)?.Key;
 
                 var sportRadarLanguage = language.ToSportRadarFormat();
                 var tournamentScheduleDto = await leagueApi.GetLeagueSchedule(
@@ -108,14 +108,16 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
 
         public async Task<IEnumerable<LeagueTable>> GetLeagueStandings(string leagueId, Language language, string regionName, bool getLiveDataFirst = true)
         {
-            if (getLiveDataFirst)
+            if (!getLiveDataFirst)
             {
-                var liveLeagueStanding = await GetLeagueStandings(leagueId, language, regionName, leagueApi.GetTournamentLiveStandings);
+                return await GetLeagueStandings(leagueId, language, regionName, leagueApi.GetTournamentStandings);
+            }
 
-                if (liveLeagueStanding.Any())
-                {
-                    return liveLeagueStanding;
-                }
+            var liveLeagueStanding = (await GetLeagueStandings(leagueId, language, regionName, leagueApi.GetTournamentLiveStandings)).ToList();
+
+            if (liveLeagueStanding.Count > 0)
+            {
+                return liveLeagueStanding;
             }
 
             return await GetLeagueStandings(leagueId, language, regionName, leagueApi.GetTournamentStandings);
@@ -185,12 +187,14 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
         private async Task<IEnumerable<League>> GetLeaguesDetails(IList<League> leagues, Region region, Language language)
         {
             var latestLeagues = new List<League>();
-            for (int i = 0; i < leagues.Count; i++)
+
+            foreach (var league in leagues)
             {
-                var league = await GetLeagueDetails(leagues[i].Id, region, language);
-                if (league != null)
+                var leagueDetails = await GetLeagueDetails(league.Id, region, language);
+
+                if (leagueDetails != null)
                 {
-                    latestLeagues.Add(league);
+                    latestLeagues.Add(leagueDetails);
                 }
             }
 

@@ -35,7 +35,7 @@ namespace Soccer.API.Shared.Middlewares
             services.AddSingleton<Func<DateTimeOffset>>(() => DateTimeOffset.Now);
             services.AddSingleton<IMatchLineupsGenerator>(new MatchLineupsSvgGenerator(
                 Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"_Shared/App_Data/SvgFiles"),
-                (path) => SvgDocument.Open(path)
+                SvgDocument.Open
                 ));
 
             services.AddScoped<INewsQueryService, NewsQueryService>();

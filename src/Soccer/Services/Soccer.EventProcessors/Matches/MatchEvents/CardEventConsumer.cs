@@ -46,7 +46,7 @@
 
         private async Task<IList<TimelineEvent>> GetProcessedCards(string matchId, string teamId)
         {
-            var timelineEvents = (await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(matchId))).ToList();
+            var timelineEvents = (await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(matchId)))?.ToList();
 
             return timelineEvents == null
                 ? new List<TimelineEvent>()
@@ -59,7 +59,7 @@
         {
             var numberOfCards = processedCards.Count(x => x.Type == eventType);
 
-            if (timelineEvent.Type == eventType && !processedCards.Any(timeline => timeline.Id == timelineEvent.Id))
+            if (timelineEvent.Type == eventType && processedCards.All(timeline => timeline.Id != timelineEvent.Id))
             {
                 return numberOfCards + 1;
             }

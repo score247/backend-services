@@ -18,6 +18,7 @@ namespace Soccer.Core.Teams.Models
             EventType.YellowRedCard,
             EventType.Substitution
         };
+
         private const char formationSplitChar = '-';
 
         [SerializationConstructor, JsonConstructor]
@@ -52,7 +53,7 @@ namespace Soccer.Core.Teams.Models
             var tempList = (Formation ?? string.Empty)
                            .Split(formationSplitChar)
                            .Where(fm => !string.IsNullOrWhiteSpace(fm))
-                           .Select(fm => byte.Parse(fm))
+                           .Select(byte.Parse)
                            .ToList();
             var formationList = new List<byte> { 1 };
             formationList.AddRange(tempList);

@@ -46,7 +46,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
 
             await fetchPreMatchesTimelineTask.FetchPreMatchTimeline(matches);
 
-            await timelineService.Received(10).GetTimelines(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Language>());
+            await timelineService.Received(10).GetTimelineEvents(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Language>());
             await messageBus.DidNotReceive().Publish<IMatchUpdatedCoverageInfo>(Arg.Any<MatchUpdatedCoverageInfo>());
         }
 
@@ -58,7 +58,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 .With(match => match.Id, "match:id");
 
             timelineService
-                .GetTimelines(match.Id, Arg.Any<string>(), Arg.Any<Language>())
+                .GetTimelineEvents(match.Id, Arg.Any<string>(), Arg.Any<Language>())
                 .Returns(new Tuple<Match, IEnumerable<TimelineCommentary>>(
                     A.Dummy<Match>().With(match => match.Id, "match:id"),
                     Enumerable.Empty<TimelineCommentary>()));

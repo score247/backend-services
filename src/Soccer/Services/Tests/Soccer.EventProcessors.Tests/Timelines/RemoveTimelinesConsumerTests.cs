@@ -26,7 +26,7 @@ namespace Soccer.EventProcessors.Tests.Timelines
         private readonly ConsumeContext<IMatchTimelinesConfirmedMessage> context;
         private readonly Fixture fixture;
 
-        private readonly RemoveTimelinesConsumer removeTimelineConsumer;
+        private readonly RemoveTimelineEventsConsumer removeTimelineEventConsumer;
 
         public RemoveTimelinesConsumerTests()
         {
@@ -37,7 +37,7 @@ namespace Soccer.EventProcessors.Tests.Timelines
 
             context = Substitute.For<ConsumeContext<IMatchTimelinesConfirmedMessage>>();
 
-            removeTimelineConsumer = new RemoveTimelinesConsumer(dynamicRepository, messageBus, appSettings);
+            removeTimelineEventConsumer = new RemoveTimelineEventsConsumer(dynamicRepository, messageBus, appSettings);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace Soccer.EventProcessors.Tests.Timelines
             // Arrange
 
             // Act
-            await removeTimelineConsumer.Consume(context);
+            await removeTimelineEventConsumer.Consume(context);
 
             // Assert
             await dynamicRepository.DidNotReceive().FetchAsync<TimelineEvent>(Arg.Any<GetTimelineEventsCriteria>());
@@ -64,7 +64,7 @@ namespace Soccer.EventProcessors.Tests.Timelines
                 .With(msg => msg.MatchId, matchId));
 
             // Act
-            await removeTimelineConsumer.Consume(context);
+            await removeTimelineEventConsumer.Consume(context);
 
             // Assert
             await dynamicRepository.DidNotReceive().FetchAsync<TimelineEvent>(Arg.Any<GetTimelineEventsCriteria>());
@@ -81,7 +81,7 @@ namespace Soccer.EventProcessors.Tests.Timelines
             context.Message.Returns(message);
 
             // Act
-            await removeTimelineConsumer.Consume(context);
+            await removeTimelineEventConsumer.Consume(context);
 
             // Assert
             await dynamicRepository.DidNotReceive().FetchAsync<TimelineEvent>(Arg.Any<GetTimelineEventsCriteria>());
@@ -102,7 +102,7 @@ namespace Soccer.EventProcessors.Tests.Timelines
                 .Returns(new List<TimelineEvent>());
 
             // Act
-            await removeTimelineConsumer.Consume(context);
+            await removeTimelineEventConsumer.Consume(context);
 
             // Assert
             await dynamicRepository
@@ -121,7 +121,7 @@ namespace Soccer.EventProcessors.Tests.Timelines
             context.Message.Returns(message);
 
             // Act
-            await removeTimelineConsumer.Consume(context);
+            await removeTimelineEventConsumer.Consume(context);
 
             // Assert
             await dynamicRepository
@@ -149,7 +149,7 @@ namespace Soccer.EventProcessors.Tests.Timelines
                 .Returns(timelines);
 
             // Act
-            await removeTimelineConsumer.Consume(context);
+            await removeTimelineEventConsumer.Consume(context);
 
             // Assert
             await dynamicRepository
@@ -186,7 +186,7 @@ namespace Soccer.EventProcessors.Tests.Timelines
                 .Returns(currentTimelines);
 
             // Act
-            await removeTimelineConsumer.Consume(context);
+            await removeTimelineEventConsumer.Consume(context);
 
             // Assert
             await dynamicRepository
@@ -236,7 +236,7 @@ namespace Soccer.EventProcessors.Tests.Timelines
                 .Returns(currentTimelines);
 
             // Act
-            await removeTimelineConsumer.Consume(context);
+            await removeTimelineEventConsumer.Consume(context);
 
             // Assert
             await dynamicRepository

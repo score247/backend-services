@@ -30,7 +30,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
         [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
-        Task FetchMatchLineupsForCLosedMatch(IEnumerable<Match> matches, Language language);
+        Task FetchMatchLineupsForClosedMatch(IEnumerable<Match> matches, Language language);
     }
 
     public class FetchMatchLineupsTask : IFetchMatchLineupsTask
@@ -84,7 +84,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
             }
         }
 
-        public Task FetchMatchLineupsForCLosedMatch(IEnumerable<Match> matches, Language language)
-        => FetchMatchLineups(matches, language);
+        public Task FetchMatchLineupsForClosedMatch(IEnumerable<Match> matches, Language language)
+            => FetchMatchLineups(matches, language);
     }
 }

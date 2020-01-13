@@ -1,27 +1,26 @@
-﻿using Soccer.Core.Timelines.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Fanex.Logging;
+using Refit;
+using Score247.Shared.Enumerations;
+using Soccer.Core.Matches.Models;
+using Soccer.Core.Shared.Enumerations;
+using Soccer.Core.Teams.Models;
+using Soccer.Core.Timelines.Models;
+using Soccer.DataProviders.Matches.Services;
+using Soccer.DataProviders.SportRadar.Matches.DataMappers;
+using Soccer.DataProviders.SportRadar.Matches.Dtos;
+using Soccer.DataProviders.SportRadar.Shared.Configurations;
+using Soccer.DataProviders.SportRadar.Shared.Extensions;
 
 namespace Soccer.DataProviders.SportRadar.Matches.Services
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading.Tasks;
-    using Fanex.Logging;
-    using Refit;
-    using Score247.Shared.Enumerations;
-    using Soccer.Core.Matches.Models;
-    using Soccer.Core.Shared.Enumerations;
-    using Soccer.Core.Teams.Models;
-    using Soccer.DataProviders.Matches.Services;
-    using Soccer.DataProviders.SportRadar.Matches.DataMappers;
-    using Soccer.DataProviders.SportRadar.Matches.Dtos;
-    using Soccer.DataProviders.SportRadar.Shared.Configurations;
-    using Soccer.DataProviders.SportRadar.Shared.Extensions;
-
     public interface ITimelineApi
     {
         [Get("/soccer-{accessLevel}{version}/{region}/{language}/matches/{matchId}/timeline.json?api_key={apiKey}")]
-        Task<Dtos.MatchTimelineDto> GetTimelines(string accessLevel, string version, string matchId, string region, string language, string apiKey);
+        Task<MatchTimelineDto> GetTimelineEvents(string accessLevel, string version, string matchId, string region, string language, string apiKey);
     }
 
     public class TimelineService : ITimelineService
@@ -39,15 +38,15 @@ namespace Soccer.DataProviders.SportRadar.Matches.Services
             this.logger = logger;
         }
 
-        public async Task<Tuple<Match, IEnumerable<TimelineCommentary>>> GetTimelines(string matchId, string region, Language language)
+        public async Task<Tuple<Match, IEnumerable<TimelineCommentary>>> GetTimelineEvents(string matchId, string region, Language language)
         {
             var sportRadarLanguage = language.ToSportRadarFormat();
 
             try
             {
-                var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == region).Key;
+                var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == region)?.Key;
 
-                var timelineDto = await timelineApi.GetTimelines(soccerSettings.AccessLevel, soccerSettings.Version, matchId, region, sportRadarLanguage, apiKey);
+                var timelineDto = await timelineApi.GetTimelineEvents(soccerSettings.AccessLevel, soccerSettings.Version, matchId, region, sportRadarLanguage, apiKey);
 
                 if (timelineDto.sport_event.competitors != null)
                 {
@@ -57,7 +56,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.Services
                           timelineDto.sport_event_conditions,
                           region,
                           language,
-                          GetTimelines(timelineDto),
+                          GetTimelineEvents(timelineDto),
                           GetCoverageInfo(timelineDto));
 
                     foreach (var team in match.Teams)
@@ -76,11 +75,11 @@ namespace Soccer.DataProviders.SportRadar.Matches.Services
             return null;
         }
 
-        private static IEnumerable<TimelineEvent> GetTimelines(MatchTimelineDto timelineDto)
+        private static IEnumerable<TimelineEvent> GetTimelineEvents(MatchTimelineDto timelineDto)
         {
             if (timelineDto?.timeline?.Any() == true)
             {
-                return timelineDto.timeline.Select(t => TimelineMapper.MapTimeline(t)).ToList();
+                return timelineDto.timeline.Select(TimelineMapper.MapTimeline).ToList();
             }
 
             return Enumerable.Empty<TimelineEvent>();
@@ -92,7 +91,7 @@ namespace Soccer.DataProviders.SportRadar.Matches.Services
             {
                 return timelineDto.timeline
                     .Where(x => x.commentaries != null)
-                    .Select(t => TimelineMapper.MapTimelineCommentary(t))
+                    .Select(TimelineMapper.MapTimelineCommentary)
                     .ToList();
             }
 

@@ -1,11 +1,11 @@
-﻿namespace Soccer.API.Shared.Configurations
-{
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Linq;
-    using Microsoft.Extensions.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using Microsoft.Extensions.Configuration;
 
+namespace Soccer.API.Shared.Configurations
+{
     public interface IAppSettings
     {
         bool EnabledDatabaseMigration { get; }

@@ -45,9 +45,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
         public async Task FetchLiveMatchesTimeline()
         {
-            var majorLeagues = await internalLeagueService.GetLeagues(Language.en_US);
+            var majorLeagues = (await internalLeagueService.GetLeagues(Language.en_US))?.ToList();
 
-            if (majorLeagues == null || !majorLeagues.Any())
+            if (majorLeagues?.Any() != true)
             {
                 await logger.ErrorAsync("FetchLiveMatchesTimeline - Major leagues not found");
                 return;
@@ -60,7 +60,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
                 foreach (var match in matches)
                 {
-                    await fetchTimelineTask.FetchTimelines(match.Id, match.Region, language);
+                    await fetchTimelineTask.FetchTimelineEvents(match.Id, match.Region, language);
 
                     if (match.MatchResult?.EventStatus?.IsClosed() == false)
                     {

@@ -73,9 +73,7 @@
             };
 
         private static IEnumerable<TimelineEvent> GetMainEvents(Match match)
-            => match.TimeLines.Where(tl
-#pragma warning disable S1067 // Expressions should not be too complex
-                 => IsTimelineNeedMapWithOddsData(tl)).OrderBy(t => t.Time);
+            => match.TimeLines.Where(IsTimelineNeedMapWithOddsData).OrderBy(t => t.Time);
 
         public static bool IsTimelineNeedMapWithOddsData(TimelineEvent tl)
         {

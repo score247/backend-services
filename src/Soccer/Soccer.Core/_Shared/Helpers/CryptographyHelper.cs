@@ -37,7 +37,7 @@ namespace Soccer.Core._Shared.Helpers
 
             // Declare the string used to hold
             // the decrypted text.
-            string plaintext = null;
+            string plaintext;
 
             // Create an RijndaelManaged object
             // with the specified key and IV.

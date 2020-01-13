@@ -78,7 +78,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             RegisterTask<IFetchMatchLineupsTask>(taskSettings.FetchMatchLineupsCron, job => job.FetchMatchLineups());
             RegisterTask<ICleanMajorLeaguesCacheTask>(taskSettings.CleanMajorLeaguesCacheCron, job => job.CleanMajorLeaguesCache());
             RegisterTask<IFetchLeaguesSeasonTask>(taskSettings.FetchLeaguesSeasonCron, job => job.FetchLeaguesSeason());
-            RegisterTask<IFetchLeagueMatchesTask>(taskSettings.FetchLeagueMatchesAndTimelinesCron, job => job.FetchLeagueMatchesAndTimelines());
+            RegisterTask<IFetchLeagueMatchesTask>(taskSettings.FetchLeagueMatchesAndTimelinesCron, job => job.FetchLeagueMatchesAndTimelineEvents());
             RegisterTask<IFetchLeagueStandingsTask>(taskSettings.FetchLeagueStandingCron, job => job.FetchLeagueStandings());
             RegisterTask<IFetchLeagueMatchesTask>(taskSettings.FetchLeagueMatchesCron, job => job.FetchLeagueMatches());
             RegisterTask<IFetchNewsTask>(taskSettings.FetchPreMatchesCron, job => job.FetchNewsFeed());

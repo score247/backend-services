@@ -150,11 +150,10 @@
         {
             try
             {
-                var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == region).Key;
+                var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == region)?.Key;
                 var matchLineUp = await matchApi.GetLineups(soccerSettings.AccessLevel, soccerSettings.Version, matchId, region, language.ToSportRadarFormat(), apiKey);
 
-                if (matchLineUp?.sport_event != null
-                    && matchLineUp?.lineups != null)
+                if (matchLineUp?.sport_event != null && matchLineUp.lineups != null)
                 {
                     return LineupsMapper.MapLineups(matchLineUp, region);
                 }
@@ -171,7 +170,7 @@
                 await logger.ErrorAsync($"MatchId: {matchId}, Region: {region}\r\n" + ex.Message, ex);
             }
 
-            return default(MatchLineups);
+            return null;
         }
     }
 }

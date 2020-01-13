@@ -43,12 +43,9 @@ namespace Soccer.DataReceivers.EventListeners
 
         public void ConfigureServices(IServiceCollection services)
         {
-            JsonConvert.DefaultSettings = () =>
+            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
             {
-                return new JsonSerializerSettings
-                {
-                    DateTimeZoneHandling = DateTimeZoneHandling.Utc
-                };
+                DateTimeZoneHandling = DateTimeZoneHandling.Utc
             };
 
             var appSettings = new AppSettings(Configuration);

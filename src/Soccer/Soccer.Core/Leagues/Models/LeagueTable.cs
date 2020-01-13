@@ -38,7 +38,7 @@ namespace Soccer.Core.Leagues.Models
 
         public void FilterAndCalculateGroupTableOutcome(string groupName)
         {
-            if (GroupTables == null || !GroupTables.Any())
+            if (GroupTables?.Any() != true)
             {
                 return;
             }
@@ -46,7 +46,7 @@ namespace Soccer.Core.Leagues.Models
             if (!string.IsNullOrWhiteSpace(groupName) && GroupTables.Count() > 1)
             {
                 groupName = groupName.Trim();
-                GroupTables = GroupTables.Where(table => groupName.Equals(table?.Name, StringComparison.InvariantCultureIgnoreCase));
+                GroupTables = GroupTables.Where(table => groupName.Equals(table?.Name, StringComparison.InvariantCultureIgnoreCase)).ToList();
             }
 
             foreach (var groupTable in GroupTables)

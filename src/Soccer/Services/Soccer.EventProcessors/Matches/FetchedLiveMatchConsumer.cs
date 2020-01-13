@@ -45,7 +45,7 @@ namespace Soccer.EventProcessors.Matches
 
             var currentLiveMatches = (await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(message.Language))).ToList();
             var removedMatches = GetRemovedMatches(message.Matches, currentLiveMatches);
-            var newMatches = GetNewMatches(message.Matches, currentLiveMatches).Except(removedMatches).ToList();
+            var newMatches = GetNewMatches(message.Matches.ToList(), currentLiveMatches).Except(removedMatches).ToList();
 
             if (removedMatches.Count > 0 || newMatches.Count > 0)
             {
@@ -59,7 +59,7 @@ namespace Soccer.EventProcessors.Matches
             }
         }
 
-        private List<Match> GetNewMatches(IEnumerable<Match> fetchedLiveMatches, IEnumerable<Match> currentLiveMatches)
+        private List<Match> GetNewMatches(IList<Match> fetchedLiveMatches, IEnumerable<Match> currentLiveMatches)
         {
             var inRangeNotStarted = liveMatchRangeFilter
                 .FilterNotStarted(fetchedLiveMatches).ToList();
@@ -73,7 +73,7 @@ namespace Soccer.EventProcessors.Matches
                 .ToList();
         }
 
-        private IList<Match> GetRemovedMatches(IEnumerable<Match> fetchedLiveMatches, IEnumerable<Match> currentLiveMatches)
+        private IList<Match> GetRemovedMatches(IEnumerable<Match> fetchedLiveMatches, IList<Match> currentLiveMatches)
         {
             // closed matches were removed from api
             var removedMatches = currentLiveMatches.Except(fetchedLiveMatches).ToList();
@@ -87,23 +87,23 @@ namespace Soccer.EventProcessors.Matches
             return removedMatches.Distinct().ToList();
         }
 
-        private IList<Match> GetOutOfRangeClosedMatches(IEnumerable<Match> currentLiveMatches)
+        private IList<Match> GetOutOfRangeClosedMatches(IList<Match> currentLiveMatches)
         {
-            var inRangeClosedMatches = liveMatchRangeFilter.FilterClosed(currentLiveMatches);
+            var inRangeClosedMatches = liveMatchRangeFilter.FilterClosed(currentLiveMatches)?.ToList();
 
-            var outOfRangeMatches = (inRangeClosedMatches != null && inRangeClosedMatches.Any()
+            var outOfRangeMatches = (inRangeClosedMatches?.Count > 0
                 ? currentLiveMatches.Except(inRangeClosedMatches)
                 : currentLiveMatches.Where(m => m.MatchResult.EventStatus.IsClosed()));
 
             return outOfRangeMatches.ToList();
         }
 
-        private IList<Match> GetOutOfRangeNotStartedMatches(IEnumerable<Match> currentLiveMatches)
+        private IList<Match> GetOutOfRangeNotStartedMatches(IList<Match> currentLiveMatches)
         {
             var inRangeNotStartedMatches = liveMatchRangeFilter
-                .FilterNotStarted(currentLiveMatches);
+                .FilterNotStarted(currentLiveMatches)?.ToList();
 
-            var outOfRangeMatches = (inRangeNotStartedMatches != null && inRangeNotStartedMatches.Any()
+            var outOfRangeMatches = (inRangeNotStartedMatches?.Any() == true
                 ? currentLiveMatches.Except(inRangeNotStartedMatches)
                 : currentLiveMatches.Where(m => m.MatchResult.EventStatus.IsNotStart()));
 
@@ -125,6 +125,6 @@ namespace Soccer.EventProcessors.Matches
         }
 
         private Task PublishLiveMatchUpdatedMessage(Language language, IEnumerable<Match> newLiveMatches, IEnumerable<Match> removedMatches)
-        => messageBus.Publish<ILiveMatchUpdatedMessage>(new LiveMatchUpdatedMessage(language, newLiveMatches, removedMatches));
+            => messageBus.Publish<ILiveMatchUpdatedMessage>(new LiveMatchUpdatedMessage(language, newLiveMatches, removedMatches));
     }
 }

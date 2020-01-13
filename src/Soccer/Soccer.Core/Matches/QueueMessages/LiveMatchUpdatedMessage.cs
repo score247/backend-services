@@ -28,7 +28,5 @@ namespace Soccer.Core.Matches.QueueMessages
         public IEnumerable<MatchSummary> NewMatches { get; }
 
         public IEnumerable<MatchSummary> RemovedMatches { get; }
-
-        public int LiveMatchCount { get; }
     }
 }

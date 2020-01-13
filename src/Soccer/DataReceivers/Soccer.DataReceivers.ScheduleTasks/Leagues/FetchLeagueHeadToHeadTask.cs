@@ -48,9 +48,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             var leagueService = leagueServiceFactory(DataProviderType.Internal);
 
             // Note: fetch h2h for en_US only
-            var majorLeagues = await leagueService.GetLeagues(Language.en_US);
+            var majorLeagues = (await leagueService.GetLeagues(Language.en_US)).ToList();
 
-            for (var i = 0; i * appSettings.ScheduleTasksSettings.QueueBatchSize < majorLeagues.Count(); i++)
+            for (var i = 0; i * appSettings.ScheduleTasksSettings.QueueBatchSize < majorLeagues.Count; i++)
             {
                 var batchOfLeagues = majorLeagues
                     .Skip(i * appSettings.ScheduleTasksSettings.QueueBatchSize)
@@ -67,9 +67,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
         {
             foreach (var league in batchOfLeagues)
             {
-                var matches = await leagueScheduleService.GetLeagueMatches(league.Region, league.Id, Language.en_US);
+                var matches = (await leagueScheduleService.GetLeagueMatches(league.Region, league.Id, Language.en_US)).ToList();
 
-                for (var i = 0; i * appSettings.ScheduleTasksSettings.QueueBatchSize < matches.Count(); i++)
+                for (var i = 0; i * appSettings.ScheduleTasksSettings.QueueBatchSize < matches.Count; i++)
                 {
                     var batchOfMatches = matches
                         .Skip(i * appSettings.ScheduleTasksSettings.QueueBatchSize)

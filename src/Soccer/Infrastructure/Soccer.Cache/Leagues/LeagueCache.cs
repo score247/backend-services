@@ -62,11 +62,9 @@ namespace Soccer.Cache.Leagues
 
         public async Task SetCountryLeagues(IEnumerable<League> countryLeagues, string countryCode, string language = Language.English)
         {
-            var countryLeaguesCaches = await cacheManager.GetAsync<IDictionary<string, IEnumerable<League>>>(GetCountryLeaguesCacheKey(language));
-            if (countryLeaguesCaches == null)
-            {
-                countryLeaguesCaches = new Dictionary<string, IEnumerable<League>>();
-            }
+            var countryLeaguesCaches = await cacheManager.GetAsync<IDictionary<string, IEnumerable<League>>>(GetCountryLeaguesCacheKey(language))
+                                       ?? new Dictionary<string, IEnumerable<League>>();
+
             if (countryLeaguesCaches.ContainsKey(countryCode))
             {
                 countryLeaguesCaches[countryCode] = countryLeagues;
@@ -88,7 +86,7 @@ namespace Soccer.Cache.Leagues
 
             if (countryLeaguesCaches?.ContainsKey(countryCode) == true)
             {
-                return countryLeaguesCaches?[countryCode];
+                return countryLeaguesCaches[countryCode];
             }
 
             return null;
