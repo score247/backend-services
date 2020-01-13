@@ -138,6 +138,7 @@ namespace Soccer.Core.Matches.Models
                     : match.LeagueGroupName;
                 LeagueAbbreviation = match.League.Abbreviation;
                 LeagueRegion = match.League.Region;
+                LeagueHasStanding = match.LeagueGroupStage?.HasStanding ?? true;
             }
         }
 
@@ -187,7 +188,6 @@ namespace Soccer.Core.Matches.Models
                         HomeRedCards = (byte)homeTeam.Statistic.RedCards;
                         HomeYellowRedCards = (byte)homeTeam.Statistic.YellowRedCards;
                         HomeYellowCards = (byte)homeTeam.Statistic.YellowCards;
-
                     }
                 }
 
@@ -278,6 +278,8 @@ namespace Soccer.Core.Matches.Models
         public string LeagueRoundGroup { get; private set; }
 
         public string LeagueGroupName { get; private set; }
+
+        public bool LeagueHasStanding { get; private set; }
 
         public Coverage Coverage { get; private set; }
 
