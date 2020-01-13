@@ -22,8 +22,10 @@ BEGIN
 		ON DUPLICATE KEY UPDATE
             Value = JSON_REPLACE(Value,  
 							'$.EventDate', JSON_EXTRACT(matches, CONCAT('$[', i, '].EventDate')), 
-							'$.LeagueGroupName', JSON_EXTRACT(matches, CONCAT('$[', i, '].LeagueGroupName')), 
-							'$.MatchResult.EventStatus', JSON_EXTRACT(matches, CONCAT('$[', i, '].MatchResult.EventStatus'))),
+							'$.MatchResult.EventStatus', JSON_EXTRACT(matches, CONCAT('$[', i, '].MatchResult.EventStatus')),
+                            '$.LeagueGroupName', JSON_EXTRACT(matches, CONCAT('$[', i, '].LeagueGroupName')),
+                            '$.GroupName', JSON_EXTRACT(matches, CONCAT('$[', i, '].GroupName')),
+                            '$.LeagueGroupStage', JSON_EXTRACT(matches, CONCAT('$[', i, '].LeagueGroupStage'))),                            
             EventDate = STR_TO_DATE(JSON_UNQUOTE(JSON_EXTRACT(matches, CONCAT('$[', i, '].EventDate'))),'%Y-%m-%dT%H:%i:%s+00:00'),
             ModifiedTime = now();
         -- Increment the loop variable                                                                                                                                                        
