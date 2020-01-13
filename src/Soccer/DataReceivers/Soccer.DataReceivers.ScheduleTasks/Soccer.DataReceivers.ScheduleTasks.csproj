@@ -26,7 +26,6 @@
     <None Remove="appsettings.pro-eu.json" />
     <None Remove="appsettings.pro-intl-live.json" />
     <None Remove="appsettings.pro-intl.json" />
-    <None Remove="appsettings.pro-live.json" />
     <None Remove="appsettings.pro-others-live.json" />
     <None Remove="appsettings.pro-others.json" />
     <None Remove="appsettings.pro.json" />
@@ -52,9 +51,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="appsettings.local-test1.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="appsettings.pro-live.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="appsettings.pro.json">
