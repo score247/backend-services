@@ -180,12 +180,18 @@ namespace Soccer.Core.Leagues.Extensions
                     : ExtractGroupName(league, groupName);
 
             // Should multiple languages here
-            convertedGroupName = string.IsNullOrWhiteSpace(convertedGroupName) || (league.Name.IndexOf($"{space}{groupName}", StringComparison.OrdinalIgnoreCase) >= 0)
+            convertedGroupName = string.IsNullOrWhiteSpace(convertedGroupName) || (IsLeagueNameContainsGroup(league.Name, groupName))
                 ? string.Empty
                 : $"Group {convertedGroupName}";
 
             return convertedGroupName;
         }
+
+        private static bool IsLeagueNameContainsGroup(string leagueName, string groupName) 
+        => leagueName
+            .Split(commaChar)
+            .Any(name => name.Equals(groupName, StringComparison.OrdinalIgnoreCase));
+        
 
         private static bool IsPlayOffs(string phase) => phase.Equals(playoffs, StringComparison.InvariantCultureIgnoreCase);
 
