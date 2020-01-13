@@ -22,10 +22,22 @@
     <None Remove="appsettings.local-main.json" />
     <None Remove="appsettings.local-test.json" />
     <None Remove="appsettings.local-test1.json" />
+    <None Remove="appsettings.pro-eu.json" />
+    <None Remove="appsettings.pro-intl.json" />
+    <None Remove="appsettings.pro-others.json" />
     <None Remove="appsettings.pro.json" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="appsettings.pro-others.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.pro-intl.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="appsettings.pro-eu.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="appsettings.local-test1.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

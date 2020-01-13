@@ -138,7 +138,7 @@ namespace Soccer.Core.Matches.Models
                     : match.LeagueGroupName;
                 LeagueAbbreviation = match.League.Abbreviation;
                 LeagueRegion = match.League.Region;
-                LeagueHasStanding = match.LeagueGroupStage?.HasStanding ?? true;
+                LeagueHasStandings = match.LeagueGroupStage?.HasStanding ?? true;
             }
         }
 
@@ -279,7 +279,7 @@ namespace Soccer.Core.Matches.Models
 
         public string LeagueGroupName { get; private set; }
 
-        public bool LeagueHasStanding { get; private set; }
+        public bool LeagueHasStandings { get; private set; }
 
         public Coverage Coverage { get; private set; }
 
