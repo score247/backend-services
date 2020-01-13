@@ -58,6 +58,7 @@
                 serviceCollectionConfigurator.AddConsumer<RemoveTimelinesConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchedLeagueGroupConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchNewsConsumer>();
+                serviceCollectionConfigurator.AddConsumer<FetchNewsImageConsumer>();
             });
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -222,6 +223,7 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<FetchNewsConsumer>(provider);
+                    e.Consumer<FetchNewsImageConsumer>(provider);
                 });
             }));
 

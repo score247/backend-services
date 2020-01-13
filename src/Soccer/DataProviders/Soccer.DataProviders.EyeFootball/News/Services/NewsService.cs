@@ -51,5 +51,12 @@ namespace Soccer.DataProviders.EyeFootball.News.Services
                 }
             });
         }
+
+        public async Task<NewsImage> GetNewsImage(string imageName, string imageLink)
+        {
+            var imageContent = await imageLink.GetStringAsync();
+
+            return new NewsImage(imageName, imageContent);
+        }
     }
 }

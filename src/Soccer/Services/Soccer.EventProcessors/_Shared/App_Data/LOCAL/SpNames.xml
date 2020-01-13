@@ -86,5 +86,6 @@
   </Function>
   <Function Name="News">
     <Setting Key="News_InsertOrUpdateNews" SpName="News_InsertOrUpdateNews" DbName="DefaultConnection" />
+    <Setting Key="News_InsertOrUpdateImage" SpName="News_InsertOrUpdateImage" DbName="DefaultConnection" />
   </Function>
 </Functions>
