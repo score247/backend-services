@@ -66,6 +66,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
 
             app.UseHangfireServer(options: new BackgroundJobServerOptions
             {
+                ServerName = $"{configuration.GetSection("HangfireServerName").Get<string[]>()}-{Guid.NewGuid().ToString()}",
                 WorkerCount = configuration.GetSection("HangfireWorkers").Get<int>(),
                 Queues = configuration.GetSection("HangfireQueues").Get<string[]>()
             });
@@ -94,7 +95,6 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
                             info.Method.Name,
                             methodCall,
                             cronExpression);
-
             }
         }
     }

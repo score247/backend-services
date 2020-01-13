@@ -22,12 +22,9 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.HealthCheck
         public IActionResult Get()
         {
             var latestHeartbeat = healthCheckService.LatestHeartBeats();
-            var jobsStatus = new List<(string, DateTime, bool)>();
-
-            foreach (var heartbeat in latestHeartbeat)
-            {
-                jobsStatus.Add((heartbeat.Key, heartbeat.Value, heartbeat.Value.AddMinutes(maxExpiredMinutes) > DateTime.Now));
-            }
+            var jobsStatus = latestHeartbeat
+                .Select(heartbeat => (heartbeat.Key, heartbeat.Value, heartbeat.Value.AddMinutes(maxExpiredMinutes) > DateTime.Now))
+                .ToList();
 
             var statusCode = jobsStatus.All(job => job.Item3)
                 ? HttpStatusCode.OK
@@ -38,7 +35,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.HealthCheck
                 ContentType = "text/html",
                 Content = string.Join(
                             "<br />",
-                            jobsStatus.Select(region => $"Job Name: {region.Item1} --- Last Health Check: {region.Item2} --- Is Alive: {region.Item3}")),
+                            jobsStatus.Select(region => $"Job Name: {region.Key} --- Last Health Check: {region.Value} --- Is Alive: {region.Item3}")),
                 StatusCode = (int)statusCode
             };
         }

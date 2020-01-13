@@ -55,7 +55,7 @@ namespace Soccer.DataReceivers.ScheduleTasks
 
             app.ConfigureExceptionHandler();
             app.UseHangfire(Configuration);
-            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseStaticFiles();
             app.UseRouting();
 
