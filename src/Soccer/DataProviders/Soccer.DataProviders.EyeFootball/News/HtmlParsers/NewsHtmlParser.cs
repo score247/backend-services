@@ -1,18 +1,21 @@
 ﻿using System.Linq;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
-using Soccer.Core.News.Models;
 
 namespace Soccer.DataProviders.EyeFootball.News.HtmlParsers
 {
     public static class NewsHtmlParser
     {
-        public static string ParseNewsImageSource(NewsFeed news)
+        private const char NewLine = '\n';
+
+        public static string ParseNewsImageSource(string htmlContent)
         {
             var newsDesc = new HtmlDocument();
-            newsDesc.LoadHtml(news.Summary);
+            newsDesc.LoadHtml(htmlContent);
 
-            return newsDesc.DocumentNode.Descendants("img")
+            return newsDesc.DocumentNode.Descendants("p")
+                .FirstOrDefault(node => node.GetAttributeValue("class", "").Equals("article_image"))
+                .Descendants("img")
                 .FirstOrDefault()
                 ?.GetAttributeValue("src", "");
         }
@@ -28,7 +31,7 @@ namespace Soccer.DataProviders.EyeFootball.News.HtmlParsers
 
             return string.IsNullOrWhiteSpace(content) 
                 ? string.Empty 
-                : RemoveComments(content);
+                : RemoveComments(content).TrimStart(NewLine).TrimEnd(NewLine);
         }
 
         public static string ParseAuthor(string htmlContent)
@@ -44,7 +47,6 @@ namespace Soccer.DataProviders.EyeFootball.News.HtmlParsers
                 ? string.Empty
                 : RemoveComments(content);
         }
-
 
         public static string RemoveComments(string content) 
         => Regex.Replace(content, "<!--.*?-->", string.Empty, RegexOptions.Singleline);

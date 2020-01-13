@@ -24,7 +24,7 @@ namespace Soccer.DataProviders.EyeFootball.News.Services
                 var htmlContent = await news.Source.GetStringAsync();
 
                 var content = NewsHtmlParser.ParseNewsContent(htmlContent);
-                var imageLink = NewsHtmlParser.ParseNewsImageSource(news);
+                var imageLink = NewsHtmlParser.ParseNewsImageSource(htmlContent);
                 var author = NewsHtmlParser.ParseAuthor(htmlContent);
 
                 var newsItem = new NewsItem(news.Title, content, imageLink, news.Guid, author, news.PublishedDate);
