@@ -53,7 +53,8 @@ namespace Soccer.Core.Matches.Models
             string leagueRoundGroup,
             string leagueAbbreviation,
             byte homeYellowCards,
-            byte awayYellowCards)
+            byte awayYellowCards,
+            string leagueRegion)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             Id = id;
@@ -95,6 +96,7 @@ namespace Soccer.Core.Matches.Models
             LeagueAbbreviation = leagueAbbreviation;
             HomeYellowCards = homeYellowCards;
             AwayYellowCards = awayYellowCards;
+            LeagueRegion = leagueRegion;
         }
 
         public MatchSummary()
@@ -135,6 +137,7 @@ namespace Soccer.Core.Matches.Models
                     ? match.League.MapLeagueGroupName(match.LeagueRound, Language.en_US)
                     : match.LeagueGroupName;
                 LeagueAbbreviation = match.League.Abbreviation;
+                LeagueRegion = match.League.Region;
             }
         }
 
@@ -283,6 +286,8 @@ namespace Soccer.Core.Matches.Models
         public byte HomeYellowCards { get; private set; }
 
         public byte AwayYellowCards { get; private set; }
+
+        public string LeagueRegion { get; private set; }
     }
 
 #pragma warning restore S109 // Magic numbers should not be used
