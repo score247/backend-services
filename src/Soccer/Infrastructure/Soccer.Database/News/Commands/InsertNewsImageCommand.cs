@@ -4,7 +4,7 @@ namespace Soccer.Database.News.Commands
 {
     public class InsertNewsImageCommand : BaseCommand
     {
-        public InsertNewsImageCommand(string name, string content)
+        public InsertNewsImageCommand(string name, byte[] content)
          {
             SportId = Sport.Soccer.Value;
             ImageName = name;
@@ -15,7 +15,7 @@ namespace Soccer.Database.News.Commands
 
         public string ImageName { get; }
 
-        public string ImageContent { get; }
+        public byte[] ImageContent { get; }
 
         public override string GetSettingKey() => "News_InsertOrUpdateImage";
 

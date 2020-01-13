@@ -54,7 +54,7 @@ namespace Soccer.DataProviders.EyeFootball.News.Services
 
         public async Task<NewsImage> GetNewsImage(string imageName, string imageLink)
         {
-            var imageContent = await imageLink.GetStringAsync();
+            var imageContent = await imageLink.GetBytesAsync();
 
             return new NewsImage(imageName, imageContent);
         }
