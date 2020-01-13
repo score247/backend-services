@@ -25,5 +25,14 @@ namespace Soccer.API.News
         public async Task<IEnumerable<NewsItem>> Get(
                 string language = Language.English)
             => await mediator.Send(new NewsRequest(language));
+
+        [HttpGet]
+        [Route("/images/{name}")]
+        public async Task<IActionResult> GetImage(string name)
+        {
+            var image = await mediator.Send(new NewsImageRequest(name));
+
+            return File(image, "image/jpeg");
+        }
     }
 }

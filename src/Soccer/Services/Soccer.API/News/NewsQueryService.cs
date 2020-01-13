@@ -10,6 +10,8 @@ namespace Soccer.API.News
     public interface INewsQueryService
     {
         Task<IEnumerable<NewsItem>> GetNews(Language language);
+
+        Task<byte[]> GetNewsImage(string imageName);
     }
 
     public class NewsQueryService : INewsQueryService
@@ -23,5 +25,8 @@ namespace Soccer.API.News
 
         public Task<IEnumerable<NewsItem>> GetNews(Language language)
         => dynamicRepository.FetchAsync<NewsItem>(new GetNewsCriteria(language.DisplayName));
+
+        public Task<byte[]> GetNewsImage(string imageName)
+        => dynamicRepository.GetAsync<byte[]>(new GetNewsImageCriteria(imageName));
     }
 }

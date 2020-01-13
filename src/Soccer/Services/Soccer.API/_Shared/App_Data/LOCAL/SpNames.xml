@@ -50,5 +50,6 @@
   </Function>
   <Function Name="News">
     <Setting Key="News_GetNews" SpName="News_GetNews" DbName="DefaultConnection" />
+    <Setting Key="News_GetImageByName" SpName="News_GetImageByName" DbName="DefaultConnection" />
   </Function>
 </Functions>
