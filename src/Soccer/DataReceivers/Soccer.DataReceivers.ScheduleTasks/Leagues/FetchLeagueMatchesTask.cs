@@ -107,10 +107,25 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
         private async Task PublishPreMatchesMessage(Language language, IEnumerable<Match> matches)
         {
             var batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
+            var majorLeagues = await internalLeagueService.GetLeagues(Language.en_US);
 
             for (var i = 0; i * batchSize < matches.Count(); i++)
             {
-                var batchOfMatches = matches.Skip(i * batchSize).Take(batchSize).ToList();
+                var batchOfMatches = matches
+                    .Skip(i * batchSize)
+                    .Take(batchSize)
+                    .Select(match =>
+                    {
+                        var league = majorLeagues.FirstOrDefault(league => league.Id == match?.League?.Id);
+
+                        if (league != null)
+                        {
+                            match.League.SetAbbreviation(league.Abbreviation);
+                        }
+
+                        return match;
+                    })
+                    .ToList();
 
                 await messageBus.Publish<IPreMatchesFetchedMessage>(
                     new PreMatchesFetchedMessage(batchOfMatches, language.DisplayName));

@@ -79,7 +79,20 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
             for (var i = 0; i * batchSize < matches.Count; i++)
             {
-                var matchesBatch = matches.Skip(i * batchSize).Take(batchSize);
+                var matchesBatch = matches
+                    .Skip(i * batchSize)
+                    .Take(batchSize)
+                    .Select(match =>
+                    {
+                        var league = majorLeagues.FirstOrDefault(league => league.Id == match?.League?.Id);
+
+                        if (league != null)
+                        {
+                            match.League.SetAbbreviation(league.Abbreviation);
+                        }
+
+                        return match;
+                    });
 
                 await messageBus.Publish<IPostMatchFetchedMessage>(new PostMatchFetchedMessage(matchesBatch, language.DisplayName));
             }
