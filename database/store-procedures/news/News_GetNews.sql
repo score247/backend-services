@@ -11,5 +11,6 @@ BEGIN
         `PublishedDate`
 	FROM `News` AS N
 	WHERE N.SportId = sportID
-    AND N.Language = language;
+    AND N.Language = language
+    ORDER BY N.PublishedDate DESC;
 END
