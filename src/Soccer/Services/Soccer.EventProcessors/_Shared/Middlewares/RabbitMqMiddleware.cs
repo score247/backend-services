@@ -223,6 +223,13 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<FetchNewsConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_NewsImages", e =>
+                {
+                    e.PrefetchCount = PrefetchCount;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
                     e.Consumer<FetchNewsImageConsumer>(provider);
                 });
             }));
