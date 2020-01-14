@@ -32,7 +32,9 @@ namespace Soccer.Core.News.Models
 
         public DateTime PublishedDate { get; }
 
-        public string GenerateImageName()
+        public string ImageName => GenerateImageName();
+
+        private string GenerateImageName()
         => $"{Link.Split(Path.AltDirectorySeparatorChar).LastOrDefault()}-{ImageSource.Split(Path.AltDirectorySeparatorChar).LastOrDefault()}";
     }
 }

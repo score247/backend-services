@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Hangfire;
 using MassTransit;
 using Soccer.Core.News.QueueMessages;
@@ -51,9 +50,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.News
             {
                 if (!string.IsNullOrWhiteSpace(news.ImageSource)) 
                 {
-                    var imageName = news.GenerateImageName();
-
-                    backgroundJobClient.Enqueue<IFetchNewsTask>(job => job.FetchNewsImage(imageName, news.ImageSource));
+                    backgroundJobClient.Enqueue<IFetchNewsTask>(job => job.FetchNewsImage(news.ImageName, news.ImageSource));
                 }
             }
         }
