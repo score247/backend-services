@@ -69,7 +69,7 @@ namespace Soccer.EventProcessors.Matches
                 return;
             }
 
-            if (matchEvent.Timeline.Type.IsRedCard() 
+            if (matchEvent.Timeline.Type.IsRedCard()
                 || matchEvent.Timeline.Type.IsYellowRedCard()
                 || matchEvent.Timeline.Type.IsYellowCard())
             {
@@ -89,6 +89,11 @@ namespace Soccer.EventProcessors.Matches
 
         private async Task<bool> IsTimelineEventProcessed(MatchEvent matchEvent)
         {
+            if (matchEvent?.Timeline == null)
+            {
+                return false;
+            }
+
             var timeLineEvents = await GetProcessedTimelines(matchEvent.MatchId) ?? new List<TimelineEvent>();
 
             if (timeLineEvents.Any(t => t.Id == matchEvent.Timeline.Id))
@@ -107,8 +112,11 @@ namespace Soccer.EventProcessors.Matches
 
             var timelineEvents = await cacheManager.GetOrSetAsync<IList<TimelineEvent>>(
                 timelineEventsCacheKey,
-                async () => (await dynamicRepository.FetchAsync<TimelineEvent>
-                    (new GetTimelineEventsCriteria(matchId))).ToList(),
+                async () =>
+                {
+                    return (await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(matchId))
+                        ?? Enumerable.Empty<TimelineEvent>()).ToList();
+                },
                 EventCacheOptions);
 
             return timelineEvents;
