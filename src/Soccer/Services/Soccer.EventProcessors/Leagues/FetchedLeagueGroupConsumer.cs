@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Fanex.Data.Repository;
 using MassTransit;
-using Soccer.Core.Leagues.Models;
 using Soccer.Core.Leagues.QueueMessages;
 using Soccer.Database.Leagues.Commands;
 
@@ -16,13 +15,20 @@ namespace Soccer.EventProcessors.Leagues
             this.dynamicRepository = dynamicRepository;
         }
 
-        public Task Consume(ConsumeContext<ILeagueGroupFetchedMessage> context)
+        public async Task Consume(ConsumeContext<ILeagueGroupFetchedMessage> context)
         {
             var message = context.Message;
 
-            var command = new InsertOrUpdateLeagueGroupCommand(message.LeagueGroupStage, message.Language);
+            if (string.IsNullOrWhiteSpace(message.LeagueGroupStage.GroupStageName))
+            {
+                return;
+            }
 
-            return dynamicRepository.ExecuteAsync(command);
+            await Task.WhenAll(
+                dynamicRepository.ExecuteAsync(
+                    new InsertOrUpdateLeagueGroupCommand(message.LeagueGroupStage, message.Language)),
+                dynamicRepository.ExecuteAsync(
+                    new EnableHasGroupsCommand(message.LeagueGroupStage.LeagueId)));
         }
     }
 }
