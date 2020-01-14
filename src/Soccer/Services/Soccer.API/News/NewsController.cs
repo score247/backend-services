@@ -27,7 +27,7 @@ namespace Soccer.API.News
             => await mediator.Send(new NewsRequest(language));
 
         [HttpGet]
-        [Route("/images/{name}")]
+        [Route("/news/images/{name}")]
         public async Task<IActionResult> GetImage(string name)
         {
             var image = await mediator.Send(new NewsImageRequest(name));
