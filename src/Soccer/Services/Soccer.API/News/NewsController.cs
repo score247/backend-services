@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Soccer.API.News.Requests;
 using Soccer.Core.News.Models;
@@ -26,7 +27,7 @@ namespace Soccer.API.News
                 string language = Language.English)
             => await mediator.Send(new NewsRequest(language));
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         [Route("/news/images/{name}")]
         public async Task<IActionResult> GetImage(string name)
         {
