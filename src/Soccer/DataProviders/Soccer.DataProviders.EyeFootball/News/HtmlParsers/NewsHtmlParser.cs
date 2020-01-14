@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using HtmlAgilityPack;
 
@@ -6,7 +7,9 @@ namespace Soccer.DataProviders.EyeFootball.News.HtmlParsers
 {
     public static class NewsHtmlParser
     {
-        private const char NewLine = '\n';
+        private const char NewLineChar = '\n';
+        private const string MultipleLinePattern = "(\\n){2,}";
+        private const string SingleCommentPattern = "<!--.*?-->";
 
         public static string ParseNewsImageSource(string htmlContent)
         {
@@ -29,9 +32,9 @@ namespace Soccer.DataProviders.EyeFootball.News.HtmlParsers
                 .FirstOrDefault(node => node.GetAttributeValue("itemprop", "").Equals("articleBody"))
                 ?.InnerText;
 
-            return string.IsNullOrWhiteSpace(content) 
-                ? string.Empty 
-                : RemoveComments(content).TrimStart(NewLine).TrimEnd(NewLine);
+            return string.IsNullOrWhiteSpace(content)
+                ? string.Empty
+                : ReplaceMultipleNewLinesIntoSingle(RemoveComments(content).Trim(NewLineChar));
         }
 
         public static string ParseAuthor(string htmlContent)
@@ -48,8 +51,10 @@ namespace Soccer.DataProviders.EyeFootball.News.HtmlParsers
                 : RemoveComments(content);
         }
 
-        public static string RemoveComments(string content) 
-        => Regex.Replace(content, "<!--.*?-->", string.Empty, RegexOptions.Singleline);
-    }
+        public static string RemoveComments(string content)
+        => Regex.Replace(content, SingleCommentPattern, string.Empty, RegexOptions.Singleline);
 
+        public static string ReplaceMultipleNewLinesIntoSingle(string content)
+        => Regex.Replace(content, MultipleLinePattern, Environment.NewLine, RegexOptions.IgnoreCase);
+    }
 }
