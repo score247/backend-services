@@ -13,6 +13,8 @@ namespace Soccer.DataProviders.EyeFootball.News.Services
 {
     public class NewsService : INewsService
     {
+        private const string Provider = "EyeFootball";
+
         public async Task<List<NewsItem>> GetNewsFeed(string feedUri)
         {
             var newsFeed = await GetRssFeeds(feedUri);
@@ -27,7 +29,7 @@ namespace Soccer.DataProviders.EyeFootball.News.Services
                 var imageLink = NewsHtmlParser.ParseNewsImageSource(htmlContent);
                 var author = NewsHtmlParser.ParseAuthor(htmlContent);
 
-                var newsItem = new NewsItem(news.Title, content, imageLink, news.Guid, author, news.PublishedDate);
+                var newsItem = new NewsItem(news.Title, content, imageLink, news.Guid, author, news.PublishedDate, Provider);
 
                 newsList.Add(newsItem);
             }

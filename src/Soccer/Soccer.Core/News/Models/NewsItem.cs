@@ -10,7 +10,7 @@ namespace Soccer.Core.News.Models
     public class NewsItem
     {
         [SerializationConstructor, JsonConstructor]
-        public NewsItem(string title, string content, string imageSource, string link, string author, DateTime publishedDate)
+        public NewsItem(string title, string content, string imageSource, string link, string author, DateTime publishedDate, string provider)
         {
             Title = title;
             Content = content;
@@ -18,6 +18,7 @@ namespace Soccer.Core.News.Models
             Link = link;
             Author = author;
             PublishedDate = publishedDate;
+            Provider = provider;
         }
 
         public string Title { get; }
@@ -32,7 +33,9 @@ namespace Soccer.Core.News.Models
 
         public DateTime PublishedDate { get; }
 
-        public string ImageName => GenerateImageName();
+        public string ImageName => string.IsNullOrWhiteSpace(ImageSource) ? string.Empty : GenerateImageName();
+
+        public string Provider { get; }
 
         private string GenerateImageName()
         => $"{Link.Split(Path.AltDirectorySeparatorChar).LastOrDefault()}-{ImageSource.Split(Path.AltDirectorySeparatorChar).LastOrDefault()}";
