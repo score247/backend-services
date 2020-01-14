@@ -51,15 +51,12 @@ namespace Soccer.DataReceivers.ScheduleTasks.News
             {
                 if (!string.IsNullOrWhiteSpace(news.ImageSource)) 
                 {
-                    var imageName = GenerateImageName(news.Link, news.ImageSource);
+                    var imageName = news.GenerateImageName();
 
                     backgroundJobClient.Enqueue<IFetchNewsTask>(job => job.FetchNewsImage(imageName, news.ImageSource));
                 }
             }
         }
-
-        private static string GenerateImageName(string guid, string imageLink)
-        => $"{guid.Split('/').LastOrDefault()}-{imageLink.Split('/').LastOrDefault()}";
 
         public async Task FetchNewsImage(string imageName, string imageLink)
         {

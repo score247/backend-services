@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using MessagePack;
 using Newtonsoft.Json;
 
@@ -29,5 +31,8 @@ namespace Soccer.Core.News.Models
         public string Author { get; }
 
         public DateTime PublishedDate { get; }
+
+        public string GenerateImageName()
+        => $"{Link.Split(Path.AltDirectorySeparatorChar).LastOrDefault()}-{ImageSource.Split(Path.AltDirectorySeparatorChar).LastOrDefault()}";
     }
 }
