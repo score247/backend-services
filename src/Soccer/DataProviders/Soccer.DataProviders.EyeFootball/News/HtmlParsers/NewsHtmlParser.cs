@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using HtmlAgilityPack;
@@ -9,6 +8,7 @@ namespace Soccer.DataProviders.EyeFootball.News.HtmlParsers
     public static class NewsHtmlParser
     {
         private const char NewLineChar = '\n';
+        private const string DoubleNewLine = "\n\n";
         private const string MultipleLinePattern = "(\\n){2,}";
         private const string SingleCommentPattern = "<!--.*?-->";
 
@@ -35,7 +35,7 @@ namespace Soccer.DataProviders.EyeFootball.News.HtmlParsers
 
             return string.IsNullOrWhiteSpace(content)
                 ? string.Empty
-                : HttpUtility.HtmlDecode(ReplaceMultipleNewLinesIntoSingle(RemoveComments(content).Trim(NewLineChar)));
+                : HttpUtility.HtmlDecode(ReplaceMultipleNewLinesIntoDouble(RemoveComments(content).Trim(NewLineChar)));
         }
 
         public static string ParseAuthor(string htmlContent)
@@ -55,7 +55,7 @@ namespace Soccer.DataProviders.EyeFootball.News.HtmlParsers
         public static string RemoveComments(string content)
         => Regex.Replace(content, SingleCommentPattern, string.Empty, RegexOptions.Singleline);
 
-        public static string ReplaceMultipleNewLinesIntoSingle(string content)
-        => Regex.Replace(content, MultipleLinePattern, Environment.NewLine, RegexOptions.IgnoreCase);
+        public static string ReplaceMultipleNewLinesIntoDouble(string content)
+        => Regex.Replace(content, MultipleLinePattern, DoubleNewLine, RegexOptions.IgnoreCase);
     }
 }
