@@ -56,6 +56,10 @@ namespace Soccer.DataProviders.EyeFootball.News.HtmlParsers
         => Regex.Replace(content, SingleCommentPattern, string.Empty, RegexOptions.Singleline);
 
         public static string ReplaceMultipleNewLinesIntoDouble(string content)
-        => Regex.Replace(content, MultipleLinePattern, DoubleNewLine, RegexOptions.IgnoreCase);
+        {
+            var formatContent = content.Replace('\r', NewLineChar);
+
+            return Regex.Replace(formatContent, MultipleLinePattern, DoubleNewLine, RegexOptions.IgnoreCase);
+        }
     }
 }
