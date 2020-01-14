@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Fanex.Data.Repository;
 using MassTransit;
 using Soccer.Core.Leagues.Extensions;
-using Soccer.Core.Matches.Events;
+using Soccer.Core.Matches.QueueMessages;
 using Soccer.Database.Matches.Commands;
 using Soccer.EventProcessors.Leagues.Services;
 
@@ -31,7 +31,6 @@ namespace Soccer.EventProcessors.Matches
                 return;
             }
 
-
             var majorLeagues = await leagueService.GetMajorLeagues();
             var updatedMatches = message.Matches
                 .Select(match =>
@@ -40,7 +39,6 @@ namespace Soccer.EventProcessors.Matches
 
                     return match;
                 }).GroupBy(match => match.EventDate.Date);
-
 
             foreach (var matchGroup in updatedMatches)
             {

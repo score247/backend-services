@@ -1,9 +1,9 @@
-﻿namespace Soccer.Core.Matches.Events
-{
-    using System.Collections.Generic;
-    using Soccer.Core.Matches.Models;
-    using Soccer.Core.Shared.Enumerations;
+﻿using System.Collections.Generic;
+using Soccer.Core.Matches.Models;
+using Soccer.Core.Shared.Enumerations;
 
+namespace Soccer.Core.Matches.QueueMessages
+{
     public interface ILiveMatchFetchedMessage
     {
         Language Language { get; }

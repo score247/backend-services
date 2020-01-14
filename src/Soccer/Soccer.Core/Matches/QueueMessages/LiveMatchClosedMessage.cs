@@ -1,7 +1,7 @@
-﻿namespace Soccer.Core.Matches.Events
-{
-    using Soccer.Core.Matches.Models;
+﻿using Soccer.Core.Matches.Models;
 
+namespace Soccer.Core.Matches.QueueMessages
+{
     public interface ILiveMatchClosedMessage
     {
         string MatchId { get; }

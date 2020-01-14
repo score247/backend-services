@@ -173,7 +173,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             }
             catch (Exception ex)
             {
-                await logger.ErrorAsync($"{leagueInfo} {ex.ToString()}");
+                await logger.ErrorAsync($"{leagueInfo} {ex}");
             }
 
             return Enumerable.Empty<LeagueTable>();

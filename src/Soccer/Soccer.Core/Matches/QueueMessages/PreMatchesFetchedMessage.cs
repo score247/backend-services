@@ -1,8 +1,8 @@
-﻿namespace Soccer.Core.Matches.Events
-{
-    using System.Collections.Generic;
-    using Soccer.Core.Matches.Models;
+﻿using System.Collections.Generic;
+using Soccer.Core.Matches.Models;
 
+namespace Soccer.Core.Matches.QueueMessages
+{
     public interface IPreMatchesFetchedMessage
     {
         IEnumerable<Match> Matches { get; }

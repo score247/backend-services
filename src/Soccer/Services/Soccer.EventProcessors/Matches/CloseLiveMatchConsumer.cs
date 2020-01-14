@@ -1,9 +1,10 @@
-﻿namespace Soccer.EventProcessors.Matches
+﻿using Soccer.Core.Matches.QueueMessages;
+
+namespace Soccer.EventProcessors.Matches
 {
     using System.Threading.Tasks;
     using Fanex.Data.Repository;
     using MassTransit;
-    using Soccer.Core.Matches.Events;
     using Soccer.Database.Matches.Commands;
 
     public class CloseLiveMatchConsumer : IConsumer<ILiveMatchClosedMessage>

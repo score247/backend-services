@@ -7,8 +7,8 @@ using MassTransit;
 using Score247.Shared.Enumerations;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Leagues.QueueMessages;
-using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
+using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Matches;
@@ -133,7 +133,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 
         private void ScheduleTimelineAndLineUpsTasks(IList<Match> closedMatches, Language language)
         {
-            for (var i = 0; i * BatchOfMatchSize < closedMatches.Count(); i++)
+            for (var i = 0; i * BatchOfMatchSize < closedMatches.Count; i++)
             {
                 var batchOfMatches = closedMatches.Skip(i * BatchOfMatchSize).Take(BatchOfMatchSize).ToList();
 

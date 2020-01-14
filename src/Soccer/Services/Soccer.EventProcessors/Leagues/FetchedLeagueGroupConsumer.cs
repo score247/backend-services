@@ -19,7 +19,7 @@ namespace Soccer.EventProcessors.Leagues
         {
             var message = context.Message;
 
-            if (string.IsNullOrWhiteSpace(message.LeagueGroupStage.GroupStageName))
+            if (string.IsNullOrWhiteSpace(message.LeagueGroupStage.GroupName))
             {
                 return;
             }

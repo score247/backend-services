@@ -9,7 +9,6 @@ using MassTransit;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Score247.Shared.Tests;
-using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
@@ -205,7 +204,6 @@ namespace Soccer.EventProcessors.Tests.Matches
                         && cmd.NewMatches.Equals("[]")));
         }
 
-
         [Fact]
         public async Task Consume_ClosedMatchInApiButOutOfRange_ShouldExecuteCommand()
         {
@@ -225,7 +223,6 @@ namespace Soccer.EventProcessors.Tests.Matches
             // Assert
             await dynamicRepository.DidNotReceive().ExecuteAsync(Arg.Any<InsertOrRemoveLiveMatchesCommand>());
         }
-
 
         [Fact]
         public async Task Consume_LiveMatchedNotChanged_ShouldNotExecuteCommand()

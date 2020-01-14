@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Fanex.Data.Repository;
 using Fanex.Logging;
 using MassTransit;
-using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;

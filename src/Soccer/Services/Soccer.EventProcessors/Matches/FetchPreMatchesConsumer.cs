@@ -8,8 +8,8 @@ using Score247.Shared.Enumerations;
 using Soccer.Core.Leagues.Extensions;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Leagues.QueueMessages;
-using Soccer.Core.Matches.Events;
 using Soccer.Core.Matches.Models;
+using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.QueueMessages;
 using Soccer.Database.Matches.Commands;
@@ -37,7 +37,7 @@ namespace Soccer.EventProcessors.Matches
         {
             var message = context.Message;
 
-            if (message == null || !message.Matches.Any())
+            if (message?.Matches.Any() != true)
             {
                 return;
             }
@@ -77,9 +77,8 @@ namespace Soccer.EventProcessors.Matches
 
         private static LeagueGroupStage BuildLeagueGroupStage(Match match)
         {
-            var hasStanding = !match.League.HasGroups
-                || ((match.LeagueRound.Type.DisplayName == LeagueRoundType.Group)
-                        && (match.LeagueRound.Group != null));
+            var hasStanding = string.IsNullOrEmpty(match.GroupName)
+                    || (match.LeagueRound.Type.DisplayName == LeagueRoundType.Group && match.LeagueRound.Group != null);
 
             return new LeagueGroupStage(
                 match.League.Id,
