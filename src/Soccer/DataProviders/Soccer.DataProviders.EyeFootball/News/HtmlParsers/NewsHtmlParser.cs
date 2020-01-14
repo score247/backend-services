@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
 using HtmlAgilityPack;
 
 namespace Soccer.DataProviders.EyeFootball.News.HtmlParsers
@@ -34,7 +35,7 @@ namespace Soccer.DataProviders.EyeFootball.News.HtmlParsers
 
             return string.IsNullOrWhiteSpace(content)
                 ? string.Empty
-                : ReplaceMultipleNewLinesIntoSingle(RemoveComments(content).Trim(NewLineChar));
+                : HttpUtility.HtmlDecode(ReplaceMultipleNewLinesIntoSingle(RemoveComments(content).Trim(NewLineChar)));
         }
 
         public static string ParseAuthor(string htmlContent)
