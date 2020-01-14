@@ -4,8 +4,7 @@ CREATE DEFINER=`user`@`%` PROCEDURE `News_GetNews`(IN sportId INT, IN language V
 BEGIN
 	SELECT 		
 		`Title`,		
-		`Content`,
-        `ImageName`,
+		`Content`,       
 		`ImageSource`,        
 		`Link`,
         `Author`,
