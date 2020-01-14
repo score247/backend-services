@@ -6,4 +6,3 @@ BEGIN
     SET L.HasGroups = true
     WHERE L.Id = LeagueId;
 END
-DROP procedure IF EXISTS `League_EnableHasGroups`;
