@@ -6,9 +6,11 @@ BEGIN
 		`Title`,		
 		`Content`,
 		`ImageSource`,
+        `ImageName`,
 		`Link`,
         `Author`,
-        `PublishedDate`
+        `PublishedDate`,
+        `Provider`
 	FROM `News` AS N
 	WHERE N.SportId = sportID
     AND N.Language = language
