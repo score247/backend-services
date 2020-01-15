@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Fanex.Logging;
 using Hangfire;
 using MassTransit;
 using Score247.Shared.Enumerations;
@@ -33,25 +34,30 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         private readonly IBus messageBus;
         private readonly ILeagueService internalLeagueService;
         private readonly IHealthCheckService healthCheckService;
+        private readonly ILogger logger;
 
         public FetchLiveMatchesTask(
             IBus messageBus,
             IMatchService matchService,
             Func<DataProviderType, ILeagueService> leagueServiceFactory,
-            IHealthCheckService healthCheckService)
+            IHealthCheckService healthCheckService,
+            ILogger logger)
         {
             this.messageBus = messageBus;
             this.matchService = matchService;
             internalLeagueService = leagueServiceFactory(DataProviderType.Internal);
             this.healthCheckService = healthCheckService;
+            this.logger = logger;
         }
 
         public async Task FetchLiveMatches()
         {
+            await logger.InfoAsync("Start Fetch Live Matches");
             var majorLeagues = await internalLeagueService.GetLeagues(Language.en_US);
 
             foreach (var language in Enumeration.GetAll<Language>())
             {
+                await logger.InfoAsync("In Fetch Live Matches");
                 var matches = (await matchService.GetLiveMatches(language))
                      .Where(match => majorLeagues?.Any(league => league.Id == match.League.Id) == true)
                      .ToList();
@@ -75,6 +81,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                     task => task.FetchClosedMatchesStanding(closedMatches, language));
             }
 
+            await logger.InfoAsync("End Fetch Live Matches");
             await healthCheckService.HeartBeat(nameof(FetchLiveMatches));
         }
     }
