@@ -59,6 +59,10 @@
     <Setting Key="LiveMatch_UpdateTeamCards" SpName="LiveMatch_UpdateTeamCards" DbName="DefaultConnection" />
     <Setting Key="LiveMatch_UpdateTeamCards_Former" SpName="LiveMatch_UpdateTeamCards" DbName="FormerDbConnection" />
     <Setting Key="LiveMatch_UpdateTeamCards_Ahead" SpName="LiveMatch_UpdateTeamCards" DbName="AheadDbConnection" />
+
+    <Setting Key="LiveMatch_UpdateInjuryTime" SpName="LiveMatch_UpdateInjuryTime" DbName="DefaultConnection" />
+    <Setting Key="LiveMatch_UpdateInjuryTime_Former" SpName="LiveMatch_UpdateInjuryTime" DbName="FormerDbConnection" />
+    <Setting Key="LiveMatch_UpdateInjuryTime_Ahead" SpName="LiveMatch_UpdateInjuryTime" DbName="AheadDbConnection" />
   </Function>
   <Function Name="Odds">
     <Setting Key="Odds_InsertOdds" SpName="Odds_InsertOdds" DbName="DefaultConnection" />

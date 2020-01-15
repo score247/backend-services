@@ -84,6 +84,11 @@ namespace Soccer.EventProcessors.Matches
                 return;
             }
 
+            if (matchEvent.Timeline.Type.IsInjuryTime())
+            {
+                await messageBus.Publish<IInjuryTimeEventMessage>(new InjuryTimeEventMessage(matchEvent));
+            }
+
             await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
         }
 

@@ -46,7 +46,8 @@ namespace Soccer.DataProviders.SportRadar.Matches.DataMappers
                     LeagueMapper.MapLeagueSeason(sportEvent.season),
                     leagueGroupName,
                     groupName,
-                    null);
+                    null,
+                    new InjuryTimes());
         }
 
         public static MatchResult MapMatchResult(string status, SportEventStatusDto sportEventStatus = null)

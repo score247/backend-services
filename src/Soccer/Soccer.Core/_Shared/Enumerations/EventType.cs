@@ -121,5 +121,7 @@
         public bool IsMatchStarted() => this == MatchStarted;
 
         public bool IsYellowCard() => this == YellowCard;
+
+        public bool IsInjuryTime() => this == InjuryTimeShown;
     }
 }

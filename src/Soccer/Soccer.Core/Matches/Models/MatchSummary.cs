@@ -54,7 +54,8 @@ namespace Soccer.Core.Matches.Models
             string leagueAbbreviation,
             byte homeYellowCards,
             byte awayYellowCards,
-            string leagueRegion)
+            string leagueRegion,
+            InjuryTimes injuryTimes)
 #pragma warning restore S107 // Methods should not have too many parameters
         {
             Id = id;
@@ -97,6 +98,7 @@ namespace Soccer.Core.Matches.Models
             HomeYellowCards = homeYellowCards;
             AwayYellowCards = awayYellowCards;
             LeagueRegion = leagueRegion;
+            InjuryTimes = injuryTimes;
         }
 
         public MatchSummary()
@@ -115,6 +117,7 @@ namespace Soccer.Core.Matches.Models
             AssignTeamInformation(match);
             AssignLatestTimeline(match);
 
+            InjuryTimes = match.InjuryTimes;
             Coverage = match.Coverage;
         }
 
@@ -290,6 +293,8 @@ namespace Soccer.Core.Matches.Models
         public byte AwayYellowCards { get; private set; }
 
         public string LeagueRegion { get; private set; }
+
+        public InjuryTimes InjuryTimes { get; private set; }
     }
 
 #pragma warning restore S109 // Magic numbers should not be used
