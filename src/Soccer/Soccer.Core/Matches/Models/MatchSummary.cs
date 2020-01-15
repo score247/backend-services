@@ -116,8 +116,9 @@ namespace Soccer.Core.Matches.Models
             AssignMatchResult(match);
             AssignTeamInformation(match);
             AssignLatestTimeline(match);
+            AssignInjuryTime(match);
 
-            InjuryTimes = match.InjuryTimes;
+
             Coverage = match.Coverage;
         }
 
@@ -152,6 +153,36 @@ namespace Soccer.Core.Matches.Models
                 StoppageTime = match.LatestTimeline.StoppageTime;
                 InjuryTimeAnnounced = (byte)match.LatestTimeline.InjuryTimeAnnounced;
                 LastTimelineType = match.LatestTimeline.Type;
+            }
+        }
+
+        private void AssignInjuryTime(Match match)
+        {
+            InjuryTimes = match.InjuryTimes;
+
+            var matchStatus = match?.MatchResult?.MatchStatus;
+
+            if(matchStatus != null)
+            {
+                if(matchStatus.IsFirstHalf())
+                {
+                    InjuryTimeAnnounced = InjuryTimes.FirstHaft;
+                }
+
+                if (matchStatus.IsSecondHalf())
+                {
+                    InjuryTimeAnnounced = InjuryTimes.SecondHalf;
+                }
+
+                if (matchStatus.IsFirstHaftExtra())
+                {
+                    InjuryTimeAnnounced = InjuryTimes.FirstHaftExtra;
+                }
+
+                if (matchStatus.IsSecondHalfExtra())
+                {
+                    InjuryTimeAnnounced = InjuryTimes.SecondHalfExtra;
+                }
             }
         }
 

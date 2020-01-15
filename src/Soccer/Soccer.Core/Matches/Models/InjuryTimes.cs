@@ -10,10 +10,10 @@ namespace Soccer.Core.Matches.Models
 
         [JsonConstructor]
         public InjuryTimes(
-            int firstHaft,
-            int secondHalf,
-            int firstHaftExtra,
-            int secondHalfExtra)
+            byte firstHaft,
+            byte secondHalf,
+            byte firstHaftExtra,
+            byte secondHalfExtra)
         {
             FirstHaft = firstHaft;
             SecondHalf = secondHalf;
@@ -21,12 +21,12 @@ namespace Soccer.Core.Matches.Models
             SecondHalfExtra = secondHalfExtra;
         }
 
-        public int FirstHaft { get; }
+        public byte FirstHaft { get; }
 
-        public int SecondHalf { get; }
+        public byte SecondHalf { get; }
 
-        public int FirstHaftExtra { get; }
+        public byte FirstHaftExtra { get; }
 
-        public int SecondHalfExtra { get; }
+        public byte SecondHalfExtra { get; }
     }
 }
