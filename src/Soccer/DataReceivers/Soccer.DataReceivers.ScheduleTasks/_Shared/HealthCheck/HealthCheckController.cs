@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using Fanex.Logging;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Soccer.DataReceivers.ScheduleTasks._Shared.HealthCheck
@@ -12,10 +13,12 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.HealthCheck
     {
         private const int maxExpiredMinutes = 5;
         private readonly IHealthCheckService healthCheckService;
+        private readonly ILogger logger;
 
-        public HealthCheckController(IHealthCheckService healthCheckService)
+        public HealthCheckController(IHealthCheckService healthCheckService, ILogger logger)
         {
             this.healthCheckService = healthCheckService;
+            this.logger = logger;
         }
 
         [HttpGet]
@@ -30,12 +33,16 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.HealthCheck
                 ? HttpStatusCode.OK
                 : HttpStatusCode.InternalServerError;
 
+            var content = string.Join(
+                "<br />",
+                jobsStatus.Select(region =>
+                    $"Job Name: {region.Key} --- Last Health Check: {region.Value} --- Is Alive: {region.Item3}"));
+            logger.Info(content);
+
             return new ContentResult
             {
                 ContentType = "text/html",
-                Content = string.Join(
-                            "<br />",
-                            jobsStatus.Select(region => $"Job Name: {region.Key} --- Last Health Check: {region.Value} --- Is Alive: {region.Item3}")),
+                Content = content,
                 StatusCode = (int)statusCode
             };
         }
