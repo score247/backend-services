@@ -75,7 +75,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                     task => task.FetchClosedMatchesStanding(closedMatches, language));
             }
 
-            healthCheckService.HeartBeat(nameof(FetchLiveMatches));
+            await healthCheckService.HeartBeat(nameof(FetchLiveMatches));
         }
     }
 }

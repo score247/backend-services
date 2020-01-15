@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Fanex.Logging;
 
 namespace Soccer.DataReceivers.ScheduleTasks._Shared.HealthCheck
 {
     public interface IHealthCheckService
     {
-        void HeartBeat(string name);
+        Task HeartBeat(string name);
 
         Dictionary<string, DateTime> LatestHeartBeats();
     }
@@ -22,10 +23,10 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.HealthCheck
             this.logger = logger;
         }
 
-        public void HeartBeat(string name)
+        public async Task HeartBeat(string name)
         {
             healthCheckContainer[name] = DateTime.Now;
-            logger.Info("HealthCheckService: " + name);
+            await logger.InfoAsync("HealthCheckService: " + name);
         }
 
         public Dictionary<string, DateTime> LatestHeartBeats() => healthCheckContainer;
