@@ -59,6 +59,7 @@
                 serviceCollectionConfigurator.AddConsumer<FetchedLeagueGroupConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchNewsConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchNewsImageConsumer>();
+                serviceCollectionConfigurator.AddConsumer<InjuryTimeEventConsumer>();
             });
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -124,6 +125,14 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<CardEventConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents_InjuryTime", e =>
+                {
+                    e.PrefetchCount = PrefetchCount;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<InjuryTimeEventConsumer>(provider);
                 });
 
                 cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents_Penalties", e =>
