@@ -82,7 +82,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             RegisterTask<IFetchLeagueMatchesTask>(taskSettings.FetchLeagueMatchesAndTimelinesCron, job => job.FetchLeagueMatchesAndTimelineEvents());
             RegisterTask<IFetchLeagueStandingsTask>(taskSettings.FetchLeagueStandingCron, job => job.FetchLeagueStandings());
             RegisterTask<IFetchLeagueMatchesTask>(taskSettings.FetchLeagueMatchesCron, job => job.FetchLeagueMatches());
-            RegisterTask<IFetchNewsTask>(taskSettings.FetchPreMatchesCron, job => job.FetchNewsFeed());
+            RegisterTask<IFetchNewsTask>(taskSettings.FetchNewsFeedCron, job => job.FetchNewsFeed());
         }
 
         private static void RegisterTask<T>(string cronExpression, Expression<Func<T, Task>> methodCall)

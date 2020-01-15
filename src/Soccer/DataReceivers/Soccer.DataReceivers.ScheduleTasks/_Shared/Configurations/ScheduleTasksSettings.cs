@@ -25,7 +25,8 @@
             int fetchLineupsDelayedMinutes = 30,
             int fetchTeamResultsDelayedMinutes = 40,
             string fetchLeagueStandingCron = "0 0 1 1 *",
-            string fetchLeagueMatchesCron = "0 0 31 2 0")
+            string fetchLeagueMatchesCron = "0 0 31 2 0",
+            string fetchNewsFeedCron = "0 * * * *")
         {
             QueueBatchSize = queueBatchSize;
             FetchMatchResultDateSpan = fetchMatchResultDateSpan;
@@ -48,6 +49,7 @@
             FetchTeamResultsDelayedMinutes = fetchTeamResultsDelayedMinutes;
             FetchLeagueStandingCron = fetchLeagueStandingCron;
             FetchLeagueMatchesCron = fetchLeagueMatchesCron;
+            FetchNewsFeedCron = fetchNewsFeedCron;
         }
 
 #pragma warning restore S107 // Methods should not have too many parameters
@@ -93,5 +95,7 @@
         public int FetchTeamResultsDelayedMinutes { get; set; }
 
         public string FetchLeagueStandingCron { get; set; }
+
+        public string FetchNewsFeedCron { get; set; }
     }
 }
