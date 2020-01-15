@@ -73,9 +73,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
                 BackgroundJob.Enqueue<IFetchLeagueStandingsTask>(
                     task => task.FetchClosedMatchesStanding(closedMatches, language));
-
-                healthCheckService.HeartBeat(nameof(FetchLiveMatches));
             }
+
+            healthCheckService.HeartBeat(nameof(FetchLiveMatches));
         }
     }
 }
