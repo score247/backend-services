@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Fanex.Logging;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,7 +23,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.HealthCheck
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
             var latestHeartbeat = healthCheckService.LatestHeartBeats();
             var jobsStatus = latestHeartbeat
@@ -37,7 +38,8 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.HealthCheck
                 "<br />",
                 jobsStatus.Select(region =>
                     $"Job Name: {region.Key} --- Last Health Check: {region.Value} --- Is Alive: {region.Item3}"));
-            logger.Info(content);
+
+            await logger.InfoAsync("Enter Health Check");
 
             return new ContentResult
             {
