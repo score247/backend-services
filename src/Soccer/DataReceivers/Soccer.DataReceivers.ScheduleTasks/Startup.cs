@@ -45,13 +45,13 @@ namespace Soccer.DataReceivers.ScheduleTasks
                 return next();
             });
 
-            var options = new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.All
-            };
-            options.KnownNetworks.Clear();
-            options.KnownProxies.Clear();
-            app.UseForwardedHeaders(options);
+            //var options = new ForwardedHeadersOptions
+            //{
+            //    ForwardedHeaders = ForwardedHeaders.All
+            //};
+            //options.KnownNetworks.Clear();
+            //options.KnownProxies.Clear();
+            //app.UseForwardedHeaders(options);
 
             app.ConfigureExceptionHandler();
             app.UseHangfire(Configuration);
