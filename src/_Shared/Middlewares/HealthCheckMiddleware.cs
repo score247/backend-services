@@ -1,10 +1,10 @@
-﻿namespace Soccer.API.Shared.Middlewares
-{
-    using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-    using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
+namespace Score247.Shared.Middlewares
+{
     public static class HealthCheckMiddleware
     {
         public static void AddHealthCheck(this IServiceCollection services)
@@ -16,7 +16,7 @@
 
         public static void UseHealthCheck(this IApplicationBuilder app)
         {
-            app.UseHealthChecks("/liveness", new HealthCheckOptions
+            app.UseHealthChecks("/healthStatus", new HealthCheckOptions
             {
                 Predicate = r => r.Name.Contains("self")
             });

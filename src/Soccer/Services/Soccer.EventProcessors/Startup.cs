@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Score247.Shared;
+using Score247.Shared.Middlewares;
 using Soccer.Cache.Leagues;
 using Soccer.EventProcessors.Leagues.Services;
 using Soccer.EventProcessors.Matches.Filters;

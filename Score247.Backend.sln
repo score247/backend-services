@@ -79,7 +79,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.Database.Tests", "So
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.DataProviders.SportRadar.Tests", "src\Soccer\DataProviders\Tests\Soccer.DataProviders.SportRadar.Tests\Soccer.DataProviders.SportRadar.Tests.csproj", "{0EAE5B33-6393-4391-8240-77C01328F33A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soccer.DataProviders.EyeFootball", "src\Soccer\DataProviders\Soccer.DataProviders.EyeFootball\Soccer.DataProviders.EyeFootball.csproj", "{4AA8CEC0-8E31-45C0-8D3F-2A53D9F38390}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.DataProviders.EyeFootball", "src\Soccer\DataProviders\Soccer.DataProviders.EyeFootball\Soccer.DataProviders.EyeFootball.csproj", "{4AA8CEC0-8E31-45C0-8D3F-2A53D9F38390}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MonitoringServices", "MonitoringServices", "{1D5E99C6-4B2C-449A-9869-24A1E1108655}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -232,6 +234,7 @@ Global
 		{67FD68FE-0353-47F0-8D39-9053BB9DC2C7} = {541501FD-77F9-4707-97FD-44C59D1D6BA6}
 		{0EAE5B33-6393-4391-8240-77C01328F33A} = {A7A2B310-406C-42B4-91C4-23D27C2D124B}
 		{4AA8CEC0-8E31-45C0-8D3F-2A53D9F38390} = {306F12AC-6FA4-45D5-BF8C-EDDF54E6CC9D}
+		{1D5E99C6-4B2C-449A-9869-24A1E1108655} = {198744D0-8880-4490-89C9-A5F37EDC427B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D13AD9D6-D937-45A2-AAA4-3EFA410C7411}

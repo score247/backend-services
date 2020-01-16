@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Score247.Shared.Middlewares;
 using Soccer.API._Shared.Formatters;
 using Soccer.API.Shared.Middlewares;
 using Soccer.Database;

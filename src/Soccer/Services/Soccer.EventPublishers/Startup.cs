@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using Score247.Shared.Middlewares;
 using Soccer.EventPublishers.Shared.Configurations;
 using Soccer.EventPublishers.Shared.Middlewares;
 using Soccer.EventPublishers.Hubs;
@@ -35,6 +36,7 @@ namespace Soccer.EventPublishers
             services.AddSignalR();
             services.AddLogging(Configuration);
             services.AddRabbitMq(Configuration);
+            services.AddHealthCheck();
 #pragma warning disable ASP0000 // Do not call 'IServiceCollection.BuildServiceProvider' in 'ConfigureServices'
             //TODO: Harrison, please review it, don't know why you did it
             services.AddSingleton(services.BuildServiceProvider());
@@ -58,6 +60,7 @@ namespace Soccer.EventPublishers
             });
 
             app.UseRabbitMq(applicationLifetime);
+            app.UseHealthCheck();
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {

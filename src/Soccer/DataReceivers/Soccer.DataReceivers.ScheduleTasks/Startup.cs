@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Score247.Shared.Middlewares;
 using Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares;
 using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
 
@@ -33,7 +34,7 @@ namespace Soccer.DataReceivers.ScheduleTasks
             services.AddServices(Configuration, appSettings);
             services.AddRabbitMq(Configuration);
             services.RegisterHangfire(Configuration);
-
+            services.AddHealthCheck();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
         }
 
@@ -49,6 +50,7 @@ namespace Soccer.DataReceivers.ScheduleTasks
             app.UseHangfire(Configuration);
             app.UseCors(opt => opt.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseStaticFiles();
+            app.UseHealthCheck();
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
