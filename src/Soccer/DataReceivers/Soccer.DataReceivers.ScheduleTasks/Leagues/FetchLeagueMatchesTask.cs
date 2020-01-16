@@ -10,6 +10,7 @@ using Soccer.Core.Leagues.QueueMessages;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.DataProviders._Shared.Enumerations;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Matches;
 using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
@@ -30,6 +31,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
         [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
         Task FetchMatchesForLeague(IList<LeagueSeasonProcessedInfo> leagueSeasons, bool isScheduleTimelineEvents = true);
+
+        [AutomaticRetry(Attempts = 1)]
+        [Queue("low")]
+        Task FetchMatchesForLeague(IList<League> leagues);
     }
 
     public class FetchLeagueMatchesTask : IFetchLeagueMatchesTask
@@ -43,6 +48,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 
         private readonly ILeagueScheduleService leagueScheduleService;
         private readonly ILeagueSeasonService leagueSeasonService;
+        private readonly ILeagueService leagueService;
         private readonly IBackgroundJobClient jobClient;
 
         public FetchLeagueMatchesTask(
@@ -50,31 +56,33 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             IAppSettings appSettings,
             ILeagueScheduleService leagueScheduleService,
             ILeagueSeasonService leagueSeasonService,
-            IBackgroundJobClient jobClient)
+            IBackgroundJobClient jobClient,
+            Func<DataProviderType, ILeagueService> leagueServiceFactory)
         {
             this.appSettings = appSettings;
             this.messageBus = messageBus;
             this.leagueScheduleService = leagueScheduleService;
             this.leagueSeasonService = leagueSeasonService;
             this.jobClient = jobClient;
+            this.leagueService = leagueServiceFactory(DataProviderType.Internal);
 
             TeamResultsDelayTimespan = TimeSpan.FromMinutes(appSettings.ScheduleTasksSettings.FetchTeamResultsDelayedMinutes);
         }
 
         public async Task FetchLeagueMatches()
         {
-            var unprocessedLeagueSeason = (await leagueSeasonService.GetUnprocessedLeagueSeason())?.ToList();
+            var leagues = (await leagueService.GetLeagues(Language.en_US))?.ToList();
 
-            if (unprocessedLeagueSeason == null || unprocessedLeagueSeason.Count == 0)
+            if (leagues == null || leagues.Count == 0)
             {
                 return;
             }
 
-            for (var i = 0; i * BatchOfLeagueSize < unprocessedLeagueSeason.Count; i++)
+            for (var i = 0; i * BatchOfLeagueSize < leagues.Count; i++)
             {
-                var batchOfLeague = unprocessedLeagueSeason.Skip(i * BatchOfLeagueSize).Take(BatchOfLeagueSize).ToList();
+                var batchOfLeague = leagues.Skip(i * BatchOfLeagueSize).Take(BatchOfLeagueSize).ToList();
 
-                jobClient.Enqueue<IFetchLeagueMatchesTask>(t => t.FetchMatchesForLeague(batchOfLeague, false));
+                jobClient.Enqueue<IFetchLeagueMatchesTask>(t => t.FetchMatchesForLeague(batchOfLeague));
             }
         }
 
@@ -116,6 +124,19 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 
             await messageBus.Publish<ILeagueMatchesFetchedMessage>(
                 new LeagueMatchesFetchedMessage(leagueSeasons));
+        }
+
+        public async Task FetchMatchesForLeague(IList<League> leagues)
+        {
+            foreach (var league in leagues)
+            {
+                foreach (var language in Enumeration.GetAll<Language>())
+                {
+                    var matches = (await leagueScheduleService.GetLeagueMatches(league.Region, league.Id, language)).ToList();
+
+                    await PublishPreMatchesMessage(language, matches);
+                }
+            }
         }
 
         private async Task PublishPreMatchesMessage(Language language, IList<Match> matches)

@@ -25,7 +25,7 @@
             int fetchLineupsDelayedMinutes = 30,
             int fetchTeamResultsDelayedMinutes = 40,
             string fetchLeagueStandingCron = "0 0 1 1 *",
-            string fetchLeagueMatchesCron = "0 0 31 2 0",
+            string fetchLeagueMatchesCron = "0 5 * * 2",
             string fetchNewsFeedCron = "0 * * * *")
         {
             QueueBatchSize = queueBatchSize;
