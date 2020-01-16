@@ -1,4 +1,4 @@
-CREATE DEFINER=`root`@`%` PROCEDURE `News_UpdateNews`(
+CREATE DEFINER=`root`@`%` PROCEDURE `Admin_News_UpdateNews`(
 	IN title varchar(500), 
 	IN content mediumtext,
     IN imageSource varchar(250),
@@ -7,6 +7,7 @@ CREATE DEFINER=`root`@`%` PROCEDURE `News_UpdateNews`(
     IN publishedDate datetime,
     IN provider varchar(250),
     IN link varchar(250),
+    IN isShown bool,
     IN languageCode varchar(10))
 BEGIN
 	UPDATE `News` as NS
@@ -16,6 +17,7 @@ BEGIN
         NS.ImageName = imageName,
         NS.Author = author,
         NS.Provider = provider,
+        NS.IsShown = isShown,
         NS.ModifiedTime = now()
     WHERE NS.Link = link
 		AND NS.Language = languageCode;
