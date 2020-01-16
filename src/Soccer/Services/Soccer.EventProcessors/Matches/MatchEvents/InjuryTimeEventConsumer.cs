@@ -35,10 +35,10 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
 
 #pragma warning disable S1067 // Expressions should not be too complex
             var injuryTimes = new InjuryTimes(
-                   matchEvent.MatchResult.MatchStatus.IsFirstHalf() ? matchEvent.Timeline.InjuryTimeAnnounced : 0,
-                   matchEvent.MatchResult.MatchStatus.IsSecondHalf() ? matchEvent.Timeline.InjuryTimeAnnounced : 0,
-                   matchEvent.MatchResult.MatchStatus.IsFirstHaftExtra() ? matchEvent.Timeline.InjuryTimeAnnounced : 0,
-                   matchEvent.MatchResult.MatchStatus.IsSecondHalfExtra() ? matchEvent.Timeline.InjuryTimeAnnounced : 0
+                   matchEvent.MatchResult.MatchStatus.IsFirstHalf() ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
+                   matchEvent.MatchResult.MatchStatus.IsSecondHalf() ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
+                   matchEvent.MatchResult.MatchStatus.IsFirstHaftExtra() ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
+                   matchEvent.MatchResult.MatchStatus.IsSecondHalfExtra() ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0
                 );
 #pragma warning restore S1067 // Expressions should not be too complex
 
