@@ -41,10 +41,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
             appSettings = Substitute.For<IAppSettings>();
             messageBus = Substitute.For<IBus>();
             jobClient = Substitute.For<IBackgroundJobClient>();
+            var leagueFactory = Substitute.For<Func<DataProviderType, ILeagueService>>();
 
             appSettings.ScheduleTasksSettings.Returns(A.Dummy<ScheduleTasksSettings>());
 
-            fetchLeagueMatchesTask = new FetchLeagueMatchesTask(messageBus, appSettings, leagueScheduleService, leagueSeasonService, jobClient);
+            fetchLeagueMatchesTask = new FetchLeagueMatchesTask(messageBus, appSettings, leagueScheduleService, leagueSeasonService, jobClient, leagueFactory);
         }
 
         [Fact]
