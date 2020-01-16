@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Fanex.Data.Repository;
+using Fanex.Logging;
 using MassTransit;
+using Newtonsoft.Json;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages.MatchEvents;
 using Soccer.Database.Matches.Commands;
@@ -13,10 +15,12 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
     public class InjuryTimeEventConsumer : IConsumer<IInjuryTimeEventMessage>
     {
         private readonly IDynamicRepository dynamicRepository;
+        private readonly ILogger logger;
 
-        public InjuryTimeEventConsumer(IDynamicRepository dynamicRepository)
+        public InjuryTimeEventConsumer(IDynamicRepository dynamicRepository, ILogger logger)
         {
             this.dynamicRepository = dynamicRepository;
+            this.logger = logger;
         }
 
 #pragma warning disable S1541 // Methods and properties should not be too complex
@@ -34,6 +38,7 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
             }
 
 #pragma warning disable S1067 // Expressions should not be too complex
+            await logger.InfoAsync(JsonConvert.SerializeObject(matchEvent));
             var injuryTimes = new InjuryTimes(
                    matchEvent.MatchResult.MatchStatus.IsFirstHalf() ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
                    matchEvent.MatchResult.MatchStatus.IsSecondHalf() ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
