@@ -30,7 +30,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.HealthCheck
                 .Select(heartbeat => (heartbeat.Key, heartbeat.Value, heartbeat.Value.AddMinutes(maxExpiredMinutes) > DateTime.Now))
                 .ToList();
 
-            var statusCode = jobsStatus.All(job => job.Item3)
+            var statusCode = jobsStatus.All(job => job.Item3) && jobsStatus.Count > 0
                 ? HttpStatusCode.OK
                 : HttpStatusCode.ServiceUnavailable;
 
