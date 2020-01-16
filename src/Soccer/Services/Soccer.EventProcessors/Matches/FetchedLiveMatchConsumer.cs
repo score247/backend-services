@@ -126,7 +126,14 @@ namespace Soccer.EventProcessors.Matches
             }
         }
 
-        private Task PublishLiveMatchUpdatedMessage(Language language, IEnumerable<Match> newLiveMatches, IEnumerable<Match> removedMatches)
-            => messageBus.Publish<ILiveMatchUpdatedMessage>(new LiveMatchUpdatedMessage(language, newLiveMatches, removedMatches));
+        private async Task PublishLiveMatchUpdatedMessage(Language language, IEnumerable<Match> newLiveMatches, IEnumerable<Match> removedMatches)
+        {
+            await messageBus.Publish<ILiveMatchUpdatedMessage>(new LiveMatchUpdatedMessage(language, newLiveMatches, removedMatches));
+
+            if (newLiveMatches?.Count() > 0)
+            {
+                await logger.InfoAsync($"FetchLiveMatch - {DateTime.Now} - new live matches: {newLiveMatches.Count()}", "Live", newLiveMatches);
+            }            
+        }
     }
 }
