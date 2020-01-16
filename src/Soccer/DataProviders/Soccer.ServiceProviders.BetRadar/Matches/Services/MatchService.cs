@@ -102,31 +102,6 @@
             return matches;
         }
 
-        public async Task<IReadOnlyList<Match>> GetLiveMatches(Language language)
-        {
-            var matches = new List<Match>();
-            var sportRadarLanguage = language.ToSportRadarFormat();
-
-            foreach (var region in soccerSettings.Regions)
-            {
-                try
-                {
-                    var liveResult = await matchApi.GetLiveResult(soccerSettings.AccessLevel, soccerSettings.Version, region.Name, sportRadarLanguage, region.Key);
-
-                    if (liveResult?.results?.Any() == true)
-                    {
-                        matches.AddRange(liveResult.results.Select(mr => MatchMapper.MapMatch(mr.sport_event, mr.sport_event_status, null, region.Name, language)));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    await LogApiException(ex);
-                }
-            }
-
-            return matches;
-        }
-
         private async Task LogApiException(Exception ex)
         {
             var apiException = ex as ApiException;
@@ -171,6 +146,31 @@
             }
 
             return null;
+        }
+
+        public async Task<(IReadOnlyList<string>, IReadOnlyList<Match>)> GetLiveMatches(Language language)
+        {
+            var matches = new List<Match>();
+            var sportRadarLanguage = language.ToSportRadarFormat();
+
+            foreach (var region in soccerSettings.Regions)
+            {
+                try
+                {
+                    var liveResult = await matchApi.GetLiveResult(soccerSettings.AccessLevel, soccerSettings.Version, region.Name, sportRadarLanguage, region.Key);
+
+                    if (liveResult?.results?.Any() == true)
+                    {
+                        matches.AddRange(liveResult.results.Select(mr => MatchMapper.MapMatch(mr.sport_event, mr.sport_event_status, null, region.Name, language)));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    await LogApiException(ex);
+                }
+            }
+
+            return (soccerSettings.Regions.Select(region => region.Name).ToList(), matches);
         }
     }
 }

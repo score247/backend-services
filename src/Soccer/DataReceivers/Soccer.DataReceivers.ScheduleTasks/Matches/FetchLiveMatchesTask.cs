@@ -47,16 +47,18 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
         }
 
         public async Task FetchLiveMatches()
-        {            
+        {
             var majorLeagues = await internalLeagueService.GetLeagues(Language.en_US);
 
             foreach (var language in Enumeration.GetAll<Language>())
             {
-                var matches = (await matchService.GetLiveMatches(language))
-                     .Where(match => majorLeagues?.Any(league => league.Id == match.League.Id) == true)
+                var (regions, matches) = (await matchService.GetLiveMatches(language));
+
+                var liveMatches = matches
+                    .Where(match => majorLeagues?.Any(league => league.Id == match.League.Id) == true)
                      .ToList();
 
-                await messageBus.Publish<ILiveMatchFetchedMessage>(new LiveMatchFetchedMessage(language, matches));
+                await messageBus.Publish<ILiveMatchFetchedMessage>(new LiveMatchFetchedMessage(language, liveMatches, regions));
 
                 var closedMatches = matches.Where(match => match.MatchResult.EventStatus.IsClosed()).ToList();
 

@@ -55,10 +55,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
 
             foreach (var language in Enumeration.GetAll<Language>())
             {
-                var matches = (await matchService.GetLiveMatches(Language.en_US))
-                    .Where(match => majorLeagues.Any(league => league.Id == match.League.Id));
+                var (_, matches) = (await matchService.GetLiveMatches(Language.en_US));
+                var liveMatches = matches.Where(match => majorLeagues.Any(league => league.Id == match.League.Id));
 
-                foreach (var match in matches)
+                foreach (var match in liveMatches)
                 {
                     await fetchTimelineTask.FetchTimelineEvents(match.Id, match.Region, language);
 

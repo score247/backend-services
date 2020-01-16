@@ -105,6 +105,11 @@ namespace Soccer.DataReceivers.ScheduleTasks.Matches
                             match.League.SetAbbreviation(league.Abbreviation);
                         }
 
+                        if (match.Id == "sr:match:20581137")
+                        {
+                            var leagueGroupName = match.LeagueGroupName;
+                        }
+
                         return match;
                     })
                     .ToList();

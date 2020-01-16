@@ -42,7 +42,10 @@ namespace Soccer.EventProcessors.Matches
                 return;
             }
 
-            var currentLiveMatches = (await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(message.Language))).ToList();
+            var currentLiveMatches = (await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(message.Language)))
+                .Where(match => message.Regions.Contains(match.Region))
+                .ToList();
+
             var removedMatches = GetRemovedMatches(message.Matches, currentLiveMatches);
             var newMatches = GetNewMatches(message.Matches.ToList(), currentLiveMatches).Except(removedMatches).ToList();
 

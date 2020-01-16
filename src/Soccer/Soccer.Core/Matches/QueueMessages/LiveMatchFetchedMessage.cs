@@ -9,11 +9,13 @@ namespace Soccer.Core.Matches.QueueMessages
         Language Language { get; }
 
         IEnumerable<Match> Matches { get; }
+
+        IReadOnlyList<string> Regions { get; }
     }
 
     public class LiveMatchFetchedMessage : ILiveMatchFetchedMessage
     {
-        public LiveMatchFetchedMessage(Language language, IEnumerable<Match> matches)
+        public LiveMatchFetchedMessage(Language language, IEnumerable<Match> matches, IReadOnlyList<string> regions)
         {
             Language = language;
             Matches = matches;
@@ -22,5 +24,7 @@ namespace Soccer.Core.Matches.QueueMessages
         public Language Language { get; }
 
         public IEnumerable<Match> Matches { get; }
+
+        public IReadOnlyList<string> Regions { get; }
     }
 }
