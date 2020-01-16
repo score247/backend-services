@@ -19,6 +19,7 @@ namespace Soccer.Core.Matches.QueueMessages
         {
             Language = language;
             Matches = matches;
+            Regions = regions;
         }
 
         public Language Language { get; }

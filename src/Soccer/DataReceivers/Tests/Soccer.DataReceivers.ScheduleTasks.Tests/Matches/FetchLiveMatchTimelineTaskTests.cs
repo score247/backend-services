@@ -77,10 +77,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 A.Dummy<League>().With(league => league.Id, "major:league")
             });
 
-            matchService.GetLiveMatches(Arg.Any<Language>()).Returns(new List<Match>
+            matchService.GetLiveMatches(Arg.Any<Language>()).Returns((null, new List<Match>
             {
                  StubMatch("not-major:league", MatchStatus.Live)
-            });
+            }));
 
             await fetchLiveMatchesTimelineTask.FetchLiveMatchesTimeline();
 
@@ -95,10 +95,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 A.Dummy<League>().With(league => league.Id, "major:league")
             });
 
-            matchService.GetLiveMatches(Arg.Any<Language>()).Returns(new List<Match>
+            matchService.GetLiveMatches(Arg.Any<Language>()).Returns((null, new List<Match>
             {
                  StubMatch("major:league", MatchStatus.Live)
-            });
+            }));
 
             await fetchLiveMatchesTimelineTask.FetchLiveMatchesTimeline();
 
@@ -113,10 +113,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 A.Dummy<League>().With(league => league.Id, "major:league")
             });
 
-            matchService.GetLiveMatches(Arg.Any<Language>()).Returns(new List<Match>
+            matchService.GetLiveMatches(Arg.Any<Language>()).Returns((null, new List<Match>
             {
                  StubMatch("major:league", MatchStatus.Closed)
-            });
+            }));
 
             await fetchLiveMatchesTimelineTask.FetchLiveMatchesTimeline();
 
@@ -131,12 +131,12 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 A.Dummy<League>().With(league => league.Id, "major:league")
             });
 
-            matchService.GetLiveMatches(Arg.Any<Language>()).Returns(new List<Match>
+            matchService.GetLiveMatches(Arg.Any<Language>()).Returns((null, new List<Match>
             {
                  StubMatch("major:league", MatchStatus.Closed),
                  StubMatch("major:league", MatchStatus.NotStarted),
                  StubMatch("major:league", MatchStatus.Live)
-            });
+            }));
 
             await fetchLiveMatchesTimelineTask.FetchLiveMatchesTimeline();
 
@@ -147,6 +147,5 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         => A.Dummy<Match>()
             .With(match => match.League, A.Dummy<League>().With(league => league.Id, leagueId))
             .With(match => match.MatchResult, A.Dummy<MatchResult>().With(result => result.EventStatus, eventStatus));
-
     }
 }

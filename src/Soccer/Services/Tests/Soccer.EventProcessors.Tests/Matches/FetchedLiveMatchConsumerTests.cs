@@ -53,7 +53,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         public async Task Consume_ShouldFetchLiveMatchFromRepository()
         {
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>()));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>(), null));
 
             await fetchedLiveMatchConsumer.Consume(context);
 
@@ -68,7 +68,7 @@ namespace Soccer.EventProcessors.Tests.Matches
                 .With(m => m.MatchResult, A.Dummy<MatchResult>().With(r => r.EventStatus, MatchStatus.Live))
                 ;
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { match }));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { match }, null));
 
             await fetchedLiveMatchConsumer.Consume(context);
 
@@ -84,7 +84,7 @@ namespace Soccer.EventProcessors.Tests.Matches
                 .With(m => m.Id, "match:closed");
 
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>()));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>(), null));
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>()).Returns(new List<Match> { match });
 
@@ -106,7 +106,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             var matchesFromApi = new List<Match> { StubNotStartedMatch("match:not:started", DateTimeOffset.Now.AddMinutes(11)) };
 
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi, null));
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>
@@ -133,7 +133,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             var matchesFromApi = new List<Match> { newMatch, liveMatch, closedMatch };
 
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi, null));
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>
@@ -161,7 +161,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             var matchesFromApi = new List<Match> { newMatch, liveMatch, closedMatch };
 
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi, null));
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>
@@ -187,7 +187,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             var matchesFromApi = new List<Match> { closedMatch };
 
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi, null));
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>
@@ -212,7 +212,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             var matchesFromApi = new List<Match> { closedMatch };
 
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi, null));
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>());
@@ -232,7 +232,7 @@ namespace Soccer.EventProcessors.Tests.Matches
                 .With(m => m.MatchResult, A.Dummy<MatchResult>().With(r => r.EventStatus, MatchStatus.Live))
                 ;
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { newMatch }));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { newMatch }, null));
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match> { newMatch });
@@ -250,7 +250,7 @@ namespace Soccer.EventProcessors.Tests.Matches
                 .With(m => m.MatchResult, A.Dummy<MatchResult>().With(r => r.EventStatus, MatchStatus.Live))
                 ;
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>()));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>(), null));
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>()).Returns(new List<Match> { match });
 

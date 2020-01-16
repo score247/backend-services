@@ -118,7 +118,6 @@ namespace Soccer.Core.Matches.Models
             AssignLatestTimeline(match);
             AssignInjuryTime(match);
 
-
             Coverage = match.Coverage;
         }
 
@@ -143,6 +142,7 @@ namespace Soccer.Core.Matches.Models
                 LeagueAbbreviation = match.League.Abbreviation;
                 LeagueRegion = match.League.Region;
                 LeagueHasStandings = match.LeagueGroupStage?.HasStanding ?? true;
+                GroupName = match.GroupName;
             }
         }
 
@@ -162,9 +162,9 @@ namespace Soccer.Core.Matches.Models
 
             var matchStatus = match?.MatchResult?.MatchStatus;
 
-            if(matchStatus != null)
+            if (matchStatus != null)
             {
-                if(matchStatus.IsFirstHalf())
+                if (matchStatus.IsFirstHalf())
                 {
                     InjuryTimeAnnounced = InjuryTimes.FirstHaft;
                 }
@@ -277,6 +277,7 @@ namespace Soccer.Core.Matches.Models
         public byte HomeRedCards { get; private set; }
 
         public byte HomeYellowRedCards { get; private set; }
+
         public byte AwayRedCards { get; private set; }
 
         public byte AwayYellowRedCards { get; private set; }
@@ -326,6 +327,8 @@ namespace Soccer.Core.Matches.Models
         public string LeagueRegion { get; private set; }
 
         public InjuryTimes InjuryTimes { get; private set; }
+
+        public string GroupName { get; private set; }
     }
 
 #pragma warning restore S109 // Magic numbers should not be used
