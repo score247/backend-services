@@ -32,7 +32,7 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.HealthCheck
 
             var statusCode = jobsStatus.All(job => job.Item3)
                 ? HttpStatusCode.OK
-                : HttpStatusCode.InternalServerError;
+                : HttpStatusCode.ServiceUnavailable;
 
             var content = string.Join(
                 "<br />",

@@ -21,16 +21,14 @@ namespace Soccer.DataReceivers.EventListeners.Shared
         [HttpGet]
         public IActionResult Get()
         {
-            var regions = new List<(string, DateTime, bool)>();
-
-            foreach (var healthCheckRegion in healthCheckContainer)
-            {
-                regions.Add((healthCheckRegion.Key, healthCheckRegion.Value, healthCheckRegion.Value.AddMinutes(maxExpiredMinutes) > DateTime.Now));
-            }
+            var regions = healthCheckContainer
+                .Select(healthCheckRegion
+                    => (healthCheckRegion.Key, healthCheckRegion.Value, healthCheckRegion.Value.AddMinutes(maxExpiredMinutes) > DateTime.Now))
+                .ToList();
 
             var statusCode = regions.All(region => region.Item3)
                 ? HttpStatusCode.OK
-                : HttpStatusCode.InternalServerError;
+                : HttpStatusCode.ServiceUnavailable;
 
             return new ContentResult
             {
