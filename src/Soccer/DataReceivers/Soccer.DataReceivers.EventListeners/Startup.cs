@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Refit;
 using Score247.Shared;
+using Score247.Shared.Middlewares;
 using Sentry;
 using Soccer.Cache.Leagues;
 using Soccer.Core._Shared.Helpers;
@@ -55,7 +56,7 @@ namespace Soccer.DataReceivers.EventListeners
 
             var sportRadarDataProviderSettings = new SportRadarSettings();
             Configuration.GetSection("DataProviders:SportRadar").Bind(sportRadarDataProviderSettings);
-
+            services.AddHealthCheck();
             services.AddSingleton<ICacheManager, CacheManager>();
             services.AddSingleton<ICacheService, CacheService>();
             services.AddSingleton<ILeagueCache, LeagueCache>();
@@ -112,7 +113,7 @@ namespace Soccer.DataReceivers.EventListeners
             }
 
             app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-
+            app.UseHealthCheck();
             app.UseStaticFiles();
             app.UseRouting();
 
