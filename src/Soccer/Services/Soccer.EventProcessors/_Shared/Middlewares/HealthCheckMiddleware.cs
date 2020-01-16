@@ -16,7 +16,7 @@
 
         public static void UseHealthCheck(this IApplicationBuilder app)
         {
-            app.UseHealthChecks("/liveness", new HealthCheckOptions
+            app.UseHealthChecks("/healthcheck", new HealthCheckOptions
             {
                 Predicate = r => r.Name.Contains("self")
             });
