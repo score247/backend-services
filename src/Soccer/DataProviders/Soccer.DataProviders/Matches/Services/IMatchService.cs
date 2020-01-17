@@ -12,7 +12,7 @@
 
         Task<IReadOnlyList<Match>> GetPostMatches(DateTime date, Language language);
 
-        Task<(IReadOnlyList<string>,IReadOnlyList<Match>)> GetLiveMatches(Language language);
+        Task<(string[],IReadOnlyList<Match>)> GetLiveMatches(Language language);
 
         Task<MatchLineups> GetLineups(string matchId, string region, Language language);
     }

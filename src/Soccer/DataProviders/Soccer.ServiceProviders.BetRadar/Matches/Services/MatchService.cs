@@ -148,7 +148,7 @@
             return null;
         }
 
-        public async Task<(IReadOnlyList<string>, IReadOnlyList<Match>)> GetLiveMatches(Language language)
+        public async Task<(string[], IReadOnlyList<Match>)> GetLiveMatches(Language language)
         {
             var matches = new List<Match>();
             var sportRadarLanguage = language.ToSportRadarFormat();
@@ -170,7 +170,7 @@
                 }
             }
 
-            return (soccerSettings.Regions.Select(region => region.Name).ToList(), matches);
+            return (soccerSettings.Regions.Select(region => region.Name).ToArray(), matches);
         }
     }
 }

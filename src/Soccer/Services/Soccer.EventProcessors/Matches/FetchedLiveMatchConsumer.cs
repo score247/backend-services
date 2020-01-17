@@ -60,7 +60,7 @@ namespace Soccer.EventProcessors.Matches
             }
         }
        
-        private async Task<List<Match>> GetCurrentLiveMatches(Language language, IReadOnlyList<string> regions)
+        private async Task<List<Match>> GetCurrentLiveMatches(Language language, string[] regions)
         {
             var liveMatches = (await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(language)))
                             ?.Where(match => regions.Contains(match.Region))
