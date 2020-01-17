@@ -37,14 +37,13 @@ namespace Soccer.EventProcessors.Matches
         {
             var message = context?.Message;
 
-            if (message?.Matches == null || message.Language == null)
+            if (message?.Matches == null || message.Language == null || message.Regions?.Any() == false)
             {
+                await logger.InfoAsync($"FetchLiveMatch - {DateTime.Now} - Consume: Region.Any {message?.Regions?.Any()}");
                 return;
             }
 
-            var currentLiveMatches = (await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(message.Language)))
-                .Where(match => message.Regions.Contains(match.Region))
-                .ToList();
+            var currentLiveMatches = await GetCurrentLiveMatches(message.Language, message.Regions);
 
             var removedMatches = GetRemovedMatches(message.Matches, currentLiveMatches);
             var newMatches = GetNewMatches(message.Matches.ToList(), currentLiveMatches).Except(removedMatches).ToList();
@@ -59,6 +58,13 @@ namespace Soccer.EventProcessors.Matches
 
                 await Task.WhenAll(tasks);
             }
+        }
+
+        private async Task<List<Match>> GetCurrentLiveMatches(Language language, IReadOnlyList<string> regions)
+        {
+            return (await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(language)))
+                            .Where(match => regions.Contains(match.Region))
+                            .ToList();
         }
 
         private IEnumerable<Match> GetNewMatches(IList<Match> fetchedLiveMatches, IEnumerable<Match> currentLiveMatches)

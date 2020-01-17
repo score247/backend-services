@@ -137,10 +137,13 @@ namespace Soccer.API.Matches
                 return new MatchLineups();
             }
 
-            var timelineEvents = (await GetMatchInfo(id, language, eventDate)).TimelineEvents.ToList();
+            var timelineEvents = (await GetMatchInfo(id, language, eventDate)).TimelineEvents?.ToList();
 
-            CombineTimelineEventsIntoLineups(matchLineups.Home, timelineEvents);
-            CombineTimelineEventsIntoLineups(matchLineups.Away, timelineEvents);
+            if (timelineEvents?.Any() == true)
+            {
+                CombineTimelineEventsIntoLineups(matchLineups.Home, timelineEvents);
+                CombineTimelineEventsIntoLineups(matchLineups.Away, timelineEvents);
+            }
 
             return matchLineups;
         }
