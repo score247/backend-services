@@ -53,7 +53,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         public async Task Consume_ShouldFetchLiveMatchFromRepository()
         {
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>(), null));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>(), new string[] { "eu" }));
 
             await fetchedLiveMatchConsumer.Consume(context);
 
@@ -68,7 +68,7 @@ namespace Soccer.EventProcessors.Tests.Matches
                 .With(m => m.MatchResult, A.Dummy<MatchResult>().With(r => r.EventStatus, MatchStatus.Live))
                 ;
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { match }, null));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { match }, new string[] { "eu" }));
 
             await fetchedLiveMatchConsumer.Consume(context);
 
@@ -81,10 +81,11 @@ namespace Soccer.EventProcessors.Tests.Matches
         public async Task Consume_RemoveMatches_ShouldExecuteCommand()
         {
             var match = A.Dummy<Match>()
-                .With(m => m.Id, "match:closed");
+                .With(m => m.Id, "match:closed")
+                .With(m => m.Region, "eu");
 
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>(), null));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>(), new string[] { "eu" }));
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>()).Returns(new List<Match> { match });
 
@@ -106,7 +107,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             var matchesFromApi = new List<Match> { StubNotStartedMatch("match:not:started", DateTimeOffset.Now.AddMinutes(11)) };
 
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi, null));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi, new string[] { "eu" }));
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>
@@ -133,7 +134,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             var matchesFromApi = new List<Match> { newMatch, liveMatch, closedMatch };
 
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi, null));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi, new string[] { "eu" }));
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>
@@ -161,7 +162,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             var matchesFromApi = new List<Match> { newMatch, liveMatch, closedMatch };
 
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi, null));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi, new string[] { "eu" }));
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>
@@ -187,7 +188,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             var matchesFromApi = new List<Match> { closedMatch };
 
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi, null));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi, new string[] { "eu" }));
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>
@@ -212,7 +213,7 @@ namespace Soccer.EventProcessors.Tests.Matches
             var matchesFromApi = new List<Match> { closedMatch };
 
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi, null));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, matchesFromApi, new string[] { "eu" }));
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match>());
@@ -229,10 +230,11 @@ namespace Soccer.EventProcessors.Tests.Matches
         {
             var newMatch = A.Dummy<Match>()
                 .With(m => m.Id, "1")
+                .With(m => m.Region, "eu")
                 .With(m => m.MatchResult, A.Dummy<MatchResult>().With(r => r.EventStatus, MatchStatus.Live))
                 ;
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { newMatch }, null));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, new List<Match> { newMatch }, new string[] { "eu" }));
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>())
                 .Returns(new List<Match> { newMatch });
@@ -247,10 +249,10 @@ namespace Soccer.EventProcessors.Tests.Matches
         {
             var match = A.Dummy<Match>()
                 .With(m => m.Id, "1")
-                .With(m => m.MatchResult, A.Dummy<MatchResult>().With(r => r.EventStatus, MatchStatus.Live))
-                ;
+                .With(m => m.Region, "eu")
+                .With(m => m.MatchResult, A.Dummy<MatchResult>().With(r => r.EventStatus, MatchStatus.Live));
             context.Message
-                .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>(), null));
+                .Returns(new LiveMatchFetchedMessage(Language.en_US, Enumerable.Empty<Match>(), new string[] { "eu" }));
 
             dynamicRepository.FetchAsync<Match>(Arg.Any<GetLiveMatchesCriteria>()).Returns(new List<Match> { match });
 
@@ -264,6 +266,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         private static Match StubNotStartedMatch(string id, DateTimeOffset eventDate)
             => A.Dummy<Match>()
                 .With(m => m.Id, id)
+                .With(m => m.Region, "eu")
                 .With(m => m.EventDate, eventDate)
                 .With(m => m.MatchResult, A.Dummy<MatchResult>().With(r => r.EventStatus, MatchStatus.NotStarted))
                 ;
@@ -271,12 +274,14 @@ namespace Soccer.EventProcessors.Tests.Matches
         private static Match StubLiveMatch(string id)
             => A.Dummy<Match>()
                 .With(m => m.Id, id)
+                .With(m => m.Region, "eu")
                 .With(m => m.MatchResult, A.Dummy<MatchResult>().With(r => r.EventStatus, MatchStatus.Live))
                 ;
 
         private static Match StubClosedMatch(string id, DateTimeOffset? endedTime)
             => A.Dummy<Match>()
                 .With(m => m.Id, id)
+                .With(m => m.Region, "eu")
                 .With(m => m.MatchResult, A.Dummy<MatchResult>()
                     .With(r => r.EventStatus, MatchStatus.Closed)
                     .With(r => r.MatchStatus, MatchStatus.Ended)
