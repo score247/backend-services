@@ -368,6 +368,7 @@ namespace Soccer.API.Tests.Matches
 
         private void StubTimelineEvents(string matchId, IEnumerable<TimelineEvent> timelineEvents = null)
         {
+            
             timelineEvents = timelineEvents
                 ?? new List<TimelineEvent>
                 {
@@ -429,9 +430,11 @@ namespace Soccer.API.Tests.Matches
                         .With(t => t.Player, new Player(Player8ID, "Player 1")),
                 };
 
+            var match = fixture.Create<Match>().With(match => match.TimeLines, timelineEvents);
+
             dynamicRepository
-                .FetchAsync<TimelineEvent>(Arg.Is<GetTimelineEventsCriteria>(criteria => criteria.MatchId == matchId))
-                .Returns(Task.FromResult(timelineEvents));
+                .GetAsync<Match>(Arg.Is<GetMatchTimelineEventsCriteria>(criteria => criteria.MatchId == matchId))
+                .Returns(Task.FromResult(match));
         }
 
         private MatchLineups StubMatchLineups(string matchId, TeamLineups homeTeam = null, TeamLineups awayTeam = null)

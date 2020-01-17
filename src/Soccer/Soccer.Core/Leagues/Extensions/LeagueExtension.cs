@@ -14,6 +14,7 @@ namespace Soccer.Core.Leagues.Extensions
         private const string termsplit = "::";
         private const string underscore = "_";
         private const string space = " ";
+        private const char spaceChar =  ' ';
         private const int second = 2;
 
         public static void UpdateMajorLeagueInfo(this League league, IEnumerable<League> majorLeagues)
@@ -189,7 +190,7 @@ namespace Soccer.Core.Leagues.Extensions
 
         private static bool IsLeagueNameContainsGroup(string leagueName, string groupName) 
         => leagueName
-            .Split(commaChar)
+            .Split(spaceChar)
             .Any(name => name.Equals(groupName, StringComparison.OrdinalIgnoreCase));
         
 

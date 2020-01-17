@@ -63,6 +63,10 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
         public async Task FetchLiveMatchesTimeline_HasMajorLeagues_FetchLiveMatchApi()
         {
             internalLeagueService.GetLeagues(Arg.Any<Language>()).Returns(A.CollectionOfDummy<League>(5));
+            matchService.GetLiveMatches(Arg.Any<Language>()).Returns((null, new List<Match>
+            {
+                 StubMatch("not-major:league", MatchStatus.Live)
+            }));
 
             await fetchLiveMatchesTimelineTask.FetchLiveMatchesTimeline();
 

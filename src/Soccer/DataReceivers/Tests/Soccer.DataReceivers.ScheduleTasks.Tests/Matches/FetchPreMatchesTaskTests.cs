@@ -145,28 +145,6 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Matches
                 .Create(Arg.Is<Job>(job => job.Method.Name == nameof(IFetchPreMatchesTimelineTask.FetchPreMatchTimeline)), Arg.Any<EnqueuedState>());
         }
 
-        [Fact]
-        public async Task FetchPreMatchesForDate_MatchInMajor_PublishLeagueGroupFetchedMessage()
-        {
-            var fetchDate = DateTime.Now;
-            matchService.GetPreMatches(Arg.Is<DateTime>(date => date == fetchDate), Language.en_US).Returns(new List<Match>
-            {
-                StubMajorMatchWithLeagueRound(LeagueRoundType.CupRound, "FINAL")
-            });
-
-            await fetchPreMatchesTask.FetchPreMatchesForDate(fetchDate, Language.en_US, majorLeagues);
-
-            await messageBus
-              .Received(1)
-              .Publish<ILeagueGroupFetchedMessage>(Arg.Any<LeagueGroupFetchedMessage>());
-        }
-
-        private Match StubMajorMatchWithLeagueRound(LeagueRoundType leagueRoundType, string group)
-            => A.Dummy<Match>()
-                    .With(match => match.League, StubLeague("major:1"))
-                    .With(match => match.MatchResult, StubMatchResult(MatchStatus.NotStarted))
-                    .With(match => match.LeagueRound, StubLeagueRound(leagueRoundType, group));
-
         private LeagueRound StubLeagueRound(LeagueRoundType leagueRoundType, string group)
             => A.Dummy<LeagueRound>()
                 .With(round => round.Type, leagueRoundType)
