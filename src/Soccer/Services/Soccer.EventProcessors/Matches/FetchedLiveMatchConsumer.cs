@@ -37,7 +37,7 @@ namespace Soccer.EventProcessors.Matches
         {
             var message = context?.Message;
 
-            if (message?.Matches == null || message.Language == null || message.Regions?.Any() == false)
+            if (message == null || message.Matches == null || message.Language == null || message.Regions == null || message.Regions.Any() == false)
             {
                 await logger.InfoAsync($"FetchLiveMatch - {DateTime.Now} - Consume: Region.Any {message?.Regions?.Any()}");
                 return;
@@ -59,7 +59,7 @@ namespace Soccer.EventProcessors.Matches
                 await Task.WhenAll(tasks);
             }
         }
-
+       
         private async Task<List<Match>> GetCurrentLiveMatches(Language language, IReadOnlyList<string> regions)
         {
             var liveMatches = (await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(language)))
