@@ -30,5 +30,9 @@
         }
 
         public bool IsPenalties() => this == Penalties;
+
+        public bool IsRegular() => this == RegularPeriod;
+
+        public bool IsOvertime() => this == Overtime;
     }
 }

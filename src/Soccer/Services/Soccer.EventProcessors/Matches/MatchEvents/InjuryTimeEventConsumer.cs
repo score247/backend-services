@@ -30,7 +30,7 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
             var matchEvent = context?.Message?.MatchEvent;
             var matchStatus = matchEvent?.MatchResult?.MatchStatus;
 
-            if (matchEvent == null 
+            if (matchEvent == null
                 || matchStatus == null
                 || matchEvent.Timeline?.Type.IsInjuryTime() == false)
             {
@@ -47,14 +47,28 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
                     $"{matchEvent?.Timeline?.Type?.DisplayName}"));
 
             var injuryTimes = new InjuryTimes(
-                   matchEvent.MatchResult.MatchStatus.IsFirstHalf() ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
-                   matchEvent.MatchResult.MatchStatus.IsSecondHalf() ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
-                   matchEvent.MatchResult.MatchStatus.IsFirstHaftExtra() ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
-                   matchEvent.MatchResult.MatchStatus.IsSecondHalfExtra() ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0
+                   IsRegularPeriod(matchEvent.Timeline, 1) ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
+                   IsRegularPeriod(matchEvent.Timeline, 2) ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
+                   IsOvertimePeriod(matchEvent.Timeline, 1) ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
+                   IsOvertimePeriod(matchEvent.Timeline, 1) ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0
                 );
 #pragma warning restore S1067 // Expressions should not be too complex
 
             await dynamicRepository.ExecuteAsync(new UpdateLiveMatchInjuryTimesCommand(matchEvent.MatchId, injuryTimes, matchEvent.EventDate));
+        }
+
+#pragma warning disable S2325 // Methods and properties that don't access instance data should be static
+        private bool IsRegularPeriod(TimelineEvent timeline, int period)
+#pragma warning restore S2325 // Methods and properties that don't access instance data should be static
+        {
+            return timeline.PeriodType.IsRegular() && timeline.Period == period;
+        }
+
+#pragma warning disable S2325 // Methods and properties that don't access instance data should be static
+        private bool IsOvertimePeriod(TimelineEvent timeline, int period)
+#pragma warning restore S2325 // Methods and properties that don't access instance data should be static
+        {
+            return timeline.PeriodType.IsOvertime() && timeline.Period == period;
         }
     }
 }
