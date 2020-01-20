@@ -162,7 +162,15 @@ namespace Soccer.DataProviders.SportRadar.Matches.Services
 
             if (sportRadarSettings.EnabledResponseLog)
             {
-                await logger.InfoAsync($"{DateTime.Now} - region {regionStream.Key} Receiving: {matchEventPayload}");
+                await logger.InfoAsync(string.Join(
+                    " - ",
+                    DateTime.Now,
+                    $"Region {regionStream.Key}",
+                    $"{matchEvent?.MatchId}",
+                    $"{matchEvent?.MatchResult?.MatchStatus?.DisplayName}",
+                    $"{matchEvent?.Timeline?.Id}",
+                    $"{matchEvent?.Timeline?.Type?.DisplayName}",
+                    $"Payload: {matchEventPayload}"));
             }
         }
 

@@ -38,7 +38,14 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
             }
 
 #pragma warning disable S1067 // Expressions should not be too complex
-            await logger.InfoAsync(JsonConvert.SerializeObject(matchEvent));
+            await logger.InfoAsync(string.Join(
+                    " - ",
+                    DateTime.Now,
+                    $"{matchEvent?.MatchId}",
+                    $"{matchEvent?.MatchResult?.MatchStatus?.DisplayName}",
+                    $"{matchEvent?.Timeline?.Id}",
+                    $"{matchEvent?.Timeline?.Type?.DisplayName}"));
+
             var injuryTimes = new InjuryTimes(
                    matchEvent.MatchResult.MatchStatus.IsFirstHalf() ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
                    matchEvent.MatchResult.MatchStatus.IsSecondHalf() ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
