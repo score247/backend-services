@@ -50,7 +50,7 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
                    IsRegularPeriod(matchEvent.Timeline, 1) ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
                    IsRegularPeriod(matchEvent.Timeline, 2) ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
                    IsOvertimePeriod(matchEvent.Timeline, 1) ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
-                   IsOvertimePeriod(matchEvent.Timeline, 1) ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0
+                   IsOvertimePeriod(matchEvent.Timeline, 2) ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0
                 );
 #pragma warning restore S1067 // Expressions should not be too complex
 
