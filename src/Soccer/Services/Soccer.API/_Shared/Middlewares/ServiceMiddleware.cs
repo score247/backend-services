@@ -41,6 +41,7 @@ namespace Soccer.API.Shared.Middlewares
 
             services.AddScoped<INewsQueryService, NewsQueryService>();
             services.AddScoped<IFavoriteCommandService, FavoriteCommandService>();
+            services.AddScoped<IFavoriteQueryService, FavoriteQueryService>();
         }
     }
 }

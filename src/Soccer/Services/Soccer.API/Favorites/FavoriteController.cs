@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Soccer.API.Favorites.Requests;
+using Soccer.Core._Shared.Enumerations;
 using Soccer.Core.Favorites;
 
 namespace Soccer.API.Favorites
@@ -24,5 +26,10 @@ namespace Soccer.API.Favorites
         [Route("remove/")]
         public async Task<bool> Remove(string userId, string favoriteId)
             => await mediator.Send(new RemoveFavoriteRequest(userId, favoriteId));
+
+        [HttpGet]
+        [Route("users/get/")]
+        public async Task<IReadOnlyList<string>> GetByMatchId(string id, byte favoriteType = FavoriteType.MatchValue)
+            => await mediator.Send(new GetUsersByFavoriteRequest(id, favoriteType));
     }
 }

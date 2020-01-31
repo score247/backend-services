@@ -4,9 +4,13 @@ namespace Soccer.Core._Shared.Enumerations
 {
     public class FavoriteType : Enumeration
     {
-        public static readonly FavoriteType Match = new FavoriteType(1, "match");
-        public static readonly FavoriteType League = new FavoriteType(2, "league");
-        public static readonly FavoriteType Team = new FavoriteType(3, "team");
+        public const byte MatchValue = 1;
+        public const byte LeagueValue = 2;
+        public const byte TeamValue = 3;
+
+        public static readonly FavoriteType Match = new FavoriteType(MatchValue, "match");
+        public static readonly FavoriteType League = new FavoriteType(LeagueValue, "league");
+        public static readonly FavoriteType Team = new FavoriteType(TeamValue, "team");
 
         public FavoriteType()
         {
