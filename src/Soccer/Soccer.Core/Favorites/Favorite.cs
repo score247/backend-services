@@ -4,7 +4,7 @@ namespace Soccer.Core.Favorites
 {
     public class Favorite
     {
-        public Favorite(string id, FavoriteType type)
+        public Favorite(string id, byte type)
         {
             Id = id;
             Type = type;
@@ -12,6 +12,6 @@ namespace Soccer.Core.Favorites
 
         public string Id { get; }
 
-        public FavoriteType Type { get; }
+        public byte Type { get; }
     }
 }
