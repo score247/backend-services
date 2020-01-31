@@ -19,5 +19,10 @@ namespace Soccer.API.Favorites
         [Route("add/")]
         public async Task<bool> Add([FromBody]UserFavorite userFavorite)
             => await mediator.Send(new AddFavoriteRequest(userFavorite));
+
+        [HttpDelete]
+        [Route("remove/")]
+        public async Task<bool> Remove(string userId, string favoriteId)
+            => await mediator.Send(new RemoveFavoriteRequest(userId, favoriteId));
     }
 }

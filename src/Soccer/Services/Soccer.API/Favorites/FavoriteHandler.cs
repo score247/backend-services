@@ -6,8 +6,9 @@ using Soccer.API.Favorites.Requests;
 namespace Soccer.API.Favorites
 {
     public class FavoriteHandler :
-        IRequestHandler<AddFavoriteRequest, bool>
-    {
+        IRequestHandler<AddFavoriteRequest, bool>,
+        IRequestHandler<RemoveFavoriteRequest, bool>
+    { 
         private readonly IFavoriteCommandService favoriteCommandService;
 
         public FavoriteHandler(
@@ -17,6 +18,9 @@ namespace Soccer.API.Favorites
         }
 
         public async Task<bool> Handle(AddFavoriteRequest request, CancellationToken cancellationToken)
-        => (await favoriteCommandService.AddFavorite(request.UserFavorite)) > 0; 
+        => (await favoriteCommandService.AddFavorite(request.UserFavorite)) > 0;
+
+        public async Task<bool> Handle(RemoveFavoriteRequest request, CancellationToken cancellationToken)
+        => (await favoriteCommandService.RemoveFavorite(request.UserId, request.FavoriteId)) > 0;
     }
 }

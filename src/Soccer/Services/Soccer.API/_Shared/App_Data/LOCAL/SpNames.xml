@@ -54,5 +54,6 @@
   </Function>
   <Function Name="Favorites">
     <Setting Key="UserFavorite_InsertOrUpdate" SpName="UserFavorite_InsertOrUpdate" DbName="DefaultConnection" />
+    <Setting Key="UserFavorite_RemoveById" SpName="UserFavorite_RemoveById" DbName="DefaultConnection" />
   </Function>
 </Functions>
