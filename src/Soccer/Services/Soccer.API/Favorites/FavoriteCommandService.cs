@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Fanex.Data.Repository;
-using Soccer.Core.Favorites;
+using Soccer.Core.Models.Favorites;
 using Soccer.Database.Favorites.Commands;
 
 namespace Soccer.API.Favorites

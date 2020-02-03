@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Soccer.API.Favorites.Requests;
-using Soccer.Core.Favorites;
 
 namespace Soccer.API.Favorites
 {

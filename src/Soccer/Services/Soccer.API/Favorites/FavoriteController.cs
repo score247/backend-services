@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Soccer.API.Favorites.Requests;
 using Soccer.Core._Shared.Enumerations;
-using Soccer.Core.Favorites;
+using Soccer.Core.Models.Favorites;
 
 namespace Soccer.API.Favorites
 {

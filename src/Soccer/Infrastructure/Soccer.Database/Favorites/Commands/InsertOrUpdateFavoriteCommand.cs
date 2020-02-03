@@ -1,5 +1,5 @@
 ﻿using Score247.Shared.Enumerations;
-using Soccer.Core.Favorites;
+using Soccer.Core.Models.Favorites;
 
 namespace Soccer.Database.Favorites.Commands
 {

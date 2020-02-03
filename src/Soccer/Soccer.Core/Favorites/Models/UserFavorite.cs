@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using MessagePack;
 
-namespace Soccer.Core.Favorites
+namespace Soccer.Core.Models.Favorites
 {
+    [MessagePackObject(keyAsPropertyName: true)]
     public class UserFavorite
     {
         public UserFavorite(string userId, IList<Favorite> favorites)

@@ -1,7 +1,8 @@
-﻿using Soccer.Core._Shared.Enumerations;
+﻿using MessagePack;
 
-namespace Soccer.Core.Favorites
+namespace Soccer.Core.Models.Favorites
 {
+    [MessagePackObject(keyAsPropertyName: true)]
     public class Favorite
     {
         public Favorite(string id, byte type)

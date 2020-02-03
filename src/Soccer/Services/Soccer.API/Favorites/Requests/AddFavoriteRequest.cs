@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Soccer.Core.Favorites;
+using Soccer.Core.Models.Favorites;
 
 namespace Soccer.API.Favorites.Requests
 {
