@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Caching;
 using MassTransit;
-using Microsoft.EntityFrameworkCore.Internal;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
 using Soccer.Core.Matches.QueueMessages.MatchEvents;

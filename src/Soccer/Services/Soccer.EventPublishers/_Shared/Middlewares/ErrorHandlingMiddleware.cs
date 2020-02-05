@@ -5,7 +5,6 @@ using Fanex.Logging.Sentry;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Sentry;
@@ -37,17 +36,7 @@ namespace Soccer.EventPublishers.Shared.Middlewares
                     var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
                     var exception = exceptionHandlerPathFeature?.Error;
                     var customInfo = new Dictionary<string, object>();
-
-                    if (exception is DbUpdateConcurrencyException)
-                    {
-                        var entries = (exception as DbUpdateConcurrencyException).Entries;
-
-                        foreach (var entry in entries)
-                        {
-                            customInfo.Add("Conflict Item", entry.Metadata.Name);
-                        }
-                    }
-
+                   
                     await ExceptionHandler.HandleAsync(exception, context, customInfo);
 
                     context.Response.StatusCode = InternalErrorServerCode;
