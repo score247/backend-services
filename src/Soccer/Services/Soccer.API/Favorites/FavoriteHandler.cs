@@ -10,7 +10,8 @@ namespace Soccer.API.Favorites
     public class FavoriteHandler :
         IRequestHandler<AddFavoriteRequest, bool>,
         IRequestHandler<RemoveFavoriteRequest, bool>,
-        IRequestHandler<GetUsersByFavoriteRequest, IReadOnlyList<string>>
+        IRequestHandler<GetUsersByFavoriteRequest, IReadOnlyList<string>>,
+        IRequestHandler<SyncFavoriteRequest, bool>
     { 
         private readonly IFavoriteCommandService favoriteCommandService;
         private readonly IFavoriteQueryService favoriteQueryService;
@@ -31,5 +32,21 @@ namespace Soccer.API.Favorites
 
         public async Task<IReadOnlyList<string>> Handle(GetUsersByFavoriteRequest request, CancellationToken cancellationToken)
         => (await favoriteQueryService.GetUsersByFavoriteId(request.Id, request.FavoriteType))?.ToList();
+
+        public async Task<bool> Handle(SyncFavoriteRequest request, CancellationToken cancellationToken)
+        {
+            if (request.SyncUserFavorite?.RemovedUserFavorite != null 
+                && request.SyncUserFavorite.RemovedUserFavorite.Favorites.Any())
+            {
+                var userId = request.SyncUserFavorite.RemovedUserFavorite.UserId;
+
+                foreach (var removeFavorite in request.SyncUserFavorite.RemovedUserFavorite.Favorites)
+                {
+                    await favoriteCommandService.RemoveFavorite(userId, removeFavorite.Id);
+                }
+            }
+
+            return (await favoriteCommandService.AddFavorite(request.SyncUserFavorite.AddedUserFavorite)) > 0;
+        }
     }
 }
