@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using MassTransit;
 using Soccer.Core.Notification.Models;
 using Soccer.Core.Notification.QueueMessages;
@@ -20,6 +19,7 @@ namespace Soccer.EventProcessors.Notifications
             var message = context.Message;
 
             //TODO generate notification message
+            
 
             //TODO de-dup message
 
