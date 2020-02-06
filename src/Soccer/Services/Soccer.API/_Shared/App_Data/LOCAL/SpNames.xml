@@ -57,4 +57,7 @@
     <Setting Key="UserFavorite_RemoveById" SpName="UserFavorite_RemoveById" DbName="DefaultConnection" />
     <Setting Key="UserFavorite_GetUsersByFavoriteId" SpName="UserFavorite_GetUsersByFavoriteId" DbName="DefaultConnection" />
   </Function>
+  <Function Name="AccountSettings">
+    <Setting Key="UserFavorite_UpdatePushEventStatus" SpName="UserFavorite_UpdatePushEventStatus" DbName="DefaultConnection" />
+  </Function>
 </Functions>

@@ -4,6 +4,7 @@ using Fanex.Caching;
 using Fanex.Data.Repository;
 using Microsoft.Extensions.DependencyInjection;
 using Score247.Shared;
+using Soccer.API.AccountSettings;
 using Soccer.API.Favorites;
 using Soccer.API.Leagues;
 using Soccer.API.Matches;
@@ -42,6 +43,7 @@ namespace Soccer.API.Shared.Middlewares
             services.AddScoped<INewsQueryService, NewsQueryService>();
             services.AddScoped<IFavoriteCommandService, FavoriteCommandService>();
             services.AddScoped<IFavoriteQueryService, FavoriteQueryService>();
+            services.AddScoped<IAccountSettingCommandService, AccountSettingCommandService>();
         }
     }
 }
