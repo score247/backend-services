@@ -41,7 +41,7 @@
                                                         league.Name.Split(' ', System.StringSplitOptions.RemoveEmptyEntries)
                                                         .Select(word => string.IsNullOrWhiteSpace(word)
                                                                             ? string.Empty
-                                                                            : word[0].ToString()));
+                                                                            : word[0].ToString().ToUpperInvariant()));
 
                     await dynamicRepository.ExecuteAsync(new UpdateLeagueAbbreviationCommand(league.Id, leagueAbbreviation));
                 }
