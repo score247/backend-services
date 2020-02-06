@@ -85,7 +85,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MonitoringServices", "Monit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.NotificationPublishers", "src\Soccer\Services\Soccer.NotificationPublishers\Soccer.NotificationPublishers.csproj", "{8E1F5D47-4A25-417D-B1CB-7E9C27E3339D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soccer.NotificationPublisers.AppCenter", "src\Soccer\Services\Soccer.NotificationPublisers.AppCenter\Soccer.NotificationPublisers.AppCenter.csproj", "{0DED0C1A-2914-4B8C-BE19-85D165DB68D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.NotificationPublishers.AppCenter", "src\Soccer\Services\Soccer.NotificationPublisers.AppCenter\Soccer.NotificationPublishers.AppCenter.csproj", "{0DED0C1A-2914-4B8C-BE19-85D165DB68D8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
