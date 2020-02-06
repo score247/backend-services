@@ -28,7 +28,7 @@ namespace Soccer.NotificationPublisers.AppCenter.Matches.DataMappers
                     body = eventNotification.Content,
                     custom_data = new Dictionary<string, string>
                     {
-                        { nameof(eventNotification.MatchId), eventNotification.MatchId },
+                        { "id", eventNotification.MatchId },
                         { nameof(eventNotification.SportId), eventNotification.SportId.ToString() },
                         { "sound", "default" },
                         { "type", NotificationType.MatchValue.ToString() }
