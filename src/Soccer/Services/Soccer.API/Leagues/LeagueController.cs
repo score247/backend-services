@@ -59,5 +59,10 @@ namespace Soccer.API.Leagues
         [Route("{leagueId}/seasons/{seasonId}/groups")]
         public async Task<IEnumerable<LeagueGroupStage>> GetLeagueGroups(string leagueId, string seasonId, string language = Language.English)
             => await mediator.Send(new LeagueGroupsRequest(leagueId, seasonId, language));
+
+        [HttpGet, AllowAnonymous]
+        [Route("updateabbreviation")]
+        public async Task<bool> UpdateLeagueAbbreviation()
+            => await mediator.Send(new UpdateLeagueAbbreviationRequest());
     }
 }

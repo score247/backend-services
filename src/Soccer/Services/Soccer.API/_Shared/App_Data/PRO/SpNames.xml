@@ -43,6 +43,7 @@
     <Setting Key="League_GetStandings" SpName="League_GetStandings" DbName="DefaultConnection" />
     <Setting Key="League_GetCountryLeagues" SpName="League_GetCountryLeagues" DbName="DefaultConnection" />
     <Setting Key="League_GetGroupStages" SpName="League_GetGroupStages" DbName="DefaultConnection" />
+    <Setting Key="League_UpdateAbbreviation" SpName="League_UpdateAbbreviation" DbName="DefaultConnection" />
   </Function>
   <Function Name="Team">
     <Setting Key="Team_GetHeadToHeads" SpName="Team_GetHeadToHeads" DbName="DefaultConnection" />
