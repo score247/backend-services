@@ -1,9 +1,14 @@
-﻿using MassTransit;
+﻿using System;
+using Fanex.Logging;
+using GreenPipes;
+using GreenPipes.Configurators;
+using MassTransit;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Soccer.Core.Shared.Configurations;
+using Soccer.NotificationPublishers.Matches;
 
 namespace Soccer.NotificationPublishers._Shared.Middlewares
 {
@@ -18,7 +23,7 @@ namespace Soccer.NotificationPublishers._Shared.Middlewares
 
             services.AddMassTransit(serviceCollectionConfigurator =>
             {
-                //serviceCollectionConfigurator.AddConsumer<ProcessMatchEventPublisher>();
+                serviceCollectionConfigurator.AddConsumer<MatchNotificationProcessedConsumer>();
             });
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -33,15 +38,13 @@ namespace Soccer.NotificationPublishers._Shared.Middlewares
                         h.Heartbeat(300);
                     });
 
-                //cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchEvents", e =>
-                //{
-                //    e.PrefetchCount = prefetCount;
-                //    e.UseMessageRetry(RetryAndLogError(services));
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_ProcessedMatchNotification", e =>
+                {
+                    e.PrefetchCount = prefetCount;
+                    e.UseMessageRetry(RetryAndLogError(services));
 
-                //    e.Consumer<ProcessMatchEventPublisher>(provider);
-                //});
-
-                
+                    e.Consumer<MatchNotificationProcessedConsumer>(provider);
+                });
             }));
 
             services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
@@ -59,20 +62,20 @@ namespace Soccer.NotificationPublishers._Shared.Middlewares
 
 #pragma warning disable S109 // Magic numbers should not be used
 
-        //private static Action<IRetryConfigurator> RetryAndLogError(IServiceCollection services)
-        //{
-        //    return x =>
-        //    {
-        //        x.Interval(1, 100);
-        //        x.Handle<Exception>((ex) =>
-        //        {
-        //            var logger = services.BuildServiceProvider().GetRequiredService<ILogger>();
-        //            logger.Error(ex.Message, ex);
+        private static Action<IRetryConfigurator> RetryAndLogError(IServiceCollection services)
+        {
+            return x =>
+            {
+                x.Interval(1, 100);
+                x.Handle<Exception>((ex) =>
+                {
+                    var logger = services.BuildServiceProvider().GetRequiredService<ILogger>();
+                    logger.Error(ex.Message, ex);
 
-        //            return true;
-        //        });
-        //    };
-        //}
+                    return true;
+                });
+            };
+        }
 
 #pragma warning restore S109 // Magic numbers should not be used
     }

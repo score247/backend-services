@@ -47,7 +47,7 @@ namespace Soccer.NotificationPublishers.Matches
                     ? settings.iOSAppName 
                     : settings.AndroidAppName;
 
-                var result = await pushApi.Push(settings.ApiKey, settings.Organizattion, appName, pushMessage);
+                var result = await pushApi.Push(settings.ApiKey, settings.Organization, appName, pushMessage);
 
                 return result.notification_id;
             }

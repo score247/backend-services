@@ -6,7 +6,7 @@
         string ServiceUrl { get; set; }
 #pragma warning restore S3996 // URI properties should not be strings
 
-        string Organizattion { get; set; }
+        string Organization { get; set; }
 
         string ApiKey { get; set; }
 
@@ -21,7 +21,7 @@
     {
         public string ServiceUrl { get; set; }
 
-        public string Organizattion { get; set; }
+        public string Organization { get; set; }
 
         public string ApiKey { get; set; }
 
