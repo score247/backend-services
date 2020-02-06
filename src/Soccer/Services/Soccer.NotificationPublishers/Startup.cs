@@ -39,7 +39,7 @@ namespace Soccer.NotificationPublishers
             services.AddSingleton<IAppCenterSettings>(appCenterSettings);
 
             services.AddSingleton(RestService.For<IPushApi>(appCenterSettings.ServiceUrl));
-            services.AddSingleton<IMatchNotificationPublisher, MatchNotificationPublisher>();
+            services.AddSingleton<IMatchNotificationService, MatchNotificationService>();
 
             services.AddCors(appSettings);
             services.AddSignalR();

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Fanex.Logging;
 using Refit;
+using Score247.Shared.Enumerations;
 using Soccer.Core.Notification.Models;
 using Soccer.NotificationPublishers._Shared.Configuration;
 using Soccer.NotificationPublishers._Shared.Dtos;
@@ -15,39 +16,47 @@ namespace Soccer.NotificationPublishers.Matches
         Task<PushResultDto> Push([Header("X-API-Token")] string apiToken, string ownerName, string appname, [Body] PushDto push);
     }
 
-    public interface IMatchNotificationPublisher 
+    public interface IMatchNotificationService 
     {
-        Task PushNotification(MatchEventNotification eventNotification);
+        Task<string> PushNotification(MatchEventNotification eventNotification);
     }
 
-    public class MatchNotificationPublisher: IMatchNotificationPublisher
+    public class MatchNotificationService: IMatchNotificationService
     {
         private readonly IPushApi pushApi;
         private readonly ILogger logger;
         private readonly IAppCenterSettings settings;
 
-        public MatchNotificationPublisher(
+        public MatchNotificationService(
             IAppCenterSettings settings, 
             ILogger logger,
             IPushApi pushApi) 
         {
             this.settings = settings;
-            this.pushApi = pushApi;
             this.logger = logger;
+            this.pushApi = pushApi;
         }
      
-        public async Task PushNotification(MatchEventNotification eventNotification)
+        public async Task<string> PushNotification(MatchEventNotification eventNotification)
         {
             var pushMessage = MatchNotificationMapper.MapPush(eventNotification, settings.DeviceTarget);
 
             try
             {
-                await pushApi.Push(settings.ApiKey, settings.Organizattion, settings.iOSAppName, pushMessage);
+                var appName = eventNotification.PlatformId == Platform.iOS 
+                    ? settings.iOSAppName 
+                    : settings.AndroidAppName;
+
+                var result = await pushApi.Push(settings.ApiKey, settings.Organizattion, appName, pushMessage);
+
+                return result.notification_id;
             }
             catch (Exception ex)
             {
                 await logger.ErrorAsync("Match PushNotification", ex);
             }
+
+            return string.Empty;
         }
     }
 }
