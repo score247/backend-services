@@ -4,6 +4,8 @@ using Fanex.Data.Repository;
 using MassTransit;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
+using Soccer.Core.Notification.Models;
+using Soccer.Core.Notification.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Matches.Commands;
 
@@ -12,10 +14,12 @@ namespace Soccer.EventProcessors.Matches
     public class ProcessMatchEventConsumer : IConsumer<IMatchEventProcessedMessage>
     {
         private readonly IDynamicRepository dynamicRepository;
+        private readonly IBus messageBus;
 
-        public ProcessMatchEventConsumer(IDynamicRepository dynamicRepository)
+        public ProcessMatchEventConsumer(IDynamicRepository dynamicRepository, IBus messageBus)
         {
             this.dynamicRepository = dynamicRepository;
+            this.messageBus = messageBus;
         }
 
         public async Task Consume(ConsumeContext<IMatchEventProcessedMessage> context)
@@ -31,6 +35,12 @@ namespace Soccer.EventProcessors.Matches
                 };
 
                 await Task.WhenAll(tasks);
+
+                await messageBus.Publish<IMatchNotificationProcessedMessage>(new MatchNotificationProcessedMessage(
+                    new MatchEventNotification(
+                        matchEvent.MatchId, 
+                        $"Event {matchEvent.Timeline.Type.DisplayName}", 
+                        $"Home {matchEvent.MatchResult?.HomeScore} : Away {matchEvent.MatchResult?.AwayScore}")));
             }
         }
 
