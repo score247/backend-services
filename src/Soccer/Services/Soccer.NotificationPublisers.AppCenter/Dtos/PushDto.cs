@@ -1,5 +1,5 @@
-﻿namespace Soccer.NotificationPublishers._Shared.Dtos
-{
+﻿namespace Soccer.NotificationPublisers.AppCenter.Dtos
+{ 
     public class PushDto
     {
         public TargetDto notification_target { get; set; }

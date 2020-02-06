@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Soccer.NotificationPublishers._Shared.Dtos
+namespace Soccer.NotificationPublisers.AppCenter.Dtos
 {
     public class ContentDto
     {

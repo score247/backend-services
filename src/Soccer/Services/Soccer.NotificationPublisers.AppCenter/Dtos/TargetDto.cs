@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace Soccer.NotificationPublishers._Shared.Dtos
+namespace Soccer.NotificationPublisers.AppCenter.Dtos
 {
     public class TargetDto
     {      

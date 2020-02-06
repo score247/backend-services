@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using MassTransit;
 using Soccer.Core.Notification.QueueMessages;
+using Soccer.NotificationPublisers.AppCenter.Matches;
 
 namespace Soccer.NotificationPublishers.Matches
 {

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Soccer.Core.Notification.Models;
-using Soccer.NotificationPublishers._Shared.Dtos;
+using Soccer.NotificationPublisers.AppCenter.Dtos;
 
-namespace Soccer.NotificationPublishers.Matches.DataMappers
+namespace Soccer.NotificationPublisers.AppCenter.Matches.DataMappers
 {
     public static class MatchNotificationMapper
     {
@@ -28,7 +28,8 @@ namespace Soccer.NotificationPublishers.Matches.DataMappers
                     custom_data = new Dictionary<string, string>
                     {
                         { nameof(eventNotification.MatchId), eventNotification.MatchId },
-                        { nameof(eventNotification.SportId), eventNotification.SportId.ToString() }
+                        { nameof(eventNotification.SportId), eventNotification.SportId.ToString() },
+                        { "sound", "default" }
                     }
                 }
             };

@@ -6,11 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
-using Refit;
 using Score247.Shared.Middlewares;
 using Soccer.NotificationPublishers._Shared.Configuration;
 using Soccer.NotificationPublishers._Shared.Middlewares;
-using Soccer.NotificationPublishers.Matches;
 
 namespace Soccer.NotificationPublishers
 {
@@ -33,13 +31,6 @@ namespace Soccer.NotificationPublishers
 
             var appSettings = new AppSettings(Configuration);
             services.AddSingleton<IAppSettings>(appSettings);
-
-            var appCenterSettings = new AppCenterSettings();
-            Configuration.GetSection("PushServices:AppCenter").Bind(appCenterSettings);
-            services.AddSingleton<IAppCenterSettings>(appCenterSettings);
-
-            services.AddSingleton(RestService.For<IPushApi>(appCenterSettings.ServiceUrl));
-            services.AddSingleton<IMatchNotificationService, MatchNotificationService>();
 
             services.AddCors(appSettings);
             services.AddSignalR();
