@@ -36,6 +36,14 @@
             EventType.Substitution
         };
 
+        private static readonly EventType[] NotifiableEventTypes = {
+            EventType.MatchStarted,
+            EventType.ScoreChange,        
+            EventType.RedCard,
+            EventType.YellowRedCard,
+            EventType.MatchEnded            
+        };
+
         public static List<byte> ReprocessScoreEventTypes { get; }
            = new List<byte>
            {
@@ -65,5 +73,8 @@
 
         public static bool IsMainEvent(this EventType eventType)
             => MainEventTypes.Contains(eventType);
+
+        public static bool IsNotifableEvent(this EventType eventType)
+            => NotifiableEventTypes.Contains(eventType);
     }
 }

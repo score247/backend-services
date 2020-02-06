@@ -33,7 +33,7 @@ namespace Soccer.NotificationPublishers
             services.AddSingleton<IAppSettings>(appSettings);
 
             services.AddCors(appSettings);
-            services.AddSignalR();
+            services.AddServices(Configuration, appSettings);
             services.AddLogging(Configuration);
             services.AddRabbitMq(Configuration);
             services.AddHealthCheck();

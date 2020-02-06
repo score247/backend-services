@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using Fanex.Data.Repository;
 using MassTransit;
+using Soccer.Core.Matches.Extensions;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Matches.QueueMessages;
-using Soccer.Core.Notification.Models;
 using Soccer.Core.Notification.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Matches.Commands;
@@ -31,16 +31,11 @@ namespace Soccer.EventProcessors.Matches
                 var tasks = new List<Task>
                 {
                     UpdateLiveMatchResult(matchEvent),
-                    InsertTimeline(matchEvent)
+                    InsertTimeline(matchEvent),
+                    PublishMatchNotification(matchEvent)
                 };
 
                 await Task.WhenAll(tasks);
-
-                await messageBus.Publish<IMatchNotificationProcessedMessage>(new MatchNotificationProcessedMessage(
-                    new MatchEventNotification(
-                        matchEvent.MatchId, 
-                        $"Event {matchEvent.Timeline.Type.DisplayName}", 
-                        $"Home {matchEvent.MatchResult?.HomeScore} : Away {matchEvent.MatchResult?.AwayScore}")));
             }
         }
 
@@ -59,5 +54,17 @@ namespace Soccer.EventProcessors.Matches
                 matchEvent.Timeline,
                 Language.en_US,
                 matchEvent.EventDate));
+
+        private async Task PublishMatchNotification(MatchEvent matchEvent)
+        {
+            if (matchEvent.IsLatest && matchEvent.Timeline?.Type.IsNotifableEvent() == true)
+            {
+                await messageBus.Publish<IMatchNotificationReceivedMessage>(new MatchNotificationReceivedMessage(
+                    matchEvent.MatchId,
+                    matchEvent.LeagueId,
+                    matchEvent.Timeline,
+                    matchEvent.MatchResult));
+            }
+        }
     }
 }

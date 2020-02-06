@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Soccer.Core._Shared.Enumerations;
 using Soccer.Core.Notification.Models;
 using Soccer.NotificationPublisers.AppCenter.Dtos;
 
@@ -29,7 +30,8 @@ namespace Soccer.NotificationPublisers.AppCenter.Matches.DataMappers
                     {
                         { nameof(eventNotification.MatchId), eventNotification.MatchId },
                         { nameof(eventNotification.SportId), eventNotification.SportId.ToString() },
-                        { "sound", "default" }
+                        { "sound", "default" },
+                        { "type", NotificationType.MatchValue.ToString() }
                     }
                 }
             };

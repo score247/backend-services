@@ -15,6 +15,7 @@ namespace Soccer.EventProcessors.Tests.Matches
     public class ProcessMatchEventConsumerTests
     {
         private readonly IDynamicRepository dynamicRepository;
+        private readonly IBus messageBus;
         private readonly ConsumeContext<IMatchEventProcessedMessage> context;
 
         private readonly ProcessMatchEventConsumer consumer;
@@ -22,9 +23,10 @@ namespace Soccer.EventProcessors.Tests.Matches
         public ProcessMatchEventConsumerTests()
         {
             dynamicRepository = Substitute.For<IDynamicRepository>();
+            messageBus = Substitute.For<IBus>();
             context = Substitute.For<ConsumeContext<IMatchEventProcessedMessage>>();
 
-            consumer = new ProcessMatchEventConsumer(dynamicRepository);
+            consumer = new ProcessMatchEventConsumer(dynamicRepository, messageBus);
         }
 
         [Fact]

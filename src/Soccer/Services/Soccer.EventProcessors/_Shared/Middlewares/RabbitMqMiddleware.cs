@@ -14,6 +14,7 @@
     using Soccer.EventProcessors.Matches;
     using Soccer.EventProcessors.Matches.MatchEvents;
     using Soccer.EventProcessors.News;
+    using Soccer.EventProcessors.Notifications;
     using Soccer.EventProcessors.Teams;
     using Soccer.EventProcessors.Timeline;
 
@@ -60,6 +61,7 @@
                 serviceCollectionConfigurator.AddConsumer<FetchNewsConsumer>();
                 serviceCollectionConfigurator.AddConsumer<FetchNewsImageConsumer>();
                 serviceCollectionConfigurator.AddConsumer<InjuryTimeEventConsumer>();
+                serviceCollectionConfigurator.AddConsumer<ReceiveMatchNotificationConsumer>();
             });
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -240,6 +242,14 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<FetchNewsImageConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_MatchNotifications", e =>
+                {
+                    e.PrefetchCount = PrefetchCount;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<ReceiveMatchNotificationConsumer>(provider);
                 });
             }));
 
