@@ -83,6 +83,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.DataProviders.EyeFoo
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MonitoringServices", "MonitoringServices", "{1D5E99C6-4B2C-449A-9869-24A1E1108655}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soccer.NotificationPublishers", "src\Soccer\Services\Soccer.NotificationPublishers\Soccer.NotificationPublishers.csproj", "{8E1F5D47-4A25-417D-B1CB-7E9C27E3339D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -193,6 +195,10 @@ Global
 		{4AA8CEC0-8E31-45C0-8D3F-2A53D9F38390}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4AA8CEC0-8E31-45C0-8D3F-2A53D9F38390}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4AA8CEC0-8E31-45C0-8D3F-2A53D9F38390}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E1F5D47-4A25-417D-B1CB-7E9C27E3339D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E1F5D47-4A25-417D-B1CB-7E9C27E3339D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E1F5D47-4A25-417D-B1CB-7E9C27E3339D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E1F5D47-4A25-417D-B1CB-7E9C27E3339D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -235,6 +241,7 @@ Global
 		{0EAE5B33-6393-4391-8240-77C01328F33A} = {A7A2B310-406C-42B4-91C4-23D27C2D124B}
 		{4AA8CEC0-8E31-45C0-8D3F-2A53D9F38390} = {306F12AC-6FA4-45D5-BF8C-EDDF54E6CC9D}
 		{1D5E99C6-4B2C-449A-9869-24A1E1108655} = {198744D0-8880-4490-89C9-A5F37EDC427B}
+		{8E1F5D47-4A25-417D-B1CB-7E9C27E3339D} = {7173D557-0386-4235-9D1B-890453EF39B1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D13AD9D6-D937-45A2-AAA4-3EFA410C7411}
