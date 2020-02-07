@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Caching;
 using Fanex.Data.Repository;
+using Fanex.Logging;
 using MassTransit;
 using Score247.Shared;
 using Soccer.Core.Matches.Models;
@@ -24,22 +25,30 @@ namespace Soccer.EventProcessors.Notifications
         private readonly IBus messageBus;
         private readonly IDynamicRepository dynamicRepository;
         private readonly ICacheManager cacheManager;
-
+        private readonly ILogger logger;
 
         public ReceiveMatchNotificationConsumer(
             IBus messageBus,
             IDynamicRepository dynamicRepository,
-            ICacheManager cacheManager) 
+            ICacheManager cacheManager,
+            ILogger logger) 
         {
             this.messageBus = messageBus;
             this.dynamicRepository = dynamicRepository;
             this.cacheManager = cacheManager;
+            this.logger = logger;
         }
 
         public async Task Consume(ConsumeContext<IMatchNotificationReceivedMessage> context)
         {
             var message = context.Message;
             var match = await GetMatchAsync(message.MatchId);
+
+            if (match == null)
+            {
+                await logger.InfoAsync($"ReceiveMatchNotificationConsumer match {message.MatchId} not found");
+                return;
+            }
 
             var notification = TimelineNotificationCreator.CreateInstance(
                 message.Timeline.Type,
@@ -71,10 +80,10 @@ namespace Soccer.EventProcessors.Notifications
 
         private async Task<Match> GetMatchAsync(string matchId)
         {
-            var timelineEventsCacheKey = $"MatchInfo_{matchId}";
+            var matchCacheKey = $"MatchInfo_{matchId}";
 
-            var timelineEvents = await cacheManager.GetOrSetAsync<Match>(
-                timelineEventsCacheKey,
+            var match = await cacheManager.GetOrSetAsync(
+                matchCacheKey,
                 async () =>
                 {
                     return (await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(matchId, Language.en_US))
@@ -82,7 +91,7 @@ namespace Soccer.EventProcessors.Notifications
                 },
                 EventCacheOptions);
 
-            return timelineEvents;
+            return match;
         }
     }
 }
