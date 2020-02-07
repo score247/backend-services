@@ -19,9 +19,9 @@ namespace Soccer.EventProcessors.Notifications.Models
         public override string Content()
         {
             var strBuilder = new StringBuilder();
-            strBuilder.Append($"{HomeTeam.Name} {MatchResult?.HomeScore} {HomeWinIcon}");
+            strBuilder.Append($"{HomeTeam.Name} {MatchResult?.HomeScore}{HomeWinIcon}");
             strBuilder.Append($" : ");
-            strBuilder.Append($"{MatchResult?.AwayScore} {AwayTeam.Name} {AwayWinIcon}");
+            strBuilder.Append($"{MatchResult?.AwayScore} {AwayTeam.Name}{AwayWinIcon}");
             strBuilder.AppendLine(GeneratePenaltyShootout());
 
             return strBuilder.ToString();
@@ -54,8 +54,14 @@ namespace Soccer.EventProcessors.Notifications.Models
             return string.Empty;
         }
 
-        private string HomeWinIcon => MatchResult.WinnerId == HomeTeam.Id ? EmojiConstants.TROPHY_ICON : string.Empty;
+        private string HomeWinIcon 
+            => MatchResult.WinnerId == HomeTeam.Id 
+            ? EmojiConstants.ConvertIcon(EmojiConstants.TROPHY_ICON) 
+            : string.Empty;
 
-        private string AwayWinIcon => MatchResult.WinnerId == AwayTeam.Id ? EmojiConstants.TROPHY_ICON : string.Empty;
+        private string AwayWinIcon 
+            => MatchResult.WinnerId == AwayTeam.Id 
+            ? EmojiConstants.ConvertIcon(EmojiConstants.TROPHY_ICON) 
+            : string.Empty;
     }
 }

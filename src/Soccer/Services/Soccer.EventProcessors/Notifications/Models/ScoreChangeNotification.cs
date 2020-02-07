@@ -17,6 +17,6 @@ namespace Soccer.EventProcessors.Notifications.Models
         => $"{HomeTeam.Name} {MatchResult?.HomeScore} : {MatchResult?.AwayScore} {AwayTeam.Name}";
 
         public override string Title()
-        => $"{EmojiConstants.SOCCER_BALL_ICON} GOAL!!! {MatchTimeDisplay}";
+        => $"{EmojiConstants.ConvertIcon(EmojiConstants.SOCCER_BALL_ICON)} GOAL! {MatchTimeDisplay}";
     }
 }
