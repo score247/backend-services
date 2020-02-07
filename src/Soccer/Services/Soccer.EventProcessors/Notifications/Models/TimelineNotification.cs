@@ -21,6 +21,16 @@ namespace Soccer.EventProcessors.Notifications.Models
 
         protected byte MatchTime { get; }
 
+        protected string MatchTimeDisplay 
+            => MatchTime == 0 
+            ? string.Empty 
+            : $"({Timeline.MatchTime}{StoppageTimeDisplay}')";
+
+        protected string StoppageTimeDisplay 
+            => string.IsNullOrWhiteSpace(Timeline?.StoppageTime)
+            ? string.Empty 
+            : $"+{Timeline?.StoppageTime}";
+        
         protected TimelineEvent Timeline { get; }
 
         protected Team HomeTeam { get; }

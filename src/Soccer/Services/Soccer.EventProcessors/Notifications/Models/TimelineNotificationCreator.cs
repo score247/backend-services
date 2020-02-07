@@ -13,6 +13,7 @@ namespace Soccer.EventProcessors.Notifications.Models
             { EventType.MatchStarted, typeof(MatchStartedNotification)  },
             { EventType.MatchEnded, typeof(MatchEndNotification)  },
             { EventType.RedCard, typeof(RedCardNotification)  },
+            { EventType.YellowRedCard, typeof(YellowRedCardNotification)  },
             { EventType.ScoreChange, typeof(ScoreChangeNotification)  },
             { EventType.ScoreChangeByOwnGoal, typeof(ScoreChangeNotification)  },
             { EventType.ScoreChangeByPenalty, typeof(ScoreChangeNotification)  }

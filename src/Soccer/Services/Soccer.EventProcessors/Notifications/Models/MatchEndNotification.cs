@@ -1,5 +1,5 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
+using System.Text;
 using Soccer.Core.Matches.Extensions;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Teams.Models;
@@ -9,8 +9,6 @@ namespace Soccer.EventProcessors.Notifications.Models
 {
     public class MatchEndNotification : TimelineNotification
     {
-        
-
         public MatchEndNotification(
            TimelineEvent timeline,
            Team home,
@@ -19,7 +17,15 @@ namespace Soccer.EventProcessors.Notifications.Models
            MatchResult matchResult) : base(timeline, home, away, matchTime, matchResult) { }
 
         public override string Content()
-            => $"{HomeTeam.Name} {MatchResult?.HomeScore} : {MatchResult?.AwayScore} {AwayTeam.Name}" + GeneratePenaltyShootout();
+        {
+            var strBuilder = new StringBuilder();
+            strBuilder.Append($"{HomeTeam.Name} {MatchResult?.HomeScore} {HomeWinIcon}");
+            strBuilder.Append($" : ");
+            strBuilder.Append($"{MatchResult?.AwayScore} {AwayTeam.Name} {AwayWinIcon}");
+            strBuilder.AppendLine(GeneratePenaltyShootout());
+
+            return strBuilder.ToString();
+        }
 
         public override string Title()
             => $"{EmojiConstants.FLAG_ICON} Match Ended {GenerateExtraPeriodTitle()}";
@@ -36,16 +42,20 @@ namespace Soccer.EventProcessors.Notifications.Models
                 : "after Penalty Shoot-out";
         }
 
-        private string GeneratePenaltyShootout() 
+        private string GeneratePenaltyShootout()
         {
             if (MatchResult.IsAfterPenaltyShootout())
             {
                 var penaltyPeriod = MatchResult.MatchPeriods.FirstOrDefault(period => period.PeriodType.IsPenalties());
 
-                return $"{Environment.NewLine}Penalty shoot-out: {HomeTeam.Name} {penaltyPeriod.HomeScore} : {penaltyPeriod.AwayScore} {AwayTeam.Name}";
+                return $"Penalty shoot-out: {HomeTeam.Name} {penaltyPeriod.HomeScore} : {penaltyPeriod.AwayScore} {AwayTeam.Name}";
             }
 
             return string.Empty;
         }
+
+        private string HomeWinIcon => MatchResult.WinnerId == HomeTeam.Id ? EmojiConstants.TROPHY_ICON : string.Empty;
+
+        private string AwayWinIcon => MatchResult.WinnerId == AwayTeam.Id ? EmojiConstants.TROPHY_ICON : string.Empty;
     }
 }
