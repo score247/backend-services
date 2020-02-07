@@ -21,16 +21,6 @@ namespace Soccer.EventProcessors.Notifications.Models
 
         protected byte MatchTime { get; }
 
-        protected string MatchTimeDisplay 
-            => MatchTime == 0 
-            ? string.Empty 
-            : $"({Timeline.MatchTime}{StoppageTimeDisplay}')";
-
-        protected string StoppageTimeDisplay 
-            => string.IsNullOrWhiteSpace(Timeline?.StoppageTime)
-            ? string.Empty 
-            : $"+{Timeline?.StoppageTime}";
-        
         protected TimelineEvent Timeline { get; }
 
         protected Team HomeTeam { get; }
@@ -42,5 +32,19 @@ namespace Soccer.EventProcessors.Notifications.Models
         public abstract string Title();
 
         public abstract string Content();
+
+        protected string MatchTimeDisplay
+           => MatchTime == 0
+           ? string.Empty
+           : $"({Timeline.MatchTime}{StoppageTimeDisplay}')";
+
+        protected string StoppageTimeDisplay
+            => string.IsNullOrWhiteSpace(Timeline?.StoppageTime)
+            ? string.Empty
+            : $"+{Timeline?.StoppageTime}";
+
+        protected string PlayerNameDisplay => string.IsNullOrWhiteSpace(Timeline.Player?.Name)
+            ? "(TBD)"
+            : Timeline.Player.Name;
     }
 }

@@ -3,10 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Caching;
 using Fanex.Data.Repository;
-using Fanex.Logging;
 using MassTransit;
 using Score247.Shared;
-using Score247.Shared.Enumerations;
 using Soccer.Core._Shared.Enumerations;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Notification.Models;
@@ -28,43 +26,31 @@ namespace Soccer.EventProcessors.Notifications
         private readonly IBus messageBus;
         private readonly IDynamicRepository dynamicRepository;
         private readonly ICacheManager cacheManager;
-        private readonly ILogger logger;
 
         public ReceiveMatchNotificationConsumer(
             IBus messageBus,
             IDynamicRepository dynamicRepository,
-            ICacheManager cacheManager,
-            ILogger logger) 
+            ICacheManager cacheManager)
         {
             this.messageBus = messageBus;
             this.dynamicRepository = dynamicRepository;
             this.cacheManager = cacheManager;
-            this.logger = logger;
         }
 
         public async Task Consume(ConsumeContext<IMatchNotificationReceivedMessage> context)
         {
             var message = context.Message;
             var match = await GetMatchAsync(message.MatchId);
+            var userIds = await GetUserFavoriteIdsAsync(message.MatchId);
 
-            var userIds = (await dynamicRepository
-               .FetchAsync<string>(new GetUsersByFavoriteIdCriteria(message.MatchId, FavoriteType.Match.Value)))
-               ?.ToArray();
-
-            if (userIds?.Any() == false) 
+            if (userIds?.Any() == false || match == null)
             {
-                return;
-            }
-
-            if (match == null)
-            {
-                await logger.InfoAsync($"ReceiveMatchNotificationConsumer match {message.MatchId} not found");
                 return;
             }
 
             var notification = TimelineNotificationCreator.CreateInstance(
                 message.Timeline.Type,
-                message.Timeline, 
+                message.Timeline,
                 match.Teams.FirstOrDefault(team => team.IsHome),
                 match.Teams.FirstOrDefault(team => !team.IsHome),
                 message.Timeline.MatchTime,
@@ -76,6 +62,8 @@ namespace Soccer.EventProcessors.Notifications
             }
 
             //TODO de-dup message
+            // message key -> message title
+
 
             //TODO language translation
             //TODO queue by batch of users
@@ -89,6 +77,11 @@ namespace Soccer.EventProcessors.Notifications
                     userIds: userIds
                 )));
         }
+
+        private async Task<string[]> GetUserFavoriteIdsAsync(string matchId)
+        => (await dynamicRepository
+                           .FetchAsync<string>(new GetUsersByFavoriteIdCriteria(matchId, FavoriteType.Match.Value)))
+                           ?.ToArray();
 
         private async Task<Match> GetMatchAsync(string matchId)
         {

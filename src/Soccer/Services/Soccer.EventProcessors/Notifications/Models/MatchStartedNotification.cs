@@ -16,6 +16,6 @@ namespace Soccer.EventProcessors.Notifications.Models
 
         public override string Content() => $"{HomeTeam.Name} 0 : 0 {AwayTeam.Name}";
 
-        public override string Title() => $"{EmojiConstants.SOUND_ICON} Match Started";
+        public override string Title() => $"{EmojiConstants.ConvertIcon(EmojiConstants.SOUND_ICON)} Match Started";
     }
 }
