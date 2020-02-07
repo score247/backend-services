@@ -5,7 +5,7 @@ namespace Soccer.EventProcessors.Notifications.Models
 {
     public class ScoreChangeNotification : TimelineNotification
     {
-        private const string SOCCER_BALL_ICON = "<U+26BD>";
+        private const string SOCCER_BALL_ICON = @"\xE2\x9A\xBD";
 
         public ScoreChangeNotification(
          TimelineEvent timeline,
