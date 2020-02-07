@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Caching;
@@ -62,8 +63,12 @@ namespace Soccer.EventProcessors.Notifications
             }
 
             //TODO de-dup message
-            // message key -> message title
+            var isProcessed = await IsProcessedNotification(message.MatchId, notification.Content());
 
+            if (isProcessed)
+            {
+                return;
+            }
 
             //TODO language translation
             //TODO queue by batch of users
@@ -76,6 +81,8 @@ namespace Soccer.EventProcessors.Notifications
                     notification.Content(),
                     userIds: userIds
                 )));
+
+            await SetProcessedNotificationAsync(message.MatchId, notification.Content());
         }
 
         private async Task<string[]> GetUserFavoriteIdsAsync(string matchId)
@@ -97,6 +104,33 @@ namespace Soccer.EventProcessors.Notifications
                 EventCacheOptions);
 
             return match;
+        }
+
+        private async Task<bool> IsProcessedNotification(string matchId, string content)
+        {
+            var matchNotificationCacheKey = $"MatchNotification_{matchId}";
+            var processedNotifications = await GetProcessedNotificationsAsync(matchNotificationCacheKey);
+
+            return processedNotifications.Contains(content);
+        }
+
+        private async Task<List<string>> GetProcessedNotificationsAsync(string matchNotificationCacheKey)
+        {
+            return await cacheManager.GetOrSetAsync(
+                            matchNotificationCacheKey,
+                            async () =>
+                            {
+                                return await Task.FromResult(new List<string>());
+                            },
+                            EventCacheOptions);
+        }
+
+        private async Task SetProcessedNotificationAsync(string matchId, string content)
+        {
+            var matchNotificationCacheKey = $"MatchNotification_{matchId}";
+
+            var processedNotifications = await GetProcessedNotificationsAsync(matchNotificationCacheKey);
+            processedNotifications.Add(content);
         }
     }
 }
