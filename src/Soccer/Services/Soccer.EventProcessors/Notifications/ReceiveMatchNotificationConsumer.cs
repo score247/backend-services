@@ -76,7 +76,7 @@ namespace Soccer.EventProcessors.Notifications
                     notification.Title(),
                     notification.Content(),
                     userIds: new string[]{ },
-                    Platform.IOSPlatform.Value
+                    Platform.iOS
                 )));
         }
 
