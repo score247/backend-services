@@ -43,7 +43,7 @@ namespace Soccer.NotificationPublisers.AppCenter.Matches
 
             try
             {
-                var appName = eventNotification.PlatformId == Platform.iOS
+                var appName = eventNotification.IsIOS
                     ? settings.iOSAppName
                     : settings.AndroidAppName;
 

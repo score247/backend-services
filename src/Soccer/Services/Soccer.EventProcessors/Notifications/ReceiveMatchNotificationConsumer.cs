@@ -75,8 +75,7 @@ namespace Soccer.EventProcessors.Notifications
                     message.MatchId,
                     notification.Title(),
                     notification.Content(),
-                    userIds: new string[]{ },
-                    Platform.iOS
+                    userIds: new string[]{ }
                 )));
         }
 

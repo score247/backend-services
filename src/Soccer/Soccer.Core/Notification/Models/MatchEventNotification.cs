@@ -4,14 +4,14 @@ namespace Soccer.Core.Notification.Models
 {
     public class MatchEventNotification
     {
-        public MatchEventNotification(string matchId, string title, string content, string[] userIds = null, byte platform = Platform.iOS) 
+        public MatchEventNotification(string matchId, string title, string content, string[] userIds = null, bool isIOS = true) 
         {
             SportId = Sport.Soccer.Value;
             MatchId = matchId;
             Title = title;
             Content = content;
             UserIds = userIds;
-            PlatformId = platform;
+            IsIOS = isIOS;
         }
 
         public string MatchId { get; }
@@ -24,6 +24,6 @@ namespace Soccer.Core.Notification.Models
 
         public string[] UserIds { get; } 
 
-        public byte PlatformId { get; }
+        public bool IsIOS { get; }
     }
 }
