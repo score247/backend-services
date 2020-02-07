@@ -6,6 +6,7 @@ using Fanex.Data.Repository;
 using Fanex.Logging;
 using MassTransit;
 using Score247.Shared;
+using Score247.Shared.Enumerations;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Notification.Models;
 using Soccer.Core.Notification.QueueMessages;
@@ -74,7 +75,8 @@ namespace Soccer.EventProcessors.Notifications
                     message.MatchId,
                     notification.Title(),
                     notification.Content(),
-                    userIds: new string[]{ }
+                    userIds: new string[]{ },
+                    Platform.IOSPlatform.Value
                 )));
         }
 
