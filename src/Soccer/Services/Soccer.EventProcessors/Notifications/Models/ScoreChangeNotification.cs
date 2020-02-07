@@ -1,12 +1,11 @@
 ﻿using Soccer.Core.Matches.Models;
 using Soccer.Core.Teams.Models;
+using Soccer.EventProcessors.Notifications.Constants;
 
 namespace Soccer.EventProcessors.Notifications.Models
 {
     public class ScoreChangeNotification : TimelineNotification
     {
-        private const string SOCCER_BALL_ICON = "\u26BD";
-
         public ScoreChangeNotification(
          TimelineEvent timeline,
          Team home,
@@ -18,6 +17,6 @@ namespace Soccer.EventProcessors.Notifications.Models
         => $"{HomeTeam.Name} {MatchResult?.HomeScore} : {MatchResult?.AwayScore} {AwayTeam.Name}";
 
         public override string Title()
-        => $"{SOCCER_BALL_ICON} GOAL!!! ({Timeline.MatchTime})";
+        => $"{EmojiConstants.SOCCER_BALL_ICON} GOAL!!! ({Timeline.MatchTime})";
     }
 }

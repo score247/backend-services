@@ -1,12 +1,11 @@
 ﻿using Soccer.Core.Matches.Models;
 using Soccer.Core.Teams.Models;
+using Soccer.EventProcessors.Notifications.Constants;
 
 namespace Soccer.EventProcessors.Notifications.Models
 {
     public class MatchStartedNotification : TimelineNotification
     {
-        private const string SOUND_ICON = "U+1F50A";
-
         public MatchStartedNotification(
             TimelineEvent timeline,
             Team home,
@@ -17,6 +16,6 @@ namespace Soccer.EventProcessors.Notifications.Models
 
         public override string Content() => $"{HomeTeam.Name} 0 : 0 {AwayTeam.Name}";
 
-        public override string Title() => $"{SOUND_ICON} Match Started";
+        public override string Title() => $"{EmojiConstants.SOUND_ICON} Match Started";
     }
 }

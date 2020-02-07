@@ -3,13 +3,13 @@ using System.Linq;
 using Soccer.Core.Matches.Extensions;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Teams.Models;
+using Soccer.EventProcessors.Notifications.Constants;
 
 namespace Soccer.EventProcessors.Notifications.Models
 {
     public class MatchEndNotification : TimelineNotification
     {
-        private const string FLAG_ICON = "U+1F3C1";
-        //private const string TROPHY_ICON = "U+1F3C6";
+        
 
         public MatchEndNotification(
            TimelineEvent timeline,
@@ -22,7 +22,7 @@ namespace Soccer.EventProcessors.Notifications.Models
             => $"{HomeTeam.Name} {MatchResult?.HomeScore} : {MatchResult?.AwayScore} {AwayTeam.Name}" + GeneratePenaltyShootout();
 
         public override string Title()
-            => $"{FLAG_ICON} Match Ended {GenerateExtraPeriodTitle()}";
+            => $"{EmojiConstants.FLAG_ICON} Match Ended {GenerateExtraPeriodTitle()}";
 
         private string GenerateExtraPeriodTitle()
         {
