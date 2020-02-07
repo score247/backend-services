@@ -1,5 +1,4 @@
-﻿using System;
-using Soccer.Core.Matches.Models;
+﻿using Soccer.Core.Matches.Models;
 using Soccer.Core.Teams.Models;
 
 namespace Soccer.EventProcessors.Notifications.Models
@@ -10,17 +9,14 @@ namespace Soccer.EventProcessors.Notifications.Models
           TimelineEvent timeline,
           Team home,
           Team away,
-          string matchTime,
+          byte matchTime,
           MatchResult matchResult) : base(timeline, home, away, matchTime, matchResult) { }
 
-        protected override string Content()
-        {
-            throw new NotImplementedException();
-        }
+        public override string Content()
+        => $"{TeamReceived.Name} - Player {Timeline.Player?.Name} has received a red card.";
 
-        protected override string Title()
-        {
-            throw new NotImplementedException();
-        }
+        public override string Title() => $"Red Card ({Timeline.MatchTime})";
+
+        private Team TeamReceived => Timeline.Team == "home" ? HomeTeam : AwayTeam;
     }
 }

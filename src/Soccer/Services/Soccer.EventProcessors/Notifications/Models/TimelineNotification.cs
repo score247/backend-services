@@ -9,7 +9,7 @@ namespace Soccer.EventProcessors.Notifications.Models
             TimelineEvent timeline, 
             Team home, 
             Team away,
-            string matchTime = null,
+            byte matchTime = 0,
             MatchResult matchResult = null) 
         {
             MatchTime = matchTime;
@@ -19,7 +19,7 @@ namespace Soccer.EventProcessors.Notifications.Models
             MatchResult = matchResult;
         }
 
-        protected string MatchTime { get; }
+        protected byte MatchTime { get; }
 
         protected TimelineEvent Timeline { get; }
 
@@ -29,8 +29,8 @@ namespace Soccer.EventProcessors.Notifications.Models
 
         protected MatchResult MatchResult { get; }
 
-        protected abstract string Title();
+        public abstract string Title();
 
-        protected abstract string Content();
+        public abstract string Content();
     }
 }

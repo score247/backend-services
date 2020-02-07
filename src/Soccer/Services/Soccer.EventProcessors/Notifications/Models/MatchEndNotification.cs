@@ -1,4 +1,6 @@
-﻿using Soccer.Core.Matches.Extensions;
+﻿using System;
+using System.Linq;
+using Soccer.Core.Matches.Extensions;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Teams.Models;
 
@@ -6,19 +8,21 @@ namespace Soccer.EventProcessors.Notifications.Models
 {
     public class MatchEndNotification : TimelineNotification
     {
+        private const string FLAG_ICON = "U+1F3C1";
+        //private const string TROPHY_ICON = "U+1F3C6";
+
         public MatchEndNotification(
            TimelineEvent timeline,
            Team home,
            Team away,
-           string matchTime,
+           byte matchTime,
            MatchResult matchResult) : base(timeline, home, away, matchTime, matchResult) { }
 
-        //TODO generate penalty shootout info
-        protected override string Content()
-            => $"{HomeTeam.Name} {MatchResult?.HomeScore} : {MatchResult?.AwayScore} {AwayTeam.Name}";
+        public override string Content()
+            => $"{HomeTeam.Name} {MatchResult?.HomeScore} : {MatchResult?.AwayScore} {AwayTeam.Name}" + GeneratePenaltyShootout();
 
-        protected override string Title()
-            => $"Match Ended {GenerateExtraPeriodTitle()}";
+        public override string Title()
+            => $"{FLAG_ICON} Match Ended {GenerateExtraPeriodTitle()}";
 
         private string GenerateExtraPeriodTitle()
         {
@@ -30,6 +34,18 @@ namespace Soccer.EventProcessors.Notifications.Models
             return MatchResult.IsAfterExtra()
                 ? "after Extra Time"
                 : "after Penalty Shoot-out";
+        }
+
+        private string GeneratePenaltyShootout() 
+        {
+            if (MatchResult.IsAfterPenaltyShootout())
+            {
+                var penaltyPeriod = MatchResult.MatchPeriods.FirstOrDefault(period => period.PeriodType.IsPenalties());
+
+                return $"{Environment.NewLine}Penalty shoot-out: {HomeTeam.Name} {penaltyPeriod.HomeScore} : {penaltyPeriod.AwayScore} {AwayTeam.Name}";
+            }
+
+            return string.Empty;
         }
     }
 }

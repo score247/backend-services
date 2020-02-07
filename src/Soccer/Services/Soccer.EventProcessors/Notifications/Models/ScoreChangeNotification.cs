@@ -1,26 +1,23 @@
-﻿using System;
-using Soccer.Core.Matches.Models;
+﻿using Soccer.Core.Matches.Models;
 using Soccer.Core.Teams.Models;
 
 namespace Soccer.EventProcessors.Notifications.Models
 {
     public class ScoreChangeNotification : TimelineNotification
     {
+        private const string SOCCER_BALL_ICON = "U+26BD";
+
         public ScoreChangeNotification(
          TimelineEvent timeline,
          Team home,
          Team away,
-         string matchTime,
+         byte matchTime,
          MatchResult matchResult) : base(timeline, home, away, matchTime, matchResult) { }
 
-        protected override string Content()
-        {
-            throw new NotImplementedException();
-        }
+        public override string Content()
+        => $"{HomeTeam.Name} {MatchResult?.HomeScore} : {MatchResult?.AwayScore} {AwayTeam.Name}";
 
-        protected override string Title()
-        {
-            throw new NotImplementedException();
-        }
+        public override string Title()
+        => $"{SOCCER_BALL_ICON} GOAL!!! ({Timeline.MatchTime})";
     }
 }
