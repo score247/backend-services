@@ -10,7 +10,10 @@ namespace Soccer.EventProcessors.Notifications.Models
         public MatchStartedNotification(
             TimelineEvent timeline,
             Team home,
-            Team away) : base(timeline, home, away) { }
+            Team away,
+            byte matchTime,
+            MatchResult matchResult) 
+            : base(timeline, home, away, matchTime, matchResult) { }
 
         public override string Content() => $"{HomeTeam.Name} 0 : 0 {AwayTeam.Name}";
 
