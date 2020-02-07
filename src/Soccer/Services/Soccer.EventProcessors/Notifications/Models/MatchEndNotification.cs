@@ -18,13 +18,13 @@ namespace Soccer.EventProcessors.Notifications.Models
 
         public override string Content()
         {
-            var strBuilder = new StringBuilder();
-            strBuilder.Append($"{HomeTeam.Name} {MatchResult?.HomeScore}{HomeWinIcon}");
-            strBuilder.Append($" : ");
-            strBuilder.Append($"{MatchResult?.AwayScore} {AwayTeam.Name}{AwayWinIcon}");
-            strBuilder.AppendLine(GeneratePenaltyShootout());
+            var contentBuilder = new StringBuilder();
+            contentBuilder.Append($"{HomeTeam.Name} {MatchResult?.HomeScore}{HomeWinIcon}");
+            contentBuilder.Append(TeamSeparator);
+            contentBuilder.Append($"{MatchResult?.AwayScore} {AwayTeam.Name}{AwayWinIcon}");
+            contentBuilder.AppendLine(GeneratePenaltyShootout());
 
-            return strBuilder.ToString();
+            return contentBuilder.ToString();
         }
 
         public override string Title()

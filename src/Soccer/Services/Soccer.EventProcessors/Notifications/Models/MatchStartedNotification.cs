@@ -14,7 +14,7 @@ namespace Soccer.EventProcessors.Notifications.Models
             MatchResult matchResult) 
             : base(timeline, home, away, matchTime, matchResult) { }
 
-        public override string Content() => $"{HomeTeam.Name} 0 : 0 {AwayTeam.Name}";
+        public override string Content() => $"{HomeTeam.Name} 0{TeamSeparator}0 {AwayTeam.Name}";
 
         public override string Title() => $"{EmojiConstants.ConvertIcon(EmojiConstants.SOUND_ICON)} Match Started";
     }
