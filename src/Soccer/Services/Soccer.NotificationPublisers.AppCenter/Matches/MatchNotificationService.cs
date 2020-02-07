@@ -53,6 +53,11 @@ namespace Soccer.NotificationPublisers.AppCenter.Matches
             }
             catch (Exception ex)
             {
+                if (ex is ApiException)
+                {
+                    await logger.ErrorAsync($"Match PushNotification Request Url {(ex as ApiException).Uri.ToString()}", ex);
+                }
+
                 await logger.ErrorAsync("Match PushNotification", ex);
             }
 
