@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Soccer.Core._Shared.Enumerations;
 using Soccer.Core.Notification.Models;
 using Soccer.NotificationPublisers.AppCenter.Dtos;
@@ -10,13 +9,11 @@ namespace Soccer.NotificationPublisers.AppCenter.Matches.DataMappers
     {
         public static PushDto MapPush(MatchEventNotification eventNotification, string deviceTarget)
         {
-            var target = eventNotification.UserIds?.Any() == true
-                   ? new TargetDto
-                   {
-                       type = deviceTarget,
-                       devices = eventNotification.UserIds
-                   }
-                   : null;
+            var target = new TargetDto
+            {
+                type = deviceTarget,
+                devices = eventNotification.UserIds
+            };
 
             return new PushDto
             {

@@ -7,10 +7,12 @@ using Fanex.Logging;
 using MassTransit;
 using Score247.Shared;
 using Score247.Shared.Enumerations;
+using Soccer.Core._Shared.Enumerations;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Notification.Models;
 using Soccer.Core.Notification.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.Database.Favorites.Criteria;
 using Soccer.Database.Matches.Criteria;
 using Soccer.EventProcessors.Notifications.Models;
 
@@ -45,6 +47,15 @@ namespace Soccer.EventProcessors.Notifications
             var message = context.Message;
             var match = await GetMatchAsync(message.MatchId);
 
+            var userIds = (await dynamicRepository
+               .FetchAsync<string>(new GetUsersByFavoriteIdCriteria(message.MatchId, FavoriteType.Match.Value)))
+               ?.ToArray();
+
+            if (userIds?.Any() == false) 
+            {
+                return;
+            }
+
             if (match == null)
             {
                 await logger.InfoAsync($"ReceiveMatchNotificationConsumer match {message.MatchId} not found");
@@ -67,15 +78,15 @@ namespace Soccer.EventProcessors.Notifications
             //TODO de-dup message
 
             //TODO language translation
-
-            // TODO get user Ids => queue by batch
+            //TODO queue by batch of users
+            //TODO consider user platform
 
             await messageBus.Publish<IMatchNotificationProcessedMessage>(new MatchNotificationProcessedMessage(
                 new MatchEventNotification(
                     message.MatchId,
                     notification.Title(),
                     notification.Content(),
-                    userIds: new string[]{ }
+                    userIds: userIds
                 )));
         }
 
