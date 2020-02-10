@@ -57,7 +57,7 @@ namespace Soccer.EventProcessors.Matches
 
         private async Task PublishMatchNotification(MatchEvent matchEvent)
         {
-            if (matchEvent.IsLatest && matchEvent.Timeline?.Type.IsNotifableEvent() == true)
+            if (matchEvent.IsLatest && matchEvent.Timeline?.Type.IsNotifableEvent() == true && matchEvent.IsLiveEvent())
             {
                 await messageBus.Publish<IMatchNotificationReceivedMessage>(new MatchNotificationReceivedMessage(
                     matchEvent.MatchId,

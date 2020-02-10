@@ -42,5 +42,8 @@ namespace Soccer.Core.Matches.Models
 
             return this;
         }
+
+        public bool IsLiveEvent() =>
+            Timeline?.Type.IsMatchEnd() == true || (!Timeline?.Type.IsMatchEnd() == true && MatchResult.MatchStatus.IsLive());
     }
 }
