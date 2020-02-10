@@ -22,17 +22,25 @@ namespace Soccer.API.Favorites
 
         [HttpPost]
         [Route("add/")]
-        public async Task<bool> Add([FromBody]UserFavorite userFavorite, string language = Language.English)
+        public async Task<bool> Add(
+            [FromBody]UserFavorite userFavorite, 
+            string language = Language.English)
             => await mediator.Send(new AddFavoriteRequest(userFavorite));
 
         [HttpDelete]
         [Route("remove/")]
-        public async Task<bool> Remove(string userId, string favoriteId, string language = Language.English)
+        public async Task<bool> Remove(
+            string userId, 
+            string favoriteId, 
+            string language = Language.English)
             => await mediator.Send(new RemoveFavoriteRequest(userId, favoriteId));
 
         [HttpGet]
         [Route("users/get/")]
-        public async Task<IReadOnlyList<string>> GetByMatchId(string id, byte favoriteType = FavoriteType.MatchValue, string language = Language.English)
+        public async Task<IReadOnlyList<string>> GetByMatchId(
+            string id, 
+            byte favoriteType = FavoriteType.MatchValue, 
+            string language = Language.English)
             => await mediator.Send(new GetUsersByFavoriteRequest(id, favoriteType));
 
         [HttpPost]
