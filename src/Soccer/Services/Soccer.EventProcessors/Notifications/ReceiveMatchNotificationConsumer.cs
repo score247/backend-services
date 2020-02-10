@@ -50,7 +50,6 @@ namespace Soccer.EventProcessors.Notifications
             {
                 return;
             }
-
            
             //TODO queue by batch of users
             //TODO consider user platform
