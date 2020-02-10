@@ -8,7 +8,7 @@ namespace Soccer.API.Favorites
 {
     public interface IFavoriteQueryService
     {
-        Task<IEnumerable<string>> GetUsersByFavoriteId(string id, byte favoriteType = FavoriteType.MatchValue);
+        Task<IEnumerable<string>> GetUsersByFavoriteId(string id);
     }
 
     public class FavoriteQueryService : IFavoriteQueryService
@@ -18,7 +18,7 @@ namespace Soccer.API.Favorites
         public FavoriteQueryService(IDynamicRepository dynamicRepository)
         => this.dynamicRepository = dynamicRepository;
 
-        Task<IEnumerable<string>> IFavoriteQueryService.GetUsersByFavoriteId(string id, byte favoriteType)
-        => dynamicRepository.FetchAsync<string>(new GetUsersByFavoriteIdCriteria(id, favoriteType));
+        Task<IEnumerable<string>> IFavoriteQueryService.GetUsersByFavoriteId(string id)
+        => dynamicRepository.FetchAsync<string>(new GetUsersByFavoriteIdCriteria(id));
     }
 }

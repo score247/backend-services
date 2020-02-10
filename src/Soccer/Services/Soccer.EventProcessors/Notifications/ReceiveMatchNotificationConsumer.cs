@@ -19,6 +19,9 @@ namespace Soccer.EventProcessors.Notifications
 {
     public class ReceiveMatchNotificationConsumer : IConsumer<IMatchNotificationReceivedMessage>
     {
+        private const string MATCH_INFO_CACHE_KEY = "MatchInfo";
+        private const string MATCH_NOTIFICATION_CACHE_KEY = "MatchNotification";
+
         private static readonly CacheItemOptions EventCacheOptions = new CacheItemOptions
         {
             SlidingExpiration = TimeSpan.FromMinutes(120),
@@ -41,10 +44,11 @@ namespace Soccer.EventProcessors.Notifications
         public async Task Consume(ConsumeContext<IMatchNotificationReceivedMessage> context)
         {
             var message = context.Message;
-            var match = await GetMatchAsync(message.MatchId);
-            var userIds = await GetUserFavoriteIdsAsync(message.MatchId);
+            var match = await GetAndCacheMatchAsync(message.MatchId);
+            var favoriteMatchUserIds = await GetUserFavoriteIdsAsync(message.MatchId);
 
-            if (userIds?.Any() == false || match == null)
+
+            if (favoriteMatchUserIds?.Any() == false || match == null)
             {
                 return;
             }
@@ -63,7 +67,7 @@ namespace Soccer.EventProcessors.Notifications
             }
 
             //TODO de-dup message
-            var isProcessed = await IsProcessedNotification(message.MatchId, notification.Content());
+            var isProcessed = await IsProcessedNotificationAsync(message.MatchId, notification.Content());
 
             if (isProcessed)
             {
@@ -79,7 +83,7 @@ namespace Soccer.EventProcessors.Notifications
                     message.MatchId,
                     notification.Title(),
                     notification.Content(),
-                    userIds: userIds
+                    userIds: favoriteMatchUserIds
                 )));
 
             await SetProcessedNotificationAsync(message.MatchId, notification.Content());
@@ -87,12 +91,12 @@ namespace Soccer.EventProcessors.Notifications
 
         private async Task<string[]> GetUserFavoriteIdsAsync(string matchId)
         => (await dynamicRepository
-                           .FetchAsync<string>(new GetUsersByFavoriteIdCriteria(matchId, FavoriteType.Match.Value)))
+                           .FetchAsync<string>(new GetUsersByFavoriteIdCriteria(matchId)))
                            ?.ToArray();
 
-        private async Task<Match> GetMatchAsync(string matchId)
+        private async Task<Match> GetAndCacheMatchAsync(string matchId)
         {
-            var matchCacheKey = $"MatchInfo_{matchId}";
+            var matchCacheKey = $"{MATCH_INFO_CACHE_KEY}_{matchId}";
 
             var match = await cacheManager.GetOrSetAsync(
                 matchCacheKey,
@@ -106,9 +110,9 @@ namespace Soccer.EventProcessors.Notifications
             return match;
         }
 
-        private async Task<bool> IsProcessedNotification(string matchId, string content)
+        private async Task<bool> IsProcessedNotificationAsync(string matchId, string content)
         {
-            var matchNotificationCacheKey = $"MatchNotification_{matchId}";
+            var matchNotificationCacheKey = $"{MATCH_NOTIFICATION_CACHE_KEY}_{matchId}";
             var processedNotifications = await GetProcessedNotificationsAsync(matchNotificationCacheKey);
 
             return processedNotifications.Contains(content);
@@ -127,7 +131,7 @@ namespace Soccer.EventProcessors.Notifications
 
         private async Task SetProcessedNotificationAsync(string matchId, string content)
         {
-            var matchNotificationCacheKey = $"MatchNotification_{matchId}";
+            var matchNotificationCacheKey = $"{MATCH_NOTIFICATION_CACHE_KEY}_{matchId}";
 
             var processedNotifications = await GetProcessedNotificationsAsync(matchNotificationCacheKey);
             processedNotifications.Add(content);

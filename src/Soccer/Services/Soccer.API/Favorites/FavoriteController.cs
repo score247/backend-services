@@ -39,9 +39,8 @@ namespace Soccer.API.Favorites
         [Route("users/get/")]
         public async Task<IReadOnlyList<string>> GetByMatchId(
             string id, 
-            byte favoriteType = FavoriteType.MatchValue, 
             string language = Language.English)
-            => await mediator.Send(new GetUsersByFavoriteRequest(id, favoriteType));
+            => await mediator.Send(new GetUsersByFavoriteRequest(id));
 
         [HttpPost]
         [Route("sync/")]

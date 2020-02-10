@@ -31,7 +31,7 @@ namespace Soccer.API.Favorites
         => (await favoriteCommandService.RemoveFavorite(request.UserId, request.FavoriteId)) > 0;
 
         public async Task<IReadOnlyList<string>> Handle(GetUsersByFavoriteRequest request, CancellationToken cancellationToken)
-        => (await favoriteQueryService.GetUsersByFavoriteId(request.Id, request.FavoriteType))?.ToList();
+        => (await favoriteQueryService.GetUsersByFavoriteId(request.MatchId))?.ToList();
 
         public async Task<bool> Handle(SyncFavoriteRequest request, CancellationToken cancellationToken)
         {

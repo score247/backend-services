@@ -5,21 +5,18 @@ namespace Soccer.Database.Favorites.Criteria
 {
     public class GetUsersByFavoriteIdCriteria : CriteriaBase
     {
-        public GetUsersByFavoriteIdCriteria(string id, byte favoriteType) 
+        public GetUsersByFavoriteIdCriteria(string matchId) 
         {
             SportId = Sport.Soccer.Value;
-            Id = id;
-            FavoriteType = favoriteType;
+            MatchId = matchId;
         }
 
         public int SportId { get; }
 
-        public string Id { get; }
-
-        public byte FavoriteType { get; }
+        public string MatchId { get; }
 
         public override string GetSettingKey() => "UserFavorite_GetUsersByFavoriteId";
 
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(Id) && FavoriteType > 0;
+        public override bool IsValid() => !string.IsNullOrWhiteSpace(MatchId);
     }
 }

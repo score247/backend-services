@@ -5,14 +5,11 @@ namespace Soccer.API.Favorites.Requests
 {
     public class GetUsersByFavoriteRequest : IRequest<IReadOnlyList<string>>
     {
-        public GetUsersByFavoriteRequest(string id, byte favoriteType) 
+        public GetUsersByFavoriteRequest(string matchId) 
         {
-            Id = id;
-            FavoriteType = favoriteType;
+            MatchId = matchId;
         }
 
-        public string Id { get; }
-
-        public byte FavoriteType { get; }
+        public string MatchId { get; }
     }
 }
