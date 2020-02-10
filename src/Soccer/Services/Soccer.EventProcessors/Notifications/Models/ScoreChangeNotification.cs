@@ -1,7 +1,6 @@
 ﻿using System.Text;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Teams.Models;
-using Soccer.EventProcessors.Notifications.Constants;
 
 namespace Soccer.EventProcessors.Notifications.Models
 {
@@ -25,7 +24,7 @@ namespace Soccer.EventProcessors.Notifications.Models
         }
 
         public override string Title()
-        => $"{EmojiConstants.ConvertIcon(EmojiConstants.SOCCER_BALL_ICON)} GOAL! {MatchTimeDisplay}";
+        => $"GOAL! {MatchTimeDisplay}";
 
         private string TeamScoredId => Timeline.Team == "home" ? HomeTeam.Id : AwayTeam.Id;
 

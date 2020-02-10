@@ -3,7 +3,6 @@ using System.Text;
 using Soccer.Core.Matches.Extensions;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Teams.Models;
-using Soccer.EventProcessors.Notifications.Constants;
 
 namespace Soccer.EventProcessors.Notifications.Models
 {
@@ -19,16 +18,16 @@ namespace Soccer.EventProcessors.Notifications.Models
         public override string Content()
         {
             var contentBuilder = new StringBuilder();
-            contentBuilder.Append($"{HomeWinIcon}{HomeTeam.Name} {MatchResult?.HomeScore}");
+            contentBuilder.Append($"{HomeTeam.Name} {MatchResult?.HomeScore}");
             contentBuilder.Append(TeamSeparator);
-            contentBuilder.Append($"{MatchResult?.AwayScore} {AwayTeam.Name}{AwayWinIcon}");
+            contentBuilder.Append($"{MatchResult?.AwayScore} {AwayTeam.Name}");
             contentBuilder.AppendLine(GeneratePenaltyShootout());
 
             return contentBuilder.ToString();
         }
 
         public override string Title()
-            => $"{EmojiConstants.ConvertIcon(EmojiConstants.SAND_CLOCK_ICON)} Match Ended {GenerateExtraPeriodTitle()}";
+            => $"Match Ended {GenerateExtraPeriodTitle()}";
 
         private string GenerateExtraPeriodTitle()
         {
@@ -53,15 +52,5 @@ namespace Soccer.EventProcessors.Notifications.Models
 
             return string.Empty;
         }
-
-        private string HomeWinIcon 
-            => MatchResult.WinnerId == HomeTeam.Id 
-            ? EmojiConstants.ConvertIcon(EmojiConstants.TROPHY_ICON) 
-            : string.Empty;
-
-        private string AwayWinIcon 
-            => MatchResult.WinnerId == AwayTeam.Id 
-            ? EmojiConstants.ConvertIcon(EmojiConstants.TROPHY_ICON) 
-            : string.Empty;
     }
 }
