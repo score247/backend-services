@@ -9,15 +9,15 @@ namespace Soccer.Core.Matches.Extensions
         private const int NUMBER_OF_PERIODS_IN_MAIN_TIME = 2;
 
         public static bool IsAfterExtra(this MatchResult matchResult)
-           => matchResult.MatchStatus.IsEnded() &&
+           => matchResult.EventStatus.IsEndedOrClosed() &&
             matchResult.MatchPeriods.Any(period => period.PeriodType == PeriodType.Overtime);
 
         public static bool IsAfterPenaltyShootout(this MatchResult matchResult)
-          => matchResult.MatchStatus.IsEnded() &&
+          => matchResult.EventStatus.IsEndedOrClosed() &&
            matchResult.MatchPeriods.Any(period => period.PeriodType == PeriodType.Penalties);
 
         public static bool IsEndedInMainTime(this MatchResult matchResult)
-          => matchResult.MatchStatus.IsEnded() &&
+          => matchResult.EventStatus.IsEndedOrClosed() &&
            matchResult.MatchPeriods?.Count() == NUMBER_OF_PERIODS_IN_MAIN_TIME;
     }
 }

@@ -116,5 +116,7 @@
         public bool IsEnded() => this == Ended;
 
         public bool IsNotStart() => this == NotStarted;
+
+        public bool IsEndedOrClosed() => this == Ended || this == Closed;
     }
 }
