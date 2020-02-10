@@ -19,7 +19,7 @@ namespace Soccer.EventProcessors.Notifications.Models
         public override string Content()
         {
             var contentBuilder = new StringBuilder();
-            contentBuilder.Append($"{HomeTeam.Name} {MatchResult?.HomeScore}{HomeWinIcon}");
+            contentBuilder.Append($"{HomeWinIcon}{HomeTeam.Name} {MatchResult?.HomeScore}");
             contentBuilder.Append(TeamSeparator);
             contentBuilder.Append($"{MatchResult?.AwayScore} {AwayTeam.Name}{AwayWinIcon}");
             contentBuilder.AppendLine(GeneratePenaltyShootout());
