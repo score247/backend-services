@@ -147,4 +147,37 @@
   <data name="Under" xml:space="preserve">
     <value>Under</value>
   </data>
+  <data name="NotificationAfterExtraTime" xml:space="preserve">
+    <value>after Extra Time</value>
+  </data>
+  <data name="NotificationAfterPenalty" xml:space="preserve">
+    <value>after Penalty Shoot-out</value>
+  </data>
+  <data name="NotificationMatchEnd" xml:space="preserve">
+    <value>{0} Match Ended {1}</value>
+  </data>
+  <data name="NotificationMatchEndPenalty" xml:space="preserve">
+    <value>Penalty shoot-out: {0} {1} : {2} {3}</value>
+  </data>
+  <data name="NotificationMatchStart" xml:space="preserve">
+    <value>{0} Match Started</value>
+  </data>
+  <data name="NotificationMatchStartScore" xml:space="preserve">
+    <value>{0} 0{1}0 {2}</value>
+  </data>
+  <data name="NotificationToBeDefined" xml:space="preserve">
+    <value>(TBD)</value>
+  </data>
+  <data name="NotificationYellowRedCardPlayer" xml:space="preserve">
+    <value>{0} - Player {1} 2nd yellow card and is off!</value>
+  </data>
+  <data name="NotificationRedCard" xml:space="preserve">
+    <value>{0} Red Card {1}</value>
+  </data>
+  <data name="NotificationRedCardPlayer" xml:space="preserve">
+    <value>{0} - Player {1}</value>
+  </data>
+  <data name="NotificationScoreChange" xml:space="preserve">
+    <value>{0} GOAL! {1}</value>
+  </data>
 </root>

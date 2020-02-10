@@ -97,6 +97,105 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to after Extra Time.
+        /// </summary>
+        public static string NotificationAfterExtraTime {
+            get {
+                return ResourceManager.GetString("NotificationAfterExtraTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to after Penalty Shoot-out.
+        /// </summary>
+        public static string NotificationAfterPenalty {
+            get {
+                return ResourceManager.GetString("NotificationAfterPenalty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} Match Ended {1}.
+        /// </summary>
+        public static string NotificationMatchEnd {
+            get {
+                return ResourceManager.GetString("NotificationMatchEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Penalty shoot-out: {0} {1} : {2} {3}.
+        /// </summary>
+        public static string NotificationMatchEndPenalty {
+            get {
+                return ResourceManager.GetString("NotificationMatchEndPenalty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} Match Started.
+        /// </summary>
+        public static string NotificationMatchStart {
+            get {
+                return ResourceManager.GetString("NotificationMatchStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} 0{1}0 {2}.
+        /// </summary>
+        public static string NotificationMatchStartScore {
+            get {
+                return ResourceManager.GetString("NotificationMatchStartScore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} Red Card {1}.
+        /// </summary>
+        public static string NotificationRedCard {
+            get {
+                return ResourceManager.GetString("NotificationRedCard", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} - Player {1}.
+        /// </summary>
+        public static string NotificationRedCardPlayer {
+            get {
+                return ResourceManager.GetString("NotificationRedCardPlayer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} GOAL! {1}.
+        /// </summary>
+        public static string NotificationScoreChange {
+            get {
+                return ResourceManager.GetString("NotificationScoreChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to (TBD).
+        /// </summary>
+        public static string NotificationToBeDefined {
+            get {
+                return ResourceManager.GetString("NotificationToBeDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} - Player {1} 2nd yellow card and is off!.
+        /// </summary>
+        public static string NotificationYellowRedCardPlayer {
+            get {
+                return ResourceManager.GetString("NotificationYellowRedCardPlayer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 1x2.
         /// </summary>
         public static string OneXTwo {
