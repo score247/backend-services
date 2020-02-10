@@ -28,7 +28,7 @@ namespace Soccer.EventProcessors.Notifications.Models
         }
 
         public override string Title()
-            => $"{EmojiConstants.ConvertIcon(EmojiConstants.FLAG_ICON)} Match Ended {GenerateExtraPeriodTitle()}";
+            => $"{EmojiConstants.ConvertIcon(EmojiConstants.SAND_CLOCK_ICON)} Match Ended {GenerateExtraPeriodTitle()}";
 
         private string GenerateExtraPeriodTitle()
         {
