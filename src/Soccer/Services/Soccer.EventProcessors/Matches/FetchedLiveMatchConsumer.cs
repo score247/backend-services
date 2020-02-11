@@ -37,7 +37,7 @@ namespace Soccer.EventProcessors.Matches
         {
             var message = context?.Message;
 
-            if (message == null || message.Matches == null || message.Language == null || message.Regions == null || message.Regions.Any() == false)
+            if (message == null || message.Matches == null || message.Regions?.Any() == false)
             {
                 await logger.InfoAsync($"FetchLiveMatch - {DateTime.Now} - Consume: Region.Any {message?.Regions?.Any()}");
                 return;

@@ -7,6 +7,7 @@ using Fanex.Data.Repository;
 using Fanex.Logging;
 using MassTransit;
 using Score247.Shared;
+using Score247.Shared.Constants;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Notification.Models;
 using Soccer.Core.Notification.QueueMessages;
@@ -19,9 +20,6 @@ namespace Soccer.EventProcessors.Notifications
 {
     public class ReceiveMatchNotificationConsumer : IConsumer<IMatchNotificationReceivedMessage>
     {
-        private const string MATCH_INFO_CACHE_KEY = "MatchInfo";
-        private const string MATCH_NOTIFICATION_CACHE_KEY = "MatchNotification";
-
         private static readonly CacheItemOptions NotificationCacheOptions = new CacheItemOptions
         {
             SlidingExpiration = TimeSpan.FromMinutes(360), //Max minutes of a match
@@ -57,6 +55,7 @@ namespace Soccer.EventProcessors.Notifications
            
             //TODO queue by batch of users
             //TODO consider user platform
+            //TODO get users by language
 
             await messageBus.Publish<IMatchNotificationProcessedMessage>(new MatchNotificationProcessedMessage(
                 new MatchEventNotification(
@@ -86,8 +85,7 @@ namespace Soccer.EventProcessors.Notifications
                 match.Teams.FirstOrDefault(team => !team.IsHome),
                 message.Timeline.MatchTime,
                 message.MatchResult);
-
-            //TODO de-dup message
+                       
             var isProcessed = await IsProcessedNotificationAsync(message.MatchId, notification.Content());
 
             return isProcessed 
@@ -102,7 +100,7 @@ namespace Soccer.EventProcessors.Notifications
 
         private async Task<Match> GetAndCacheMatchAsync(string matchId)
         {
-            var matchCacheKey = $"{MATCH_INFO_CACHE_KEY}_{matchId}";
+            var matchCacheKey = $"{CacheKeys.MATCH_INFO_CACHE_KEY}_{matchId}";
 
             var match = await cacheManager.GetOrSetAsync(
                 matchCacheKey,
@@ -117,7 +115,7 @@ namespace Soccer.EventProcessors.Notifications
 
         private async Task<bool> IsProcessedNotificationAsync(string matchId, string content)
         {
-            var matchNotificationCacheKey = $"{MATCH_NOTIFICATION_CACHE_KEY}_{matchId}";
+            var matchNotificationCacheKey = $"{CacheKeys.MATCH_NOTIFICATION_CACHE_KEY}_{matchId}";
             var processedNotifications = await GetProcessedNotificationsAsync(matchNotificationCacheKey);
 
             return processedNotifications.Contains(content);
@@ -125,7 +123,7 @@ namespace Soccer.EventProcessors.Notifications
 
         private async Task SetProcessedNotificationAsync(string matchId, string content)
         {
-            var matchNotificationCacheKey = $"{MATCH_NOTIFICATION_CACHE_KEY}_{matchId}";
+            var matchNotificationCacheKey = $"{CacheKeys.MATCH_NOTIFICATION_CACHE_KEY}_{matchId}";
 
             var processedNotifications = await GetProcessedNotificationsAsync(matchNotificationCacheKey);
             processedNotifications.Add(content);
