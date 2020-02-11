@@ -79,7 +79,6 @@ namespace Soccer.EventProcessors.Notifications
                 return default;
             }
 
-            //TODO language translation
             var notification = TimelineNotificationCreator.CreateInstance(
                 message.Timeline.Type,
                 message.Timeline,

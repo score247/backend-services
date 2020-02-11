@@ -10,7 +10,8 @@ namespace Soccer.Core.Matches.Extensions
 
         public static bool IsAfterExtra(this MatchResult matchResult)
            => matchResult.EventStatus.IsEndedOrClosed() &&
-            matchResult.MatchPeriods.Any(period => period.PeriodType == PeriodType.Overtime);
+            matchResult.MatchPeriods.Any(period => period.PeriodType == PeriodType.Overtime) && 
+            !matchResult.MatchPeriods.Any(period => period.PeriodType == PeriodType.Penalties);
 
         public static bool IsAfterPenaltyShootout(this MatchResult matchResult)
           => matchResult.EventStatus.IsEndedOrClosed() &&
