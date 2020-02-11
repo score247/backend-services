@@ -38,7 +38,10 @@
             {
                 value = await factory();
 
-                await cacheService.SetAsync(key, value, options).ConfigureAwait(false);
+                if (!Equals(value, default(T)))
+                {
+                    await cacheService.SetAsync(key, value, options).ConfigureAwait(false);
+                }
             }
 
             return value;

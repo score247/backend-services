@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Caching;
 using Fanex.Data.Repository;
+using Fanex.Logging;
 using MassTransit;
 using Score247.Shared;
 using Soccer.Core.Matches.Models;
@@ -29,15 +30,18 @@ namespace Soccer.EventProcessors.Notifications
         private readonly IBus messageBus;
         private readonly IDynamicRepository dynamicRepository;
         private readonly ICacheManager cacheManager;
+        private readonly ILogger logger;
 
         public ReceiveMatchNotificationConsumer(
             IBus messageBus,
             IDynamicRepository dynamicRepository,
-            ICacheManager cacheManager)
+            ICacheManager cacheManager,
+            ILogger logger)
         {
             this.messageBus = messageBus;
             this.dynamicRepository = dynamicRepository;
             this.cacheManager = cacheManager;
+            this.logger = logger;
         }
 
         public async Task Consume(ConsumeContext<IMatchNotificationReceivedMessage> context)
@@ -71,6 +75,7 @@ namespace Soccer.EventProcessors.Notifications
 
             if (match == null)
             {
+                await logger.InfoAsync($"ReceiveMatchNotificationConsumer NotFound match {message.MatchId}");
                 return default;
             }
 
@@ -104,8 +109,7 @@ namespace Soccer.EventProcessors.Notifications
                 matchCacheKey,
                 async () =>
                 {
-                    return (await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(matchId, Language.en_US))
-                        ?? default);
+                    return await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(matchId, Language.en_US));
                 },
                 NotificationCacheOptions);
 

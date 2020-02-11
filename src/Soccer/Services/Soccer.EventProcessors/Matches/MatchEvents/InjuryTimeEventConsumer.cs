@@ -15,12 +15,10 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
     public class InjuryTimeEventConsumer : IConsumer<IInjuryTimeEventMessage>
     {
         private readonly IDynamicRepository dynamicRepository;
-        private readonly ILogger logger;
 
-        public InjuryTimeEventConsumer(IDynamicRepository dynamicRepository, ILogger logger)
+        public InjuryTimeEventConsumer(IDynamicRepository dynamicRepository)
         {
             this.dynamicRepository = dynamicRepository;
-            this.logger = logger;
         }
 
 #pragma warning disable S1541 // Methods and properties should not be too complex
@@ -38,13 +36,6 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
             }
 
 #pragma warning disable S1067 // Expressions should not be too complex
-            await logger.InfoAsync(string.Join(
-                    " - ",
-                    DateTime.Now,
-                    $"{matchEvent?.MatchId}",
-                    $"{matchEvent?.MatchResult?.MatchStatus?.DisplayName}",
-                    $"{matchEvent?.Timeline?.Id}",
-                    $"{matchEvent?.Timeline?.Type?.DisplayName}"));
 
             var injuryTimes = new InjuryTimes(
                    IsRegularPeriod(matchEvent.Timeline, 1) ? (byte)matchEvent.Timeline.InjuryTimeAnnounced : (byte)0,
