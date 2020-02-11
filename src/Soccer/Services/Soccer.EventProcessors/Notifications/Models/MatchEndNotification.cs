@@ -21,7 +21,7 @@ namespace Soccer.EventProcessors.Notifications.Models
             contentBuilder.Append($"{HomeTeam.Name} {MatchResult?.HomeScore}");
             contentBuilder.Append(TeamSeparator);
             contentBuilder.Append($"{MatchResult?.AwayScore} {AwayTeam.Name}");
-            contentBuilder.AppendLine(GeneratePenaltyShootout());
+            contentBuilder.Append($"{NewLine}{GeneratePenaltyShootout()}");
 
             return contentBuilder.ToString();
         }

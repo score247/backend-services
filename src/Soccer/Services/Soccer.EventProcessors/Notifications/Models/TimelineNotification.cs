@@ -6,6 +6,7 @@ namespace Soccer.EventProcessors.Notifications.Models
     public abstract class TimelineNotification
     {
         protected const string TeamSeparator = " : ";
+        protected const string NewLine = "\n";
 
         protected TimelineNotification(
             TimelineEvent timeline, 
