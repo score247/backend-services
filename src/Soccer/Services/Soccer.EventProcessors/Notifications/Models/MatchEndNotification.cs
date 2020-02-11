@@ -14,6 +14,7 @@ namespace Soccer.EventProcessors.Notifications.Models
         private const string NotificationAfterExtraTime = "NotificationAfterExtraTime";
         private const string NotificationAfterPenalty = "NotificationAfterPenalty";
         private const string NotificationMatchEndPenalty = "NotificationMatchEndPenalty";
+        private const string NotificationMatchEndAggregate = "NotificationMatchEndAggregate";
 
         public MatchEndNotification(
            TimelineEvent timeline,
@@ -28,7 +29,8 @@ namespace Soccer.EventProcessors.Notifications.Models
             contentBuilder.Append($"{HomeTeam.Name} {MatchResult?.HomeScore}");
             contentBuilder.Append(TeamSeparator);
             contentBuilder.Append($"{MatchResult?.AwayScore} {AwayTeam.Name}");
-            contentBuilder.Append($"{NewLine}{GeneratePenaltyShootout(language)}");
+            contentBuilder.Append($"{GeneratePenaltyShootout(language)}");
+            contentBuilder.Append($"{GenerateAggregateInfo(language)}");
 
             return contentBuilder.ToString();
         }
@@ -56,12 +58,28 @@ namespace Soccer.EventProcessors.Notifications.Models
             {
                 var penaltyPeriod = MatchResult.MatchPeriods.FirstOrDefault(period => period.PeriodType.IsPenalties());
 
-                return string.Format(
+                return NewLine + string.Format(
                     CustomAppResources.GetString(NotificationMatchEndPenalty, language),
                     HomeTeam.Name,
                     penaltyPeriod.HomeScore,
                     penaltyPeriod.AwayScore,
                     AwayTeam.Name);
+            }
+
+            return string.Empty;
+        }
+
+        private string GenerateAggregateInfo(string language = Language.English) 
+        {
+            if (!string.IsNullOrWhiteSpace(MatchResult.AggregateWinnerId)) 
+            {
+                var aggregateWinnerName = MatchResult.AggregateWinnerId == HomeTeam.Id ? HomeTeam.Name : AwayTeam.Name;
+
+                return NewLine + string.Format(
+                   CustomAppResources.GetString(NotificationMatchEndAggregate, language),
+                   aggregateWinnerName,
+                   MatchResult.AggregateHomeScore,
+                   MatchResult.AwayScore);
             }
 
             return string.Empty;
