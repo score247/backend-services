@@ -97,7 +97,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to after Extra Time.
+        ///   Looks up a localized string similar to after extra time.
         /// </summary>
         public static string NotificationAfterExtraTime {
             get {
@@ -106,7 +106,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to after Penalty Shoot-out.
+        ///   Looks up a localized string similar to after penalty shoot-out.
         /// </summary>
         public static string NotificationAfterPenalty {
             get {
@@ -115,7 +115,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Match Ended {0}.
+        ///   Looks up a localized string similar to Match ended {0}.
         /// </summary>
         public static string NotificationMatchEnd {
             get {
@@ -133,7 +133,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Match Started.
+        ///   Looks up a localized string similar to Match started.
         /// </summary>
         public static string NotificationMatchStart {
             get {
@@ -151,7 +151,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Red Card {0}.
+        ///   Looks up a localized string similar to Red card {0}.
         /// </summary>
         public static string NotificationRedCard {
             get {
@@ -160,7 +160,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} - Player {1}.
+        ///   Looks up a localized string similar to {0} - {1}.
         /// </summary>
         public static string NotificationRedCardPlayer {
             get {
@@ -178,7 +178,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (TBD).
+        ///   Looks up a localized string similar to (Player name TBD).
         /// </summary>
         public static string NotificationToBeDefined {
             get {
@@ -187,7 +187,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} - Player {1} 2nd yellow card and is off!.
+        ///   Looks up a localized string similar to {0} - {1} 2nd yellow card and is off!.
         /// </summary>
         public static string NotificationYellowRedCardPlayer {
             get {
