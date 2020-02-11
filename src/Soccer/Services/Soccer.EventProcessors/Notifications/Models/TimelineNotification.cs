@@ -10,7 +10,7 @@ namespace Soccer.EventProcessors.Notifications.Models
     {
         private const string NotificationToBeDefined = "NotificationToBeDefined";
 
-        protected const string TeamSeparator = " : ";
+        protected const string TeamSeparator = " - ";
         protected const string NewLine = "\n";
 
         protected TimelineNotification(

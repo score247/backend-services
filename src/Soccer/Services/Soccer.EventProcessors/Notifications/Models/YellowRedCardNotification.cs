@@ -8,7 +8,7 @@ namespace Soccer.EventProcessors.Notifications.Models
     public class YellowRedCardNotification : TimelineNotification
     {
         private const string NotificationYellowRedCardPlayer = "NotificationYellowRedCardPlayer";
-        private const string NotificationRedCard = "NotificationRedCard";
+        private const string NotificationYellowRedCard = "NotificationYellowRedCard";
 
         public YellowRedCardNotification(
           TimelineEvent timeline,
@@ -25,7 +25,7 @@ namespace Soccer.EventProcessors.Notifications.Models
 
         public override string Title(string language = Language.English)
             => string.Format(
-                CustomAppResources.GetString(NotificationRedCard, language),
+                CustomAppResources.GetString(NotificationYellowRedCard, language),
                 MatchTimeDisplay);
 
         private Team TeamReceived

@@ -124,7 +124,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Penalty shoot-out: {0} {1} : {2} {3}.
+        ///   Looks up a localized string similar to Penalty shoot-out: {0} {1} - {2} {3}.
         /// </summary>
         public static string NotificationMatchEndPenalty {
             get {
@@ -183,6 +183,15 @@ namespace Soccer.Core._Shared.Resources {
         public static string NotificationToBeDefined {
             get {
                 return ResourceManager.GetString("NotificationToBeDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yellow Red card {0}.
+        /// </summary>
+        public static string NotificationYellowRedCard {
+            get {
+                return ResourceManager.GetString("NotificationYellowRedCard", resourceCulture);
             }
         }
         
