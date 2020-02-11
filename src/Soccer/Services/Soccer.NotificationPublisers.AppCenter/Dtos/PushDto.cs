@@ -1,4 +1,4 @@
-﻿namespace Soccer.NotificationPublisers.AppCenter.Dtos
+﻿namespace Soccer.NotificationServices.AppCenter.Dtos
 { 
     public class PushDto
     {

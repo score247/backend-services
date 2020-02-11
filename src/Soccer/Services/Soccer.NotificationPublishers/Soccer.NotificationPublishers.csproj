@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Soccer.Core\Soccer.Core.csproj" />
-    <ProjectReference Include="..\Soccer.NotificationPublisers.AppCenter\Soccer.NotificationPublishers.AppCenter.csproj" />
+    <ProjectReference Include="..\Soccer.NotificationPublisers.AppCenter\Soccer.NotificationServices.AppCenter.csproj" />
   </ItemGroup>
 
 </Project>

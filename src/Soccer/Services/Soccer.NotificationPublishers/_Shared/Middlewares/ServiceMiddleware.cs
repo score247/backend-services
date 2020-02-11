@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Refit;
-using Soccer.NotificationPublisers.AppCenter._Shared.Configuration;
-using Soccer.NotificationPublisers.AppCenter.Matches;
 using Soccer.NotificationPublishers._Shared.Configuration;
+using Soccer.NotificationServices.AppCenter._Shared.Configuration;
+using Soccer.NotificationServices.AppCenter.Matches;
+using Soccer.NotificationServices.Matches;
 
 namespace Soccer.NotificationPublishers._Shared.Middlewares
 {

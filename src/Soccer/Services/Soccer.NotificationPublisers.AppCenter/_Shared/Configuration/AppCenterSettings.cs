@@ -1,4 +1,4 @@
-﻿namespace Soccer.NotificationPublisers.AppCenter._Shared.Configuration
+﻿namespace Soccer.NotificationServices.AppCenter._Shared.Configuration
 {
     public interface IAppCenterSettings
     {

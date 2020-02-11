@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using Soccer.Core._Shared.Enumerations;
 using Soccer.Core.Notification.Models;
-using Soccer.NotificationPublisers.AppCenter.Dtos;
+using Soccer.NotificationServices.AppCenter.Dtos;
 
-namespace Soccer.NotificationPublisers.AppCenter.Matches.DataMappers
+namespace Soccer.NotificationServices.AppCenter.Matches.DataMappers
 {
     public static class MatchNotificationMapper
     {

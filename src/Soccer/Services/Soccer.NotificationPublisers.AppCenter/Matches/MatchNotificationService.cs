@@ -2,23 +2,18 @@
 using System.Threading.Tasks;
 using Fanex.Logging;
 using Refit;
-using Score247.Shared.Enumerations;
 using Soccer.Core.Notification.Models;
-using Soccer.NotificationPublisers.AppCenter._Shared.Configuration;
-using Soccer.NotificationPublisers.AppCenter.Dtos;
-using Soccer.NotificationPublisers.AppCenter.Matches.DataMappers;
+using Soccer.NotificationServices.AppCenter._Shared.Configuration;
+using Soccer.NotificationServices.AppCenter.Dtos;
+using Soccer.NotificationServices.AppCenter.Matches.DataMappers;
+using Soccer.NotificationServices.Matches;
 
-namespace Soccer.NotificationPublisers.AppCenter.Matches
+namespace Soccer.NotificationServices.AppCenter.Matches
 {
     public interface IPushApi
     {
         [Post("/{ownerName}/{appName}/push/notifications")]
         Task<PushResultDto> Push([Header("X-API-Token")] string apiToken, string ownerName, string appname, [Body] PushDto push);
-    }
-
-    public interface IMatchNotificationService
-    {
-        Task<string> PushNotification(MatchEventNotification eventNotification);
     }
 
     public class MatchNotificationService : IMatchNotificationService
