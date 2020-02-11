@@ -115,7 +115,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} Match Ended {1}.
+        ///   Looks up a localized string similar to Match Ended {0}.
         /// </summary>
         public static string NotificationMatchEnd {
             get {
@@ -133,7 +133,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} Match Started.
+        ///   Looks up a localized string similar to Match Started.
         /// </summary>
         public static string NotificationMatchStart {
             get {
@@ -151,7 +151,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} Red Card {1}.
+        ///   Looks up a localized string similar to Red Card {0}.
         /// </summary>
         public static string NotificationRedCard {
             get {
@@ -169,7 +169,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} GOAL! {1}.
+        ///   Looks up a localized string similar to GOAL! {0}.
         /// </summary>
         public static string NotificationScoreChange {
             get {

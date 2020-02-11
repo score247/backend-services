@@ -154,13 +154,13 @@
     <value>after Penalty Shoot-out</value>
   </data>
   <data name="NotificationMatchEnd" xml:space="preserve">
-    <value>{0} Match Ended {1}</value>
+    <value>Match Ended {0}</value>
   </data>
   <data name="NotificationMatchEndPenalty" xml:space="preserve">
     <value>Penalty shoot-out: {0} {1} : {2} {3}</value>
   </data>
   <data name="NotificationMatchStart" xml:space="preserve">
-    <value>{0} Match Started</value>
+    <value>Match Started</value>
   </data>
   <data name="NotificationMatchStartScore" xml:space="preserve">
     <value>{0} 0{1}0 {2}</value>
@@ -172,12 +172,12 @@
     <value>{0} - Player {1} 2nd yellow card and is off!</value>
   </data>
   <data name="NotificationRedCard" xml:space="preserve">
-    <value>{0} Red Card {1}</value>
+    <value>Red Card {0}</value>
   </data>
   <data name="NotificationRedCardPlayer" xml:space="preserve">
     <value>{0} - Player {1}</value>
   </data>
   <data name="NotificationScoreChange" xml:space="preserve">
-    <value>{0} GOAL! {1}</value>
+    <value>GOAL! {0}</value>
   </data>
 </root>

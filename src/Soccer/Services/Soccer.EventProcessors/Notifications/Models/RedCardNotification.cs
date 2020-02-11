@@ -26,7 +26,6 @@ namespace Soccer.EventProcessors.Notifications.Models
         public override string Title(string language = Language.English)
             => string.Format(
                 CustomAppResources.GetString(NotificationRedCard, language),
-                EmojiConstants.ConvertIcon(EmojiConstants.RED_CARD_ICON),
                 MatchTimeDisplay);
 
         private Team TeamReceived

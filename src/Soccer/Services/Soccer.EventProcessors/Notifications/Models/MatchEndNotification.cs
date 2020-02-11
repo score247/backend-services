@@ -28,7 +28,7 @@ namespace Soccer.EventProcessors.Notifications.Models
             contentBuilder.Append($"{HomeTeam.Name} {MatchResult?.HomeScore}");
             contentBuilder.Append(TeamSeparator);
             contentBuilder.Append($"{MatchResult?.AwayScore} {AwayTeam.Name}");
-            contentBuilder.Append($"{NewLine}{GeneratePenaltyShootout()}");
+            contentBuilder.Append($"{NewLine}{GeneratePenaltyShootout(language)}");
 
             return contentBuilder.ToString();
         }
@@ -36,7 +36,6 @@ namespace Soccer.EventProcessors.Notifications.Models
         public override string Title(string language = Language.English)
             => string.Format(
                 CustomAppResources.GetString(NotificationMatchEnd, language),
-                EmojiConstants.ConvertIcon(EmojiConstants.FLAG_ICON),
                 GenerateExtraPeriodTitle(language));
 
         private string GenerateExtraPeriodTitle(string language = Language.English)

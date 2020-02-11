@@ -21,8 +21,6 @@ namespace Soccer.EventProcessors.Notifications.Models
             => $"{HomeTeam.Name} 0{TeamSeparator}0 {AwayTeam.Name}";
 
         public override string Title(string language = Language.English)
-            => string.Format(
-                CustomAppResources.GetString(NotificationMatchStart, language),
-                EmojiConstants.ConvertIcon(EmojiConstants.SOUND_ICON));
+            => string.Format(CustomAppResources.GetString(NotificationMatchStart, language));
     }
 }

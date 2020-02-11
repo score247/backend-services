@@ -30,7 +30,6 @@ namespace Soccer.EventProcessors.Notifications.Models
         public override string Title(string language = Language.English)
             => string.Format(
                 CustomAppResources.GetString(NotificationScoreChange, language),
-                EmojiConstants.ConvertIcon(EmojiConstants.SOCCER_BALL_ICON),
                 MatchTimeDisplay);
 
         private string TeamScoredId
