@@ -6,9 +6,6 @@ namespace Soccer.Core._Shared.Resources
     public static class CustomAppResources
     {
         public static string GetString(string value, string language = Language.English)
-        {
-            var cultureResource = AppResources.ResourceManager.GetResourceSet(CultureInfo.GetCultureInfo(language), false, true);
-            return cultureResource.GetString(value);
-        }
+            => AppResources.ResourceManager.GetString(value, CultureInfo.GetCultureInfo(language));
     }
 }
