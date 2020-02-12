@@ -124,7 +124,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Agg: {0} - {1}, {2} win.
+        ///   Looks up a localized string similar to Agg: {0} - {1}, {2} Win.
         /// </summary>
         public static string NotificationMatchEndAggregate {
             get {
