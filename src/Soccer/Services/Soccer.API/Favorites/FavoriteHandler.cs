@@ -28,25 +28,16 @@ namespace Soccer.API.Favorites
         => (await favoriteCommandService.AddFavorite(request.UserFavorite)) > 0;
 
         public async Task<bool> Handle(RemoveFavoriteRequest request, CancellationToken cancellationToken)
-        => (await favoriteCommandService.RemoveFavorite(request.UserId, request.FavoriteId)) > 0;
+        => (await favoriteCommandService.RemoveFavorite(request.UserFavorite)) > 0;
 
         public async Task<IReadOnlyList<string>> Handle(GetUsersByFavoriteRequest request, CancellationToken cancellationToken)
         => (await favoriteQueryService.GetUsersByFavoriteId(request.MatchId))?.ToList();
 
         public async Task<bool> Handle(SyncFavoriteRequest request, CancellationToken cancellationToken)
         {
-            if (request.SyncUserFavorite?.RemovedUserFavorite != null 
-                && request.SyncUserFavorite.RemovedUserFavorite.Favorites.Any())
-            {
-                var userId = request.SyncUserFavorite.RemovedUserFavorite.UserId;
+            await favoriteCommandService.RemoveFavorite(request.SyncUserFavorite?.RemovedUserFavorite);
 
-                foreach (var removeFavorite in request.SyncUserFavorite.RemovedUserFavorite.Favorites)
-                {
-                    await favoriteCommandService.RemoveFavorite(userId, removeFavorite.Id);
-                }
-            }
-
-            return (await favoriteCommandService.AddFavorite(request.SyncUserFavorite.AddedUserFavorite)) > 0;
+            return (await favoriteCommandService.AddFavorite(request.SyncUserFavorite?.AddedUserFavorite)) > 0;
         }
     }
 }

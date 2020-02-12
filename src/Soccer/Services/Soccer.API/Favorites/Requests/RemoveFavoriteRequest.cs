@@ -1,17 +1,15 @@
 ﻿using MediatR;
+using Soccer.Core.Models.Favorites;
 
 namespace Soccer.API.Favorites.Requests
 {
     public class RemoveFavoriteRequest : IRequest<bool>
     {
-        public RemoveFavoriteRequest(string userId, string favoriteId)
+        public RemoveFavoriteRequest(UserFavorite userFavorite)
         {
-            UserId = userId;
-            FavoriteId = favoriteId;
+            UserFavorite = userFavorite;
         }
 
-        public string UserId { get; }
-
-        public string FavoriteId { get; }
+        public UserFavorite UserFavorite { get; }
     }
 }

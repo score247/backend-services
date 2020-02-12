@@ -9,7 +9,7 @@ namespace Soccer.API.Favorites
     {
         Task<int> AddFavorite(UserFavorite userFavorite);
 
-        Task<int> RemoveFavorite(string userId, string favoriteId);
+        Task<int> RemoveFavorite(UserFavorite userFavorite);
     }
 
     public class FavoriteCommandService : IFavoriteCommandService
@@ -22,7 +22,7 @@ namespace Soccer.API.Favorites
         public Task<int> AddFavorite(UserFavorite userFavorite)
         => dynamicRepository.ExecuteAsync(new InsertOrUpdateFavoriteCommand(userFavorite));
 
-        public Task<int> RemoveFavorite(string userId, string favoriteId)
-         => dynamicRepository.ExecuteAsync(new RemoveFavoriteCommand(userId, favoriteId));
+        public Task<int> RemoveFavorite(UserFavorite userFavorite)
+         => dynamicRepository.ExecuteAsync(new RemoveFavoriteCommand(userFavorite));
     }
 }

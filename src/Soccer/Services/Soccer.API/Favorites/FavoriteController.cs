@@ -30,10 +30,9 @@ namespace Soccer.API.Favorites
         [HttpDelete]
         [Route("remove/")]
         public async Task<bool> Remove(
-            string userId, 
-            string favoriteId, 
+            [FromBody]UserFavorite userFavorite,
             string language = Language.English)
-            => await mediator.Send(new RemoveFavoriteRequest(userId, favoriteId));
+            => await mediator.Send(new RemoveFavoriteRequest(userFavorite));
 
         [HttpGet]
         [Route("users/get/")]
