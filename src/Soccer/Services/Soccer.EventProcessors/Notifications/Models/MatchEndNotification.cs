@@ -76,10 +76,10 @@ namespace Soccer.EventProcessors.Notifications.Models
                 var aggregateWinnerName = MatchResult.AggregateWinnerId == HomeTeam.Id ? HomeTeam.Name : AwayTeam.Name;
 
                 return NewLine + string.Format(
-                   CustomAppResources.GetString(NotificationMatchEndAggregate, language),
-                   aggregateWinnerName,
+                   CustomAppResources.GetString(NotificationMatchEndAggregate, language),                   
                    MatchResult.AggregateHomeScore,
-                   MatchResult.AggregateAwayScore);
+                   MatchResult.AggregateAwayScore,
+                   aggregateWinnerName);
             }
 
             return string.Empty;
