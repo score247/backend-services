@@ -172,6 +172,8 @@ namespace Soccer.EventProcessors.Tests.Notifications.Models
         [Fact]
         public void Content_MatchHasPenaltyShootout_ShouldReturnCorrectFormat()
         {
+            var homeTeam = fixture.Create<Team>();
+            var awayTeam = fixture.Create<Team>();
             var penaltyPeriod = fixture.Create<MatchPeriod>().With(period => period.PeriodType, PeriodType.Penalties);
             var matchPeriods = new List<MatchPeriod>
             {
@@ -183,17 +185,55 @@ namespace Soccer.EventProcessors.Tests.Notifications.Models
             var timelineEvent = fixture.Create<TimelineEvent>();
             var matchResult = fixture.Create<MatchResult>()
                 .With(result => result.EventStatus, MatchStatus.Ended)
-                .With(result => result.MatchPeriods, matchPeriods);
+                .With(result => result.MatchPeriods, matchPeriods)
+                .With(result => result.AggregateWinnerId, null);
+
+            var expectedContent = $"{homeTeam.Name} {matchResult.HomeScore} - {matchResult.AwayScore} {awayTeam.Name}";
+            expectedContent += $"\nPenalty shoot-out: {homeTeam.Name} {penaltyPeriod.HomeScore} - {penaltyPeriod.AwayScore} {awayTeam.Name}";
 
             var matchEnd = new MatchEndNotification(
                             resources,
                             timelineEvent,
-                            fixture.Create<Team>(),
-                            fixture.Create<Team>(),
+                            homeTeam,
+                            awayTeam,
                             timelineEvent.MatchTime,
                             matchResult);
 
-            Assert.Equal($"Match ended after penalty shoot-out", matchEnd.Title());
+            Assert.Equal(expectedContent, matchEnd.Content());
+        }
+
+        [Fact]
+        public void Content_MatchHasPenaltyShootout_AggWinnerIsHome_ShouldReturnCorrectFormat()
+        {
+            var homeTeam = fixture.Create<Team>();
+            var awayTeam = fixture.Create<Team>();
+            var penaltyPeriod = fixture.Create<MatchPeriod>().With(period => period.PeriodType, PeriodType.Penalties);
+            var matchPeriods = new List<MatchPeriod>
+            {
+                fixture.Create<MatchPeriod>(),
+                fixture.Create<MatchPeriod>(),
+                penaltyPeriod
+            };
+
+            var timelineEvent = fixture.Create<TimelineEvent>();
+            var matchResult = fixture.Create<MatchResult>()
+                .With(result => result.EventStatus, MatchStatus.Ended)
+                .With(result => result.MatchPeriods, matchPeriods)
+                .With(result => result.AggregateWinnerId, homeTeam.Id);
+
+            var expectedContent = $"{homeTeam.Name} {matchResult.HomeScore} - {matchResult.AwayScore} {awayTeam.Name}";
+            expectedContent += $"\nPenalty shoot-out: {homeTeam.Name} {penaltyPeriod.HomeScore} - {penaltyPeriod.AwayScore} {awayTeam.Name}";
+            expectedContent += $"\nAgg: {matchResult.AggregateHomeScore} - {matchResult.AggregateAwayScore}. {homeTeam.Name} Win";
+
+            var matchEnd = new MatchEndNotification(
+                            resources,
+                            timelineEvent,
+                            homeTeam,
+                            awayTeam,
+                            timelineEvent.MatchTime,
+                            matchResult);
+
+            Assert.Equal(expectedContent, matchEnd.Content());
         }
 
         private void SetLanguageResources()
