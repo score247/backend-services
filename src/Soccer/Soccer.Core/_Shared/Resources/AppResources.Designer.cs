@@ -187,7 +187,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to (Player name TBD).
+        ///   Looks up a localized string similar to (Player TBD).
         /// </summary>
         public static string NotificationToBeDefined {
             get {
