@@ -184,6 +184,6 @@
     <value>Yellow Red card {0}</value>
   </data>
   <data name="NotificationMatchEndAggregate" xml:space="preserve">
-    <value>{0} win due to Agg: {1} - {2}</value>
+    <value>Agg: {0} - {1}, {2} win</value>
   </data>
 </root>
