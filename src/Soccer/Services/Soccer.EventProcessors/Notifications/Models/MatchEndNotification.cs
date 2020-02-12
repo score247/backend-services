@@ -79,7 +79,7 @@ namespace Soccer.EventProcessors.Notifications.Models
                    CustomAppResources.GetString(NotificationMatchEndAggregate, language),
                    aggregateWinnerName,
                    MatchResult.AggregateHomeScore,
-                   MatchResult.AwayScore);
+                   MatchResult.AggregateAwayScore);
             }
 
             return string.Empty;
