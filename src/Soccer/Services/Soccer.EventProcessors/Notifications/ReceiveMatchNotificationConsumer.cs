@@ -16,6 +16,7 @@ using Soccer.Core.Shared.Enumerations;
 using Soccer.Database.Favorites.Criteria;
 using Soccer.Database.Matches.Criteria;
 using Soccer.EventProcessors.Notifications.Models;
+using Soccer.EventProcessors.Shared.Configurations;
 
 namespace Soccer.EventProcessors.Notifications
 {
@@ -31,19 +32,22 @@ namespace Soccer.EventProcessors.Notifications
         private readonly ICacheManager cacheManager;
         private readonly ILogger logger;
         private readonly ILanguageResourcesService languageResources;
+        private readonly IAppSettings appSettings;
 
         public ReceiveMatchNotificationConsumer(
             IBus messageBus,
             IDynamicRepository dynamicRepository,
             ICacheManager cacheManager,
             ILogger logger,
-            ILanguageResourcesService languageResources)
+            ILanguageResourcesService languageResources,
+            IAppSettings appSettings)
         {
             this.messageBus = messageBus;
             this.dynamicRepository = dynamicRepository;
             this.cacheManager = cacheManager;
             this.logger = logger;
             this.languageResources = languageResources;
+            this.appSettings = appSettings;
         }
 
         public async Task Consume(ConsumeContext<IMatchNotificationReceivedMessage> context)
@@ -56,18 +60,25 @@ namespace Soccer.EventProcessors.Notifications
             {
                 return;
             }
-           
-            //TODO queue by batch of users
+
             //TODO consider user platform
             //TODO get users by language
 
-            await messageBus.Publish<IMatchNotificationProcessedMessage>(new MatchNotificationProcessedMessage(
-                new MatchEventNotification(
-                    message.MatchId,
-                    notification.Title(),
-                    notification.Content(),
-                    userIds: favoriteUserIds
-                )));
+            for (var i = 0; i * appSettings.MaxUsersSent < favoriteUserIds.Count(); i++)
+            {
+                var batchOfUsers = favoriteUserIds
+                    .Skip(i * appSettings.MaxUsersSent)
+                    .Take(appSettings.MaxUsersSent)
+                    .ToArray();
+
+                await messageBus.Publish<IMatchNotificationProcessedMessage>(new MatchNotificationProcessedMessage(
+                   new MatchEventNotification(
+                       message.MatchId,
+                       notification.Title(),
+                       notification.Content(),
+                       userIds: batchOfUsers
+                   )));
+            }
 
             await SetProcessedNotificationAsync(message.MatchId, notification.Content());
         }
