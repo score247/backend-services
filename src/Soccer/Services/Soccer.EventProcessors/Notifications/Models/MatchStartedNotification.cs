@@ -19,7 +19,7 @@ namespace Soccer.EventProcessors.Notifications.Models
             : base(languageResources, timeline, home, away, matchTime, matchResult) { }
 
         public override string Content(string language = Language.English)
-            => $"{HomeTeam.Name} 0{TeamSeparator}0 {AwayTeam.Name}";
+            => $"{HomeTeam.Name} {DefaultScore}{TeamSeparator}{DefaultScore} {AwayTeam.Name}";
 
         public override string Title(string language = Language.English)
             => string.Format(LanguageResources.GetString(NotificationMatchStart, language));

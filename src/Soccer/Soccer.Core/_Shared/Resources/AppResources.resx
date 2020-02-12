@@ -166,7 +166,7 @@
     <value>{0} 0{1}0 {2}</value>
   </data>
   <data name="NotificationToBeDefined" xml:space="preserve">
-    <value>(Player TBD)</value>
+    <value>Player (TBD)</value>
   </data>
   <data name="NotificationYellowRedCardPlayer" xml:space="preserve">
     <value>{0} - {1} 2nd yellow card and is off!</value>

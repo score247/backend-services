@@ -19,6 +19,6 @@ namespace Soccer.Core.Matches.Extensions
 
         public static bool IsEndedInMainTime(this MatchResult matchResult)
           => matchResult.EventStatus.IsEndedOrClosed() &&
-           matchResult.MatchPeriods?.Count() == NUMBER_OF_PERIODS_IN_MAIN_TIME;
+           matchResult.MatchPeriods?.Count() <= NUMBER_OF_PERIODS_IN_MAIN_TIME;
     }
 }

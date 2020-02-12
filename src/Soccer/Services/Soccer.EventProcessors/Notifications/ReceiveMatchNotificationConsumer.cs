@@ -8,6 +8,7 @@ using Fanex.Logging;
 using MassTransit;
 using Score247.Shared;
 using Score247.Shared.Constants;
+using Soccer.Core._Shared.Resources;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Notification.Models;
 using Soccer.Core.Notification.QueueMessages;
@@ -29,17 +30,20 @@ namespace Soccer.EventProcessors.Notifications
         private readonly IDynamicRepository dynamicRepository;
         private readonly ICacheManager cacheManager;
         private readonly ILogger logger;
+        private readonly ILanguageResourcesService languageResources;
 
         public ReceiveMatchNotificationConsumer(
             IBus messageBus,
             IDynamicRepository dynamicRepository,
             ICacheManager cacheManager,
-            ILogger logger)
+            ILogger logger,
+            ILanguageResourcesService languageResources)
         {
             this.messageBus = messageBus;
             this.dynamicRepository = dynamicRepository;
             this.cacheManager = cacheManager;
             this.logger = logger;
+            this.languageResources = languageResources;
         }
 
         public async Task Consume(ConsumeContext<IMatchNotificationReceivedMessage> context)
@@ -79,6 +83,7 @@ namespace Soccer.EventProcessors.Notifications
             }
 
             var notification = TimelineNotificationCreator.CreateInstance(
+                languageResources,
                 message.Timeline.Type,
                 message.Timeline,
                 match.Teams.FirstOrDefault(team => team.IsHome),

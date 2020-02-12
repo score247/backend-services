@@ -12,6 +12,7 @@ namespace Soccer.EventProcessors.Notifications.Models
 
         protected const string TeamSeparator = " - ";
         protected const string NewLine = "\n";
+        protected const int DefaultScore = 0;
 
         protected TimelineNotification(
             ILanguageResourcesService languageResources,

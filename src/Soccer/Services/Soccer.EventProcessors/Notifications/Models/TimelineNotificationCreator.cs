@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Soccer.Core._Shared.Resources;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.Models;
@@ -19,7 +20,9 @@ namespace Soccer.EventProcessors.Notifications.Models
             { EventType.ScoreChangeByPenalty, typeof(ScoreChangeNotification)  }
         };
 
-        public static TimelineNotification CreateInstance(EventType timelineType, 
+        public static TimelineNotification CreateInstance(
+            ILanguageResourcesService languageResources,
+            EventType timelineType, 
             TimelineEvent timeline,
             Team home,
             Team away,
@@ -29,7 +32,7 @@ namespace Soccer.EventProcessors.Notifications.Models
             if (factories.ContainsKey(timelineType))
             {
                 return Activator.CreateInstance(factories[timelineType],
-                    timeline, home, away, matchTime, matchResult) as TimelineNotification;
+                    languageResources, timeline, home, away, matchTime, matchResult) as TimelineNotification;
             }
 
             return null;

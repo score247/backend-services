@@ -5,13 +5,13 @@ namespace Soccer.Core._Shared.Resources
 {
     public interface ILanguageResourcesService
     {
-        string GetString(string value, string language = Language.English);
+        string GetString(string name, string language = Language.English);
     }
     public class LanguageResourcesService : ILanguageResourcesService
     {
-        public string GetString(string value, string language = Language.English)
+        public string GetString(string name, string language = Language.English)
         {
-            return AppResources.ResourceManager.GetString(value, CultureInfo.GetCultureInfo(language));
+            return AppResources.ResourceManager.GetString(name, CultureInfo.GetCultureInfo(language));
         }
     }
 }

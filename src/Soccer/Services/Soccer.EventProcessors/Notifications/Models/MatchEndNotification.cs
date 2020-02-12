@@ -39,7 +39,7 @@ namespace Soccer.EventProcessors.Notifications.Models
         public override string Title(string language = Language.English)
             => string.Format(
                 LanguageResources.GetString(NotificationMatchEnd, language),
-                GenerateExtraPeriodTitle(language));
+                GenerateExtraPeriodTitle(language)).Trim();
 
         private string GenerateExtraPeriodTitle(string language = Language.English)
         {
