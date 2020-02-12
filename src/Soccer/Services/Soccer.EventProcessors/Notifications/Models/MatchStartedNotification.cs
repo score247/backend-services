@@ -10,17 +10,18 @@ namespace Soccer.EventProcessors.Notifications.Models
         private const string NotificationMatchStart = "NotificationMatchStart";
 
         public MatchStartedNotification(
+            ILanguageResourcesService languageResources,
             TimelineEvent timeline,
             Team home,
             Team away,
             byte matchTime,
             MatchResult matchResult)
-            : base(timeline, home, away, matchTime, matchResult) { }
+            : base(languageResources, timeline, home, away, matchTime, matchResult) { }
 
         public override string Content(string language = Language.English)
             => $"{HomeTeam.Name} 0{TeamSeparator}0 {AwayTeam.Name}";
 
         public override string Title(string language = Language.English)
-            => string.Format(CustomAppResources.GetString(NotificationMatchStart, language));
+            => string.Format(LanguageResources.GetString(NotificationMatchStart, language));
     }
 }

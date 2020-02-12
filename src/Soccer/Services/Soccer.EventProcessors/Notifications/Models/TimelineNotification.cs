@@ -14,18 +14,22 @@ namespace Soccer.EventProcessors.Notifications.Models
         protected const string NewLine = "\n";
 
         protected TimelineNotification(
+            ILanguageResourcesService languageResources,
             TimelineEvent timeline,
             Team home,
             Team away,
             byte matchTime = 0,
             MatchResult matchResult = null)
         {
+            LanguageResources = languageResources;
             MatchTime = matchTime;
             Timeline = timeline;
             HomeTeam = home;
             AwayTeam = away;
             MatchResult = matchResult;
         }
+
+        public ILanguageResourcesService LanguageResources { get; }
 
         protected byte MatchTime { get; }
 
@@ -53,7 +57,7 @@ namespace Soccer.EventProcessors.Notifications.Models
 
         protected string PlayerNameDisplay(string language = Language.English)
             => string.IsNullOrWhiteSpace(Timeline.Player?.Name)
-            ? CustomAppResources.GetString(NotificationToBeDefined, language)
+            ? LanguageResources.GetString(NotificationToBeDefined, language)
             : Timeline.Player.Name;
     }
 }

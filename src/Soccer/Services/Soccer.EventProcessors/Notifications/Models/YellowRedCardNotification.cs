@@ -11,21 +11,22 @@ namespace Soccer.EventProcessors.Notifications.Models
         private const string NotificationYellowRedCard = "NotificationYellowRedCard";
 
         public YellowRedCardNotification(
+          ILanguageResourcesService languageResources,
           TimelineEvent timeline,
           Team home,
           Team away,
           byte matchTime,
-          MatchResult matchResult) : base(timeline, home, away, matchTime, matchResult) { }
+          MatchResult matchResult) : base(languageResources, timeline, home, away, matchTime, matchResult) { }
 
         public override string Content(string language = Language.English)
             => string.Format(
-                CustomAppResources.GetString(NotificationYellowRedCardPlayer, language),
+                LanguageResources.GetString(NotificationYellowRedCardPlayer, language),
                 TeamReceived.Name,
                 PlayerNameDisplay(language));
 
         public override string Title(string language = Language.English)
             => string.Format(
-                CustomAppResources.GetString(NotificationYellowRedCard, language),
+                LanguageResources.GetString(NotificationYellowRedCard, language),
                 MatchTimeDisplay);
 
         private Team TeamReceived

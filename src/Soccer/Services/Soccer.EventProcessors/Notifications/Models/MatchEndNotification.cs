@@ -17,11 +17,12 @@ namespace Soccer.EventProcessors.Notifications.Models
         private const string NotificationMatchEndAggregate = "NotificationMatchEndAggregate";
 
         public MatchEndNotification(
+           ILanguageResourcesService languageResources,
            TimelineEvent timeline,
            Team home,
            Team away,
            byte matchTime,
-           MatchResult matchResult) : base(timeline, home, away, matchTime, matchResult) { }
+           MatchResult matchResult) : base(languageResources, timeline, home, away, matchTime, matchResult) { }
 
         public override string Content(string language = Language.English)
         {
@@ -37,7 +38,7 @@ namespace Soccer.EventProcessors.Notifications.Models
 
         public override string Title(string language = Language.English)
             => string.Format(
-                CustomAppResources.GetString(NotificationMatchEnd, language),
+                LanguageResources.GetString(NotificationMatchEnd, language),
                 GenerateExtraPeriodTitle(language));
 
         private string GenerateExtraPeriodTitle(string language = Language.English)
@@ -48,8 +49,8 @@ namespace Soccer.EventProcessors.Notifications.Models
             }
 
             return MatchResult.IsAfterExtra()
-                ? CustomAppResources.GetString(NotificationAfterExtraTime, language)
-                : CustomAppResources.GetString(NotificationAfterPenalty, language);
+                ? LanguageResources.GetString(NotificationAfterExtraTime, language)
+                : LanguageResources.GetString(NotificationAfterPenalty, language);
         }
 
         private string GeneratePenaltyShootout(string language = Language.English)
@@ -59,7 +60,7 @@ namespace Soccer.EventProcessors.Notifications.Models
                 var penaltyPeriod = MatchResult.MatchPeriods.FirstOrDefault(period => period.PeriodType.IsPenalties());
 
                 return NewLine + string.Format(
-                    CustomAppResources.GetString(NotificationMatchEndPenalty, language),
+                    LanguageResources.GetString(NotificationMatchEndPenalty, language),
                     HomeTeam.Name,
                     penaltyPeriod.HomeScore,
                     penaltyPeriod.AwayScore,
@@ -76,7 +77,7 @@ namespace Soccer.EventProcessors.Notifications.Models
                 var aggregateWinnerName = MatchResult.AggregateWinnerId == HomeTeam.Id ? HomeTeam.Name : AwayTeam.Name;
 
                 return NewLine + string.Format(
-                   CustomAppResources.GetString(NotificationMatchEndAggregate, language),                   
+                   LanguageResources.GetString(NotificationMatchEndAggregate, language),                   
                    MatchResult.AggregateHomeScore,
                    MatchResult.AggregateAwayScore,
                    aggregateWinnerName);

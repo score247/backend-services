@@ -11,11 +11,12 @@ namespace Soccer.EventProcessors.Notifications.Models
         private const string NotificationScoreChange = "NotificationScoreChange";
 
         public ScoreChangeNotification(
+         ILanguageResourcesService languageResources,
          TimelineEvent timeline,
          Team home,
          Team away,
          byte matchTime,
-         MatchResult matchResult) : base(timeline, home, away, matchTime, matchResult) { }
+         MatchResult matchResult) : base(languageResources, timeline, home, away, matchTime, matchResult) { }
 
         public override string Content(string language = Language.English)
         {
@@ -29,7 +30,7 @@ namespace Soccer.EventProcessors.Notifications.Models
 
         public override string Title(string language = Language.English)
             => string.Format(
-                CustomAppResources.GetString(NotificationScoreChange, language),
+                LanguageResources.GetString(NotificationScoreChange, language),
                 MatchTimeDisplay);
 
         private string TeamScoredId
