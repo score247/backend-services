@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Caching;
@@ -22,7 +21,7 @@ namespace Soccer.EventProcessors.Notifications
 {
     public class ReceiveMatchNotificationConsumer : IConsumer<IMatchNotificationReceivedMessage>
     {
-        private static readonly CacheItemOptions NotificationCacheOptions = new CacheItemOptions
+        private static readonly CacheItemOptions MatchInfoCacheOptions = new CacheItemOptions
         {
             SlidingExpiration = TimeSpan.FromMinutes(360), //Max minutes of a match
         };
@@ -33,6 +32,7 @@ namespace Soccer.EventProcessors.Notifications
         private readonly ILogger logger;
         private readonly ILanguageResourcesService languageResources;
         private readonly IAppSettings appSettings;
+        private readonly IMatchNotificationDeduper notificationDeduper;
 
         public ReceiveMatchNotificationConsumer(
             IBus messageBus,
@@ -40,7 +40,8 @@ namespace Soccer.EventProcessors.Notifications
             ICacheManager cacheManager,
             ILogger logger,
             ILanguageResourcesService languageResources,
-            IAppSettings appSettings)
+            IAppSettings appSettings,
+            IMatchNotificationDeduper notificationDeduper)
         {
             this.messageBus = messageBus;
             this.dynamicRepository = dynamicRepository;
@@ -48,6 +49,7 @@ namespace Soccer.EventProcessors.Notifications
             this.logger = logger;
             this.languageResources = languageResources;
             this.appSettings = appSettings;
+            this.notificationDeduper = notificationDeduper;
         }
 
         public async Task Consume(ConsumeContext<IMatchNotificationReceivedMessage> context)
@@ -61,9 +63,7 @@ namespace Soccer.EventProcessors.Notifications
                 return;
             }
 
-            //TODO consider user platform
-            //TODO get users by language
-
+            //TODO group users by language and OS
             for (var i = 0; i * appSettings.MaxUsersSent < favoriteUserIds.Count(); i++)
             {
                 var batchOfUsers = favoriteUserIds
@@ -79,11 +79,9 @@ namespace Soccer.EventProcessors.Notifications
                        userIds: batchOfUsers
                    )));
             }
-
-            await SetProcessedNotificationAsync(message.MatchId, notification.Content());
         }
 
-        private async Task<TimelineNotification> GenerateTimelineNotificationAsync(IMatchNotificationReceivedMessage message) 
+        private async Task<TimelineNotification> GenerateTimelineNotificationAsync(IMatchNotificationReceivedMessage message)
         {
             var match = await GetAndCacheMatchAsync(message.MatchId);
 
@@ -101,11 +99,11 @@ namespace Soccer.EventProcessors.Notifications
                 match.Teams.FirstOrDefault(team => !team.IsHome),
                 message.Timeline.MatchTime,
                 message.MatchResult);
-                       
-            var isProcessed = await IsProcessedNotificationAsync(message.MatchId, notification.Content());
 
-            return isProcessed 
-                ? default 
+            var isProcessed = await notificationDeduper.IsProcessedAsync(message.MatchId, notification.Content());
+
+            return isProcessed
+                ? default
                 : notification;
         }
 
@@ -124,36 +122,9 @@ namespace Soccer.EventProcessors.Notifications
                 {
                     return await dynamicRepository.GetAsync<Match>(new GetMatchByIdCriteria(matchId, Language.en_US));
                 },
-                NotificationCacheOptions);
+                MatchInfoCacheOptions);
 
             return match;
-        }
-
-        private async Task<bool> IsProcessedNotificationAsync(string matchId, string content)
-        {
-            var matchNotificationCacheKey = $"{CacheKeys.MATCH_NOTIFICATION_CACHE_KEY}_{matchId}";
-            var processedNotifications = await GetProcessedNotificationsAsync(matchNotificationCacheKey);
-
-            return processedNotifications.Contains(content);
-        }
-
-        private async Task SetProcessedNotificationAsync(string matchId, string content)
-        {
-            var matchNotificationCacheKey = $"{CacheKeys.MATCH_NOTIFICATION_CACHE_KEY}_{matchId}";
-
-            var processedNotifications = await GetProcessedNotificationsAsync(matchNotificationCacheKey);
-            processedNotifications.Add(content);
-        }
-
-        private async Task<BlockingCollection<string>> GetProcessedNotificationsAsync(string matchNotificationCacheKey)
-        {
-            return await cacheManager.GetOrSetAsync(
-                            matchNotificationCacheKey,
-                            async () =>
-                            {
-                                return await Task.FromResult(new BlockingCollection<string>());
-                            },
-                            NotificationCacheOptions);
         }
     }
 }
