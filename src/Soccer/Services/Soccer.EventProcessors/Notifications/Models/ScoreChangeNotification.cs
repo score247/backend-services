@@ -32,12 +32,9 @@ namespace Soccer.EventProcessors.Notifications.Models
             => string.Format(
                 LanguageResources.GetString(NotificationScoreChange, language),
                 MatchTimeDisplay);
-
-        private string TeamScoredId
-            => Timeline.Team == "home" ? HomeTeam.Id : AwayTeam.Id;
-
+    
         private string BoundForScoredTeam(int? score, string teamId)
-            => TeamScoredId == teamId
+            => TeamReceived.Id == teamId
             ? $"[{score?.ToString()}]"
             : score?.ToString();
     }

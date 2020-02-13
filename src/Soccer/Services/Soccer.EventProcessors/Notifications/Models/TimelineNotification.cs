@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using Soccer.Core._Shared.Resources;
+﻿using Soccer.Core._Shared.Resources;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.Models;
@@ -13,6 +12,7 @@ namespace Soccer.EventProcessors.Notifications.Models
         protected const string TeamSeparator = " - ";
         protected const string NewLine = "\n";
         protected const int DefaultScore = 0;
+        protected const string HomeTeamIdentifier = "home";
 
         protected TimelineNotification(
             ILanguageResourcesService languageResources,
@@ -30,7 +30,7 @@ namespace Soccer.EventProcessors.Notifications.Models
             MatchResult = matchResult;
         }
 
-        public ILanguageResourcesService LanguageResources { get; }
+        protected ILanguageResourcesService LanguageResources { get; }
 
         protected byte MatchTime { get; }
 
@@ -54,11 +54,14 @@ namespace Soccer.EventProcessors.Notifications.Models
         protected string StoppageTimeDisplay
             => string.IsNullOrWhiteSpace(Timeline?.StoppageTime)
             ? string.Empty
-            : $"+{Timeline?.StoppageTime}";
+            : $"+{Timeline.StoppageTime}";
 
         protected string PlayerNameDisplay(string language = Language.English)
             => string.IsNullOrWhiteSpace(Timeline.Player?.Name)
             ? LanguageResources.GetString(NotificationToBeDefined, language)
             : Timeline.Player.Name;
+
+        protected Team TeamReceived
+            => Timeline.Team == HomeTeamIdentifier ? HomeTeam : AwayTeam;
     }
 }

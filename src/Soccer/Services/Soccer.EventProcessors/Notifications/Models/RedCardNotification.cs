@@ -28,8 +28,5 @@ namespace Soccer.EventProcessors.Notifications.Models
             => string.Format(
                 LanguageResources.GetString(NotificationRedCard, language),
                 MatchTimeDisplay);
-
-        private Team TeamReceived
-            => Timeline.Team == "home" ? HomeTeam : AwayTeam;
     }
 }
