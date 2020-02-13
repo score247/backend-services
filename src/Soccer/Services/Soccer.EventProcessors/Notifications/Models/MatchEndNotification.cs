@@ -70,20 +70,22 @@ namespace Soccer.EventProcessors.Notifications.Models
             return string.Empty;
         }
 
-        private string GenerateAggregateInfo(string language = Language.English) 
+        private string GenerateAggregateInfo(string language = Language.English)
         {
-            if (!string.IsNullOrWhiteSpace(MatchResult.AggregateWinnerId)) 
+            if (string.IsNullOrWhiteSpace(MatchResult.AggregateWinnerId))
             {
-                var aggregateWinnerName = MatchResult.AggregateWinnerId == HomeTeam.Id ? HomeTeam.Name : AwayTeam.Name;
-
-                return NewLine + string.Format(
-                   LanguageResources.GetString(NotificationMatchEndAggregate, language),                   
-                   MatchResult.AggregateHomeScore,
-                   MatchResult.AggregateAwayScore,
-                   aggregateWinnerName);
+                return string.Empty;
             }
 
-            return string.Empty;
+            var aggregateWinnerName = MatchResult.AggregateWinnerId == HomeTeam.Id 
+                ? HomeTeam.Name 
+                : AwayTeam.Name;
+
+            return NewLine + string.Format(
+               LanguageResources.GetString(NotificationMatchEndAggregate, language),
+               MatchResult.AggregateHomeScore,
+               MatchResult.AggregateAwayScore,
+               aggregateWinnerName);
         }
     }
 }

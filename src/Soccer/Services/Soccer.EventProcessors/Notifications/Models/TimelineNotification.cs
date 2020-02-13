@@ -62,6 +62,8 @@ namespace Soccer.EventProcessors.Notifications.Models
             : Timeline.Player.Name;
 
         protected Team TeamReceived
-            => Timeline.Team == HomeTeamIdentifier ? HomeTeam : AwayTeam;
+            => Timeline.Team == HomeTeamIdentifier 
+            ? HomeTeam 
+            : AwayTeam;
     }
 }
