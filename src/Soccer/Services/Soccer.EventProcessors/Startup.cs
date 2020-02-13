@@ -12,6 +12,7 @@ using Soccer.Cache.Leagues;
 using Soccer.Core._Shared.Resources;
 using Soccer.EventProcessors.Leagues.Services;
 using Soccer.EventProcessors.Matches.Filters;
+using Soccer.EventProcessors.Notifications;
 using Soccer.EventProcessors.Shared.Middlewares;
 
 namespace Soccer.EventProcessors
@@ -73,6 +74,7 @@ namespace Soccer.EventProcessors
             services.AddSingleton<ILeagueCache, LeagueCache>();
             services.AddSingleton<ILiveMatchFilter, LiveMatchFilter>();
             services.AddSingleton<ILanguageResourcesService, LanguageResourcesService>();
+            services.AddSingleton<IMatchNotificationDeduper, MatchNotificationDeduper>();
         }
     }
 }
