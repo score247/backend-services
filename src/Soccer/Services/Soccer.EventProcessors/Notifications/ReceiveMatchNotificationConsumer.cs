@@ -55,15 +55,29 @@ namespace Soccer.EventProcessors.Notifications
         public async Task Consume(ConsumeContext<IMatchNotificationReceivedMessage> context)
         {
             var message = context.Message;
-            var favoriteUserIds = await GetUserFavoriteIdsAsync(message.MatchId);
-            var notification = await GenerateTimelineNotificationAsync(message);
 
-            if (notification == null || favoriteUserIds?.Any() == false)
+            //TODO group users by language and OS (iOS | Android)
+            var favoriteUserIds = await GetUserFavoriteIdsAsync(message.MatchId);
+            
+            if (favoriteUserIds?.Any() == false)
             {
                 return;
             }
 
-            //TODO group users by language and OS
+            var notification = await GenerateTimelineNotificationAsync(message);
+
+            if (notification == null)
+            {
+                await logger.InfoAsync($"ReceiveMatchNotificationConsumer NotSupported {message.Timeline.Type.DisplayName}");
+
+                return;
+            }
+
+            if (await notificationDeduper.IsProcessedAsync(message.MatchId, notification.Content()))
+            {
+                return;
+            }
+            
             for (var i = 0; i * appSettings.MaxUsersSent < favoriteUserIds.Count(); i++)
             {
                 var batchOfUsers = favoriteUserIds
@@ -88,6 +102,7 @@ namespace Soccer.EventProcessors.Notifications
             if (match == null)
             {
                 await logger.InfoAsync($"ReceiveMatchNotificationConsumer NotFound match {message.MatchId}");
+
                 return default;
             }
 
@@ -100,11 +115,7 @@ namespace Soccer.EventProcessors.Notifications
                 message.Timeline.MatchTime,
                 message.MatchResult);
 
-            var isProcessed = await notificationDeduper.IsProcessedAsync(message.MatchId, notification.Content());
-
-            return isProcessed
-                ? default
-                : notification;
+            return notification;
         }
 
         private async Task<string[]> GetUserFavoriteIdsAsync(string matchId)

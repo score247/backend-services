@@ -27,7 +27,7 @@ namespace Soccer.Core.Notification.QueueMessages
 
         public string LeagueId { get; }
 
-        public TimelineEvent Timeline { get; }
+        public TimelineEvent Timeline { get; private set; }
 
         public MatchResult MatchResult { get; }
     }
