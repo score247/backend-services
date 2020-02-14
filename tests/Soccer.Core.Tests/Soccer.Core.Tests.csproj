@@ -17,5 +17,4 @@
     <ProjectReference Include="..\..\src\Soccer\Soccer.Core\Soccer.Core.csproj" />
     <ProjectReference Include="..\Score247.Shared.Tests\Score247.Shared.Tests.csproj" />
   </ItemGroup>
-
 </Project>
