@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Soccer.Core._Shared.Resources;
+﻿using Soccer.Core._Shared.Resources;
 using Xunit;
 
 namespace Soccer.Core.Tests._Shared.Resources
@@ -33,6 +30,16 @@ namespace Soccer.Core.Tests._Shared.Resources
 
             // Assert
             Assert.Equal("1x2", result);
+        }
+
+        [Fact]
+        public void GetString_InvalidValue_ReturnNull()
+        {
+            // Act
+            var result = languageResourcesService.GetString("Nope", "en-US");
+
+            // Assert
+            Assert.Null(result);
         }
     }
 }
