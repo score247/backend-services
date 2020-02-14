@@ -157,7 +157,7 @@
     <value>Match ended {0}</value>
   </data>
   <data name="NotificationMatchEndPenalty" xml:space="preserve">
-    <value>Penalty shoot-out: {0} {1} - {2} {3}</value>
+    <value>Penalty shoot-out: {0} - {1}</value>
   </data>
   <data name="NotificationMatchStart" xml:space="preserve">
     <value>Match started</value>
@@ -184,6 +184,9 @@
     <value>Yellow Red card {0}</value>
   </data>
   <data name="NotificationMatchEndAggregate" xml:space="preserve">
-    <value>Agg: {0} - {1}. {2} Win</value>
+    <value>Agg: {0} - {1}</value>
+  </data>
+  <data name="NotificationAggregateWinner" xml:space="preserve">
+    <value>{0} Win</value>
   </data>
 </root>

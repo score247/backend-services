@@ -189,7 +189,7 @@ namespace Soccer.EventProcessors.Tests.Notifications.Models
                 .With(result => result.AggregateWinnerId, null);
 
             var expectedContent = $"{homeTeam.Name} {matchResult.HomeScore} - {matchResult.AwayScore} {awayTeam.Name}";
-            expectedContent += $"\nPenalty shoot-out: {homeTeam.Name} {penaltyPeriod.HomeScore} - {penaltyPeriod.AwayScore} {awayTeam.Name}";
+            expectedContent += $"\nPenalty shoot-out: {penaltyPeriod.HomeScore} - {penaltyPeriod.AwayScore}";
 
             var matchEnd = new MatchEndNotification(
                             resources,
@@ -222,8 +222,9 @@ namespace Soccer.EventProcessors.Tests.Notifications.Models
                 .With(result => result.AggregateWinnerId, homeTeam.Id);
 
             var expectedContent = $"{homeTeam.Name} {matchResult.HomeScore} - {matchResult.AwayScore} {awayTeam.Name}";
-            expectedContent += $"\nPenalty shoot-out: {homeTeam.Name} {penaltyPeriod.HomeScore} - {penaltyPeriod.AwayScore} {awayTeam.Name}";
-            expectedContent += $"\nAgg: {matchResult.AggregateHomeScore} - {matchResult.AggregateAwayScore}. {homeTeam.Name} Win";
+            expectedContent += $"\nAgg: {matchResult.AggregateHomeScore} - {matchResult.AggregateAwayScore}";
+            expectedContent += $"\nPenalty shoot-out: {penaltyPeriod.HomeScore} - {penaltyPeriod.AwayScore}";
+            expectedContent += $"\n{homeTeam.Name} Win";
 
             var matchEnd = new MatchEndNotification(
                             resources,
@@ -243,11 +244,11 @@ namespace Soccer.EventProcessors.Tests.Notifications.Models
                 .Returns("Match ended {0}");
             resources
                 .GetString(Arg.Is<string>(name => name == "NotificationMatchEndAggregate"))
-                .Returns("Agg: {0} - {1}. {2} Win");
+                .Returns("Agg: {0} - {1}");
 
             resources
                 .GetString(Arg.Is<string>(name => name == "NotificationMatchEndPenalty"))
-                .Returns("Penalty shoot-out: {0} {1} - {2} {3}");
+                .Returns("Penalty shoot-out: {0} - {1}");
 
             resources
                 .GetString(Arg.Is<string>(name => name == "NotificationAfterExtraTime"))
@@ -256,6 +257,10 @@ namespace Soccer.EventProcessors.Tests.Notifications.Models
             resources
                 .GetString(Arg.Is<string>(name => name == "NotificationAfterPenalty"))
                 .Returns("after penalty shoot-out");
+
+            resources
+                .GetString(Arg.Is<string>(name => name == "NotificationAggregateWinner"))
+                .Returns("{0} Win");
         }
     }
 }

@@ -115,6 +115,15 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} Win.
+        /// </summary>
+        public static string NotificationAggregateWinner {
+            get {
+                return ResourceManager.GetString("NotificationAggregateWinner", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Match ended {0}.
         /// </summary>
         public static string NotificationMatchEnd {
@@ -124,7 +133,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Agg: {0} - {1}. {2} Win.
+        ///   Looks up a localized string similar to Agg: {0} - {1}.
         /// </summary>
         public static string NotificationMatchEndAggregate {
             get {
@@ -133,7 +142,7 @@ namespace Soccer.Core._Shared.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Penalty shoot-out: {0} {1} - {2} {3}.
+        ///   Looks up a localized string similar to Penalty shoot-out: {0} - {1}.
         /// </summary>
         public static string NotificationMatchEndPenalty {
             get {
