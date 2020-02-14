@@ -240,27 +240,27 @@ namespace Soccer.EventProcessors.Tests.Notifications.Models
         private void SetLanguageResources()
         {
             resources
-                .GetString(Arg.Is<string>(name => name == "NotificationMatchEnd"))
-                .Returns("Match ended {0}");
+                .GetString(Arg.Is<string>(name => name == "MatchEnd"))
+                .Returns("Match ended");
             resources
-                .GetString(Arg.Is<string>(name => name == "NotificationMatchEndAggregate"))
-                .Returns("Agg: {0} - {1}");
+                .GetString(Arg.Is<string>(name => name == "Aggregate"))
+                .Returns("Agg:");
 
             resources
-                .GetString(Arg.Is<string>(name => name == "NotificationMatchEndPenalty"))
-                .Returns("Penalty shoot-out: {0} - {1}");
+                .GetString(Arg.Is<string>(name => name == "PenaltyShootout"))
+                .Returns("Penalty shoot-out:");
 
             resources
-                .GetString(Arg.Is<string>(name => name == "NotificationAfterExtraTime"))
+                .GetString(Arg.Is<string>(name => name == "AfterExtraTime"))
                 .Returns("after extra time");
 
             resources
-                .GetString(Arg.Is<string>(name => name == "NotificationAfterPenalty"))
+                .GetString(Arg.Is<string>(name => name == "AfterPenalty"))
                 .Returns("after penalty shoot-out");
 
             resources
-                .GetString(Arg.Is<string>(name => name == "NotificationAggregateWinner"))
-                .Returns("{0} Win");
+                .GetString(Arg.Is<string>(name => name == "Win"))
+                .Returns("Win");
         }
     }
 }

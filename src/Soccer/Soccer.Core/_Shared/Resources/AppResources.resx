@@ -147,46 +147,40 @@
   <data name="Under" xml:space="preserve">
     <value>Under</value>
   </data>
-  <data name="NotificationAfterExtraTime" xml:space="preserve">
+  <data name="AfterExtraTime" xml:space="preserve">
     <value>after extra time</value>
   </data>
-  <data name="NotificationAfterPenalty" xml:space="preserve">
+  <data name="AfterPenalty" xml:space="preserve">
     <value>after penalty shoot-out</value>
   </data>
-  <data name="NotificationMatchEnd" xml:space="preserve">
-    <value>Match ended {0}</value>
+  <data name="MatchEnd" xml:space="preserve">
+    <value>Match ended</value>
   </data>
-  <data name="NotificationMatchEndPenalty" xml:space="preserve">
-    <value>Penalty shoot-out: {0} - {1}</value>
+  <data name="PenaltyShootout" xml:space="preserve">
+    <value>Penalty shoot-out:</value>
   </data>
-  <data name="NotificationMatchStart" xml:space="preserve">
+  <data name="MatchStarted" xml:space="preserve">
     <value>Match started</value>
   </data>
-  <data name="NotificationMatchStartScore" xml:space="preserve">
-    <value>{0} 0{1}0 {2}</value>
-  </data>
-  <data name="NotificationToBeDefined" xml:space="preserve">
+  <data name="PlayerToBeDefined" xml:space="preserve">
     <value>Player (TBD)</value>
   </data>
-  <data name="NotificationYellowRedCardPlayer" xml:space="preserve">
-    <value>{0} - {1} 2nd yellow card and is off!</value>
+  <data name="ScoreChanged" xml:space="preserve">
+    <value>GOAL!</value>
   </data>
-  <data name="NotificationRedCard" xml:space="preserve">
-    <value>Red card {0}</value>
+  <data name="Aggregate" xml:space="preserve">
+    <value>Agg:</value>
   </data>
-  <data name="NotificationRedCardPlayer" xml:space="preserve">
-    <value>{0} - {1}</value>
+  <data name="RedCard" xml:space="preserve">
+    <value>Red card</value>
   </data>
-  <data name="NotificationScoreChange" xml:space="preserve">
-    <value>GOAL! {0}</value>
+  <data name="Win" xml:space="preserve">
+    <value>Win</value>
   </data>
-  <data name="NotificationYellowRedCard" xml:space="preserve">
-    <value>Yellow Red card {0}</value>
+  <data name="YellowRedCard" xml:space="preserve">
+    <value>Yellow Red card</value>
   </data>
-  <data name="NotificationMatchEndAggregate" xml:space="preserve">
-    <value>Agg: {0} - {1}</value>
-  </data>
-  <data name="NotificationAggregateWinner" xml:space="preserve">
-    <value>{0} Win</value>
+  <data name="YellowRedCardPostfix" xml:space="preserve">
+    <value>2nd yellow card and is off!</value>
   </data>
 </root>

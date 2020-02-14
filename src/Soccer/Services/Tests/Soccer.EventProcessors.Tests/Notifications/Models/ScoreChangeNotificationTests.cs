@@ -18,8 +18,8 @@ namespace Soccer.EventProcessors.Tests.Notifications.Models
         {
             resources = Substitute.For<ILanguageResourcesService>();
             resources
-                .GetString(Arg.Is<string>(name => name == "NotificationScoreChange"))
-                .Returns("GOAL! {0}");
+                .GetString(Arg.Is<string>(name => name == "ScoreChanged"))
+                .Returns("GOAL!");
 
             fixture = new Fixture();
         }

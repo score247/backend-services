@@ -18,14 +18,14 @@ namespace Soccer.EventProcessors.Tests.Notifications.Models
         {
             resources = Substitute.For<ILanguageResourcesService>();
             resources
-                .GetString(Arg.Is<string>(name => name == "NotificationYellowRedCard"))
-                .Returns("Yellow Red card {0}");
+                .GetString(Arg.Is<string>(name => name == "YellowRedCard"))
+                .Returns("Yellow Red card");
             resources
-                .GetString(Arg.Is<string>(name => name == "NotificationYellowRedCardPlayer"))
-                .Returns("{0} - {1} 2nd yellow card and is off!");
+                .GetString(Arg.Is<string>(name => name == "YellowRedCardPostfix"))
+                .Returns("2nd yellow card and is off!");
 
             resources
-                .GetString(Arg.Is<string>(name => name == "NotificationToBeDefined"))
+                .GetString(Arg.Is<string>(name => name == "PlayerToBeDefined"))
                 .Returns("Player (TBD)");
 
             fixture = new Fixture();

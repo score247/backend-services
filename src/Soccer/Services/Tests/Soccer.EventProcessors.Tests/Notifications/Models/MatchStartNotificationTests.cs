@@ -17,7 +17,7 @@ namespace Soccer.EventProcessors.Tests.Notifications.Models
         {
             resources = Substitute.For<ILanguageResourcesService>();
             resources
-                .GetString(Arg.Is<string>(name => name == "NotificationMatchStart"))
+                .GetString(Arg.Is<string>(name => name == "MatchStarted"))
                 .Returns("Match started");
 
             fixture = new Fixture();

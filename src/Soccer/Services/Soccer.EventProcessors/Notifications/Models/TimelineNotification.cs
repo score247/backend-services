@@ -7,7 +7,7 @@ namespace Soccer.EventProcessors.Notifications.Models
 {
     public abstract class TimelineNotification
     {
-        private const string NotificationToBeDefined = "NotificationToBeDefined";
+        private const string PlayerToBeDefined = "PlayerToBeDefined";
 
         protected const string TeamSeparator = " - ";
         protected const string NewLine = "\n";
@@ -58,7 +58,7 @@ namespace Soccer.EventProcessors.Notifications.Models
 
         protected string PlayerNameDisplay(string language = Language.English)
             => string.IsNullOrWhiteSpace(Timeline.Player?.Name)
-            ? LanguageResources.GetString(NotificationToBeDefined, language)
+            ? LanguageResources.GetString(PlayerToBeDefined, language)
             : Timeline.Player.Name;
 
         protected Team TeamReceived

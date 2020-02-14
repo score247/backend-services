@@ -8,7 +8,7 @@ namespace Soccer.EventProcessors.Notifications.Models
 {
     public class ScoreChangeNotification : TimelineNotification
     {
-        private const string NotificationScoreChange = "NotificationScoreChange";
+        private const string ScoreChanged = "ScoreChanged";
 
         public ScoreChangeNotification(
          ILanguageResourcesService languageResources,
@@ -29,10 +29,8 @@ namespace Soccer.EventProcessors.Notifications.Models
         }
 
         public override string Title(string language = Language.English)
-            => string.Format(
-                LanguageResources.GetString(NotificationScoreChange, language),
-                MatchTimeDisplay);
-    
+            => $"{LanguageResources.GetString(ScoreChanged, language)} {MatchTimeDisplay}";
+
         private string BoundForScoredTeam(int? score, string teamId)
             => TeamReceived.Id == teamId
             ? $"[{score?.ToString()}]"

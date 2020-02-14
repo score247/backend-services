@@ -7,7 +7,7 @@ namespace Soccer.EventProcessors.Notifications.Models
 {
     public class MatchStartedNotification : TimelineNotification
     {
-        private const string NotificationMatchStart = "NotificationMatchStart";
+        private const string MatchStarted = "MatchStarted";
 
         public MatchStartedNotification(
             ILanguageResourcesService languageResources,
@@ -22,6 +22,6 @@ namespace Soccer.EventProcessors.Notifications.Models
             => $"{HomeTeam.Name} {DefaultScore}{TeamSeparator}{DefaultScore} {AwayTeam.Name}";
 
         public override string Title(string language = Language.English)
-            => string.Format(LanguageResources.GetString(NotificationMatchStart, language));
+            => string.Format(LanguageResources.GetString(MatchStarted, language));
     }
 }

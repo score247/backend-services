@@ -10,12 +10,12 @@ namespace Soccer.EventProcessors.Notifications.Models
 {
     public class MatchEndNotification : TimelineNotification
     {
-        private const string NotificationMatchEnd = "NotificationMatchEnd";
-        private const string NotificationAfterExtraTime = "NotificationAfterExtraTime";
-        private const string NotificationAfterPenalty = "NotificationAfterPenalty";
-        private const string NotificationMatchEndPenalty = "NotificationMatchEndPenalty";
-        private const string NotificationMatchEndAggregate = "NotificationMatchEndAggregate";
-        private const string NotificationAggregateWinner = "NotificationAggregateWinner";
+        private const string MatchEnd = "MatchEnd";
+        private const string AfterExtraTime = "AfterExtraTime";
+        private const string AfterPenalty = "AfterPenalty";
+        private const string PenaltyShootout = "PenaltyShootout";
+        private const string Aggregate = "Aggregate";
+        private const string Win = "Win";
 
         public MatchEndNotification(
            ILanguageResourcesService languageResources,
@@ -47,9 +47,7 @@ namespace Soccer.EventProcessors.Notifications.Models
         }
 
         public override string Title(string language = Language.English)
-            => string.Format(
-                LanguageResources.GetString(NotificationMatchEnd, language),
-                GenerateExtraPeriodTitle(language)).Trim();
+            => $"{LanguageResources.GetString(MatchEnd, language)}{GenerateExtraPeriodTitle(language)}";
 
         private string GenerateExtraPeriodTitle(string language = Language.English)
         {
@@ -59,43 +57,38 @@ namespace Soccer.EventProcessors.Notifications.Models
             }
 
             return MatchResult.IsAfterExtra()
-                ? LanguageResources.GetString(NotificationAfterExtraTime, language)
-                : LanguageResources.GetString(NotificationAfterPenalty, language);
+                ? $" {LanguageResources.GetString(AfterExtraTime, language)}"
+                : $" {LanguageResources.GetString(AfterPenalty, language)}";
         }
 
         private string GeneratePenaltyShootout(string language = Language.English)
         {
             var penaltyPeriod = MatchResult.MatchPeriods.FirstOrDefault(period => period.PeriodType.IsPenalties());
 
-            return NewLine + string.Format(
-                LanguageResources.GetString(NotificationMatchEndPenalty, language),
-                penaltyPeriod.HomeScore,
-                penaltyPeriod.AwayScore);
+            return NewLine + $"{LanguageResources.GetString(PenaltyShootout, language)} {penaltyPeriod.HomeScore}{TeamSeparator}{penaltyPeriod.AwayScore}";
         }
 
         private string GenerateAggregateInfo(string language = Language.English)
         {
-            var aggregateWinnerName = GenerateAggregateWinnerName(language);
+            var aggregateWinnerName = GenerateAggregateWinnerName();
 
             if (string.IsNullOrWhiteSpace(aggregateWinnerName))
             {
                 return string.Empty;
             }
 
-            var aggInfo = NewLine + string.Format(
-               LanguageResources.GetString(NotificationMatchEndAggregate, language),
-               MatchResult.AggregateHomeScore,
-               MatchResult.AggregateAwayScore);
+            var aggInfo = NewLine
+                + $"{LanguageResources.GetString(Aggregate, language)} {MatchResult.AggregateHomeScore}{TeamSeparator}{MatchResult.AggregateAwayScore}";
 
             return MatchResult.IsAfterPenaltyShootout()
-                ? aggInfo 
-                : $"{aggInfo}. {aggregateWinnerName}";
+                ? aggInfo
+                : $"{aggInfo}. {aggregateWinnerName} {LanguageResources.GetString(Win, language)}";
         }
 
         private string GenerateAggregateWinner(string language = Language.English)
-        => NewLine + GenerateAggregateWinnerName(language);
+        => NewLine + $"{GenerateAggregateWinnerName()} {LanguageResources.GetString(Win, language)}";
 
-        private string GenerateAggregateWinnerName(string language = Language.English)
+        private string GenerateAggregateWinnerName()
         {
             if (string.IsNullOrWhiteSpace(MatchResult.AggregateWinnerId))
             {
@@ -103,8 +96,8 @@ namespace Soccer.EventProcessors.Notifications.Models
             }
 
             return MatchResult.AggregateWinnerId == HomeTeam.Id
-                ? string.Format(LanguageResources.GetString(NotificationAggregateWinner, language), HomeTeam.Name)
-                : string.Format(LanguageResources.GetString(NotificationAggregateWinner, language), AwayTeam.Name);
+                ? HomeTeam.Name
+                : AwayTeam.Name;
         }
     }
 }

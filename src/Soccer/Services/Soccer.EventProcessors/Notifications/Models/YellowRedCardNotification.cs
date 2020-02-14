@@ -7,8 +7,8 @@ namespace Soccer.EventProcessors.Notifications.Models
 {
     public class YellowRedCardNotification : TimelineNotification
     {
-        private const string NotificationYellowRedCardPlayer = "NotificationYellowRedCardPlayer";
-        private const string NotificationYellowRedCard = "NotificationYellowRedCard";
+        private const string YellowRedCardPostfix = "YellowRedCardPostfix";
+        private const string YellowRedCard = "YellowRedCard";
 
         public YellowRedCardNotification(
           ILanguageResourcesService languageResources,
@@ -19,14 +19,9 @@ namespace Soccer.EventProcessors.Notifications.Models
           MatchResult matchResult) : base(languageResources, timeline, home, away, matchTime, matchResult) { }
 
         public override string Content(string language = Language.English)
-            => string.Format(
-                LanguageResources.GetString(NotificationYellowRedCardPlayer, language),
-                TeamReceived.Name,
-                PlayerNameDisplay(language));
+            => $"{TeamReceived.Name}{TeamSeparator}{PlayerNameDisplay(language)} {LanguageResources.GetString(YellowRedCardPostfix, language)}";
 
         public override string Title(string language = Language.English)
-            => string.Format(
-                LanguageResources.GetString(NotificationYellowRedCard, language),
-                MatchTimeDisplay);
+            => $"{LanguageResources.GetString(YellowRedCard, language)} {MatchTimeDisplay}";
     }
 }
