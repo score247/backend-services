@@ -23,9 +23,7 @@ namespace Soccer.EventProcessors.Notifications
         private readonly ICacheManager cacheManager;
 
         public MatchNotificationDeduper(ICacheManager cacheManager)
-        {
-            this.cacheManager = cacheManager;
-        }
+        => this.cacheManager = cacheManager;
 
         public async Task<bool> IsProcessedAsync(string id, string content)
         {
@@ -43,14 +41,12 @@ namespace Soccer.EventProcessors.Notifications
         }
 
         private async Task<BlockingCollection<string>> GetProcessedNotificationsAsync(string matchNotificationCacheKey)
-        {
-            return await cacheManager.GetOrSetAsync(
+        => await cacheManager.GetOrSetAsync(
                             matchNotificationCacheKey,
                             async () =>
                             {
                                 return await Task.FromResult(new BlockingCollection<string>());
                             },
                             NotificationCacheOptions);
-        }
     }
 }

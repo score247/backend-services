@@ -22,20 +22,21 @@ namespace Soccer.EventProcessors.Notifications.Models
 
         public static TimelineNotification CreateInstance(
             ILanguageResourcesService languageResources,
-            EventType timelineType, 
+            EventType timelineType,
             TimelineEvent timeline,
             Team home,
             Team away,
             byte matchTime = 0,
-            MatchResult matchResult = null) 
-        {
-            if (factories.ContainsKey(timelineType))
-            {
-                return Activator.CreateInstance(factories[timelineType],
-                    languageResources, timeline, home, away, matchTime, matchResult) as TimelineNotification;
-            }
-
-            return null;
-        }
+            MatchResult matchResult = null)
+            => factories.ContainsKey(timelineType)
+                    ? Activator.CreateInstance(
+                        factories[timelineType],
+                        languageResources,
+                        timeline,
+                        home,
+                        away,
+                        matchTime,
+                        matchResult) as TimelineNotification
+                    : null;
     }
 }
