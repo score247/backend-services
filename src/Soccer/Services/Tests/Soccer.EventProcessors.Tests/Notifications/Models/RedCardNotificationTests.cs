@@ -23,7 +23,7 @@ namespace Soccer.EventProcessors.Tests.Notifications.Models
          
             resources
                 .GetString(Arg.Is<string>(name => name == "PlayerToBeDefined"))
-                .Returns("Player (TBD)");
+                .Returns("(Player TBD)");
 
             fixture = new Fixture();
         }
@@ -64,7 +64,7 @@ namespace Soccer.EventProcessors.Tests.Notifications.Models
                             redCardEvent.MatchTime,
                             fixture.Create<MatchResult>());
 
-            Assert.Equal($"{homeTeam.Name} - Player (TBD)", redCard.Content());
+            Assert.Equal($"{homeTeam.Name} - (Player TBD)", redCard.Content());
         }
 
         [Fact]
@@ -104,7 +104,7 @@ namespace Soccer.EventProcessors.Tests.Notifications.Models
                             redCardEvent.MatchTime,
                             fixture.Create<MatchResult>());
 
-            Assert.Equal($"{awayTeam.Name} - Player (TBD)", redCard.Content());
+            Assert.Equal($"{awayTeam.Name} - (Player TBD)", redCard.Content());
         }
 
         [Fact]

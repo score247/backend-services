@@ -39,7 +39,7 @@ namespace Soccer.EventProcessors.Notifications.Models
 
                 if (MatchResult.IsSecondLeg())
                 {
-                    contentBuilder.Append(GenerateAggregateWinner(language));
+                    contentBuilder.Append($". {GenerateAggregateWinner(language)}");
                 }
             }
 
@@ -82,11 +82,11 @@ namespace Soccer.EventProcessors.Notifications.Models
 
             return MatchResult.IsAfterPenaltyShootout()
                 ? aggInfo
-                : $"{aggInfo}. {aggregateWinnerName} {LanguageResources.GetString(Win, language)}";
+                : $"{aggInfo}. {GenerateAggregateWinner(language)}";
         }
 
         private string GenerateAggregateWinner(string language = Language.English)
-        => NewLine + $"{GenerateAggregateWinnerName()} {LanguageResources.GetString(Win, language)}";
+        => $"{GenerateAggregateWinnerName()} {LanguageResources.GetString(Win, language)}";
 
         private string GenerateAggregateWinnerName()
         {

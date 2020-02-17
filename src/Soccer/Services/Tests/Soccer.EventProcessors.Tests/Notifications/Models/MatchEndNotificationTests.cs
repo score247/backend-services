@@ -223,8 +223,7 @@ namespace Soccer.EventProcessors.Tests.Notifications.Models
 
             var expectedContent = $"{homeTeam.Name} {matchResult.HomeScore} - {matchResult.AwayScore} {awayTeam.Name}";
             expectedContent += $"\nAgg: {matchResult.AggregateHomeScore} - {matchResult.AggregateAwayScore}";
-            expectedContent += $"\nPenalty shoot-out: {penaltyPeriod.HomeScore} - {penaltyPeriod.AwayScore}";
-            expectedContent += $"\n{homeTeam.Name} Win";
+            expectedContent += $"\nPenalty shoot-out: {penaltyPeriod.HomeScore} - {penaltyPeriod.AwayScore}. {homeTeam.Name} Win";
 
             var matchEnd = new MatchEndNotification(
                             resources,

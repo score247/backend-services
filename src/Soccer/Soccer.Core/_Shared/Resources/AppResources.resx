@@ -163,7 +163,7 @@
     <value>Match started</value>
   </data>
   <data name="PlayerToBeDefined" xml:space="preserve">
-    <value>Player (TBD)</value>
+    <value>(Player TBD)</value>
   </data>
   <data name="ScoreChanged" xml:space="preserve">
     <value>GOAL!</value>
