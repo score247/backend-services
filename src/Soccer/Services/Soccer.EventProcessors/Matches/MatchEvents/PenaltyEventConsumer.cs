@@ -39,6 +39,10 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
             }
 
             matchEvent.Timeline.UpdateMatchTime(DefaultPenaltyMatchTime);
+            matchEvent.Timeline.ShootoutHomeScore = matchEvent.MatchResult.MatchPeriods
+                .FirstOrDefault(period => period.PeriodType.IsPenalties()).HomeScore;
+            matchEvent.Timeline.ShootoutAwayScore = matchEvent.MatchResult.MatchPeriods
+                .FirstOrDefault(period => period.PeriodType.IsPenalties()).AwayScore;
             await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
 
             //var isCompleted = await HandlePenalty(matchEvent);
@@ -141,22 +145,22 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
         //private async Task CachePenaltyEvents(string cacheKey, IList<TimelineEvent> cachedPenaltyEvents)
         //    => await cacheService.SetAsync(cacheKey, cachedPenaltyEvents, MatchPenaltyCacheOptions);
 
-        //private static void SetTotalScore(IList<TimelineEvent> shootoutEvents, TimelineEvent shootoutTimeline)
-        //{
-        //    var homeScore = 0;
-        //    var awayScore = 0;
+        private static void SetTotalScore(IList<TimelineEvent> shootoutEvents, TimelineEvent shootoutTimeline)
+        {
+            var homeScore = 0;
+            var awayScore = 0;
 
-        //    foreach (var shootoutEvent in shootoutEvents)
-        //    {
-        //        if (shootoutEvent != null)
-        //        {
-        //            homeScore += shootoutEvent.IsHome && shootoutEvent.IsHomeShootoutScored ? 1 : 0;
-        //            awayScore += !shootoutEvent.IsHome && shootoutEvent.IsAwayShootoutScored ? 1 : 0;
-        //        }
-        //    }
+            foreach (var shootoutEvent in shootoutEvents)
+            {
+                if (shootoutEvent != null)
+                {
+                    homeScore += shootoutEvent.IsHome && shootoutEvent.IsHomeShootoutScored ? 1 : 0;
+                    awayScore += !shootoutEvent.IsHome && shootoutEvent.IsAwayShootoutScored ? 1 : 0;
+                }
+            }
 
-        //    shootoutTimeline.ShootoutHomeScore = homeScore;
-        //    shootoutTimeline.ShootoutAwayScore = awayScore;
-        //}
+            shootoutTimeline.ShootoutHomeScore = homeScore;
+            shootoutTimeline.ShootoutAwayScore = awayScore;
+        }
     }
 }
