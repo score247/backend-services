@@ -57,7 +57,7 @@ namespace Soccer.EventProcessors.Matches
                 return;
             }
 
-            if (await IsTimelineEventNotProcessed(matchEvent) && matchEvent.Timeline.IsShootOutInPenalty())
+            if (matchEvent.Timeline.IsShootOutInPenalty())
             {
                 await messageBus.Publish<IPenaltyEventMessage>(new PenaltyEventMessage(matchEvent));
                 return;
