@@ -81,6 +81,9 @@
         ////ap – The match has ended after penalties
         public static readonly MatchStatus EndedAfterPenalties = new MatchStatus(25, "ap");
 
+        ////started – The match has started
+        public static readonly MatchStatus Started = new MatchStatus(26, "started");
+
         public MatchStatus()
         {
         }
