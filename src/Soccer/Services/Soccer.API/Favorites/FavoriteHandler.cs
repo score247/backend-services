@@ -35,9 +35,15 @@ namespace Soccer.API.Favorites
 
         public async Task<bool> Handle(SyncFavoriteRequest request, CancellationToken cancellationToken)
         {
-            await favoriteCommandService.RemoveFavorite(request.SyncUserFavorite?.RemovedUserFavorite);
+            if (request.SyncUserFavorite == null)
+            {
+                return false;
+            }
 
-            return (await favoriteCommandService.AddFavorite(request.SyncUserFavorite?.AddedUserFavorite)) > 0;
+            var removed = await favoriteCommandService.RemoveFavorite(request.SyncUserFavorite.RemovedUserFavorite);
+            var added = await favoriteCommandService.AddFavorite(request.SyncUserFavorite.AddedUserFavorite);
+
+            return (added + removed) > 0;
         }
     }
 }
