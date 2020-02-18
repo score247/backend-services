@@ -116,6 +116,11 @@ namespace Soccer.API.Matches
         private CacheItemOptions GetCacheOptions(int cachedMinutes = MatchDataCacheInMinutes)
             => new CacheItemOptions().SetAbsoluteExpiration(dateTimeNowFunc().AddMinutes(cachedMinutes));
 
+        private CacheItemOptions GetMatchLineupsCacheOptions()
+#pragma warning disable S109 // Magic numbers should not be used
+            => new CacheItemOptions().SetAbsoluteExpiration(dateTimeNowFunc().AddSeconds(5));
+#pragma warning restore S109 // Magic numbers should not be used
+
         public async Task<MatchStatistic> GetMatchStatistic(string id, DateTimeOffset eventDate)
             => await cacheManager.GetOrSetAsync(
                 $"{MatchStatisticCacheKey}_{id}",
@@ -126,7 +131,7 @@ namespace Soccer.API.Matches
             => await cacheManager.GetOrSetAsync(
                 $"{MatchLineupCacheKey}_{id}_{language.Value}",
                 async () => await GetMatchLineupsData(id, language, eventDate),
-                GetCacheOptions());
+                GetMatchLineupsCacheOptions());
 
         internal async Task<MatchLineups> GetMatchLineupsData(string id, Language language, DateTimeOffset eventDate)
         {
