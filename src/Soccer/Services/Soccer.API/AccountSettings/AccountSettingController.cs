@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Soccer.API._Shared.Results;
 using Soccer.API.AccountSettings.Requests;
 using Soccer.Core.Shared.Enumerations;
 
@@ -17,7 +18,11 @@ namespace Soccer.API.AccountSettings
 
         [HttpPost]
         [Route("notification")]
-        public async Task<bool> UpdateNotificationStatus(string userId, [FromQuery]bool isEnable, string language = Language.English)
-            => await mediator.Send(new UpdateNotificationStatusRequest(userId, isEnable));
+        public async Task<CommandResult> UpdateNotificationStatus(string userId, [FromQuery]bool isEnable, string language = Language.English)
+        { 
+            var isSuccess = await mediator.Send(new UpdateNotificationStatusRequest(userId, isEnable));
+
+            return new CommandResult(isSuccess);
+        } 
     }
 }
