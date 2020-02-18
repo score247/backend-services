@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MessagePack;
 using Newtonsoft.Json;
 using Score247.Shared.Base;
@@ -48,6 +49,38 @@ namespace Soccer.Core.Teams.Models
         public int Order { get; }
 
         public IDictionary<EventType, int> EventStatistic { get; set; }
+    }
+
+    [MessagePackObject(keyAsPropertyName: true)]
+    public class PlayerLineups : Player
+    {
+        [SerializationConstructor, JsonConstructor]
+        public PlayerLineups(
+           string id,
+           string name,
+           PlayerType type,
+           int jerseyNumber,
+           Position position,
+           int order,
+           Dictionary<byte, int> eventStatistic) : base(id, name, type, jerseyNumber, position, order)
+        {
+            EventStatistic = eventStatistic;
+        }
+
+        public PlayerLineups(Player player):
+             base(player.Id, player.Name, player.Type, player.JerseyNumber, player.Position, player.Order)
+        {
+            EventStatistic = new Dictionary<byte, int>();
+            if (player.EventStatistic != null && player.EventStatistic.Keys.Any())
+            {
+                foreach (var playerEvent in player.EventStatistic)
+                {
+                    EventStatistic.Add(playerEvent.Key.Value, playerEvent.Value);
+                }
+            }
+        }
+
+        public new Dictionary<byte, int> EventStatistic { get; }
     }
 
     [MessagePackObject(keyAsPropertyName: true)]

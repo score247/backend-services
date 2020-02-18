@@ -61,4 +61,26 @@ namespace Soccer.Core.Teams.Models
             return formationList;
         }
     }
+
+    public class TeamLineups2 : TeamLineups
+    {
+        [SerializationConstructor, JsonConstructor]
+        public TeamLineups2(
+            string id,
+            string name,
+            bool isHome,
+            Coach coach,
+            string formation,
+            IEnumerable<Player> players,
+            IEnumerable<Player> substitutions)
+            : base(id, name, isHome, coach, formation, players.Select(player => new PlayerLineups(player)), substitutions.Select(player => new PlayerLineups(player)))
+        {
+        }
+
+        public TeamLineups2(TeamLineups teamLineups)
+            : this(teamLineups.Id, teamLineups.Name, teamLineups.IsHome, teamLineups.Coach, teamLineups.Formation, teamLineups.Players, teamLineups.Substitutions)
+        {
+            SubstitutionEvents = teamLineups.SubstitutionEvents;
+        }
+    }
 }
