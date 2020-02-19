@@ -1,2 +1,0 @@
-ALTER TABLE `News` 
-ADD COLUMN `IsShown` TINYINT NOT NULL DEFAULT '1' AFTER `PublishedDate`;
