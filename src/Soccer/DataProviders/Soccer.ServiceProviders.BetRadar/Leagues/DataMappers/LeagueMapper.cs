@@ -13,6 +13,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
 {
     public static class LeagueMapper
     {
+
         public static League MapLeague(TournamentDetailDto tournamentDetail, string region, Language language)
         {
             var league = MapLeague(tournamentDetail.tournament, region, tournamentDetail.groups);

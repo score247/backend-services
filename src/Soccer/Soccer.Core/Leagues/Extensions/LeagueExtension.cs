@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Shared.Enumerations;
 
@@ -16,6 +17,9 @@ namespace Soccer.Core.Leagues.Extensions
         private const string space = " ";
         private const char spaceChar =  ' ';
         private const int second = 2;
+        private const string womenPattern = @"\b(women|w|womens)\b";
+        private const string youthPattern = @"\b(u[0-9]+)\b";
+        private const string womenPostfix = "Women";
 
         public static void UpdateMajorLeagueInfo(this League league, IEnumerable<League> majorLeagues)
         {
@@ -195,6 +199,26 @@ namespace Soccer.Core.Leagues.Extensions
         
 
         private static bool IsPlayOffs(string phase) => phase.Equals(playoffs, StringComparison.InvariantCultureIgnoreCase);
+
+        public static string GetTeamPostfix(this League league)
+        {
+            var postfix = string.Empty;
+
+            var womenMatches = Regex.Match(league.Name, womenPattern, RegexOptions.IgnoreCase);
+            var youthMatches = Regex.Match(league.Name, youthPattern, RegexOptions.IgnoreCase);
+
+            if (youthMatches.Success)
+            {
+                postfix += youthMatches.Value.ToUpperInvariant();
+            }
+
+            if (womenMatches.Success)
+            {
+                postfix = string.IsNullOrWhiteSpace(postfix) ? womenPostfix : $"{postfix} {womenPostfix}";
+            }
+
+            return postfix;
+        }
 
 #pragma warning restore S1172 // Unused method parameters should be removed
     }
