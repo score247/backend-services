@@ -113,7 +113,7 @@ namespace Soccer.EventProcessors.Tests.Matches
         }
 
         [Fact]
-        public async Task Consume_ShootOutInPenaltyAndNotProcessed_PublishPenaltyEventMessage()
+        public async Task Consume_ShootOutInPenalty_PublishPenaltyEventMessage()
         {
             context.Message.Returns(new MatchEventReceivedMessage(new MatchEvent(
                 "sr:league",
@@ -125,24 +125,6 @@ namespace Soccer.EventProcessors.Tests.Matches
 
             await messageBus.Received(1).Publish<IPenaltyEventMessage>(Arg.Any<PenaltyEventMessage>());
             await messageBus.DidNotReceive().Publish<IMatchEventProcessedMessage>(Arg.Any<MatchEventProcessedMessage>());
-        }
-
-        [Fact]
-        public async Task Consume_ShootOutInPenaltyAndProcessed_NotPublishPenaltyEventMessage()
-        {
-            context.Message.Returns(new MatchEventReceivedMessage(new MatchEvent(
-                "sr:league",
-                "sr:match",
-                A.Dummy<MatchResult>(),
-                StubPenaltyShootout())));
-
-            cacheManager.GetOrSetAsync(Arg.Any<string>(), Arg.Any<Func<Task<IList<TimelineEvent>>>>(), Arg.Any<CacheItemOptions>())
-                .Returns(new List<TimelineEvent> { StubPenaltyShootout() });
-
-            await consumer.Consume(context);
-
-            await messageBus.DidNotReceive().Publish<IPenaltyEventMessage>(Arg.Any<PenaltyEventMessage>());
-            await messageBus.Received(1).Publish<IMatchEventProcessedMessage>(Arg.Any<MatchEventProcessedMessage>());
         }
 
         [Fact]

@@ -29,9 +29,10 @@ namespace Soccer.EventProcessors.Matches.MatchEvents
 
             matchEvent.Timeline.UpdateMatchTime(DefaultPenaltyMatchTime);
             matchEvent.Timeline.ShootoutHomeScore = matchEvent.MatchResult.MatchPeriods
-                .FirstOrDefault(period => period.PeriodType.IsPenalties()).HomeScore;
+                .FirstOrDefault(period => period.PeriodType.IsPenalties())?.HomeScore ?? 0;
             matchEvent.Timeline.ShootoutAwayScore = matchEvent.MatchResult.MatchPeriods
-                .FirstOrDefault(period => period.PeriodType.IsPenalties()).AwayScore;
+                .FirstOrDefault(period => period.PeriodType.IsPenalties())?.AwayScore ?? 0;
+
             await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
         }
     }

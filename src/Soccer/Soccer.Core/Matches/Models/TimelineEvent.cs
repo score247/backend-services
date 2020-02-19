@@ -53,6 +53,7 @@
         }
 
 #pragma warning disable S107 // Methods should not have too many parameters
+
         public TimelineEvent(
             string id,
             EventType type,
@@ -131,8 +132,6 @@
         public int ShootoutHomeScore { get; set; }
 
         public int ShootoutAwayScore { get; set; }
-
-        public bool IsFirstShoot { get; set; }
 
         [IgnoreMember]
         public string PenaltyStatus { get; set; }

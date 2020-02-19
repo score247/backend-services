@@ -13,8 +13,6 @@ namespace Soccer.EventProcessors.Timeline
 {
     public class FetchTimelinesConsumer : IConsumer<IMatchTimelinesFetchedMessage>
     {
-        private const byte DefaultPenaltyMatchTime = 121;
-
         private readonly IBus messageBus;
 
         public FetchTimelinesConsumer(IBus messageBus)
@@ -63,7 +61,6 @@ namespace Soccer.EventProcessors.Timeline
                     timeline.UpdateScore(latestScore.HomeScore, latestScore.AwayScore);
                 }
 
-                //TODO should process languages
                 await messageBus.Publish<IMatchEventReceivedMessage>(
                     new MatchEventReceivedMessage(new MatchEvent(match.League.Id, match.Id, match.MatchResult, timeline, false, match.EventDate)));
             }
@@ -78,102 +75,36 @@ namespace Soccer.EventProcessors.Timeline
 
             var penaltyEvents = match.TimeLines.Where(t => t.IsShootOutInPenalty()).ToList();
 
+            if (match.MatchResult.MatchPeriods?.Any(mp => mp.PeriodType.IsPenalties()) != true)
+            {
+                _ = match.MatchResult.MatchPeriods.Concat(
+                    new List<MatchPeriod> { new MatchPeriod { PeriodType = PeriodType.Penalties } });
+            }
+
             while (index * TwoItemsCount < penaltyEvents.Count)
             {
-                var pair = penaltyEvents.Skip(index * TwoItemsCount).Take(TwoItemsCount).ToList();
+                var pairOfShootoutEvents = penaltyEvents.Skip(index * TwoItemsCount).Take(TwoItemsCount).ToList();
 
-                var firstShootoutEvent = await ProcessAndPublishFirstShootout(shootoutHomeScore, shootoutAwayScore, match, pair[0]);
-
-                shootoutHomeScore = firstShootoutEvent.ShootoutHomeScore;
-                shootoutAwayScore = firstShootoutEvent.ShootoutAwayScore;
-
-                if (pair.Count > 1)
+                foreach (var shootoutEvent in pairOfShootoutEvents)
                 {
-                    var lastShootoutEvent = await ProcessAndPublishLastShootout(shootoutHomeScore, shootoutAwayScore, match, pair[1], firstShootoutEvent);
+                    if (shootoutEvent.IsHome)
+                    {
+                        shootoutHomeScore += shootoutEvent.IsHomeShootoutScored ? 1 : 0;
+                    }
+                    else
+                    {
+                        shootoutAwayScore += shootoutEvent.IsAwayShootoutScored ? 1 : 0;
+                    }
 
-                    shootoutHomeScore = lastShootoutEvent.ShootoutHomeScore;
-                    shootoutAwayScore = lastShootoutEvent.ShootoutAwayScore;
+                    match.MatchResult.MatchPeriods.FirstOrDefault(p => p.PeriodType.IsPenalties()).HomeScore = shootoutHomeScore;
+                    match.MatchResult.MatchPeriods.FirstOrDefault(p => p.PeriodType.IsPenalties()).AwayScore = shootoutAwayScore;
+
+                    await messageBus.Publish<IMatchEventReceivedMessage>(
+                        new MatchEventReceivedMessage(new MatchEvent(match.League.Id, match.Id, match.MatchResult, shootoutEvent, false, match.EventDate)));
                 }
 
                 index++;
             }
-        }
-
-        private async Task<TimelineEvent> ProcessAndPublishLastShootout(
-            int shootoutHomeScore,
-            int shootoutAwayScore,
-            Match match,
-            TimelineEvent lastShootout,
-            TimelineEvent firstShootoutEvent)
-        {
-            var lastShootoutEvent = HandlePairOfPenaltyEvents(lastShootout, firstShootoutEvent, shootoutHomeScore, shootoutAwayScore);
-
-            await messageBus.Publish<IMatchEventReceivedMessage>(
-                new MatchEventProcessedMessage(new MatchEvent(match.League.Id, match.Id, match.MatchResult, lastShootoutEvent, false, match.EventDate)));
-
-            return lastShootoutEvent;
-        }
-
-        private async Task<TimelineEvent> ProcessAndPublishFirstShootout(
-            int shootoutHomeScore,
-            int shootoutAwayScore,
-            Match match,
-            TimelineEvent firstShootout)
-        {
-            var firstShootoutEvent = GetShootoutEvent(firstShootout, true, shootoutHomeScore, shootoutAwayScore);
-
-            await messageBus.Publish<IMatchEventReceivedMessage>(
-                    new MatchEventProcessedMessage(new MatchEvent(match.League.Id, match.Id, match.MatchResult, firstShootoutEvent, false, match.EventDate)));
-
-            return firstShootoutEvent;
-        }
-
-        private static TimelineEvent HandlePairOfPenaltyEvents(
-            TimelineEvent secondShootout,
-            TimelineEvent firstShootout,
-            int shootoutHomeScore = 0,
-            int shootoutAwayScore = 0)
-        {
-            var shootoutEvent = GetShootoutEvent(secondShootout, false, shootoutHomeScore, shootoutAwayScore);
-
-            if (shootoutEvent.IsHome && !firstShootout.IsHome)
-            {
-                shootoutEvent.AwayShootoutPlayer = firstShootout.AwayShootoutPlayer;
-                shootoutEvent.IsAwayShootoutScored = firstShootout.IsAwayShootoutScored;
-
-                shootoutEvent.HomeShootoutPlayer = shootoutEvent.Player;
-            }
-            else
-            {
-                shootoutEvent.HomeShootoutPlayer = firstShootout.HomeShootoutPlayer;
-                shootoutEvent.IsHomeShootoutScored = firstShootout.IsHomeShootoutScored;
-
-                shootoutEvent.AwayShootoutPlayer = shootoutEvent.Player;
-            }
-
-            return shootoutEvent;
-        }
-
-        private static TimelineEvent GetShootoutEvent(TimelineEvent shootoutEvent, bool isFirstShoot, int shootoutHomeScore = 0, int shootoutAwayScore = 0)
-        {
-            shootoutEvent.IsFirstShoot = isFirstShoot;
-
-            if (shootoutEvent.IsHome)
-            {
-                shootoutEvent.HomeShootoutPlayer = shootoutEvent.Player;
-                shootoutEvent.ShootoutHomeScore = shootoutHomeScore + (shootoutEvent.IsHomeShootoutScored ? 1 : 0);
-                shootoutEvent.ShootoutAwayScore = shootoutAwayScore;
-            }
-            else
-            {
-                shootoutEvent.AwayShootoutPlayer = shootoutEvent.Player;
-                shootoutEvent.ShootoutAwayScore = shootoutAwayScore + (shootoutEvent.IsAwayShootoutScored ? 1 : 0);
-                shootoutEvent.ShootoutHomeScore = shootoutHomeScore;
-            }
-
-            shootoutEvent.UpdateMatchTime(DefaultPenaltyMatchTime);
-
-            return shootoutEvent;
         }
 
         private Task PublishLatestTimeline(string leagueId, string matchId, MatchResult matchResult, TimelineEvent latestTimeline)
@@ -185,10 +116,10 @@ namespace Soccer.EventProcessors.Timeline
         }
 
         private Task PublishConfirmedTimelines(string matchId, DateTimeOffset eventDate, MatchStatus eventStatus, IList<TimelineEvent> timelines)
-        => messageBus.Publish<IMatchTimelinesConfirmedMessage>(new MatchTimelinesConfirmedMessage(
-                matchId,
-                eventDate,
-                eventStatus,
-                timelines));
+            => messageBus.Publish<IMatchTimelinesConfirmedMessage>(new MatchTimelinesConfirmedMessage(
+                    matchId,
+                    eventDate,
+                    eventStatus,
+                    timelines));
     }
 }

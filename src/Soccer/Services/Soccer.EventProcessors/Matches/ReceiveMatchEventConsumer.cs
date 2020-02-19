@@ -92,25 +92,6 @@ namespace Soccer.EventProcessors.Matches
             await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
         }
 
-        private async Task<bool> IsTimelineEventProcessed(MatchEvent matchEvent)
-        {
-            if (matchEvent?.Timeline == null)
-            {
-                return false;
-            }
-
-            var timeLineEvents = await GetProcessedTimelines(matchEvent.MatchId) ?? new List<TimelineEvent>();
-
-            if (timeLineEvents.Any(t => t.Id == matchEvent.Timeline.Id))
-            {
-                return true;
-            }
-
-            timeLineEvents.Add(matchEvent.Timeline);
-
-            return false;
-        }
-
         private async Task<IList<TimelineEvent>> GetProcessedTimelines(string matchId)
         {
             var timelineEventsCacheKey = $"MatchPushEvent_Match_{matchId}";
@@ -147,8 +128,5 @@ namespace Soccer.EventProcessors.Matches
 
             timeLineEvents.Add(matchEvent.Timeline);
         }
-
-        private async Task<bool> IsTimelineEventNotProcessed(MatchEvent matchEvent)
-            => !await IsTimelineEventProcessed(matchEvent);
     }
 }

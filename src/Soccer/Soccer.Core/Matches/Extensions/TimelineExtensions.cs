@@ -38,10 +38,10 @@
 
         private static readonly EventType[] NotifiableEventTypes = {
             EventType.MatchStarted,
-            EventType.ScoreChange,        
+            EventType.ScoreChange,
             EventType.RedCard,
             EventType.YellowRedCard,
-            EventType.MatchEnded            
+            EventType.MatchEnded
         };
 
         public static List<byte> ReprocessScoreEventTypes { get; }

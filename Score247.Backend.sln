@@ -81,13 +81,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.DataProviders.SportR
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.DataProviders.EyeFootball", "src\Soccer\DataProviders\Soccer.DataProviders.EyeFootball\Soccer.DataProviders.EyeFootball.csproj", "{4AA8CEC0-8E31-45C0-8D3F-2A53D9F38390}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MonitoringServices", "MonitoringServices", "{1D5E99C6-4B2C-449A-9869-24A1E1108655}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.NotificationPublishers", "src\Soccer\Services\Soccer.NotificationPublishers\Soccer.NotificationPublishers.csproj", "{8E1F5D47-4A25-417D-B1CB-7E9C27E3339D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.NotificationServices.AppCenter", "src\Soccer\Services\Soccer.NotificationPublisers.AppCenter\Soccer.NotificationServices.AppCenter.csproj", "{0DED0C1A-2914-4B8C-BE19-85D165DB68D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Soccer.NotificationServices", "src\Soccer\Services\Soccer.NotificationServices\Soccer.NotificationServices.csproj", "{79F7F15A-8211-4344-AEDE-8B72401B218F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Soccer.NotificationServices", "src\Soccer\Services\Soccer.NotificationServices\Soccer.NotificationServices.csproj", "{79F7F15A-8211-4344-AEDE-8B72401B218F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -252,7 +250,6 @@ Global
 		{67FD68FE-0353-47F0-8D39-9053BB9DC2C7} = {541501FD-77F9-4707-97FD-44C59D1D6BA6}
 		{0EAE5B33-6393-4391-8240-77C01328F33A} = {A7A2B310-406C-42B4-91C4-23D27C2D124B}
 		{4AA8CEC0-8E31-45C0-8D3F-2A53D9F38390} = {306F12AC-6FA4-45D5-BF8C-EDDF54E6CC9D}
-		{1D5E99C6-4B2C-449A-9869-24A1E1108655} = {198744D0-8880-4490-89C9-A5F37EDC427B}
 		{8E1F5D47-4A25-417D-B1CB-7E9C27E3339D} = {7173D557-0386-4235-9D1B-890453EF39B1}
 		{0DED0C1A-2914-4B8C-BE19-85D165DB68D8} = {7173D557-0386-4235-9D1B-890453EF39B1}
 		{79F7F15A-8211-4344-AEDE-8B72401B218F} = {7173D557-0386-4235-9D1B-890453EF39B1}

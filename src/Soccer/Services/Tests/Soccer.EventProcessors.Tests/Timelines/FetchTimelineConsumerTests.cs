@@ -163,125 +163,6 @@ namespace Soccer.EventProcessors.Tests.Timeline
         }
 
         [Fact]
-        public async Task Consume_FirstHomePenaltyShootoutEvents_ShouldPublishMatchEvent()
-        {
-            var match = A.Dummy<Match>()
-                .With(m => m.League, new League("league:1", ""))
-                .With(m => m.MatchResult,
-                    A.Dummy<MatchResult>()
-                    .With(r => r.HomeScore, 1)
-                    .With(r => r.AwayScore, 1))
-                .With(m => m.TimeLines, new List<TimelineEvent>
-                {
-                    StubHomePenaltyShootout("1", scored: true),
-                    StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 0)
-                });
-            context.Message.Returns(new MatchTimelinesFetchedMessage(
-                match,
-                Language.en_US));
-
-            await fetchTimelineConsumer.Consume(context);
-
-            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventProcessedMessage>(
-                m => m.MatchEvent.Timeline.Type.IsPenaltyShootout() &&
-                    m.MatchEvent.Timeline.IsHomeShootoutScored &&
-                    m.MatchEvent.Timeline.ShootoutHomeScore == 1 &&
-                    !m.MatchEvent.Timeline.IsAwayShootoutScored &&
-                    m.MatchEvent.Timeline.ShootoutAwayScore == 0 &&
-                    m.MatchEvent.Timeline.IsFirstShoot));
-        }
-
-        [Fact]
-        public async Task Consume_FirstAwayPenaltyShootoutEvents_ShouldPublishMatchEvent()
-        {
-            var match = A.Dummy<Match>()
-                .With(m => m.League, new League("league:1", ""))
-                .With(m => m.MatchResult,
-                    A.Dummy<MatchResult>()
-                        .With(r => r.HomeScore, 1)
-                        .With(r => r.AwayScore, 1))
-                .With(m => m.TimeLines, new List<TimelineEvent>
-                {
-                    StubAwayPenaltyShootout("1", scored: true),
-                    StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 0)
-                });
-            context.Message.Returns(new MatchTimelinesFetchedMessage(
-                match,
-                Language.en_US));
-
-            await fetchTimelineConsumer.Consume(context);
-
-            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventProcessedMessage>(
-                m => m.MatchEvent.Timeline.Type.IsPenaltyShootout() &&
-                    m.MatchEvent.Timeline.IsAwayShootoutScored &&
-                    m.MatchEvent.Timeline.ShootoutAwayScore == 1 &&
-                    !m.MatchEvent.Timeline.IsHomeShootoutScored &&
-                    m.MatchEvent.Timeline.ShootoutHomeScore == 0 &&
-                    m.MatchEvent.Timeline.IsFirstShoot));
-        }
-
-        [Fact]
-        public async Task Consume_PairOfPenaltyShootoutEventsAndHomeFirst_ShouldPublishMatchEvent()
-        {
-            var match = A.Dummy<Match>()
-                .With(m => m.League, new League("league:1", ""))
-                .With(m => m.MatchResult,
-                    A.Dummy<MatchResult>()
-                        .With(r => r.HomeScore, 1)
-                        .With(r => r.AwayScore, 1))
-                .With(m => m.TimeLines, new List<TimelineEvent>
-                {
-                    StubHomePenaltyShootout("1", scored: true),
-                    StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 0),
-                    StubAwayPenaltyShootout("2", scored: true),
-                    StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 1),
-                });
-            context.Message.Returns(new MatchTimelinesFetchedMessage(
-                match,
-                Language.en_US));
-
-            await fetchTimelineConsumer.Consume(context);
-
-            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventProcessedMessage>(
-                m => m.MatchEvent.Timeline.Type.IsPenaltyShootout()
-                    && m.MatchEvent.Timeline.IsHomeShootoutScored
-                    && m.MatchEvent.Timeline.ShootoutHomeScore == 1
-                    && m.MatchEvent.Timeline.IsAwayShootoutScored
-                    && m.MatchEvent.Timeline.ShootoutAwayScore == 1
-                    && !m.MatchEvent.Timeline.IsFirstShoot));
-        }
-
-        [Fact]
-        public async Task Consume_PenaltyShootoutEventsAndAwayFirst_ShouldPublishMatchEvent()
-        {
-            var match = A.Dummy<Match>()
-                .With(m => m.League, new League("league:1", ""))
-                .With(m => m.MatchResult,
-                    A.Dummy<MatchResult>()
-                    .With(r => r.HomeScore, 1)
-                    .With(r => r.AwayScore, 1))
-                .With(m => m.TimeLines, new List<TimelineEvent>
-                {
-                    StubAwayPenaltyShootout("1", scored: false),
-                    StubHomePenaltyShootout("2", scored: true),
-                    StubScoreChangeInPenalty(shootoutHomeScore: 1, shootoutAwayScore: 0),
-                });
-            context.Message.Returns(new MatchTimelinesFetchedMessage(
-                match,
-                Language.en_US));
-
-            await fetchTimelineConsumer.Consume(context);
-
-            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventProcessedMessage>(
-                m => m.MatchEvent.Timeline.Type.IsPenaltyShootout() &&
-                    m.MatchEvent.Timeline.IsHomeShootoutScored &&
-                    m.MatchEvent.Timeline.ShootoutHomeScore == 1 &&
-                    !m.MatchEvent.Timeline.IsAwayShootoutScored &&
-                    m.MatchEvent.Timeline.ShootoutAwayScore == 0 &&
-                    !m.MatchEvent.Timeline.IsFirstShoot));
-        }
-
-        [Fact]
         public async Task Consume_PenaltyShootoutEvents_ShouldPublishMatchEvent()
         {
             var match = A.Dummy<Match>()
@@ -289,7 +170,13 @@ namespace Soccer.EventProcessors.Tests.Timeline
                 .With(m => m.MatchResult,
                     A.Dummy<MatchResult>()
                         .With(r => r.HomeScore, 1)
-                        .With(r => r.AwayScore, 1))
+                        .With(r => r.AwayScore, 1)
+                         .With(r => r.MatchPeriods, new List<MatchPeriod> {
+                            A.Dummy<MatchPeriod>()
+                                .With(mp => mp.PeriodType, PeriodType.Penalties)
+                                .With(mp => mp.HomeScore, 4)
+                                .With(mp => mp.AwayScore, 1)
+                        }))
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
                     StubAwayPenaltyShootout("1", scored: false),
@@ -323,15 +210,8 @@ namespace Soccer.EventProcessors.Tests.Timeline
 
             await fetchTimelineConsumer.Consume(context);
 
-            await messageBus.Received(10).Publish<IMatchEventReceivedMessage>(Arg.Any<MatchEventProcessedMessage>());
-
-            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventProcessedMessage>(
-                m => m.MatchEvent.Timeline.Type.IsPenaltyShootout() &&
-                    m.MatchEvent.Timeline.IsHomeShootoutScored &&
-                    m.MatchEvent.Timeline.ShootoutHomeScore == 5 &&
-                    m.MatchEvent.Timeline.IsAwayShootoutScored &&
-                    m.MatchEvent.Timeline.ShootoutAwayScore == 4 &&
-                    !m.MatchEvent.Timeline.IsFirstShoot));
+            await messageBus.Received(10).Publish<IMatchEventReceivedMessage>(
+              Arg.Is<MatchEventReceivedMessage>(m => m.MatchEvent.Timeline.Type.IsPenaltyShootout()));
         }
 
         [Fact]
@@ -342,7 +222,13 @@ namespace Soccer.EventProcessors.Tests.Timeline
                 .With(m => m.MatchResult,
                     A.Dummy<MatchResult>()
                         .With(r => r.HomeScore, 1)
-                        .With(r => r.AwayScore, 1))
+                        .With(r => r.AwayScore, 1)
+                        .With(r => r.MatchPeriods, new List<MatchPeriod> {
+                            A.Dummy<MatchPeriod>()
+                                .With(mp => mp.PeriodType, PeriodType.Penalties)
+                                .With(mp => mp.HomeScore, 4)
+                                .With(mp => mp.AwayScore, 1)
+                        }))
                 .With(m => m.TimeLines, new List<TimelineEvent>
                 {
                     StubHomePenaltyShootout("1", scored: true),
@@ -367,15 +253,8 @@ namespace Soccer.EventProcessors.Tests.Timeline
 
             await fetchTimelineConsumer.Consume(context);
 
-            await messageBus.Received(7).Publish<IMatchEventReceivedMessage>(Arg.Any<MatchEventProcessedMessage>());
-
-            await messageBus.Received(1).Publish<IMatchEventReceivedMessage>(Arg.Is<MatchEventProcessedMessage>(
-                m => m.MatchEvent.Timeline.Type.IsPenaltyShootout() &&
-                    m.MatchEvent.Timeline.IsHomeShootoutScored &&
-                    m.MatchEvent.Timeline.ShootoutHomeScore == 4 &&
-                    !m.MatchEvent.Timeline.IsAwayShootoutScored &&
-                    m.MatchEvent.Timeline.ShootoutAwayScore == 1 &&
-                    m.MatchEvent.Timeline.IsFirstShoot));
+            await messageBus.Received(7).Publish<IMatchEventReceivedMessage>(
+                Arg.Is<MatchEventReceivedMessage>(m => m.MatchEvent.Timeline.Type.IsPenaltyShootout()));
         }
 
         [Fact]
