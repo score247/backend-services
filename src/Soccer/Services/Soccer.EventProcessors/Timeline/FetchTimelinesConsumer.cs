@@ -15,12 +15,10 @@ namespace Soccer.EventProcessors.Timeline
     public class FetchTimelinesConsumer : IConsumer<IMatchTimelinesFetchedMessage>
     {
         private readonly IBus messageBus;
-        private readonly ILogger logger;
 
-        public FetchTimelinesConsumer(IBus messageBus, ILogger logger)
+        public FetchTimelinesConsumer(IBus messageBus)
         {
             this.messageBus = messageBus;
-            this.logger = logger;
         }
 
         public async Task Consume(ConsumeContext<IMatchTimelinesFetchedMessage> context)
@@ -108,7 +106,6 @@ namespace Soccer.EventProcessors.Timeline
                     match.MatchResult.MatchPeriods.FirstOrDefault(p => p.PeriodType.IsPenalties()).HomeScore = shootoutHomeScore;
                     match.MatchResult.MatchPeriods.FirstOrDefault(p => p.PeriodType.IsPenalties()).AwayScore = shootoutAwayScore;
 
-                    await logger.InfoAsync("BuildShootoutPenaltyScores: HomeScore=" + shootoutHomeScore + " AwayScore=" + shootoutAwayScore);
                     await messageBus.Publish<IMatchEventReceivedMessage>(
                         new MatchEventReceivedMessage(new MatchEvent(match.League.Id, match.Id, match.MatchResult, shootoutEvent, false, match.EventDate)));
                 }
