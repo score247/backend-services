@@ -25,7 +25,7 @@
 
     public class StatisticsDto
     {
-        public IEnumerable<Team> teams { get; set; }
+        public IEnumerable<TeamDto> teams { get; set; }
     }
 
     public class TimelineDto

@@ -62,6 +62,7 @@
                 serviceCollectionConfigurator.AddConsumer<FetchNewsImageConsumer>();
                 serviceCollectionConfigurator.AddConsumer<InjuryTimeEventConsumer>();
                 serviceCollectionConfigurator.AddConsumer<ReceiveMatchNotificationConsumer>();
+                serviceCollectionConfigurator.AddConsumer<FetchTeamConsumer>();
             });
 
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -250,6 +251,14 @@
                     e.UseMessageRetry(RetryAndLogError(services));
 
                     e.Consumer<ReceiveMatchNotificationConsumer>(provider);
+                });
+
+                cfg.ReceiveEndpoint(host, $"{messageQueueSettings.QueueName}_Teams", e =>
+                {
+                    e.PrefetchCount = PrefetchCount;
+                    e.UseMessageRetry(RetryAndLogError(services));
+
+                    e.Consumer<FetchTeamConsumer>(provider);
                 });
             }));
 

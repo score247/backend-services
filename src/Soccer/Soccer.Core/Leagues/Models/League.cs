@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using MessagePack;
 using Newtonsoft.Json;
 using Score247.Shared.Base;
+using Soccer.Core.Teams.Models;
 
 namespace Soccer.Core.Leagues.Models
 {
@@ -74,7 +76,8 @@ namespace Soccer.Core.Leagues.Models
             string seasonId,
             LeagueSeasonDates seasonDates,
             bool hasGroups,
-            string abbreviation) : base(id, name)
+            string abbreviation,
+            IList<TeamProfile> teams = null) : base(id, name)
         {
             Order = order;
             CategoryId = categoryId;
@@ -86,6 +89,7 @@ namespace Soccer.Core.Leagues.Models
             SeasonDates = seasonDates;
             HasGroups = hasGroups;
             Abbreviation = abbreviation;
+            Teams = teams;
         }
 
 #pragma warning restore S107 // Methods should not have too many parameters
@@ -111,6 +115,8 @@ namespace Soccer.Core.Leagues.Models
         public bool HasGroups { get; private set; }
 
         public string Abbreviation { get; private set; }
+
+        public IList<TeamProfile> Teams { get; private set; }
 
         public void SetAbbreviation(string abbreviation)
         {

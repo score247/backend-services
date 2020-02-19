@@ -5,7 +5,7 @@ namespace Soccer.DataProviders.SportRadar.Teams.Dtos
 {
     public class TeamSchedules
     {
-        public Team team { get; set; }
+        public TeamDto team { get; set; }
 
         public IEnumerable<SportEventDto> schedule { get; set; }
     }

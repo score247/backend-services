@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Score247.Shared.Enumerations;
 using Soccer.Core.Leagues.Extensions;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.Core.Teams.Models;
 using Soccer.DataProviders.SportRadar.Leagues.Dtos;
+using Soccer.DataProviders.SportRadar.Teams.DataMappers;
 
 namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
 {
@@ -12,13 +15,13 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
     {
         public static League MapLeague(TournamentDetailDto tournamentDetail, string region, Language language)
         {
-            var league = MapLeague(tournamentDetail.tournament, region);
+            var league = MapLeague(tournamentDetail.tournament, region, tournamentDetail.groups);
             league.UpdateHasGroups(tournamentDetail.groups?.Count() > 1);
 
             return league;
         }
 
-        public static League MapLeague(TournamentDto tournament, string region)
+        public static League MapLeague(TournamentDto tournament, string region, IEnumerable<TournamentGroup> tournamentGroups = null)
         {
             if (tournament == null)
             {
@@ -38,19 +41,20 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
 
             var league = new League(
                     tournament.id,
-                    tournament.name, 
+                    tournament.name,
                     0,
                     tournament.category?.id,
-                    tournament.category?.name, 
+                    tournament.category?.name,
                     tournament.category?.country_code ?? string.Empty,
                     isInternationalLeague,
                     region,
                     tournament.current_season?.id ?? string.Empty,
                     leagueSeasonDates,
                     false,
-                    string.Empty)
+                    string.Empty,
+                    MapTeams(tournamentGroups))
                 .MapCountryAndLeagueName();
-          
+
             return league;
         }
 
@@ -89,6 +93,23 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
                 seasonDto.tournament_id);
 
             return leagueSeason;
+        }
+
+        private static IList<TeamProfile> MapTeams(IEnumerable<TournamentGroup> groups)
+        {
+            var teams = new List<TeamProfile>();
+
+            if (groups != null)
+            {
+                var leagueTeams = groups.SelectMany(group => group.teams).ToList();
+
+                foreach (var team in leagueTeams)
+                {
+                    teams.Add(TeamMapper.MapTeam(team));
+                }
+            }
+
+            return teams;
         }
     }
 }

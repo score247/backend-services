@@ -2,7 +2,7 @@
 {
     using System.Collections.Generic;
 
-    public class Team
+    public class TeamDto
     {
         public string id { get; set; }
 

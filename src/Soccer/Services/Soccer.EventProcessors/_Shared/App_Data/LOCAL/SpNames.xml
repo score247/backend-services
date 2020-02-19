@@ -88,6 +88,7 @@
   </Function>
   <Function Name="Team">
     <Setting Key="Team_InsertOrUpdateHeadToHead" SpName="Team_InsertOrUpdateHeadToHead" DbName="DefaultConnection" />
+    <Setting Key="Team_InsertOrUpdate" SpName="Team_InsertOrUpdate" DbName="DefaultConnection" />
   </Function>
   <Function Name="News">
     <Setting Key="News_InsertOrUpdateNews" SpName="News_InsertOrUpdateNews" DbName="DefaultConnection" />

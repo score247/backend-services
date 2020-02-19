@@ -6,6 +6,7 @@ using MassTransit;
 using Score247.Shared.Enumerations;
 using Soccer.Core.Leagues.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.Core.Teams.QueueMessages;
 using Soccer.DataProviders._Shared.Enumerations;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataReceivers.ScheduleTasks.Shared.Configurations;
@@ -45,6 +46,9 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
                     var leaguesBatch = soccerLeagues.Skip(i * batchSize).Take(batchSize);
 
                     await messageBus.Publish<ILeaguesFetchedMessage>(new LeaguesFetchedMessage(leaguesBatch, language.DisplayName));
+
+                    var teams = soccerLeagues.SelectMany(league => league.Teams).ToList();
+                    await messageBus.Publish<ITeamsFetchedMessage>(new TeamsFetchedMessage(teams, language.DisplayName));
                 }
             }
         }

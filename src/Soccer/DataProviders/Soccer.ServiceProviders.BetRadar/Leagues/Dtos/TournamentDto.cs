@@ -108,6 +108,6 @@
 
         public string name { get; set; }
 
-        public IEnumerable<Team> teams { get; set; }
+        public IEnumerable<TeamDto> teams { get; set; }
     }
 }

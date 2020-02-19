@@ -5,6 +5,7 @@
     using System.Linq;
     using Soccer.Core.Teams.Models;
     using Soccer.DataProviders.SportRadar.Matches.Dtos;
+    using Soccer.DataProviders.SportRadar.Teams.Dtos;
 
     public static class TeamMapper
     {
@@ -30,5 +31,13 @@
 
             return teams.OrderBy(team => team.IsHome ? 0 : 1).ToList();
         }
+
+        public static TeamProfile MapTeam(TeamDto teamDto)
+        => new TeamProfile(
+            teamDto.id, 
+            teamDto.name, 
+            teamDto.country, 
+            teamDto.country_code, 
+            teamDto.abbreviation);
     }
 }

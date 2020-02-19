@@ -10,12 +10,14 @@ using Soccer.Core.Leagues.Extensions;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.Core.Teams.Models;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.SportRadar.Leagues.DataMappers;
 using Soccer.DataProviders.SportRadar.Leagues.Dtos;
 using Soccer.DataProviders.SportRadar.Matches.DataMappers;
 using Soccer.DataProviders.SportRadar.Shared.Configurations;
 using Soccer.DataProviders.SportRadar.Shared.Extensions;
+using Soccer.DataProviders.SportRadar.Teams.DataMappers;
 
 namespace Soccer.DataProviders.SportRadar.Leagues.Services
 {
@@ -62,8 +64,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
                     var sportRadarLanguage = language.ToSportRadarFormat();
                     var regionLeaguesDto = await leagueApi.GetRegionLeagues(soccerSettings.AccessLevel, soccerSettings.Version, region.Name, sportRadarLanguage, region.Key);
 
-                    var regionLeagues = regionLeaguesDto.tournaments.Select(league => LeagueMapper.MapLeague(league, region.Name)).ToList();
-                    var leaguesWithDetails = await GetLeaguesDetails(regionLeagues, region, language);
+                    var leaguesWithDetails = await GetLeaguesDetails(regionLeaguesDto.tournaments, region, language);
 
                     leagues.AddRange(leaguesWithDetails);
                 }
@@ -184,13 +185,13 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             throw new NotImplementedException();
         }
 
-        private async Task<IEnumerable<League>> GetLeaguesDetails(IList<League> leagues, Region region, Language language)
+        private async Task<IEnumerable<League>> GetLeaguesDetails(IEnumerable<TournamentDto> leagues, Region region, Language language)
         {
             var latestLeagues = new List<League>();
 
             foreach (var league in leagues)
             {
-                var leagueDetails = await GetLeagueDetails(league.Id, region, language);
+                var leagueDetails = await GetLeagueDetails(league.id, region, language);
 
                 if (leagueDetails != null)
                 {

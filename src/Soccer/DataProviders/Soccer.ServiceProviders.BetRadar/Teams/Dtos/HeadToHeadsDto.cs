@@ -7,7 +7,7 @@ namespace Soccer.DataProviders.SportRadar.Teams.Dtos
 {
     public class HeadToHeadsDto
     {
-        public IEnumerable<Team> teams { get; set; }
+        public IEnumerable<TeamDto> teams { get; set; }
 
         [JsonConverter(typeof(IgnoreUnexpectedArraysConverter<LastMeetings>))]
         public LastMeetings last_meetings { get; set; }
