@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Fanex.Logging;
 using MassTransit;
 using Soccer.Core.Matches.Extensions;
 using Soccer.Core.Matches.Models;
@@ -14,10 +15,12 @@ namespace Soccer.EventProcessors.Timeline
     public class FetchTimelinesConsumer : IConsumer<IMatchTimelinesFetchedMessage>
     {
         private readonly IBus messageBus;
+        private readonly ILogger logger;
 
-        public FetchTimelinesConsumer(IBus messageBus)
+        public FetchTimelinesConsumer(IBus messageBus, ILogger logger)
         {
             this.messageBus = messageBus;
+            this.logger = logger;
         }
 
         public async Task Consume(ConsumeContext<IMatchTimelinesFetchedMessage> context)
@@ -69,9 +72,6 @@ namespace Soccer.EventProcessors.Timeline
         private async Task ProcessPenaltyTimelines(Match match)
         {
             const int TwoItemsCount = 2;
-            var index = 0;
-            var shootoutHomeScore = 0;
-            var shootoutAwayScore = 0;
 
             var penaltyEvents = match.TimeLines.Where(t => t.IsShootOutInPenalty()).ToList();
 
@@ -80,6 +80,15 @@ namespace Soccer.EventProcessors.Timeline
                 _ = match.MatchResult.MatchPeriods.Concat(
                     new List<MatchPeriod> { new MatchPeriod { PeriodType = PeriodType.Penalties } });
             }
+
+            await BuildShootoutPenaltyScores(match, TwoItemsCount, penaltyEvents);
+        }
+
+        private async Task BuildShootoutPenaltyScores(Match match, int TwoItemsCount, List<TimelineEvent> penaltyEvents)
+        {
+            var shootoutHomeScore = 0;
+            var shootoutAwayScore = 0;
+            var index = 0;
 
             while (index * TwoItemsCount < penaltyEvents.Count)
             {
@@ -99,6 +108,7 @@ namespace Soccer.EventProcessors.Timeline
                     match.MatchResult.MatchPeriods.FirstOrDefault(p => p.PeriodType.IsPenalties()).HomeScore = shootoutHomeScore;
                     match.MatchResult.MatchPeriods.FirstOrDefault(p => p.PeriodType.IsPenalties()).AwayScore = shootoutAwayScore;
 
+                    await logger.InfoAsync("BuildShootoutPenaltyScores: HomeScore=" + shootoutHomeScore + " AwayScore=" + shootoutAwayScore);
                     await messageBus.Publish<IMatchEventReceivedMessage>(
                         new MatchEventReceivedMessage(new MatchEvent(match.League.Id, match.Id, match.MatchResult, shootoutEvent, false, match.EventDate)));
                 }
