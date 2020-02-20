@@ -20,6 +20,8 @@ namespace Soccer.API.Teams
         Task<IEnumerable<TeamProfile>> SearchTeamByName(string keyword, Language language);
 
         Task<IEnumerable<TeamProfile>> GetTrendingTeams(Language language);
+
+        Task<IEnumerable<MatchSummary>> GetMatchesByTeam(string teamId, Language language);
     }
 
     public class TeamQueryService : ITeamQueryService
@@ -63,5 +65,8 @@ namespace Soccer.API.Teams
 
         public Task<IEnumerable<TeamProfile>> SearchTeamByName(string keyword, Language language)
             => dynamicRepository.FetchAsync<TeamProfile>(new SearchTeamByNameCriteria(keyword, language));
+
+        public Task<IEnumerable<MatchSummary>> GetMatchesByTeam(string teamId, Language language)
+            => dynamicRepository.FetchAsync<MatchSummary>(new GetMatchesByTeamCriteria(teamId, language));
     }
 }

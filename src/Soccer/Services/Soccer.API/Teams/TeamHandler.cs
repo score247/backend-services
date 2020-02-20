@@ -12,7 +12,8 @@ namespace Soccer.API.Teams
         IRequestHandler<HeadToHeadRequest, IEnumerable<MatchSummary>>,
         IRequestHandler<TeamResultRequest, IEnumerable<MatchSummary>>,
         IRequestHandler<SearchTeamByNameRequest, IEnumerable<TeamProfile>>,
-        IRequestHandler<TrendingTeamsRequest, IEnumerable<TeamProfile>>
+        IRequestHandler<TrendingTeamsRequest, IEnumerable<TeamProfile>>,
+        IRequestHandler<MatchesByTeamRequest, IEnumerable<MatchSummary>>
     {
         private readonly ITeamQueryService teamQueryService;
 
@@ -32,5 +33,8 @@ namespace Soccer.API.Teams
 
         public Task<IEnumerable<TeamProfile>> Handle(TrendingTeamsRequest request, CancellationToken cancellationToken)
             => teamQueryService.GetTrendingTeams(request.Language);
+
+        public Task<IEnumerable<MatchSummary>> Handle(MatchesByTeamRequest request, CancellationToken cancellationToken)
+            => teamQueryService.GetMatchesByTeam(request.TeamId, request.Language);
     }
 }

@@ -51,5 +51,12 @@ namespace Soccer.API.Teams
             string keyword,
             string language = "en-US")
             => await mediator.Send(new SearchTeamByNameRequest(keyword, language));
+
+        [HttpGet]
+        [Route("{teamId}/matches")]
+        public async Task<IEnumerable<MatchSummary>> GetMatches(
+            string teamId,
+            string language = "en-US")
+            => await mediator.Send(new MatchesByTeamRequest(teamId, language));
     }
 }
