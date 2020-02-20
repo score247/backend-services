@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Soccer.API.Teams.Requests;
 using Soccer.Core.Matches.Models;
+using Soccer.Core.Teams.Models;
 
 namespace Soccer.API.Teams
 {
@@ -37,5 +38,18 @@ namespace Soccer.API.Teams
             [FromQuery]string opponentTeamId = "",
             string language = "en-US")
             => await mediator.Send(new TeamResultRequest(teamId, opponentTeamId, language));
+
+        [HttpGet]
+        [Route("trending")]
+        public async Task<IEnumerable<TeamProfile>> GetTrendingTeams(
+            string language = "en-US")
+            => await mediator.Send(new TrendingTeamsRequest(language));
+
+        [HttpGet]
+        [Route("search")]
+        public async Task<IEnumerable<TeamProfile>> GetTrendingTeams(
+            string keyword,
+            string language = "en-US")
+            => await mediator.Send(new SearchTeamByNameRequest(keyword, language));
     }
 }

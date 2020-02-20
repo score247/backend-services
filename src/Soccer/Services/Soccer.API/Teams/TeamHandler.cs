@@ -4,12 +4,15 @@ using System.Threading.Tasks;
 using MediatR;
 using Soccer.API.Teams.Requests;
 using Soccer.Core.Matches.Models;
+using Soccer.Core.Teams.Models;
 
 namespace Soccer.API.Teams
 {
     public class TeamHandler :
         IRequestHandler<HeadToHeadRequest, IEnumerable<MatchSummary>>,
-        IRequestHandler<TeamResultRequest, IEnumerable<MatchSummary>>
+        IRequestHandler<TeamResultRequest, IEnumerable<MatchSummary>>,
+        IRequestHandler<SearchTeamByNameRequest, IEnumerable<TeamProfile>>,
+        IRequestHandler<TrendingTeamsRequest, IEnumerable<TeamProfile>>
     {
         private readonly ITeamQueryService teamQueryService;
 
@@ -23,5 +26,11 @@ namespace Soccer.API.Teams
 
         public Task<IEnumerable<MatchSummary>> Handle(TeamResultRequest request, CancellationToken cancellationToken)
             => teamQueryService.GetTeamResults(request.TeamId, request.OpponentTeamId, request.Language);
+
+        public Task<IEnumerable<TeamProfile>> Handle(SearchTeamByNameRequest request, CancellationToken cancellationToken)
+            => teamQueryService.SearchTeamByName(request.Keyword, request.Language);
+
+        public Task<IEnumerable<TeamProfile>> Handle(TrendingTeamsRequest request, CancellationToken cancellationToken)
+            => teamQueryService.GetTrendingTeams(request.Language);
     }
 }
