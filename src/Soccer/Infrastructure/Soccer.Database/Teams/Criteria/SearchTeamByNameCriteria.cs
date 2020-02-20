@@ -22,9 +22,6 @@ namespace Soccer.Database.Teams.Criteria
 
         public override string GetSettingKey() => "Team_SearchByName";
 
-        public override bool IsValid()
-        {
-            throw new NotImplementedException();
-        }
+        public override bool IsValid() => !string.IsNullOrWhiteSpace(Keyword) && !string.IsNullOrWhiteSpace(Language);
     }
 }
