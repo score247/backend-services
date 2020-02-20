@@ -200,7 +200,7 @@ namespace Soccer.Core.Leagues.Extensions
 
         private static bool IsPlayOffs(string phase) => phase.Equals(playoffs, StringComparison.InvariantCultureIgnoreCase);
 
-        public static string GetTeamPostfix(this League league)
+        public static string GetTeamNamePostfix(this League league)
         {
             var postfix = string.Empty;
 

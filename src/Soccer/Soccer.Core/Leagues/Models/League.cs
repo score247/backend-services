@@ -144,5 +144,10 @@ namespace Soccer.Core.Leagues.Models
             Name = name;
             CountryName = countryName;
         }
+
+        public void UpdateTeams(IList<TeamProfile> teams)
+        {
+            Teams = teams;
+        }
     }
 }

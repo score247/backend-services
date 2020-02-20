@@ -22,7 +22,7 @@ namespace Soccer.DataProviders.SportRadar.Tests.Leagues
 
             var league = LeagueMapper.MapLeague(tournamentDetailDto, "region", Language.en_US);
 
-            Assert.Equal(expectedPostfix, league.GetTeamPostfix());
+            Assert.Equal(expectedPostfix, league.GetTeamNamePostfix());
         }
 
         [Theory]
@@ -37,7 +37,7 @@ namespace Soccer.DataProviders.SportRadar.Tests.Leagues
 
             var league = LeagueMapper.MapLeague(tournamentDetailDto, "region", Language.en_US);
 
-            Assert.Empty(league.GetTeamPostfix());
+            Assert.Empty(league.GetTeamNamePostfix());
         }
 
         private TournamentDetailDto StubTournamentDetailDto(TournamentDto tournamentDto)

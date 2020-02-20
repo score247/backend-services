@@ -32,10 +32,10 @@
             return teams.OrderBy(team => team.IsHome ? 0 : 1).ToList();
         }
 
-        public static TeamProfile MapTeam(TeamDto teamDto)
+        public static TeamProfile MapTeam(TeamDto teamDto, string postfix)
         => new TeamProfile(
             teamDto.id, 
-            teamDto.name, 
+            string.IsNullOrWhiteSpace(postfix) ? teamDto.name : $"{teamDto.name} {postfix}", 
             teamDto.country, 
             teamDto.country_code, 
             teamDto.abbreviation);

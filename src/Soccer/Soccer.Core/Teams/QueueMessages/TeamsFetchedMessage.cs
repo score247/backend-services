@@ -5,9 +5,9 @@ namespace Soccer.Core.Teams.QueueMessages
 {
     public interface ITeamsFetchedMessage
     {
-        IList<TeamProfile> Teams { get; }
-
         string Language { get; }
+
+        IList<TeamProfile> Teams { get; }
     }
 
     public class TeamsFetchedMessage : ITeamsFetchedMessage

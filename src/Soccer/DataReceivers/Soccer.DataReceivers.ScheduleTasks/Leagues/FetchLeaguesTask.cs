@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
 using MassTransit;
 using Score247.Shared.Enumerations;
+using Soccer.Core.Leagues.Models;
 using Soccer.Core.Leagues.QueueMessages;
 using Soccer.Core.Shared.Enumerations;
 using Soccer.Core.Teams.QueueMessages;
@@ -47,7 +49,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 
                     await messageBus.Publish<ILeaguesFetchedMessage>(new LeaguesFetchedMessage(leaguesBatch, language.DisplayName));
 
-                    var teams = soccerLeagues.SelectMany(league => league.Teams).ToList();
+                    var teams = leaguesBatch.SelectMany(league => league.Teams).ToList();
                     await messageBus.Publish<ITeamsFetchedMessage>(new TeamsFetchedMessage(teams, language.DisplayName));
                 }
             }

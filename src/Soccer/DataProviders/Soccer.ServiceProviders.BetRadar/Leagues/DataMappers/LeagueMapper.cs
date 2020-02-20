@@ -13,16 +13,16 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
 {
     public static class LeagueMapper
     {
-
         public static League MapLeague(TournamentDetailDto tournamentDetail, string region, Language language)
         {
-            var league = MapLeague(tournamentDetail.tournament, region, tournamentDetail.groups);
+            var league = MapLeague(tournamentDetail.tournament, region);
             league.UpdateHasGroups(tournamentDetail.groups?.Count() > 1);
+            league.UpdateTeams(MapTeams(tournamentDetail.groups, league.GetTeamNamePostfix()));
 
             return league;
         }
 
-        public static League MapLeague(TournamentDto tournament, string region, IEnumerable<TournamentGroup> tournamentGroups = null)
+        public static League MapLeague(TournamentDto tournament, string region)
         {
             if (tournament == null)
             {
@@ -52,8 +52,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
                     tournament.current_season?.id ?? string.Empty,
                     leagueSeasonDates,
                     false,
-                    string.Empty,
-                    MapTeams(tournamentGroups))
+                    string.Empty)
                 .MapCountryAndLeagueName();
 
             return league;
@@ -96,7 +95,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
             return leagueSeason;
         }
 
-        private static IList<TeamProfile> MapTeams(IEnumerable<TournamentGroup> groups)
+        private static IList<TeamProfile> MapTeams(IEnumerable<TournamentGroup> groups, string postfix)
         {
             var teams = new List<TeamProfile>();
 
@@ -106,7 +105,7 @@ namespace Soccer.DataProviders.SportRadar.Leagues.DataMappers
 
                 foreach (var team in leagueTeams)
                 {
-                    teams.Add(TeamMapper.MapTeam(team));
+                    teams.Add(TeamMapper.MapTeam(team, postfix));
                 }
             }
 
