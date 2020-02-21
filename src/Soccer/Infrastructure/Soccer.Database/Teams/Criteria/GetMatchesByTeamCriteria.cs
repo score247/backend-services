@@ -20,7 +20,7 @@ namespace Soccer.Database.Teams.Criteria
 
         public string Language { get; }
 
-        public override string GetSettingKey() => "Match_GetByTeamId";
+        public override string GetSettingKey() => "Team_GetMatches";
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(TeamId);
     }

@@ -50,7 +50,7 @@
     <Setting Key="Team_GetTeamResults" SpName="Team_GetTeamResults" DbName="DefaultConnection" />
     <Setting Key="Team_GetTrendingTeams" SpName="Team_GetTrendingTeams" DbName="DefaultConnection" />
     <Setting Key="Team_SearchByName" SpName="Team_SearchByName" DbName="DefaultConnection" />
-    <Setting Key="Match_GetByTeamId" SpName="Match_GetByTeamId" DbName="DefaultConnection" />
+    <Setting Key="Team_GetMatches" SpName="Team_GetMatches" DbName="DefaultConnection" />
   </Function>
   <Function Name="News">
     <Setting Key="News_GetNews" SpName="News_GetNews" DbName="DefaultConnection" />
