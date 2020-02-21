@@ -1,13 +1,13 @@
 ﻿using System;
-using Fanex.Data.Repository;
 using Score247.Shared.Enumerations;
 using Soccer.Core.Shared.Enumerations;
+using Soccer.Database._Shared.Extensions;
 
 namespace Soccer.Database.Teams.Criteria
 {
-    public class GetMatchesByTeamCriteria : CriteriaBase
+    public class GetMatchesByTeamCriteria : CustomCriteria
     {
-        public GetMatchesByTeamCriteria(string teamId, Language language)
+        public GetMatchesByTeamCriteria(string teamId, Language language, DateTimeOffset eventDate = default) : base(eventDate)
         {
             TeamId = teamId;
             Language = language.DisplayName;
@@ -20,7 +20,7 @@ namespace Soccer.Database.Teams.Criteria
 
         public string Language { get; }
 
-        public override string GetSettingKey() => "Team_GetMatches";
+        public override string GetSettingKey() => "Team_GetMatches".GetCorrespondingKey(EventDate, DateTimeOffset.Now);
 
         public override bool IsValid() => !string.IsNullOrWhiteSpace(TeamId);
     }
