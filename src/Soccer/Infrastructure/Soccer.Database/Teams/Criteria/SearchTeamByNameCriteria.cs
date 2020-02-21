@@ -1,5 +1,4 @@
-﻿using System;
-using Fanex.Data.Repository;
+﻿using Fanex.Data.Repository;
 using Score247.Shared.Enumerations;
 using Soccer.Core.Shared.Enumerations;
 
@@ -7,6 +6,8 @@ namespace Soccer.Database.Teams.Criteria
 {
     public class SearchTeamByNameCriteria : CriteriaBase
     {
+        private const int MinLength = 2;
+
         public SearchTeamByNameCriteria(string keyword, Language language)
         {
             Keyword = keyword;
@@ -22,6 +23,9 @@ namespace Soccer.Database.Teams.Criteria
 
         public override string GetSettingKey() => "Team_SearchByName";
 
-        public override bool IsValid() => !string.IsNullOrWhiteSpace(Keyword) && !string.IsNullOrWhiteSpace(Language);
+        public override bool IsValid() => 
+            !string.IsNullOrWhiteSpace(Keyword) && 
+            Keyword.Length >= MinLength && 
+            !string.IsNullOrWhiteSpace(Language);
     }
 }
