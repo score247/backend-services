@@ -66,8 +66,20 @@ namespace Soccer.API.Teams
         public Task<IEnumerable<TeamProfile>> GetTrendingTeams(Language language)
             => dynamicRepository.FetchAsync<TeamProfile>(new GetTrendingTeamsCriteria(language));
 
-        public Task<IEnumerable<TeamProfile>> SearchTeamByName(string keyword, Language language)
-            => dynamicRepository.FetchAsync<TeamProfile>(new SearchTeamByNameCriteria(keyword, language));
+        public async Task<IEnumerable<TeamProfile>> SearchTeamByName(string keyword, Language language)
+        {
+            var pattern = @"\b" + keyword;
+            var teams = await dynamicRepository.FetchAsync<TeamProfile>(new SearchTeamByNameCriteria(keyword, language));            
+
+            var filterdTeam = teams
+                .Where(team => System.Text.RegularExpressions.Regex.Match(
+                            team.Name,
+                            pattern, 
+                            System.Text.RegularExpressions.RegexOptions.IgnoreCase).Success);
+
+            return filterdTeam;
+        }
+        
 
         public async Task<IEnumerable<MatchSummary>> GetMatchesByTeam(string teamId, Language language)
         {
