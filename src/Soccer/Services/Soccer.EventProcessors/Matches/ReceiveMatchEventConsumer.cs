@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using Fanex.Caching;
@@ -92,16 +92,24 @@ namespace Soccer.EventProcessors.Matches
             await messageBus.Publish<IMatchEventProcessedMessage>(new MatchEventProcessedMessage(matchEvent));
         }
 
-        private async Task<IList<TimelineEvent>> GetProcessedTimelines(string matchId)
+        private async Task<BlockingCollection<TimelineEvent>> GetProcessedTimelines(string matchId)
         {
             var timelineEventsCacheKey = $"MatchPushEvent_Match_{matchId}";
 
-            var timelineEvents = await cacheManager.GetOrSetAsync<IList<TimelineEvent>>(
+            var timelineEvents = await cacheManager.GetOrSetAsync(
                 timelineEventsCacheKey,
                 async () =>
                 {
-                    return (await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(matchId))
-                        ?? Enumerable.Empty<TimelineEvent>()).ToList();
+                    var timelineCollection = new BlockingCollection<TimelineEvent>();
+
+                    var timelines = await dynamicRepository.FetchAsync<TimelineEvent>(new GetTimelineEventsCriteria(matchId));
+
+                    foreach (var timeline in timelines)
+                    {
+                        timelineCollection.Add(timeline);
+                    }
+
+                    return timelineCollection;
                 },
                 EventCacheOptions);
 
@@ -118,7 +126,7 @@ namespace Soccer.EventProcessors.Matches
             {
                 if (processedItem != null)
                 {
-                    timeLineEvents.Remove(processedItem);
+                    timeLineEvents.TryTake(out processedItem);
                 }
             }
             catch (Exception e)
