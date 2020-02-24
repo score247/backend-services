@@ -86,6 +86,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             }
         }
 
+        // Should only execute when enable new major league since it will fetch lots of data for post matches
         public async Task FetchLeagueMatchesAndTimelineEvents()
         {
             var unprocessedLeagueSeason = (await leagueSeasonService.GetUnprocessedLeagueSeason())?.ToList();

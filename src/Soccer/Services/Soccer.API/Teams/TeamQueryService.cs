@@ -79,7 +79,6 @@ namespace Soccer.API.Teams
 
             return filterdTeam;
         }
-        
 
         public async Task<IEnumerable<MatchSummary>> GetMatchesByTeam(string teamId, Language language)
         {
