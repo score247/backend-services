@@ -13,11 +13,13 @@ namespace Soccer.Core.Teams.Models
               string name,
               string country,
               string countryCode,
-              string abbreviation) : base(id, name)
+              string abbreviation,
+              string logoName) : base(id, name)
         {
             Country = country;
             CountryCode = countryCode;
             Abbreviation = abbreviation;
+            LogoName = logoName;
         }
 
         public string Country { get; private set; }
@@ -25,5 +27,7 @@ namespace Soccer.Core.Teams.Models
         public string CountryCode { get; private set; }
 
         public string Abbreviation { get; private set; }
+
+        public string LogoName { get; private set; }
     }
 }

@@ -38,6 +38,7 @@
             string.IsNullOrWhiteSpace(postfix) ? teamDto.name : $"{teamDto.name} {postfix}", 
             teamDto.country, 
             teamDto.country_code, 
-            teamDto.abbreviation);
+            teamDto.abbreviation,
+            string.IsNullOrWhiteSpace(teamDto.country_code) ? teamDto.abbreviation : $"{teamDto.country_code}{teamDto.abbreviation}");
     }
 }

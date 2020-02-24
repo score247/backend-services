@@ -18,7 +18,8 @@ namespace Soccer.Core.Teams.Models
             string flag,
             bool isHome,
             TeamStatistic statistic,
-            string abbreviation) : base(id, name, country, countryCode, abbreviation)
+            string abbreviation,
+            string logoName = null) : base(id, name, country, countryCode, abbreviation, logoName)
         {
             Flag = flag;
             IsHome = isHome;
