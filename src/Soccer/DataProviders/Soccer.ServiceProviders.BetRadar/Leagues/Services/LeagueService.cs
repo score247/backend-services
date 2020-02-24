@@ -6,18 +6,15 @@ using System.Threading.Tasks;
 using Fanex.Logging;
 using Refit;
 using Score247.Shared.Enumerations;
-using Soccer.Core.Leagues.Extensions;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Matches.Models;
 using Soccer.Core.Shared.Enumerations;
-using Soccer.Core.Teams.Models;
 using Soccer.DataProviders.Leagues;
 using Soccer.DataProviders.SportRadar.Leagues.DataMappers;
 using Soccer.DataProviders.SportRadar.Leagues.Dtos;
 using Soccer.DataProviders.SportRadar.Matches.DataMappers;
 using Soccer.DataProviders.SportRadar.Shared.Configurations;
 using Soccer.DataProviders.SportRadar.Shared.Extensions;
-using Soccer.DataProviders.SportRadar.Teams.DataMappers;
 
 namespace Soccer.DataProviders.SportRadar.Leagues.Services
 {
@@ -85,18 +82,21 @@ namespace Soccer.DataProviders.SportRadar.Leagues.Services
             {
                 var apiKey = soccerSettings.Regions.FirstOrDefault(x => x.Name == regionName)?.Key;
 
-                var sportRadarLanguage = language.ToSportRadarFormat();
-                var tournamentScheduleDto = await leagueApi.GetLeagueSchedule(
-                    soccerSettings.AccessLevel,
-                    soccerSettings.Version,
-                    regionName,
-                    sportRadarLanguage,
-                    leagueId,
-                    apiKey);
-
-                if (tournamentScheduleDto.sport_events?.Any() == true)
+                if (!string.IsNullOrWhiteSpace(apiKey))
                 {
-                    return tournamentScheduleDto.sport_events.Select(ms => MatchMapper.MapMatch(ms, null, null, regionName, language));
+                    var sportRadarLanguage = language.ToSportRadarFormat();
+                    var tournamentScheduleDto = await leagueApi.GetLeagueSchedule(
+                        soccerSettings.AccessLevel,
+                        soccerSettings.Version,
+                        regionName,
+                        sportRadarLanguage,
+                        leagueId,
+                        apiKey);
+
+                    if (tournamentScheduleDto.sport_events?.Any() == true)
+                    {
+                        return tournamentScheduleDto.sport_events.Select(ms => MatchMapper.MapMatch(ms, null, null, regionName, language));
+                    }
                 }
             }
             catch (Exception ex)
