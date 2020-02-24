@@ -40,19 +40,28 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             {
                 var leagueService = leagueServiceFactory(DataProviderType.SportRadar);
 
+                var internalLeagueService = leagueServiceFactory(DataProviderType.Internal);
+                var majorLeagueIds = (await internalLeagueService.GetLeagues(language)).Select(league => league.Id).ToArray();
+
                 var batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
                 var soccerLeagues = (await leagueService.GetLeagues(language)).ToList();
 
                 for (var i = 0; i * batchSize < soccerLeagues.Count; i++)
                 {
                     var leaguesBatch = soccerLeagues.Skip(i * batchSize).Take(batchSize);
-
                     await messageBus.Publish<ILeaguesFetchedMessage>(new LeaguesFetchedMessage(leaguesBatch, language.DisplayName));
 
-                    var teams = leaguesBatch.SelectMany(league => league.Teams).ToList();
-                    await messageBus.Publish<ITeamsFetchedMessage>(new TeamsFetchedMessage(teams, language.DisplayName));
+                    await PublishTeamFetchedMessage(language, majorLeagueIds, leaguesBatch);
                 }
             }
+        }
+
+        private Task PublishTeamFetchedMessage(Language language, string[] majorLeagueIds, IEnumerable<League> leaguesBatch)
+        {
+            var filteredLeagues = leaguesBatch.Where(league => majorLeagueIds.Contains(league.Id));
+            var teams = filteredLeagues.SelectMany(league => league.Teams).ToList();
+
+            return messageBus.Publish<ITeamsFetchedMessage>(new TeamsFetchedMessage(teams, language.DisplayName));
         }
     }
 }
