@@ -56,12 +56,15 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             }
         }
 
-        private Task PublishTeamFetchedMessage(Language language, string[] majorLeagueIds, IEnumerable<League> leaguesBatch)
+        private async Task PublishTeamFetchedMessage(Language language, string[] majorLeagueIds, IEnumerable<League> leaguesBatch)
         {
             var filteredLeagues = leaguesBatch.Where(league => majorLeagueIds.Contains(league.Id));
             var teams = filteredLeagues.SelectMany(league => league.Teams).ToList();
 
-            return messageBus.Publish<ITeamsFetchedMessage>(new TeamsFetchedMessage(teams, language.DisplayName));
+            if (teams.Count > 0)
+            { 
+                await messageBus.Publish<ITeamsFetchedMessage>(new TeamsFetchedMessage(teams, language.DisplayName));
+            }
         }
     }
 }
