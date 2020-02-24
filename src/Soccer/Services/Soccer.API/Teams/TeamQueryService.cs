@@ -108,7 +108,9 @@ namespace Soccer.API.Teams
                 matches.AddRange(result.Select(m => new MatchSummary(m)));
             }
 
-            return matches;
+            return matches
+                .OrderBy(match => match.LeagueOrder)
+                .ThenBy(match => match.EventDate);
         }
        
     }
