@@ -123,10 +123,7 @@ namespace Soccer.API.Matches
                 GetCacheOptions());
 
         public async Task<MatchLineups> GetMatchLineups(string id, Language language, DateTimeOffset eventDate)
-            => await cacheManager.GetOrSetAsync(
-                $"{MatchLineupCacheKey}_{id}_{language.Value}",
-                async () => await GetMatchLineupsData(id, language, eventDate),
-                GetCacheOptions());
+            => await GetMatchLineupsData(id, language, eventDate);
 
         internal async Task<MatchLineups> GetMatchLineupsData(string id, Language language, DateTimeOffset eventDate)
         {

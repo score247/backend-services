@@ -8,6 +8,7 @@
     using Requests;
     using Soccer.API.Matches.Helpers;
     using Soccer.Core.Matches.Models;
+    using Soccer.Core.Teams.Models;
 
     public class MatchHandler :
         IRequestHandler<MatchesByDateRequest, IEnumerable<MatchSummary>>,
@@ -54,12 +55,18 @@
 
             var lineupsSvg = matchLineupsGenerator.Generate(matchLineups);
 
+            if (request.UseNewFormat)
+            {
+                matchLineups.Home?.FormatPlayerEventStatistic();
+                matchLineups.Away?.FormatPlayerEventStatistic();
+            }
+
             return new MatchPitchViewLineups(
-                matchLineups.Id,
-                matchLineups.EventDate,
-                matchLineups.Home,
-                matchLineups.Away,
-                lineupsSvg);
+                    matchLineups.Id,
+                    matchLineups.EventDate,
+                    matchLineups.Home,
+                    matchLineups.Away,
+                    lineupsSvg);
         }
 
         public async Task<IEnumerable<MatchSummary>> Handle(MatchesByIdsRequest request, CancellationToken cancellationToken)

@@ -60,5 +60,22 @@ namespace Soccer.Core.Teams.Models
 
             return formationList;
         }
+
+        public void FormatPlayerEventStatistic()
+        {
+            FormatEventStatistic(Players);
+            FormatEventStatistic(Substitutions);
+        }
+
+        private static void FormatEventStatistic(IEnumerable<Player> players)
+        {
+            if (players != null)
+            {
+                foreach (var player in players)
+                {
+                    player.FormatEventStatistic();
+                }
+            }
+        }
     }
 }

@@ -65,8 +65,8 @@ namespace Soccer.API.Matches
 
         [HttpGet]
         [Route("{id}/lineups")]
-        public async Task<MatchPitchViewLineups> GetMatchLineups(string id, string language = Language.English, DateTimeOffset eventDate = default)
-           => await mediator.Send(new MatchLineupsRequest(id, language, eventDate));
+        public async Task<MatchPitchViewLineups> GetMatchLineups(string id, string language = Language.English, DateTimeOffset eventDate = default, bool useNewFormat = false)
+           => await mediator.Send(new MatchLineupsRequest(id, language, eventDate, useNewFormat));
 
         [HttpPost]
         [Route("ids/")]

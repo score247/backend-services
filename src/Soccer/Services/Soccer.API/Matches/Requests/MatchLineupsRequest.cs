@@ -8,11 +8,12 @@ namespace Soccer.API.Matches.Requests
 {
     public class MatchLineupsRequest : IRequest<MatchPitchViewLineups>
     {
-        public MatchLineupsRequest(string id, string language, DateTimeOffset eventDate)
+        public MatchLineupsRequest(string id, string language, DateTimeOffset eventDate, bool useNewFormat = false)
         {
             Id = id;
             Language = Enumeration.FromDisplayName<Language>(language);
             EventDate = eventDate;
+            UseNewFormat = useNewFormat;
         }
 
         public string Id { get; }
@@ -20,5 +21,7 @@ namespace Soccer.API.Matches.Requests
         public Language Language { get; }
 
         public DateTimeOffset EventDate { get; }
+
+        public bool UseNewFormat { get; }
     }
 }

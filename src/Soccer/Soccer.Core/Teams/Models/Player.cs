@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using MessagePack;
 using Newtonsoft.Json;
 using Score247.Shared.Base;
@@ -48,7 +49,23 @@ namespace Soccer.Core.Teams.Models
         public int Order { get; }
 
         public IDictionary<EventType, int> EventStatistic { get; set; }
+
+        public IDictionary<byte, int> EventStatisticFormatted { get; private set; }
+
+        public void FormatEventStatistic()
+        {
+            EventStatisticFormatted = new Dictionary<byte, int>();
+            if (EventStatistic != null && EventStatistic.Keys.Any())
+            {
+                foreach (var playerEvent in EventStatistic)
+                {
+                    EventStatisticFormatted.Add(playerEvent.Key.Value, playerEvent.Value);
+                }
+            }
+            EventStatistic = null;
+        }
     }
+
 
     [MessagePackObject(keyAsPropertyName: true)]
     public class GoalScorer : BaseModel

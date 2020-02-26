@@ -121,7 +121,9 @@ namespace Soccer.Core.Matches.Models
             Coverage = match.Coverage;
         }
 
+#pragma warning disable S1541 // Methods and properties should not be too complex
         private void AssignLeague(Match match)
+#pragma warning restore S1541 // Methods and properties should not be too complex
         {
             if (match.League != null)
             {

@@ -153,7 +153,9 @@ namespace Soccer.DataProviders.SportRadar.Matches.Services
             }
         }
 
+#pragma warning disable S1541 // Methods and properties should not be too complex
         private async Task HandleEvent(
+#pragma warning restore S1541 // Methods and properties should not be too complex
             KeyValuePair<string, StreamReader> regionStream,
             Action<MatchEvent> handler, string matchEventPayload,
             MatchEvent matchEvent)
