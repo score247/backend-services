@@ -109,8 +109,7 @@ namespace Soccer.API.Teams
             }
 
             return matches
-                .OrderBy(match => match.LeagueOrder)
-                .ThenBy(match => match.EventDate);
+                .OrderBy(match => match.EventDate);
         }
        
     }
