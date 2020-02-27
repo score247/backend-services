@@ -16,7 +16,20 @@ namespace Soccer.DataProviders.SportRadar.Tests.Leagues
         [InlineData("First Division, Women", "Women")]
         [InlineData("World Cup Qualification Inter-Confederation Playoffs Women", "Women")]
         [InlineData("Int. Friendly Games W", "Women")]
-        public void GetTeamPostfix_LeagueYouthOrWomenOrBoth_ShouldFormat(string leagueName, string expectedPostfix)
+        public void GetTeamPostfix_LeagueUnderAgeOrWomenOrBoth_ShouldFormat(string leagueName, string expectedPostfix)
+        {
+            var tournamentDetailDto = StubTournamentDetailDto(StubTournamentDto("", "", leagueName));
+
+            var league = LeagueMapper.MapLeague(tournamentDetailDto, "region", Language.en_US);
+
+            Assert.Equal(expectedPostfix, league.GetTeamNamePostfix());
+        }
+
+        [Theory]
+        [InlineData("UEFA Youth League", "Youth")]
+        [InlineData("UEFA Youth League Women", "Youth Women")]
+        [InlineData("Int. Friendly Games youth W", "Youth Women")]
+        public void GetTeamPostfix_LeagueForYouthOrWomenOrBoth_ShouldFormat(string leagueName, string expectedPostfix)
         {
             var tournamentDetailDto = StubTournamentDetailDto(StubTournamentDto("", "", leagueName));
 
@@ -31,7 +44,7 @@ namespace Soccer.DataProviders.SportRadar.Tests.Leagues
         [InlineData("World Cup Qualification CONCACAF")]
         [InlineData("World Cup")]
         [InlineData("Premier League")]
-        public void GetTeamPostfix_LeagueNotContainsYouthOrWomen_ShouldEmpty(string leagueName)
+        public void GetTeamPostfix_LeagueNotContainsUnderAgeOrWomen_ShouldEmpty(string leagueName)
         {
             var tournamentDetailDto = StubTournamentDetailDto(StubTournamentDto("", "", leagueName));
 

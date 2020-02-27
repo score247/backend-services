@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Score247.Shared.Extensions;
 using Soccer.Core.Leagues.Models;
 using Soccer.Core.Shared.Enumerations;
 
@@ -18,7 +19,8 @@ namespace Soccer.Core.Leagues.Extensions
         private const char spaceChar =  ' ';
         private const int second = 2;
         private const string womenPattern = @"\b(women|w|womens)\b";
-        private const string youthPattern = @"\b(u[0-9]+)\b";
+        private const string underPattern = @"\b(u[0-9]+)\b";
+        private const string youthPattern = @"\b(youth)\b";
         private const string womenPostfix = "Women";
 
         public static void UpdateMajorLeagueInfo(this League league, IEnumerable<League> majorLeagues)
@@ -205,11 +207,17 @@ namespace Soccer.Core.Leagues.Extensions
             var postfix = string.Empty;
 
             var womenMatches = Regex.Match(league.Name, womenPattern, RegexOptions.IgnoreCase);
+            var underMatches = Regex.Match(league.Name, underPattern, RegexOptions.IgnoreCase);
             var youthMatches = Regex.Match(league.Name, youthPattern, RegexOptions.IgnoreCase);
+
+            if (underMatches.Success)
+            {
+                postfix += underMatches.Value.ToUpperInvariant();
+            }
 
             if (youthMatches.Success)
             {
-                postfix += youthMatches.Value.ToUpperInvariant();
+                postfix += youthMatches.Value.ToUpperFirstCharInvariant();
             }
 
             if (womenMatches.Success)
