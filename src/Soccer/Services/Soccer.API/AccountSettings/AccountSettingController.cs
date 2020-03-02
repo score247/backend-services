@@ -6,7 +6,7 @@ using Soccer.Core.Shared.Enumerations;
 
 namespace Soccer.API.AccountSettings
 {
-    [Route("api/{language}/settings/{userId}")]
+    [Route("api/soccer/{language}/settings/{userId}")]
     [ApiController]
     public class AccountSettingController : ControllerBase
     {
