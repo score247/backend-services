@@ -133,9 +133,14 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             {
                 foreach (var language in Enumeration.GetAll<Language>())
                 {
-                    var matches = (await leagueScheduleService.GetLeagueMatches(league.Region, league.Id, language)).ToList();
+                    var matches = (await leagueScheduleService.GetLeagueMatches(league.Region, league.Id, language))
+                        .Where(match => match.MatchResult.EventStatus != MatchStatus.Closed)
+                        .ToList();
 
-                    await PublishPreMatchesMessage(language, matches);
+                    if (matches.Count > 0)
+                    {
+                        await PublishPreMatchesMessage(language, matches);
+                    }
                 }
             }
         }
