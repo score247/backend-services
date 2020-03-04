@@ -39,7 +39,6 @@ namespace Soccer.EventProcessors.Matches
 
             if (message == null || message.Matches == null || message.Regions?.Any() == false)
             {
-                await logger.InfoAsync($"FetchLiveMatch - {DateTime.Now} - Consume: Region.Any {message?.Regions?.Any()}");
                 return;
             }
 
@@ -59,7 +58,7 @@ namespace Soccer.EventProcessors.Matches
                 await Task.WhenAll(tasks);
             }
         }
-       
+
         private async Task<List<Match>> GetCurrentLiveMatches(Language language, string[] regions)
         {
             var liveMatches = (await dynamicRepository.FetchAsync<Match>(new GetLiveMatchesCriteria(language)))
@@ -134,14 +133,7 @@ namespace Soccer.EventProcessors.Matches
             }
         }
 
-        private async Task PublishLiveMatchUpdatedMessage(Language language, IEnumerable<Match> newLiveMatches, IEnumerable<Match> removedMatches)
-        {
-            await messageBus.Publish<ILiveMatchUpdatedMessage>(new LiveMatchUpdatedMessage(language, newLiveMatches, removedMatches));
-
-            if (newLiveMatches?.Count() > 0)
-            {
-                await logger.InfoAsync($"FetchLiveMatch - {DateTime.Now} - new live matches: {newLiveMatches.Count()}", "Live", newLiveMatches);
-            }            
-        }
+        private Task PublishLiveMatchUpdatedMessage(Language language, IEnumerable<Match> newLiveMatches, IEnumerable<Match> removedMatches)
+        => messageBus.Publish<ILiveMatchUpdatedMessage>(new LiveMatchUpdatedMessage(language, newLiveMatches, removedMatches));
     }
 }
