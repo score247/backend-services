@@ -30,11 +30,19 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
 
         [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
-        Task FetchMatchesForLeague(IList<LeagueSeasonProcessedInfo> leagueSeasons, bool isScheduleTimelineEvents = true);
+        Task FetchMatchesForNewSeason(IList<LeagueSeasonProcessedInfo> leagueSeasons, bool isScheduleTimelineEvents = true);
 
         [AutomaticRetry(Attempts = 1)]
         [Queue("low")]
         Task FetchMatchesForLeague(IList<League> leagues);
+
+        [AutomaticRetry(Attempts = 1)]
+        [Queue("low")]
+        Task FetchTeamResultsForMajorLeagues();
+
+        [AutomaticRetry(Attempts = 1)]
+        [Queue("low")]
+        Task FetchTeamResults(IList<League> leagues);
     }
 
     public class FetchLeagueMatchesTask : IFetchLeagueMatchesTask
@@ -100,17 +108,18 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             {
                 var batchOfLeague = unprocessedLeagueSeason.Skip(i * BatchOfLeagueSize).Take(BatchOfLeagueSize).ToList();
 
-                jobClient.Enqueue<IFetchLeagueMatchesTask>(t => t.FetchMatchesForLeague(batchOfLeague, true));
+                jobClient.Enqueue<IFetchLeagueMatchesTask>(t => t.FetchMatchesForNewSeason(batchOfLeague, true));
             }
         }
 
-        public async Task FetchMatchesForLeague(IList<LeagueSeasonProcessedInfo> leagueSeasons, bool isScheduleTimelineEvents = true)
+        public async Task FetchMatchesForNewSeason(IList<LeagueSeasonProcessedInfo> leagueSeasons, bool isScheduleTimelineEvents = true)
         {
             foreach (var season in leagueSeasons)
             {
                 foreach (var language in Enumeration.GetAll<Language>())
                 {
-                    var matches = (await leagueScheduleService.GetLeagueMatches(season.Region, season.LeagueId, language)).ToList();
+                    var matches = (await leagueScheduleService.GetLeagueMatches(season.Region, season.LeagueId, language))
+                        .ToList();
 
                     await PublishPreMatchesMessage(language, matches);
 
@@ -133,14 +142,8 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             {
                 foreach (var language in Enumeration.GetAll<Language>())
                 {
-                    var matches = (await leagueScheduleService.GetLeagueMatches(league.Region, league.Id, language))
-                        .Where(match => match.MatchResult.EventStatus != MatchStatus.Closed)
-                        .ToList();
-
-                    if (matches.Count > 0)
-                    {
-                        await PublishPreMatchesMessage(language, matches);
-                    }
+                    var matches = (await leagueScheduleService.GetLeagueMatches(league.Region, league.Id, language)).ToList();
+                    await PublishPreMatchesMessage(language, matches);
                 }
             }
         }
@@ -149,12 +152,17 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
         {
             var batchSize = appSettings.ScheduleTasksSettings.QueueBatchSize;
 
-            for (var i = 0; i * batchSize < matches.Count; i++)
+            var preMatches = matches.Where(match => match.MatchResult.EventStatus != MatchStatus.Closed).ToList();
+
+            for (var i = 0; i * batchSize < preMatches.Count; i++)
             {
                 var batchOfMatches = matches.Skip(i * batchSize).Take(batchSize).ToList();
 
-                await messageBus.Publish<IPreMatchesFetchedMessage>(
-                    new PreMatchesFetchedMessage(batchOfMatches, language.DisplayName));
+                if (batchOfMatches.Count > 0)
+                {
+                    await messageBus.Publish<IPreMatchesFetchedMessage>(
+                        new PreMatchesFetchedMessage(batchOfMatches, language.DisplayName));
+                }
             }
         }
 
@@ -183,6 +191,36 @@ namespace Soccer.DataReceivers.ScheduleTasks.Leagues
             if (teams.Count > 0)
             {
                 jobClient.Schedule<IFetchHeadToHeadsTask>(task => task.FetchTeamResults(teams, language), TeamResultsDelayTimespan);
+            }
+        }
+
+        public async Task FetchTeamResultsForMajorLeagues()
+        {
+            var leagues = (await leagueService.GetLeagues(Language.en_US))?.ToList();
+
+            if (leagues == null || leagues.Count == 0)
+            {
+                return;
+            }
+
+            for (var i = 0; i * BatchOfLeagueSize < leagues.Count; i++)
+            {
+                var batchOfLeague = leagues.Skip(i * BatchOfLeagueSize).Take(BatchOfLeagueSize).ToList();
+
+                jobClient.Enqueue<IFetchLeagueMatchesTask>(t => t.FetchTeamResults(batchOfLeague));
+            }
+        }
+
+        public async Task FetchTeamResults(IList<League> leagues)
+        {
+            foreach (var league in leagues)
+            {
+                foreach (var language in Enumeration.GetAll<Language>())
+                {
+                    var matches = (await leagueScheduleService.GetLeagueMatches(league.Region, league.Id, language)).ToList();
+
+                    ScheduleTeamResultsTasks(language, matches);
+                }
             }
         }
     }

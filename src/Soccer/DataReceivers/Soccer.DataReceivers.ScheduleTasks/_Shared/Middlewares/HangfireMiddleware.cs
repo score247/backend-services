@@ -42,7 +42,6 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             services.AddScoped<IFetchLeagueMatchesTask, FetchLeagueMatchesTask>();
             services.AddScoped<IFetchLeagueStandingsTask, FetchLeagueStandingsTask>();
             services.AddScoped<IFetchLeagueHeadToHeadTask, FetchLeagueHeadToHeadTask>();
-            services.AddScoped<IFetchNewsTask, FetchNewsTask>();
         }
 
 #pragma warning disable S138 // Functions should not have too many lines of code
@@ -82,6 +81,8 @@ namespace Soccer.DataReceivers.ScheduleTasks._Shared.Middlewares
             RegisterTask<IFetchLeagueMatchesTask>(taskSettings.FetchLeagueMatchesAndTimelinesCron, job => job.FetchLeagueMatchesAndTimelineEvents());
             RegisterTask<IFetchLeagueStandingsTask>(taskSettings.FetchLeagueStandingCron, job => job.FetchLeagueStandings());
             RegisterTask<IFetchLeagueMatchesTask>(taskSettings.FetchLeagueMatchesCron, job => job.FetchLeagueMatches());
+            RegisterTask<IFetchNewsTask>(taskSettings.FetchNewsFeedCron, job => job.FetchNewsFeed());
+            RegisterTask<IFetchLeagueMatchesTask>(taskSettings.FetchTeamResultsForMajorLeaguesCron, job => job.FetchTeamResultsForMajorLeagues());
             RegisterTask<IFetchNewsTask>(taskSettings.FetchNewsFeedCron, job => job.FetchNewsFeed());
         }
 

@@ -71,7 +71,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
             await fetchLeagueMatchesTask.FetchLeagueMatchesAndTimelineEvents();
 
             // Assert
-            jobClient.DidNotReceive().Enqueue<IFetchLeagueMatchesTask>(t => t.FetchMatchesForLeague(unprocessedLeagues, true));
+            jobClient.DidNotReceive().Enqueue<IFetchLeagueMatchesTask>(t => t.FetchMatchesForNewSeason(unprocessedLeagues, true));
         }
 
         [Fact]
@@ -110,7 +110,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
             var unprocessedLeagues = A.CollectionOfDummy<LeagueSeasonProcessedInfo>(5);
 
             // Act
-            await fetchLeagueMatchesTask.FetchMatchesForLeague(unprocessedLeagues);
+            await fetchLeagueMatchesTask.FetchMatchesForNewSeason(unprocessedLeagues);
 
             // Assert
             await leagueScheduleService.Received(5).GetLeagueMatches(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<Language>());
@@ -128,7 +128,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
                 .Returns(A.CollectionOfDummy<Match>(5));
 
             // Act
-            await fetchLeagueMatchesTask.FetchMatchesForLeague(unprocessedLeagues);
+            await fetchLeagueMatchesTask.FetchMatchesForNewSeason(unprocessedLeagues);
 
             // Assert
             await messageBus.Received(1).Publish<IPreMatchesFetchedMessage>(Arg.Any<PreMatchesFetchedMessage>());
@@ -146,7 +146,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
                 .Returns(A.CollectionOfDummy<Match>(7));
 
             // Act
-            await fetchLeagueMatchesTask.FetchMatchesForLeague(unprocessedLeagues);
+            await fetchLeagueMatchesTask.FetchMatchesForNewSeason(unprocessedLeagues);
 
             // Assert
             await messageBus.Received(2).Publish<IPreMatchesFetchedMessage>(Arg.Any<PreMatchesFetchedMessage>());
@@ -169,7 +169,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
                 });
 
             // Act
-            await fetchLeagueMatchesTask.FetchMatchesForLeague(unprocessedLeagues);
+            await fetchLeagueMatchesTask.FetchMatchesForNewSeason(unprocessedLeagues);
 
             // Assert
             jobClient
@@ -200,7 +200,7 @@ namespace Soccer.DataReceivers.ScheduleTasks.Tests.Leagues
                 });
 
             // Act
-            await fetchLeagueMatchesTask.FetchMatchesForLeague(unprocessedLeagues);
+            await fetchLeagueMatchesTask.FetchMatchesForNewSeason(unprocessedLeagues);
 
             // Assert
             jobClient
